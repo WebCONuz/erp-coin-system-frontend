@@ -1,4 +1,4 @@
-import { Search, X, ArrowUpDown, Plus, FileSpreadsheet } from "lucide-react";
+import { Search, X, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,40 +13,38 @@ import { DashboardTitle } from "@/components/shared/title";
 
 interface StudentFilterProps {
   onSearch: (value: string) => void;
-  onPhoneChange: (value: string) => void;
-  onClassFilter: (value: string) => void;
+  onAddCategory: () => void;
+  filterByCategory: (value: string) => void;
+  onAddGift: () => void;
   onClear: () => void;
-  onAddStudent: () => void;
-  onImportExcel: () => void;
 }
 
-export const StudentDataFilter = ({
+export const ProductDataFilter = ({
   onSearch,
-  onPhoneChange,
-  onClassFilter,
+  onAddCategory,
+  filterByCategory,
+  onAddGift,
   onClear,
-  onAddStudent,
-  onImportExcel,
 }: StudentFilterProps) => {
   return (
     <div className="w-full space-y-3 py-4">
       {/* 1-QATOR: Sarlavha va Harakat tugmalari */}
       <div className="flex items-center justify-between">
-        <DashboardTitle title="O'quvchilar" />
+        <DashboardTitle title="Sovg'alar" />
         <div className="flex items-center gap-2">
           <Button
-            onClick={onAddStudent}
+            onClick={onAddGift}
             className="bg-[#9333ea] hover:bg-[#7e22ce] text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span className="hidden sm:inline">Talaba qo'shish</span>
+            <span className="hidden sm:inline">Sovg'a qo'shish</span>
           </Button>
           <Button
-            onClick={onImportExcel}
-            className="bg-[#8b5cf6] hover:bg-[#7c3aed] text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
+            onClick={onAddCategory}
+            className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
           >
-            <FileSpreadsheet size={18} />
-            <span className="hidden sm:inline">Exceldan ma'lumot qo'shish</span>
+            <Plus size={18} />
+            <span className="hidden sm:inline">Kategoriya qo'shish</span>
           </Button>
         </div>
       </div>
@@ -63,7 +61,7 @@ export const StudentDataFilter = ({
               value="active"
               className="rounded-md px-3 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
             >
-              Faol o'quvchilar
+              Faol sovg'alar
             </TabsTrigger>
             <TabsTrigger
               value="archive"
@@ -76,49 +74,31 @@ export const StudentDataFilter = ({
 
         {/* O'ng tomondagi filtrlar guruhi */}
         <div className="flex flex-wrap items-center gap-2">
+          {/* Qidiruv */}
           <div className="flex items-center bg-background border border-border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-500/20 transition-all shadow-sm">
             <div className="pl-3 text-muted-foreground/60">
               <Search size={18} />
             </div>
             <Input
               placeholder="Qidirish..."
-              className="border-none focus-visible:ring-0 w-40 h-9 placeholder:text-muted-foreground/50 bg-transparent dark:bg-[#0A0A0A]"
+              className="border-none focus-visible:ring-0 w-64 h-9 placeholder:text-muted-foreground/50 bg-transparent dark:bg-[#0A0A0A]"
               onChange={(e) => onSearch(e.target.value)}
             />
-            <div className="w-px h-6 bg-border"></div>
-            <Input
-              placeholder="+998 90..."
-              className="border-none focus-visible:ring-0 w-40 h-9 placeholder:text-muted-foreground/50 bg-transparent dark:bg-[#0A0A0A]"
-              onChange={(e) => onPhoneChange(e.target.value)}
-            />
           </div>
 
-          {/* Sinf tanlash */}
-          <Select onValueChange={onClassFilter}>
+          {/* Kategoriya tanlash */}
+          <Select onValueChange={filterByCategory}>
             <SelectTrigger className="w-40 py-4.5 rounded-lg bg-background border-border text-foreground hover:bg-accent/50 transition-colors">
-              <SelectValue placeholder="Barcha sinflar" />
+              <SelectValue placeholder="Barcha sovg'alar" />
             </SelectTrigger>
             <SelectContent className="rounded-lg border-border bg-popover text-popover-foreground">
-              <SelectItem value="all">Barcha sinflar</SelectItem>
-              <SelectItem value="7a">7-A sinf</SelectItem>
-              <SelectItem value="8a">8-A sinf</SelectItem>
-              <SelectItem value="9a">9-A sinf</SelectItem>
+              <SelectItem value="all">Barcha sovg'alar</SelectItem>
+              <SelectItem value="7a">O'quv qurollari</SelectItem>
+              <SelectItem value="8a">Kitoblar</SelectItem>
+              <SelectItem value="9a">Sport tovarlari</SelectItem>
+              <SelectItem value="10a">Texnika</SelectItem>
             </SelectContent>
           </Select>
-
-          {/* Saralash (Sort) tugmalari */}
-          <div className="flex items-center border border-border rounded-lg bg-background p-1 gap-1 shadow-sm">
-            {["Ism", "Sinf", "Coin"].map((label) => (
-              <Button
-                key={label}
-                variant="ghost"
-                size="sm"
-                className="h-7 px-2 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-              >
-                {label} <ArrowUpDown size={12} className="opacity-50" />
-              </Button>
-            ))}
-          </div>
 
           {/* Tozalash */}
           <Button

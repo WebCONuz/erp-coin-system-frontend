@@ -1,12 +1,12 @@
-import { Eye, Pencil, Trash2, Plus, Minus } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Student } from "../models";
 import type { ColumnDef } from "@/types";
 import { UniversalTable } from "@/components/shared/Table";
-import { mockStudents } from "../constants/student.mock";
+import { mockTeachers } from "../constants/teacher.mock";
+import type { Teacher } from "../models";
 
-export const StudentList = () => {
-  const columns: ColumnDef<Student>[] = [
+export const TeracherList = () => {
+  const columns: ColumnDef<Teacher>[] = [
     {
       header: "Nomi",
       accessorKey: "name",
@@ -20,35 +20,26 @@ export const StudentList = () => {
       ),
     },
     { header: "Sinf", accessorKey: "class" },
-    { header: "Telefon", accessorKey: "phone" },
-    { header: "Email", accessorKey: "email" },
-    { header: "Tug'ilgan sana", accessorKey: "dob" },
     {
-      header: "Coin",
-      accessorKey: "coin",
+      header: "Fanlar",
+      accessorKey: "subjects",
       render: (s) => (
-        <div className="flex items-center gap-4">
-          <span
-            className={`font-bold ${s.coin > 0 ? "text-green-500" : "text-orange-500"} flex items-center gap-1 text-sm`}
-          >
-            <div
-              className={`w-4 h-4 ${s.coin > 0 ? "bg-green-500" : "bg-orange-400"} rounded-full text-[10px] text-white flex items-center justify-center font-bold`}
+        <div className="flex items-center gap-2">
+          {s.subjects.map((item, index) => (
+            <span
+              key={index}
+              className="border border-border py-px px-1.5 rounded-3xl bg-gray-50 dark:bg-black"
             >
-              $
-            </div>
-            {s.coin}
-          </span>
-          <div className="flex border rounded-md">
-            <button className="px-1 text-red-500 border-r hover:bg-gray-50">
-              <Minus size={14} />
-            </button>
-            <button className="px-1 text-green-500 hover:bg-gray-50">
-              <Plus size={14} />
-            </button>
-          </div>
+              {item}
+            </span>
+          ))}
         </div>
       ),
     },
+    { header: "Telefon", accessorKey: "phone" },
+    { header: "Email", accessorKey: "email" },
+    { header: "Tug'ilgan sana", accessorKey: "birthday" },
+    { header: "Yaratilgan sana", accessorKey: "createdAt" },
     {
       header: <div className="text-end pr-3">Amallar</div>,
       accessorKey: "actions",
@@ -70,7 +61,7 @@ export const StudentList = () => {
 
   return (
     <UniversalTable
-      data={mockStudents}
+      data={mockTeachers}
       columns={columns}
       currentPage={1}
       totalPages={5}
