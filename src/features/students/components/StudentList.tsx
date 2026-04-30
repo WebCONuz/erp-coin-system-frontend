@@ -2,7 +2,7 @@ import { Eye, Pencil, Trash2, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Student } from "../models";
 import type { ColumnDef } from "@/types";
-import { UniversalTable } from "@/components/shared/Table";
+import { UniversalTable } from "@/components/shared/table";
 import { mockStudents } from "../constants/student.mock";
 
 export const StudentList = () => {
@@ -29,10 +29,14 @@ export const StudentList = () => {
       render: (s) => (
         <div className="flex items-center gap-4">
           <span
-            className={`font-bold ${s.coin > 0 ? "text-green-500" : "text-orange-500"} flex items-center gap-1 text-sm`}
+            className={`font-bold ${
+              s.coin > 0 ? "text-green-500" : "text-orange-500"
+            } flex items-center gap-1 text-sm`}
           >
             <div
-              className={`w-4 h-4 ${s.coin > 0 ? "bg-green-500" : "bg-orange-400"} rounded-full text-[10px] text-white flex items-center justify-center font-bold`}
+              className={`w-4 h-4 ${
+                s.coin > 0 ? "bg-green-500" : "bg-orange-400"
+              } rounded-full text-[10px] text-white flex items-center justify-center font-bold`}
             >
               $
             </div>

@@ -1,13 +1,14 @@
-import { ClassSelect, ScheduleCard } from "./ui";
+import { LaterUI } from "@/components/partials/later-added";
+import { ClassSelect } from "./ui";
 
-const days = [
-  "Dushanba",
-  "Seshanba",
-  "Chorshanba",
-  "Payshanba",
-  "Juma",
-  "Shanba",
-];
+// const days = [
+//   "Dushanba",
+//   "Seshanba",
+//   "Chorshanba",
+//   "Payshanba",
+//   "Juma",
+//   "Shanba",
+// ];
 
 export const ScheduleGrid = () => {
   return (
@@ -25,8 +26,8 @@ export const ScheduleGrid = () => {
       </div>
 
       {/* scedule table  */}
-      <div className="grid grid-cols-6 gap-4 mt-6">
-        {days.map((day) => (
+      {/* <div className="grid grid-cols-6 gap-4 mt-6"> */}
+      {/* {days.map((day) => (
           <div key={day}>
             <p className="font-medium mb-2">{day}</p>
 
@@ -35,8 +36,12 @@ export const ScheduleGrid = () => {
               <ScheduleCard subject="Rus tili" teacher="Pulatova" />
             </div>
           </div>
-        ))}
+        ))} */}
+
+      <div className="w-full flex justify-center py-20">
+        <LaterUI />
       </div>
     </div>
+    // </div>
   );
 };

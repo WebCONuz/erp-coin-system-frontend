@@ -1,4 +1,8 @@
-import { ProductDataFilter, ProductGrid } from "@/features/market/component";
+import {
+  GiftCategory,
+  ProductDataFilter,
+  ProductGrid,
+} from "@/features/market/component";
 
 const Market = () => {
   const clearFilters = () => console.log("Filters cleared");
@@ -17,7 +21,14 @@ const Market = () => {
         onClear={clearFilters}
         onSearch={searchData}
       />
-      <ProductGrid />
+      <div className="grid grid-cols-5 gap-6">
+        <div className="col-span-1">
+          <GiftCategory />
+        </div>
+        <div className="col-span-4">
+          <ProductGrid />
+        </div>
+      </div>
     </>
   );
 };

@@ -1,102 +1,3 @@
-// import { Bell, ChevronDown, Search } from "lucide-react";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-// import { useTranslation } from "react-i18next";
-
-// // ----------------------------------------------------------------
-// // Language options
-// // ----------------------------------------------------------------
-// const FLAG_UZ = "/uzb.webp";
-// const FLAG_RU = "/rus.png";
-// const FLAG_EN = "/eng.png";
-// const LANGUAGES = [
-//   { code: "uz", label: "O'zbek", flag: FLAG_UZ },
-//   { code: "uz_cr", label: "Krill", flag: FLAG_EN },
-//   { code: "ru", label: "Рус", flag: FLAG_RU },
-// ];
-
-// // ----------------------------------------------------------------
-// // Navbar
-// // ----------------------------------------------------------------
-// export function AdminNavbar() {
-//   const { i18n } = useTranslation();
-//   const currentLang =
-//     LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
-
-//   const handleChangeLang = (code: string) => {
-//     i18n.changeLanguage(code);
-//   };
-
-//   return (
-//     <header className="w-full border-b bg-white">
-//       <div className="flex h-14 items-center gap-3 px-5">
-//         <div className="relative flex-1">
-//           <Search
-//             size={15}
-//             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-//           />
-//           <Input
-//             placeholder="Qidirush..."
-//             className="h-9 pl-9 text-sm border-transparent focus-visible:border-[#2563EB] focus-visible:ring-0 placeholder:text-muted-foreground/60"
-//           />
-//         </div>
-
-//         {/* Notification bell */}
-//         <Button
-//           variant="ghost"
-//           size="icon"
-//           className="relative h-9 w-9 text-muted-foreground hover:text-foreground"
-//         >
-//           <Bell size={18} />
-//           <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-[#2563EB]" />
-//         </Button>
-
-//         {/* Language selector */}
-//         <DropdownMenu>
-//           <DropdownMenuTrigger asChild>
-//             <Button
-//               variant="ghost"
-//               className="h-9 gap-2 px-2 text-sm font-medium text-foreground hover:bg-accent focus-visible:ring-0 focus-visible:border-0"
-//             >
-//               <img
-//                 src={currentLang.flag}
-//                 alt="flag"
-//                 className="w-5 h-5 object-cover rounded-full"
-//               />
-//               <span>{currentLang.label}</span>
-//               <ChevronDown size={14} className="text-muted-foreground" />
-//             </Button>
-//           </DropdownMenuTrigger>
-//           <DropdownMenuContent align="end" className="w-32">
-//             {LANGUAGES.map((lang) => (
-//               <DropdownMenuItem
-//                 key={lang.code}
-//                 className="gap-2 text-sm cursor-pointer"
-//                 onClick={() => handleChangeLang(lang.code)}
-//               >
-//                 <img
-//                   src={lang.flag}
-//                   alt="flag"
-//                   className="w-5 h-5 object-cover rounded-full"
-//                 />
-//                 {lang.label}
-//               </DropdownMenuItem>
-//             ))}
-//           </DropdownMenuContent>
-//         </DropdownMenu>
-//       </div>
-//     </header>
-//   );
-// }
-
-// src/features/admin/components/AdminNavbar.tsx
-
 import {
   Bell,
   ChevronDown,
@@ -224,7 +125,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
                   key={lang.code}
                   className={cn(
                     "text-sm cursor-pointer justify-between",
-                    i18n.language === lang.code && "text-primary font-medium",
+                    i18n.language === lang.code && "text-primary font-medium"
                   )}
                   onClick={() => i18n.changeLanguage(lang.code)}
                 >

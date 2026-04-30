@@ -1,7 +1,7 @@
 import { Eye, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { ColumnDef } from "@/types";
-import { UniversalTable } from "@/components/shared/Table";
+import { UniversalTable } from "@/components/shared/table";
 import { mockTeachers } from "../constants/teacher.mock";
 import type { Teacher } from "../models";
 

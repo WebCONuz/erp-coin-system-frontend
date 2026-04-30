@@ -8,7 +8,7 @@ interface ProductCardProps {
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
-    <div className="group w-full bg-card text-card-foreground rounded-xl shadow-lg border border-border/50 overflow-hidden transition-all hover:shadow-xl">
+    <div className="group w-full bg-card text-card-foreground rounded-xl shadow-sm border border-border/50 overflow-hidden transition-all hover:shadow-xl">
       {/* Rasm qismi */}
       <div className="relative aspect-4/3 w-full">
         <img
