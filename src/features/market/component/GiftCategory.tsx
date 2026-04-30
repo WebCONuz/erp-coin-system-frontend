@@ -11,11 +11,11 @@ const gifts = [
     name: "Sport tovarlari",
   },
   {
-    id: 1,
+    id: 3,
     name: "Texnika",
   },
   {
-    id: 1,
+    id: 4,
     name: "O'quv qurollar",
   },
 ];
