@@ -25,8 +25,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useAuthStore } from "@/features/auth/models";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/features/auth/hooks/useLogin";
 
 // Constants
 const LANGUAGES = [
@@ -51,15 +51,13 @@ interface AdminNavbarProps {
 export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
   const { i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
-
-  const user = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
+  const { user, logout } = useAuth();
 
   const currentLang =
     LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
 
-  const initials = user?.name
-    ? user.name
+  const initials = user?.fullName
+    ? user.fullName
         .split(" ")
         .map((n) => n[0])
         .join("")
@@ -125,7 +123,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
                   key={lang.code}
                   className={cn(
                     "text-sm cursor-pointer justify-between",
-                    i18n.language === lang.code && "text-primary font-medium"
+                    i18n.language === lang.code && "text-primary font-medium",
                   )}
                   onClick={() => i18n.changeLanguage(lang.code)}
                 >
@@ -171,13 +169,13 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
               {/* User info */}
               <div className="px-3 py-2.5 border-b">
                 <p className="text-sm font-medium leading-none">
-                  Komilov Axror
+                  {user?.fullName ? user.fullName : "- -"}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  komilovaxror@gmail.com
+                  {user?.email ? user.email : ""}
                 </p>
                 <p className="text-xs mt-1 text-[10px] font-medium uppercase text-primary">
-                  Admin
+                  {user?.role?.name ? user?.role?.name : "student"}
                 </p>
               </div>
 
@@ -198,7 +196,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
 
               <DropdownMenuItem
                 className="gap-2.5 text-sm cursor-pointer text-destructive focus:text-destructive"
-                onClick={logout}
+                onClick={() => logout()}
               >
                 <LogOut size={14} />
                 Chiqish

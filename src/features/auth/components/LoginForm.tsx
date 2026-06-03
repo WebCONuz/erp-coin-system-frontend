@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginSchema, type LoginFormValues } from "../lib";
-import { useLogin } from "../hooks/useLogin";
+import { loginSchema, type LoginFormValues } from "../schema";
+import { useAuth } from "../hooks/useLogin";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const LoginForm = () => {
-  const { mutate, isPending } = useLogin();
+  const { login, isLoginLoading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -23,7 +23,7 @@ export const LoginForm = () => {
   });
 
   const onSubmit = (data: LoginFormValues) => {
-    mutate(data);
+    login(data);
   };
 
   return (
@@ -46,17 +46,19 @@ export const LoginForm = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* EMAIL */}
+          {/* PHONE */}
           <div className="space-y-1.5">
-            <Label className="text-sm text-muted-foreground">Email</Label>
+            <Label className="text-sm text-muted-foreground">
+              Telefon raqami
+            </Label>
             <Input
-              type="text"
-              placeholder="example@mail.com"
-              {...register("email")}
+              type="tel"
+              placeholder="+998(00) 000-00-00"
+              {...register("phone")}
               className="h-10 bg-muted/40 border-border/50 focus-visible:ring-1"
             />
-            {errors.email && (
-              <p className="text-xs text-destructive">{errors.email.message}</p>
+            {errors.phone && (
+              <p className="text-xs text-destructive">{errors.phone.message}</p>
             )}
           </div>
 
@@ -97,9 +99,9 @@ export const LoginForm = () => {
           <Button
             type="submit"
             className="w-full h-9 mt-2"
-            disabled={isPending}
+            disabled={isLoginLoading}
           >
-            {isPending ? "Yuklanmoqda..." : "Kirish"}
+            {isLoginLoading ? "Yuklanmoqda..." : "Kirish"}
           </Button>
         </form>
       </CardContent>

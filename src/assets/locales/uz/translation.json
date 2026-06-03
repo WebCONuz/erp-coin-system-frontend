@@ -1,1 +1,11 @@
-{}
+{
+  "welcome_back": "Xush kelibsiz!",
+  "invalid_credentials": "Kiritilgan ma'lumotlar noto'g'ri",
+  "logout": "Tizimdan muvaffaqiyatli chiqildi!",
+  "admin": {
+    "dashboard": {
+      "title": "Salom, {{name}}",
+      "description": "EduCoin platformasiga xush kelibsiz!"
+    }
+  }
+}
