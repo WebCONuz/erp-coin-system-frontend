@@ -9,22 +9,24 @@ import NotFoundPage from "@/pages/errors/NotFound";
 import LoginPage from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
+import { ROLES } from "@/assets/constants";
 
 // Lazy Pages (Code Splitting)
 // student
 const StudentDashboard = lazy(
-  () => import("@/pages/dashboard/student/Dashboard")
+  () => import("@/pages/dashboard/student/Dashboard"),
 );
 const StudentGroups = lazy(() => import("@/pages/groups/student/Group"));
 const Market = lazy(() => import("@/pages/market/Market"));
 
 // admin
+const TenantsList = lazy(() => import("@/pages/tenants/TenantsList"));
 const AdminDashboard = lazy(() => import("@/pages/dashboard/admin/Dashboard"));
 const AdminTeachers = lazy(() => import("@/pages/teachers/admin/Teachers"));
 const AdminGroups = lazy(() => import("@/pages/groups/admin/Groups"));
 const AdminStudents = lazy(() => import("@/pages/students/admin/Students"));
 const AdminControlLayput = lazy(
-  () => import("@/pages/control/admin/AdminControlLayout")
+  () => import("@/pages/control/admin/AdminControlLayout"),
 );
 const AdminSubjects = lazy(() => import("@/pages/control/admin/SubjectsPage"));
 const RoomsPage = lazy(() => import("@/pages/control/admin/RoomsPage"));
@@ -32,7 +34,7 @@ const EmployeesPage = lazy(() => import("@/pages/control/admin/EmployeesPage"));
 const PlansPage = lazy(() => import("@/pages/control/admin/PlansPage"));
 const ReasonsPage = lazy(() => import("@/pages/control/admin/ReasonsPage"));
 const SendMessagePage = lazy(
-  () => import("@/pages/control/admin/SendMessagePage")
+  () => import("@/pages/control/admin/SendMessagePage"),
 );
 const RolesPage = lazy(() => import("@/pages/control/admin/RolesPage"));
 
@@ -72,7 +74,11 @@ export const router = createBrowserRouter([
   // ADMIN ROUTES
   {
     path: "/admin",
-    element: <ProtectedRoute allowedRole="admin" />,
+    element: (
+      <ProtectedRoute
+        allowedRoles={[ROLES.ADMIN, ROLES.SUPER_ADMIN, ROLES.CREATOR]}
+      />
+    ),
     children: [
       {
         element: <AdminLayout />,
@@ -96,6 +102,10 @@ export const router = createBrowserRouter([
           {
             path: "market",
             element: withSuspense(Market),
+          },
+          {
+            path: "tenants",
+            element: withSuspense(TenantsList),
           },
           {
             path: "control",
@@ -139,7 +149,7 @@ export const router = createBrowserRouter([
   // STUDENT ROUTES
   {
     path: "/student",
-    element: <ProtectedRoute allowedRole="student" />,
+    element: <ProtectedRoute allowedRoles={[ROLES.STUDENT]} />,
     children: [
       {
         element: <StudentLayout />,

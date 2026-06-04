@@ -3,4 +3,6 @@ export const ENDPOINTS = {
   LOGIN: "/api/auth/login",
   ME: "/api/auth/me",
   LOGOUT: "/api/auth/logout",
+  TEACHERS: "/api/auth/users",
+  TENANTS: "/api/tenants",
 };

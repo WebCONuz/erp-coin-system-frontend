@@ -2,10 +2,25 @@
   "welcome_back": "Xush kelibsiz!",
   "invalid_credentials": "Kiritilgan ma'lumotlar noto'g'ri",
   "logout": "Tizimdan muvaffaqiyatli chiqildi!",
+  "no_loading": "Ma'lumotlar yuklanmadi!",
+  "re_try": "Qayta urinish",
   "admin": {
+    "header": {
+      "main": "Asosiy",
+      "teachers": "O'qituvchilar",
+      "groups": "Guruhlar",
+      "students": "Talabalar",
+      "market": "Sovg'alar",
+      "control": "Boshqarish",
+      "tenants": "O'quv markazlar"
+    },
     "dashboard": {
       "title": "Salom, {{name}}",
       "description": "EduCoin platformasiga xush kelibsiz!"
+    },
+    "tenants": {
+      "no_data": "Tizimda hali ijarachilar mavjud emas!",
+      "create": "Ijarachi yaratish"
     }
   }
 }

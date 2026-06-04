@@ -1,11 +1,21 @@
+import { PageLoader } from "@/components/shared/loaders";
+import { useAuth } from "@/features/auth/hooks/useLogin";
 import { Navigate, Outlet } from "react-router-dom";
-// import { useAuthStore } from "@/features/auth/models";
 
-export const ProtectedRoute = ({ allowedRole }: { allowedRole: string }) => {
-  // const user = useAuthStore((state) => state.user);        // bu keyinchalik qo'shib qo'yiladi
-  const user = { role: "admin" }; // bu keyinchalik olib tashlanadi
+interface Props {
+  allowedRoles: string[];
+}
+
+export const ProtectedRoute = ({ allowedRoles }: Props) => {
+  const { user, isLoading } = useAuth();
+  if (isLoading) {
+    return <PageLoader />;
+  }
+
   if (!user) return <Navigate to="/login" replace />;
-  if (user.role !== allowedRole) return <Navigate to="/403" replace />;
+
+  const hasAccess = allowedRoles.includes(user.role.name);
+  if (!hasAccess) return <Navigate to="/403" replace />;
 
   return <Outlet />;
 };

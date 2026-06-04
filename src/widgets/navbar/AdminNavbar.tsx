@@ -12,7 +12,6 @@ import {
   Receipt,
   LogOut,
 } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -23,10 +22,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useTranslation } from "react-i18next";
-import { Search } from "lucide-react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/features/auth/hooks/useLogin";
+import { ROLES } from "@/assets/constants";
+import { useAllTenants } from "@/features/tenants/hooks";
+import { useSearchParams } from "react-router-dom";
+import { TENANT_KEY } from "@/features/tenants/constants";
+import { useEffect, useState } from "react";
+import type { TenentType } from "@/features/tenants/types";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Constants
 const LANGUAGES = [
@@ -52,6 +57,10 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
   const { i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
+  const { data: tenants } = useAllTenants();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentTenat, setCurrentTenant] = useState<string>();
+  const queryClient = useQueryClient();
 
   const currentLang =
     LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
@@ -65,9 +74,51 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
         .toUpperCase()
     : "A";
 
+  const getTenantName = (id: string, arr: TenentType[]) => {
+    if (arr.length === 0) return "";
+
+    const finded = arr.find((item) => item.id == id);
+    if (!finded) return "";
+
+    return finded.name;
+  };
+
+  useEffect(() => {
+    if (!tenants?.length) return;
+
+    const queryTenant = searchParams.get("tenantId");
+    const localTenant = localStorage.getItem(TENANT_KEY);
+    const activeTenant = queryTenant || localTenant || tenants[0].id.toString();
+
+    if (!localTenant) {
+      handleTenantChange(activeTenant);
+    } else {
+      localStorage.setItem(TENANT_KEY, activeTenant);
+      const name = getTenantName(activeTenant, tenants);
+      setCurrentTenant(name);
+
+      if (!queryTenant) {
+        searchParams.set("tenantId", activeTenant);
+        setSearchParams(searchParams);
+      }
+    }
+  }, [tenants]);
+
+  const handleTenantChange = (id: string) => {
+    localStorage.setItem(TENANT_KEY, id);
+    searchParams.set("tenantId", id);
+    setSearchParams(searchParams);
+
+    const name = getTenantName(id, tenants || []);
+    setCurrentTenant(name);
+
+    // window.location.reload();
+    queryClient.invalidateQueries();
+  };
+
   return (
     <header className="w-full border-b bg-background">
-      <div className="flex h-14 items-center gap-2 pr-4 pl-8">
+      <div className="flex h-14 items-center gap-4 pr-4 pl-8">
         {/* Quick add dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -93,17 +144,32 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* Search */}
-        <div className="relative flex-1 max-w-72">
-          <Search
-            size={14}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-          />
-          <Input
-            placeholder="Qidirish..."
-            className="h-9 pl-9 text-sm bg-muted/40 border-transparent focus-visible:border-input focus-visible:ring-0"
-          />
-        </div>
+        {/* select tenant */}
+        {(user?.role?.name === ROLES.SUPER_ADMIN ||
+          user?.role?.name === ROLES.CREATOR) && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="h-9 gap-2 px-2.5 text-sm font-medium focus-visible:ring-0"
+              >
+                <span>{currentTenat ?? "Markazni tanlang"}</span>
+                <ChevronDown size={13} className="text-muted-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-44">
+              {tenants?.map(({ id, name }) => (
+                <DropdownMenuItem
+                  key={id}
+                  className="gap-2.5 text-sm cursor-pointer"
+                  onClick={() => handleTenantChange(id.toString())}
+                >
+                  {name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
 
         <div className="ml-auto flex items-center gap-2">
           {/* Language selector */}

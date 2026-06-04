@@ -1,6 +1,7 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
 import { ENDPOINTS } from "../endpoints";
 import { handleAutoLogout } from "../helpers";
+import { TENANT_KEY } from "@/features/tenants/constants";
 
 interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
@@ -44,6 +45,12 @@ request.interceptors.request.use(
     if (config.headers) {
       config.headers["Accept-Language"] = currentLang;
     }
+
+    const tenantId = localStorage.getItem(TENANT_KEY);
+    if (tenantId) {
+      config.params = { ...(config.params || {}), tenantId };
+    }
+
     return config;
   },
   (error) => Promise.reject(error),

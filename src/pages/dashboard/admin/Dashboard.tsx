@@ -16,6 +16,7 @@ export default function DashboardPage() {
         })}
         description={t("admin.dashboard.description")}
       />
+
       <DashboardStats />
       <ScheduleGrid />
     </div>

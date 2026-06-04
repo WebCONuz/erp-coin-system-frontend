@@ -7,21 +7,39 @@ import {
   GraduationCap,
   Gift,
   LayoutDashboard,
+  Building2,
 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/features/auth/hooks/useLogin";
+import { useTranslation } from "react-i18next";
+import { ROLES } from "@/assets/constants";
 
 const LOGO = "/logo.png";
 
 export function AdminSidebar() {
+  const { user } = useAuth();
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
-    { to: "/admin", label: "Asosiy", icon: Home, end: true },
-    { to: "/admin/teachers", label: "O'qituvchilar", icon: UsersRound },
-    { to: "/admin/groups", label: "Sinflar", icon: School },
-    { to: "/admin/students", label: "Talabalar", icon: GraduationCap },
-    { to: "/admin/market", label: "Sovg'alar", icon: Gift },
-    { to: "/admin/control", label: "Boshqarish", icon: LayoutDashboard },
+    { to: "/admin", label: t("admin.header.main"), icon: Home, end: true },
+    {
+      to: "/admin/teachers",
+      label: t("admin.header.teachers"),
+      icon: UsersRound,
+    },
+    { to: "/admin/groups", label: t("admin.header.groups"), icon: School },
+    {
+      to: "/admin/students",
+      label: t("admin.header.students"),
+      icon: GraduationCap,
+    },
+    { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
+    {
+      to: "/admin/control",
+      label: t("admin.header.control"),
+      icon: LayoutDashboard,
+    },
   ];
 
   return (
@@ -83,6 +101,31 @@ export function AdminSidebar() {
             </NavLink>
           </Tooltip>
         ))}
+
+        {(user?.role?.name === ROLES.SUPER_ADMIN ||
+          user?.role?.name === ROLES.CREATOR) && (
+          <NavLink
+            to="/admin/tenants"
+            className={({ isActive }) =>
+              `flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors ${
+                isActive
+                  ? "bg-primary text-white"
+                  : "hover:bg-primary/10 hover:text-black text-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/20"
+              } ${collapsed ? "justify-center" : ""}`
+            }
+          >
+            {({ isActive }) => (
+              <>
+                <Building2
+                  size={18}
+                  className="shrink-0"
+                  style={{ color: isActive ? "#fff" : undefined }}
+                />
+                {!collapsed && <span>{t("admin.header.tenants")}</span>}
+              </>
+            )}
+          </NavLink>
+        )}
       </nav>
     </aside>
   );
