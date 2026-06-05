@@ -1,1 +1,1 @@
-export * from "./teacher.mock";
+export * from "./teacher.constants";

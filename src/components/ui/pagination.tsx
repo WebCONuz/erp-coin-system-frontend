@@ -100,7 +100,7 @@ export const Pagination = ({
           className={cn(
             "h-8 w-8 p-0 border",
             currentPage === page &&
-              "bg-[#EDF8E2] hover:bg-[#EDF8E2]/90 text-[#115D5D] border border-[#C6EAA0]"
+              "bg-[#EDF8E2] hover:bg-[#EDF8E2]/90 text-[#115D5D] border border-[#C6EAA0] dark:bg-[#1F2A1F] dark:hover:bg-[#1F2A1F]/80 dark:text-[#C6EAA0] dark:border-[#3A5F3A]",
           )}
         >
           {page}

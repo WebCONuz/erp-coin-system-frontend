@@ -22,7 +22,7 @@ export const TablePagination = ({
     <div
       className={cn("flex items-center justify-between py-4 px-4", className)}
     >
-      <div className="text-sm text-gray-600">
+      <div className="text-sm text-gray-600 dark:text-gray-300">
         {totalItems && (
           <span>
             <b>{totalItems}</b> ta natijadan &nbsp;

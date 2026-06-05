@@ -57,7 +57,10 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
   const { i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
-  const { data: tenants } = useAllTenants();
+  const { data: tenants } = useAllTenants(
+    user?.role?.name === ROLES.SUPER_ADMIN ||
+      user?.role?.name === ROLES.CREATOR,
+  );
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentTenat, setCurrentTenant] = useState<string>();
   const queryClient = useQueryClient();
@@ -84,22 +87,28 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
   };
 
   useEffect(() => {
-    if (!tenants?.length) return;
+    if (
+      user?.role?.name === ROLES.SUPER_ADMIN ||
+      user?.role?.name === ROLES.CREATOR
+    ) {
+      if (!tenants?.length) return;
 
-    const queryTenant = searchParams.get("tenantId");
-    const localTenant = localStorage.getItem(TENANT_KEY);
-    const activeTenant = queryTenant || localTenant || tenants[0].id.toString();
+      const queryTenant = searchParams.get("tenantId");
+      const localTenant = localStorage.getItem(TENANT_KEY);
+      const activeTenant =
+        queryTenant || localTenant || tenants[0].id.toString();
 
-    if (!localTenant) {
-      handleTenantChange(activeTenant);
-    } else {
-      localStorage.setItem(TENANT_KEY, activeTenant);
-      const name = getTenantName(activeTenant, tenants);
-      setCurrentTenant(name);
+      if (!localTenant) {
+        handleTenantChange(activeTenant);
+      } else {
+        localStorage.setItem(TENANT_KEY, activeTenant);
+        const name = getTenantName(activeTenant, tenants);
+        setCurrentTenant(name);
 
-      if (!queryTenant) {
-        searchParams.set("tenantId", activeTenant);
-        setSearchParams(searchParams);
+        if (!queryTenant) {
+          searchParams.set("tenantId", activeTenant);
+          setSearchParams(searchParams);
+        }
       }
     }
   }, [tenants]);

@@ -22,5 +22,32 @@
       "no_data": "Tizimda hali ijarachilar mavjud emas!",
       "create": "Ijarachi yaratish"
     }
+  },
+  "teachers": {
+    "table": {
+      "full_name": "Ism-familiya",
+      "phone": "Telefon",
+      "email": "Elektron pochta",
+      "created_at": "Yaratilgan vaqti",
+      "updated_at": "So'ngi yangilanish",
+      "taught_groups": "Guruhlari",
+      "actions": "Harkatlar"
+    }
+  },
+  "courses": {
+    "all": "Barchasi",
+    "btn": {
+      "create": "Kurs yaratish",
+      "add": "Kurs qo'shish"
+    },
+    "no_data": "Hali kurslar mavjud emas!"
+  },
+  "groups": {
+    "no_data": "Hali guruhlar mavjud emas!",
+    "btn": {
+      "create": "Guruh yaratish",
+      "add": "Gutuh qo'shish"
+    },
+    "student_count": "Sinfdagi o'quvchilar soni:"
   }
 }

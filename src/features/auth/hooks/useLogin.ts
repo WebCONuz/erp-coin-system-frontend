@@ -4,10 +4,12 @@ import { toast } from "sonner";
 import { t } from "i18next";
 import { authQueryKeys } from "../constants";
 import { getMe, login, logout } from "../api";
+import { clearLocalStoragaData } from "@/services/helpers";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const isAuthenticated = localStorage.getItem("is_authenticated");
 
   // get-me
   const {
@@ -19,6 +21,7 @@ export const useAuth = () => {
     queryFn: getMe,
     retry: false,
     staleTime: 1000 * 60 * 15, // Ma'lumot 15 daqiqa "fresh"
+    enabled: !!isAuthenticated,
   });
 
   // login
@@ -39,7 +42,7 @@ export const useAuth = () => {
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      localStorage.removeItem("is_authenticated");
+      clearLocalStoragaData();
       queryClient.setQueryData(authQueryKeys.getMe(), null); // Keshni tozalash
       navigate("/login");
       toast.success(t("logout"));

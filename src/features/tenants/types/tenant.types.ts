@@ -14,4 +14,10 @@ export type TenentType = {
 export type TenantResponse = {
   status: string;
   data: TenentType[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 };

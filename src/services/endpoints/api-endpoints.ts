@@ -3,6 +3,8 @@ export const ENDPOINTS = {
   LOGIN: "/api/auth/login",
   ME: "/api/auth/me",
   LOGOUT: "/api/auth/logout",
-  TEACHERS: "/api/auth/users",
   TENANTS: "/api/tenants",
+  TEACHERS: "/api/users/teachers",
+  COURSES: "/api/courses",
+  GROUPS: "/api/groups",
 };

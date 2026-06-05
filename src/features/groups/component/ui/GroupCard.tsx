@@ -1,10 +1,14 @@
 import { Pencil, Trash } from "lucide-react";
-import type { Group } from "../../models";
+import type { GroupItem } from "../../types";
+import { useTranslation } from "react-i18next";
+import { formatDate } from "@/ustils";
 
 interface Props {
-  data: Group;
+  data: GroupItem;
 }
 export const GroupCard = ({ data }: Props) => {
+  const { t } = useTranslation();
+
   return (
     <div
       className={`${
@@ -24,7 +28,7 @@ export const GroupCard = ({ data }: Props) => {
         />
       </div>
       <div className="text-gray-400 mt-2 text-xs font-semibold mb-2">
-        {data.createdAt}
+        {formatDate(data.createdAt, "dd.MM.yyyy, hh:mm")}
       </div>
       <div className="flex gap-x-3 items-center">
         <div
@@ -37,7 +41,7 @@ export const GroupCard = ({ data }: Props) => {
         <h4 className="text-2xl font-semibold">{data.name}</h4>
       </div>
       <div className="text-gray-400 mt-2">
-        Sinfdai o'quvchilar soni: {data.studentCount}
+        {t("groups.student_count")} {data?._count?.students || 0}
       </div>
     </div>
   );
