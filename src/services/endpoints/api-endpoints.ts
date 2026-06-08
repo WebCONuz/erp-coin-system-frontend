@@ -7,4 +7,5 @@ export const ENDPOINTS = {
   TEACHERS: "/api/users/teachers",
   COURSES: "/api/courses",
   GROUPS: "/api/groups",
+  STUDENTS: "/api/users/students",
 };

@@ -9,7 +9,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const HeaderFilter = () => {
+interface Props {
+  handleCreate: () => void;
+}
+export const HeaderFilter = ({ handleCreate }: Props) => {
   return (
     <nav className="space-y-3">
       <div className="flex items-start justify-between">
@@ -49,7 +52,7 @@ export const HeaderFilter = () => {
         </div>
 
         <Button
-          onClick={() => console.log("++++")}
+          onClick={handleCreate}
           className="bg-[#9333ea] hover:bg-[#7e22ce] text-white rounded-lg px-4 h-10 gap-2 transition-all shadow-sm"
         >
           <Plus size={18} />

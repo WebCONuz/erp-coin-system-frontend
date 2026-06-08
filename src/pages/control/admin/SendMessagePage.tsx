@@ -2,7 +2,7 @@ import { UniversalTable } from "@/components/shared/table";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { mockStudents } from "@/features/students/constants/student.mock";
-import type { Student } from "@/features/students/models";
+import type { Student } from "@/features/students/types";
 import type { ColumnDef } from "@/types";
 
 const SendMessagePage = () => {

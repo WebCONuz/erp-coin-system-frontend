@@ -1,6 +1,6 @@
 import { Eye, Pencil, Trash2, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { Student } from "../models";
+import type { Student } from "../types";
 import type { ColumnDef } from "@/types";
 import { UniversalTable } from "@/components/shared/table";
 import { mockStudents } from "../constants/student.mock";

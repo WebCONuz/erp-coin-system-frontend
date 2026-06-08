@@ -4,8 +4,13 @@ import { useGroups } from "../../hooks";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { NoDataBox } from "@/features/tenants/components/ui";
+import type { GroupItem } from "../../types";
 
-export const GroupGrid = () => {
+interface Props {
+  handleEdit: (group: GroupItem) => void;
+}
+
+export const GroupGrid = ({ handleEdit }: Props) => {
   const { data: groups, isLoading } = useGroups();
   const { t } = useTranslation();
 
@@ -24,7 +29,7 @@ export const GroupGrid = () => {
           ) : (
             <div className="grid grid-cols-3 gap-6">
               {groups.data.map((item) => (
-                <GroupCard key={item.id} data={item} />
+                <GroupCard key={item.id} data={item} handleEdit={handleEdit} />
               ))}
             </div>
           )}

@@ -1,26 +1,35 @@
-import { Pencil, Trash } from "lucide-react";
+import { Eye, Pencil, Trash } from "lucide-react";
 import type { GroupItem } from "../../types";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@/ustils";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   data: GroupItem;
+  handleEdit: (group: GroupItem) => void;
 }
-export const GroupCard = ({ data }: Props) => {
+export const GroupCard = ({ data, handleEdit }: Props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <div
       className={`${
         data.isActive
-          ? "border-primary/30 dark:primary-900 hover:bg-primary/10"
-          : "border-red-100 dark:border-red-900 hover:bg-red-400/10"
-      } border p-4 bg-card text-card-foreground rounded-xl shadow-sm overflow-hidden transition-all hover:shadow-xl relative`}
+          ? "border-primary/30 dark:primary-900"
+          : "border-red-100 dark:border-red-900"
+      } border p-4 bg-card text-card-foreground rounded-xl shadow-sm overflow-hidden transition-all hover:shadow-md relative`}
     >
       <div className="absolute top-4 right-5 flex gap-x-2.5">
+        <Eye
+          size="17"
+          className="text-blue-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
+          onClick={() => navigate(`/admin/groups/${data.id ?? ""}`)}
+        />
         <Pencil
           size="17"
           className="text-green-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
+          onClick={() => handleEdit(data)}
         />
         <Trash
           size="17"
