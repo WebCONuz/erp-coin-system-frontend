@@ -23,17 +23,17 @@ export const GroupCard = ({ data, handleEdit }: Props) => {
       <div className="absolute top-4 right-5 flex gap-x-2.5">
         <Eye
           size="17"
-          className="text-blue-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
+          className="text-gray-500 hover:text-blue-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
           onClick={() => navigate(`/admin/groups/${data.id ?? ""}`)}
         />
         <Pencil
           size="17"
-          className="text-green-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
+          className="text-gray-500 hover:text-green-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
           onClick={() => handleEdit(data)}
         />
         <Trash
           size="17"
-          className="text-red-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
+          className="text-gray-500 hover:text-red-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
         />
       </div>
       <div className="text-gray-400 mt-2 text-xs font-semibold mb-2">

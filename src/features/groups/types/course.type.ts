@@ -17,3 +17,14 @@ export interface CourseResponse {
     totalPages: number;
   };
 }
+
+// DTO --
+export interface CreateCourseDto {
+  title: string;
+  description?: string;
+}
+
+export interface UpdateCourseDto {
+  title?: string;
+  description?: string;
+}

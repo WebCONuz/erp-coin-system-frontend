@@ -5,13 +5,28 @@ import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { NoDataBox } from "@/features/tenants/components/ui";
 import type { GroupItem } from "../../types";
+import { useSearchParams } from "react-router-dom";
 
 interface Props {
   handleEdit: (group: GroupItem) => void;
+  handleCreate: () => void;
 }
 
-export const GroupGrid = ({ handleEdit }: Props) => {
-  const { data: groups, isLoading } = useGroups();
+export const GroupGrid = ({ handleEdit, handleCreate }: Props) => {
+  const [searchParams] = useSearchParams();
+  const { data: groups, isLoading } = useGroups({
+    courseId:
+      searchParams.get("course") == "all"
+        ? undefined
+        : searchParams.get("course") || undefined,
+    search: searchParams.get("search") || undefined,
+    isActive:
+      searchParams.get("status") === "active"
+        ? "true"
+        : searchParams.get("status") === "archive"
+          ? "false"
+          : undefined,
+  });
   const { t } = useTranslation();
 
   return (
@@ -24,7 +39,7 @@ export const GroupGrid = ({ handleEdit }: Props) => {
             <NoDataBox
               title={t("groups.no_data")}
               btnText={t("groups.btn.create")}
-              btnFn={() => console.log("create")}
+              btnFn={() => handleCreate()}
             />
           ) : (
             <div className="grid grid-cols-3 gap-6">

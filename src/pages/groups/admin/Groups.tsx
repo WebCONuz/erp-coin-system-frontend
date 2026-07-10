@@ -34,7 +34,7 @@ const Groups = () => {
         </div>
         <div className="col-span-4 space-y-6">
           <HeaderFilter handleCreate={handleCreate} />
-          <GroupGrid handleEdit={handleEdit} />
+          <GroupGrid handleEdit={handleEdit} handleCreate={handleCreate} />
         </div>
       </div>
 

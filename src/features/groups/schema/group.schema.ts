@@ -1,5 +1,3 @@
-// features/groups/schemas/group.schema.ts
-
 import { z } from "zod";
 
 export const groupFormSchema = z.object({

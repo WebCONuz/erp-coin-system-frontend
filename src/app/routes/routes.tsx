@@ -26,6 +26,7 @@ const AdminTeachers = lazy(() => import("@/pages/teachers/admin/Teachers"));
 const AdminGroups = lazy(() => import("@/pages/groups/admin/Groups"));
 const GroupDetail = lazy(() => import("@/pages/groups/admin/GroupDetail"));
 const AdminStudents = lazy(() => import("@/pages/students/admin/Students"));
+const AdminStudentDetail = lazy(() => import("@/pages/students/admin/StudentDetail"));
 const AdminControlLayput = lazy(
   () => import("@/pages/control/admin/AdminControlLayout"),
 );
@@ -103,6 +104,10 @@ export const router = createBrowserRouter([
           {
             path: "students",
             element: withSuspense(AdminStudents),
+          },
+          {
+            path: "students/:id",
+            element: withSuspense(AdminStudentDetail),
           },
           {
             path: "market",

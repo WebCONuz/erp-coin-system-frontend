@@ -9,11 +9,15 @@ import {
   addStudent,
   bulkAddStudents,
   removeStudent,
+  createCourse,
+  updateCourse,
 } from "../api";
 import type {
   AddStudentDto,
   BulkAddStudentsDto,
+  CreateCourseDto,
   CreateGroupDto,
+  UpdateCourseDto,
   UpdateGroupDto,
 } from "../types";
 
@@ -22,6 +26,31 @@ export const useCourses = (params?: Record<string, string | undefined>) => {
   return useQuery({
     queryKey: courseKeys.allCourses(params),
     queryFn: () => getAllCourses(params),
+  });
+};
+
+export const useCreateCourse = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreateCourseDto) => createCourse(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: courseKeys.allCourses() });
+    },
+  });
+};
+
+export const useUpdateCourse = (courseId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: UpdateCourseDto) => updateCourse(courseId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: courseKeys.allCourses() });
+      queryClient.invalidateQueries({
+        queryKey: courseKeys.oneCourseById(courseId),
+      });
+    },
   });
 };
 
@@ -59,8 +88,6 @@ export const useUpdateGroup = (groupId: string) => {
 };
 
 export const useGroup = (groupId: string) => {
-  console.log(groupId, "++++++");
-
   return useQuery({
     queryKey: groupKeys.oneGroupById(groupId),
     queryFn: () => getGroupById(groupId),
