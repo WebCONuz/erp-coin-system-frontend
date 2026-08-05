@@ -1,5 +1,3 @@
-// features/groups/components/StudentTable.tsx
-
 import { useState } from "react";
 import { Trash2, ChevronUp, ChevronDown, UserMinus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,15 +9,17 @@ import {
 import type { GroupDetail, GroupStudent } from "../../types";
 import { useRemoveStudent } from "../../hooks";
 import { formatDate } from "@/ustils";
+import { Avatar } from "../ui";
 
 interface StudentTableProps {
   group: GroupDetail;
+  search?: string;
 }
 
 type SortKey = "name" | "joinedAt";
 type SortDir = "asc" | "desc";
 
-export const StudentTable = ({ group }: StudentTableProps) => {
+export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
   const [sortKey, setSortKey] = useState<SortKey>("joinedAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
@@ -35,15 +35,24 @@ export const StudentTable = ({ group }: StudentTableProps) => {
     }
   };
 
-  const sorted = [...group.students].sort((a, b) => {
-    let cmp = 0;
-    if (sortKey === "name") {
-      cmp = a.student.fullName.localeCompare(b.student.fullName);
-    } else {
-      cmp = new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime();
-    }
-    return sortDir === "asc" ? cmp : -cmp;
-  });
+  const query = search.trim().toLowerCase();
+
+  const sorted = [...group.students]
+    .filter(
+      (gs) =>
+        !query ||
+        gs.student.fullName.toLowerCase().includes(query) ||
+        gs.student.phone.includes(query),
+    )
+    .sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "name") {
+        cmp = a.student.fullName.localeCompare(b.student.fullName);
+      } else {
+        cmp = new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime();
+      }
+      return sortDir === "asc" ? cmp : -cmp;
+    });
 
   const handleRemove = (studentId: string) => {
     removeStudent.mutate(studentId, {
@@ -104,7 +113,9 @@ export const StudentTable = ({ group }: StudentTableProps) => {
                   colSpan={5}
                   className="text-center py-12 text-zinc-400 dark:text-zinc-500"
                 >
-                  Guruhda hali o'quvchi yo'q
+                  {query
+                    ? `"${search}" bo'yicha hech narsa topilmadi`
+                    : "Guruhda hali o'quvchi yo'q"}
                 </td>
               </tr>
             ) : (
@@ -155,7 +166,8 @@ const StudentRow = ({
       <td className="px-4 py-3 text-zinc-400 dark:text-zinc-500 text-xs">
         {index}
       </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-3 flex items-center gap-x-2">
+        <Avatar fullName={student.fullName} />
         <p className="font-medium text-zinc-900 dark:text-zinc-50">
           {student.fullName}
         </p>

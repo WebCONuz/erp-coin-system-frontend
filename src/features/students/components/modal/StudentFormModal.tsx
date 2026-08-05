@@ -1,7 +1,3 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
   Dialog,
   DialogContent,
@@ -12,60 +8,8 @@ import {
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { ControlledInput } from "@/components/controls";
-import { useCreateStudent, useUpdateStudent } from "../hooks";
-import type { StudentDetail, StudentDetailFull } from "../types";
-
-const createStudentSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, "F.I.Sh kamida 2 ta belgi bo'lishi kerak")
-    .max(100, "F.I.Sh 100 ta belgidan oshmasligi kerak"),
-  phone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam bo'lishi kerak")
-    .max(13, "Telefon raqam juda uzun"),
-  password: z.string().min(6, "Parol kamida 6 ta belgi bo'lishi kerak"),
-  roleId: z.string().min(1, "Rol ID majburiy"),
-  email: z.string().email("Email noto'g'ri formatda").optional().or(z.literal("")),
-  parentPhone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam")
-    .max(13, "Telefon raqam juda uzun")
-    .optional()
-    .or(z.literal("")),
-  avatarUrl: z.string().url("URL noto'g'ri formatda").optional().or(z.literal("")),
-});
-
-const editStudentSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, "F.I.Sh kamida 2 ta belgi bo'lishi kerak")
-    .max(100, "F.I.Sh 100 ta belgidan oshmasligi kerak"),
-  phone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam bo'lishi kerak")
-    .max(13, "Telefon raqam juda uzun"),
-  email: z
-    .string()
-    .email("Email noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-  avatarUrl: z
-    .string()
-    .url("URL noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-  parentPhone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam")
-    .max(13, "Telefon raqam juda uzun")
-    .optional()
-    .or(z.literal("")),
-});
-
-type CreateFormValues = z.infer<typeof createStudentSchema>;
-
-type EditFormValues = z.infer<typeof editStudentSchema>;
+import type { StudentDetail, StudentDetailFull } from "../../types";
+import { useCreateEditStudent } from "../../hooks";
 
 interface Props {
   open: boolean;
@@ -83,63 +27,13 @@ export const StudentFormModal = ({
   defaultRoleId = "",
 }: Props) => {
   const isEdit = mode === "edit";
-
-  const createStudent = useCreateStudent();
-  const updateStudent = useUpdateStudent(student?.id ?? "");
-  const isPending = createStudent.isPending || updateStudent.isPending;
-
-  const createForm = useForm<CreateFormValues>({
-    resolver: zodResolver(createStudentSchema),
-    defaultValues: { fullName: "", phone: "", password: "", roleId: "", email: "", parentPhone: "", avatarUrl: "" },
-  });
-
-  const editForm = useForm<EditFormValues>({
-    resolver: zodResolver(editStudentSchema),
-    defaultValues: { fullName: "", phone: "", email: "", avatarUrl: "", parentPhone: "" },
-  });
-
-  useEffect(() => {
-    if (!open) {
-      createForm.reset();
-      editForm.reset();
-      return;
-    }
-    if (isEdit && student) {
-      editForm.reset({
-        fullName: student.fullName,
-        phone: student.phone,
-        email: student.email ?? "",
-        avatarUrl: student.avatarUrl ?? "",
-        parentPhone: student.parentPhone ?? "",
-      });
-    } else {
-      createForm.reset({ fullName: "", phone: "", password: "", roleId: defaultRoleId });
-    }
-  }, [open, isEdit, student, defaultRoleId, createForm, editForm]);
-
-  const onSubmitCreate = (values: CreateFormValues) => {
-    const payload: CreateFormValues = {
-      fullName: values.fullName,
-      phone: values.phone,
-      password: values.password,
-      roleId: values.roleId,
-    };
-    if (values.email) payload.email = values.email;
-    if (values.parentPhone) payload.parentPhone = values.parentPhone;
-    if (values.avatarUrl) payload.avatarUrl = values.avatarUrl;
-    createStudent.mutate(payload, { onSuccess: onClose });
-  };
-
-  const onSubmitEdit = (values: EditFormValues) => {
-    const payload: Record<string, string> = {
-      fullName: values.fullName,
-      phone: values.phone,
-    };
-    if (values.email) payload.email = values.email;
-    if (values.avatarUrl) payload.avatarUrl = values.avatarUrl;
-    if (values.parentPhone) payload.parentPhone = values.parentPhone;
-    updateStudent.mutate(payload, { onSuccess: onClose });
-  };
+  const { isPending, onSubmitCreate, onSubmitEdit, createForm, editForm } =
+    useCreateEditStudent({
+      isEdit,
+      defaultRoleId,
+      onClose,
+      student,
+    });
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -152,7 +46,10 @@ export const StudentFormModal = ({
 
         {isEdit ? (
           <Form {...editForm}>
-            <form onSubmit={editForm.handleSubmit(onSubmitEdit)} className="space-y-4">
+            <form
+              onSubmit={editForm.handleSubmit(onSubmitEdit)}
+              className="space-y-4"
+            >
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput
                   control={editForm.control}
@@ -213,7 +110,10 @@ export const StudentFormModal = ({
           </Form>
         ) : (
           <Form {...createForm}>
-            <form onSubmit={createForm.handleSubmit(onSubmitCreate)} className="space-y-4">
+            <form
+              onSubmit={createForm.handleSubmit(onSubmitCreate)}
+              className="space-y-4"
+            >
               <ControlledInput
                 control={createForm.control}
                 name="fullName"

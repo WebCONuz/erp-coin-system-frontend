@@ -1,5 +1,3 @@
-// features/groups/components/AddStudentDrawer.tsx
-
 import { useState, useMemo } from "react";
 import { Search, X, Users, User } from "lucide-react";
 import {

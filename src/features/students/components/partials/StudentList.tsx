@@ -4,8 +4,8 @@ import { NoDataBox } from "@/features/tenants/components/ui";
 import { PageLoading } from "@/components/loading";
 import { useTranslation } from "react-i18next";
 import { usePagination } from "@/hooks";
-import { useStudentTable } from "../hooks/useStudentTable";
-import type { StudentDetail, StudentsResponse } from "../types";
+import { useStudentTable } from "../../hooks/useStudentTable";
+import type { StudentDetail, StudentsResponse } from "../../types";
 
 interface Props {
   data?: StudentsResponse;
@@ -14,7 +14,12 @@ interface Props {
   handleEdit: (student: StudentDetail) => void;
 }
 
-export const StudentList = ({ data, isLoading, handleCreate, handleEdit }: Props) => {
+export const StudentList = ({
+  data,
+  isLoading,
+  handleCreate,
+  handleEdit,
+}: Props) => {
   const { t } = useTranslation();
   const { columns } = useStudentTable({ handleEdit });
   const pagination = usePagination({ totalItems: data?.meta?.total || 0 });

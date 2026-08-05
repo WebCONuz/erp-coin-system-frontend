@@ -8,8 +8,8 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useSendMessage } from "../hooks";
-import type { StudentDetail, StudentDetailFull } from "../types";
+import { useSendMessage } from "../../hooks";
+import type { StudentDetail, StudentDetailFull } from "../../types";
 
 interface Props {
   open: boolean;
@@ -26,7 +26,8 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
 
   const hasEmail = !!student.email;
   const hasParentPhone = !!student.parentPhone;
-  const canSend = message.trim().length > 0 && (viaSms || (hasEmail && viaEmail));
+  const canSend =
+    message.trim().length > 0 && (viaSms || (hasEmail && viaEmail));
 
   const handleClose = () => {
     setMessage("");
@@ -41,14 +42,20 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
     if (viaSms) channels.push("sms");
     if (viaEmail && hasEmail) channels.push("email");
 
-    const phone = recipient === "parent" && student.parentPhone ? student.parentPhone : student.phone;
+    const phone =
+      recipient === "parent" && student.parentPhone
+        ? student.parentPhone
+        : student.phone;
 
     sendMessage.mutate(
       {
         message,
         channels,
         recipientPhone: channels.includes("sms") ? phone : undefined,
-        recipientEmail: channels.includes("email") && student.email ? student.email : undefined,
+        recipientEmail:
+          channels.includes("email") && student.email
+            ? student.email
+            : undefined,
       },
       { onSuccess: handleClose },
     );
@@ -60,7 +67,10 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-zinc-900 dark:text-zinc-50">
             <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center">
-              <MessageSquare size={16} className="text-blue-600 dark:text-blue-400" />
+              <MessageSquare
+                size={16}
+                className="text-blue-600 dark:text-blue-400"
+              />
             </div>
             Xabar yuborish
           </DialogTitle>
@@ -73,7 +83,9 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
               {student.fullName.charAt(0).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200 truncate">{student.fullName}</p>
+              <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200 truncate">
+                {student.fullName}
+              </p>
               <p className="text-xs text-zinc-400">{student.phone}</p>
             </div>
           </div>
@@ -109,7 +121,9 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
                 >
                   <Phone size={14} />
                   Ota-ona
-                  <span className="text-xs opacity-60">{student.parentPhone}</span>
+                  <span className="text-xs opacity-60">
+                    {student.parentPhone}
+                  </span>
                 </button>
               </div>
             </div>
@@ -121,7 +135,9 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
               Yuborish kanali
             </label>
             <div className="flex gap-3">
-              <label className={`flex items-center gap-2.5 flex-1 p-3 rounded-lg border cursor-pointer transition-colors ${viaSms ? "border-blue-400 bg-blue-50 dark:bg-blue-950/30" : "border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"}`}>
+              <label
+                className={`flex items-center gap-2.5 flex-1 p-3 rounded-lg border cursor-pointer transition-colors ${viaSms ? "border-blue-400 bg-blue-50 dark:bg-blue-950/30" : "border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"}`}
+              >
                 <input
                   type="checkbox"
                   checked={viaSms}
@@ -129,15 +145,22 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
                   className="w-4 h-4 accent-blue-600 cursor-pointer"
                 />
                 <div className="flex items-center gap-1.5">
-                  <Phone size={14} className={viaSms ? "text-blue-600" : "text-zinc-400"} />
-                  <span className={`text-sm font-medium ${viaSms ? "text-blue-700 dark:text-blue-300" : "text-zinc-600 dark:text-zinc-400"}`}>
+                  <Phone
+                    size={14}
+                    className={viaSms ? "text-blue-600" : "text-zinc-400"}
+                  />
+                  <span
+                    className={`text-sm font-medium ${viaSms ? "text-blue-700 dark:text-blue-300" : "text-zinc-600 dark:text-zinc-400"}`}
+                  >
                     SMS
                   </span>
                 </div>
               </label>
 
               {hasEmail && (
-                <label className={`flex items-center gap-2.5 flex-1 p-3 rounded-lg border cursor-pointer transition-colors ${viaEmail ? "border-green-400 bg-green-50 dark:bg-green-950/30" : "border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"}`}>
+                <label
+                  className={`flex items-center gap-2.5 flex-1 p-3 rounded-lg border cursor-pointer transition-colors ${viaEmail ? "border-green-400 bg-green-50 dark:bg-green-950/30" : "border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"}`}
+                >
                   <input
                     type="checkbox"
                     checked={viaEmail}
@@ -145,8 +168,13 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
                     className="w-4 h-4 accent-green-600 cursor-pointer"
                   />
                   <div className="flex items-center gap-1.5">
-                    <Mail size={14} className={viaEmail ? "text-green-600" : "text-zinc-400"} />
-                    <span className={`text-sm font-medium ${viaEmail ? "text-green-700 dark:text-green-300" : "text-zinc-600 dark:text-zinc-400"}`}>
+                    <Mail
+                      size={14}
+                      className={viaEmail ? "text-green-600" : "text-zinc-400"}
+                    />
+                    <span
+                      className={`text-sm font-medium ${viaEmail ? "text-green-700 dark:text-green-300" : "text-zinc-600 dark:text-zinc-400"}`}
+                    >
                       Email
                     </span>
                   </div>
@@ -167,7 +195,9 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
               rows={4}
               className="w-full px-3 py-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 outline-none focus:border-purple-400 transition-colors resize-none"
             />
-            <p className="text-xs text-zinc-400 text-right">{message.length} / 500</p>
+            <p className="text-xs text-zinc-400 text-right">
+              {message.length} / 500
+            </p>
           </div>
         </div>
 

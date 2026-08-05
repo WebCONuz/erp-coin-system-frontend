@@ -130,3 +130,5 @@ export interface UpdatePurchaseStatusDto {
   status: "approved" | "rejected";
   adminNote?: string;
 }
+
+export type ConfirmAction = "archive" | "delete" | "restore" | null;

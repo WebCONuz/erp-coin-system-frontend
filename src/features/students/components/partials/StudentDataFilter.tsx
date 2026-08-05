@@ -12,7 +12,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardTitle } from "@/components/shared/title";
 import { Form } from "@/components/ui/form";
 import { ControlledInput } from "@/components/controls";
-import { useStudentFilter } from "../hooks";
+import { useStudentFilter } from "../../hooks";
 
 interface StudentFilterProps {
   onAddStudent: () => void;
@@ -44,7 +44,9 @@ export const StudentDataFilter = ({
               className="bg-[#8b5cf6] hover:bg-[#7c3aed] text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
             >
               <FileSpreadsheet size={18} />
-              <span className="hidden sm:inline">Exceldan ma'lumot qo'shish</span>
+              <span className="hidden sm:inline">
+                Exceldan ma'lumot qo'shish
+              </span>
             </Button>
           </div>
         </div>

@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGroup } from "@/features/groups/hooks";
-import { GroupInfo, StudentTable } from "@/features/groups/component/section";
+import {
+  GroupInfo,
+  StudentBalance,
+  StudentsSection,
+} from "@/features/groups/component/section";
 import { GroupFormModal } from "@/features/groups/component/modals";
 import { AddStudentDrawer } from "@/features/groups/component/drawers";
+import { BackListButton } from "@/components/shared/back";
 
 const GroupDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,46 +40,21 @@ const GroupDetail = () => {
   const isFull = group.students.length >= group.maxStudents;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Breadcrumb / Back */}
-      <div className="flex items-center gap-3">
-        <Button
-          variant="ghost"
-          size="lg"
-          onClick={() => navigate(-1)}
-          className="gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 -ml-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Guruhlar
-        </Button>
-      </div>
+      <BackListButton title="Guruhlar" />
 
       {/* Guruh ma'lumotlari */}
-      <GroupInfo group={group} onEdit={() => setIsEditModalOpen(true)} />
-
-      {/* Studentlar bo'limi */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
-              O'quvchilar
-            </h3>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
-              {group.students.length} ta o'quvchi
-            </p>
-          </div>
-          <Button
-            onClick={() => setIsAddStudentOpen(true)}
-            disabled={isFull}
-            size="default"
-            className="gap-2 bg-primary/90 hover:bg-primary dark:bg-blue-500 text-white disabled:opacity-50"
-          >
-            <UserPlus className="w-4 h-4" />
-            {isFull ? "Guruh to'lgan" : "Student qo'shish"}
-          </Button>
+      <div className="grid grid-cols-2 items-start gap-6">
+        <div>
+          <StudentBalance />
+          <GroupInfo group={group} onEdit={() => setIsEditModalOpen(true)} />
         </div>
-
-        <StudentTable group={group} />
+        <StudentsSection
+          group={group}
+          isFull={isFull}
+          setIsAddStudentOpen={setIsAddStudentOpen}
+        />
       </div>
 
       {/* Edit modal */}
