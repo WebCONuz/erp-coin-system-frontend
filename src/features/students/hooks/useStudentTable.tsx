@@ -27,7 +27,7 @@ export const useStudentTable = ({ handleEdit }: Props) => {
         header: "F.I.Sh",
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-xs font-bold text-white shrink-0">
+            <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-xs font-bold text-white shrink-0">
               {row.original.fullName.charAt(0).toUpperCase()}
             </div>
             <span>{row.original.fullName}</span>
@@ -72,7 +72,7 @@ export const useStudentTable = ({ handleEdit }: Props) => {
               className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-950"
               onClick={() => navigate(`/admin/students/${row.original.id}`)}
             >
-              <Eye size={16} />
+              <Eye size={18} />
             </Button>
             <Button
               variant="ghost"
@@ -80,7 +80,7 @@ export const useStudentTable = ({ handleEdit }: Props) => {
               className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950"
               onClick={() => handleEdit(row.original)}
             >
-              <Pencil size={16} />
+              <Pencil size={18} />
             </Button>
           </div>
         ),

@@ -34,14 +34,14 @@ export const StudentDataFilter = ({
           <div className="flex items-center gap-2">
             <Button
               onClick={onAddStudent}
-              className="bg-[#9333ea] hover:bg-[#7e22ce] text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
+              className="bg-linear-to-br from-purple-500 to-purple-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
             >
               <Plus size={18} />
               <span className="hidden sm:inline">Talaba qo'shish</span>
             </Button>
             <Button
               onClick={onImportExcel}
-              className="bg-[#8b5cf6] hover:bg-[#7c3aed] text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
+              className="bg-linear-to-br from-emerald-500 to-emerald-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
             >
               <FileSpreadsheet size={18} />
               <span className="hidden sm:inline">

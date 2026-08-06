@@ -50,7 +50,7 @@ export function AdminSidebar() {
     >
       {/* Toggle button */}
       <div
-        className="w-6 h-6 rounded-md bg-primary flex items-center justify-center absolute -right-3.75 top-4 z-10 text-white cursor-pointer"
+        className="w-6 h-6 rounded-md bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center absolute -right-3.75 top-4 z-10 text-white cursor-pointer"
         onClick={() => setCollapsed((c) => !c)}
       >
         <ChevronRight
@@ -69,7 +69,9 @@ export function AdminSidebar() {
           className="transition-all duration-300 w-6 h-6"
         />
         {!collapsed && (
-          <span className="text-primary font-bold text-lg ">BB-Coin</span>
+          <span className="text-purple-600 dark:text-yellow-400 font-bold text-lg ">
+            BB-Coin
+          </span>
         )}
       </div>
 
@@ -83,8 +85,8 @@ export function AdminSidebar() {
               className={({ isActive }) =>
                 `flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors ${
                   isActive
-                    ? "bg-primary text-white"
-                    : "hover:bg-primary/10 hover:text-black text-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/20"
+                    ? "bg-linear-to-br from-purple-500 to-purple-700 text-white"
+                    : "hover:bg-purple-600/10 hover:text-black text-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/20"
                 } ${collapsed ? "justify-center" : ""}`
               }
             >
@@ -109,8 +111,8 @@ export function AdminSidebar() {
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors ${
                 isActive
-                  ? "bg-primary text-white"
-                  : "hover:bg-primary/10 hover:text-black text-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/20"
+                  ? "bg-linear-to-br from-purple-500 to-purple-700 text-white"
+                  : "hover:bg-purple-600/10 hover:text-black text-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/20"
               } ${collapsed ? "justify-center" : ""}`
             }
           >

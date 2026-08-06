@@ -26,7 +26,7 @@ export const GroupTab = ({
         {!isDeleted && (
           <Button
             size="sm"
-            className="gap-2 bg-purple-600 hover:bg-purple-700 text-white"
+            className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 h-10 px-4 text-white"
           >
             <UserPlus size={14} />
             Guruhga qo'shish

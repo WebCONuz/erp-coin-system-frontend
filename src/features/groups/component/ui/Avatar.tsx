@@ -14,8 +14,9 @@ export const Avatar = ({ fullName, avatarUrl }: Props) => {
   }
 
   return (
-    <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-500 font-medium border border-violet-500/40">
-      {fullName.charAt(0)}
+    <div className="w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-sm text-white font-medium">
+      {fullName?.charAt(0)}
+      {fullName?.split(" ")?.[1]?.charAt(0)}
     </div>
   );
 };

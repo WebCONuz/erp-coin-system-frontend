@@ -55,7 +55,7 @@ export const HeaderFilter = ({ handleCreate }: Props) => {
 
           <Button
             onClick={handleCreate}
-            className="bg-[#9333ea] hover:bg-[#7e22ce] text-white rounded-lg px-4 h-10 gap-2 transition-all shadow-sm"
+            className="bg-linear-to-br from-purple-500 to-purple-700 text-white rounded-lg px-4 h-10 gap-2 transition-all shadow-sm"
           >
             <Plus size={18} />
             <span className="hidden sm:inline">Guruh qo'shish</span>

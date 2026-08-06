@@ -37,7 +37,7 @@ export const GiftCategory = () => {
           </button>
         </div>
       ))}
-      <Button className="mt-2 h-12 flex items-center gap-x-2 justify-center text-lg font-medium rounded-md bg-primary/90 hover:bg-primary text-white">
+      <Button className="mt-2 h-12 flex items-center gap-x-2 justify-center text-lg font-medium rounded-md bg-linear-to-br from-purple-500 to-purple-700 text-white">
         <Plus />
         <span>Kategoriya qo'shish</span>
       </Button>

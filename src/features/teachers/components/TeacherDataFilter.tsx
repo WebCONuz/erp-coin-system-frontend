@@ -18,14 +18,14 @@ export const TeacherDataFilter = () => {
           <div className="flex items-center gap-2">
             <Button
               onClick={() => "1+++"}
-              className="bg-[#9333ea] hover:bg-[#7e22ce] text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
+              className="bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg px-4 h-9 gap-2 shadow-sm duration-200"
             >
               <Plus size={18} />
               <span className="hidden sm:inline">O'qituvchi qo'shish</span>
             </Button>
             <Button
               onClick={() => "2+++"}
-              className="bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
+              className="bg-linear-to-br from-emerald-500 to-emerald-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
             >
               <FileSpreadsheet size={18} />
               <span className="hidden sm:inline">Exceldan yuklash</span>

@@ -44,7 +44,7 @@ export const StudentsSection = ({
             onClick={() => setIsAddStudentOpen(true)}
             disabled={isFull}
             size="default"
-            className="h-10 gap-2 bg-primary/90 hover:bg-primary text-white disabled:opacity-50"
+            className="h-10 gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white disabled:opacity-50"
           >
             <UserPlus className="w-4 h-4" />
             {isFull ? "Guruh to'lgan" : "Student qo'shish"}

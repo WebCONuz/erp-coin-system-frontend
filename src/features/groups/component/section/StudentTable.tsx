@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trash2, ChevronUp, ChevronDown, UserMinus } from "lucide-react";
+import { Trash2, ChevronUp, ChevronDown, UserMinus, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -10,6 +10,7 @@ import type { GroupDetail, GroupStudent } from "../../types";
 import { useRemoveStudent } from "../../hooks";
 import { formatDate } from "@/ustils";
 import { Avatar } from "../ui";
+import { useNavigate } from "react-router-dom";
 
 interface StudentTableProps {
   group: GroupDetail;
@@ -160,6 +161,7 @@ const StudentRow = ({
   isRemoving,
 }: StudentRowProps) => {
   const { student, joinedAt } = groupStudent;
+  const navigate = useNavigate();
 
   return (
     <tr className="border-b border-zinc-100 dark:border-zinc-800/60 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
@@ -181,7 +183,14 @@ const StudentRow = ({
       <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400 hidden md:table-cell">
         {formatDate(joinedAt, "dd.MM.yyyy, hh:mm")}
       </td>
-      <td className="px-4 py-3">
+      <td className="px-4 py-3 flex">
+        <Button
+          variant="ghost"
+          className="hover:bg-blue-50"
+          onClick={() => navigate(`/admin/students/${student?.id}`)}
+        >
+          <Eye size={17} className="text-blue-500" />
+        </Button>
         <Popover open={isOpen} onOpenChange={onOpenChange}>
           <PopoverTrigger asChild>
             <Button

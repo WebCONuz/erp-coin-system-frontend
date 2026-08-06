@@ -1,8 +1,9 @@
-import { BookOpen, User, Phone, Edit, Users } from "lucide-react";
+import { BookOpen, User, Phone, Edit, Users, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { GroupDetail } from "../../types";
 import { DonutChart } from "../custom-charts";
+import { useNavigate } from "react-router-dom";
 
 interface GroupInfoProps {
   group: GroupDetail;
@@ -10,6 +11,7 @@ interface GroupInfoProps {
 }
 
 export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
+  const navigate = useNavigate();
   const studentCount = group.students.length;
   const isFull = studentCount >= group.maxStudents;
   const fillPercent = Math.round((studentCount / group.maxStudents) * 100);
@@ -50,8 +52,8 @@ export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
         {/* Kurs */}
         <div className="col-span-1 flex items-start gap-4 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-gray-300 dark:border-zinc-700">
-          <div className="flex items-center justify-center w-12 h-12 border border-blue-600 bg-blue-500/10 rounded-lg">
-            <BookOpen className="w-5 h-5 text-blue-600" />
+          <div className="flex items-center justify-center w-12 h-12 bg-linear-to-br from-blue-400 to-blue-700 rounded-lg">
+            <BookOpen className="w-5 h-5 text-white" />
           </div>
           <div className="min-w-0">
             <p className="text-zinc-500 dark:text-zinc-400 mb-2">Kurs</p>
@@ -65,30 +67,37 @@ export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
         </div>
 
         {/* O'qituvchi */}
-        <div className="col-span-1 flex items-start gap-4 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-gray-300 dark:border-zinc-700">
-          <div className="flex items-center justify-center w-12 h-12 border border-violet-500 bg-violet-500/10 rounded-lg">
-            <User className="w-6 h-6 text-violet-500" />
+        <div className="col-span-1 flex items-start gap-4 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-gray-300 dark:border-zinc-700 relative">
+          <div className="flex items-center justify-center w-12 h-12 bg-linear-to-br from-purple-400 to-purple-700 rounded-lg">
+            <User className="w-6 h-6 text-white" />
           </div>
           <div className="min-w-0">
             <p className="text-zinc-500 dark:text-zinc-400 mb-2">O'qituvchi</p>
             <p className="text-lg font-medium text-zinc-900 dark:text-zinc-50 truncate">
-              {group.teacher.fullName}
+              {group?.teacher?.fullName}
             </p>
             <div className="flex items-center gap-2 mt-1">
               <Phone className="w-3.5 h-3.5 text-zinc-400" />
               <p className="text-zinc-500 dark:text-zinc-400">
-                {group.teacher.phone}
+                {group?.teacher?.phone}
               </p>
             </div>
           </div>
+          <Button
+            variant="ghost"
+            className="bg-gray-200 text-gray-500 hover:text-blue-500 hover:bg-blue-100 absolute top-3 right-3 h-9"
+            onClick={() => navigate(`/admin/teachers/${group?.teacher?.id}`)}
+          >
+            <Eye size={18} />
+          </Button>
         </div>
 
         {/* O'quvchilar soni — donut chart */}
-        <div className="col-span-1 flex items-center gap-5 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-gray-300 dark:border-zinc-700">
+        <div className="col-span-1 flex items-center gap-5 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-gray-300 dark:border-zinc-700 relative">
           {/* Info */}
           <div className="flex flex-col gap-0.5">
-            <div className="flex items-center justify-center w-12 h-12 border border-emerald-500 bg-emerald-500/10 rounded-lg mb-2">
-              <Users className="w-5 h-5 text-emerald-500" />
+            <div className="flex items-center justify-center w-12 h-12 bg-linear-to-br from-emerald-400 to-emerald-700 rounded-lg mb-2">
+              <Users className="w-5 h-5 text-white" />
             </div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
               Guruh to'lishiga

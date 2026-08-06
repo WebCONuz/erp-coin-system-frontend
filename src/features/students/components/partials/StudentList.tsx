@@ -44,7 +44,6 @@ export const StudentList = ({
         <CustomTable
           data={data.data}
           columns={columns}
-          bodyClass="px-4 py-6"
           className="border-0"
           loading={isLoading}
         />

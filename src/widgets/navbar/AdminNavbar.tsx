@@ -198,13 +198,14 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
                   key={lang.code}
                   className={cn(
                     "text-sm cursor-pointer justify-between",
-                    i18n.language === lang.code && "text-primary font-medium",
+                    i18n.language === lang.code &&
+                      "text-purple-600 font-medium",
                   )}
                   onClick={() => i18n.changeLanguage(lang.code)}
                 >
                   {lang.label}
                   {i18n.language === lang.code && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-purple-600" />
                   )}
                 </DropdownMenuItem>
               ))}
@@ -218,24 +219,28 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
             className="relative h-9 w-9 text-muted-foreground hover:text-foreground"
           >
             <Bell size={17} />
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-primary" />
+            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-purple-600" />
           </Button>
 
           {/* Dark mode toggle */}
           <Button
             variant="outline"
             size="icon"
-            className="h-9 w-9 text-muted-foreground hover:text-foreground"
+            className="h-9 w-9 text-muted-foreground hover:text-foreground dark:border-yellow-600/40"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           >
-            {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+            {theme === "dark" ? (
+              <Sun size={17} className="text-yellow-500" />
+            ) : (
+              <Moon size={17} />
+            )}
           </Button>
 
           {/* User avatar dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 cursor-pointer select-none">
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs font-medium">
+                <AvatarFallback className="bg-linear-to-br from-purple-500 to-purple-700 text-white text-xs font-medium">
                   {initials}
                 </AvatarFallback>
               </Avatar>
@@ -249,7 +254,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
                 <p className="text-xs text-muted-foreground mt-1">
                   {user?.email ? user.email : ""}
                 </p>
-                <p className="text-xs mt-1 text-[10px] font-medium uppercase text-primary">
+                <p className="text-xs mt-1 text-[10px] font-medium uppercase text-purple-600 dark:text-yellow-500">
                   {user?.role?.name ? user?.role?.name : "student"}
                 </p>
               </div>

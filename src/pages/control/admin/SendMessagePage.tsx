@@ -40,7 +40,9 @@ const SendMessagePage = () => {
         <p className="mb-1 font-semibold text-lg">Xarbar matni:</p>
         <Textarea className="h-80" />
         <div className="flex justify-end mt-4">
-          <Button className="bg-primary h-12 px-4 text-lg">Yuborish</Button>
+          <Button className="bg-linear-to-br from-purple-500 to-purple-700 h-10 px-4 text-white">
+            Yuborish
+          </Button>
         </div>
       </div>
     </div>

@@ -107,12 +107,12 @@ export const CustomTable = <T,>({
           {Array.from({ length: 5 }).map((_, index) => (
             <TableRow key={index} className="bg-white">
               {isCheckable && (
-                <TableCell className="px-4 py-6">
+                <TableCell className="px-4 py-3">
                   <div className="h-4 w-4 rounded bg-gray-200 animate-pulse" />
                 </TableCell>
               )}
               {columns.map((_, colIndex) => (
-                <TableCell key={colIndex} className="px-4 py-6">
+                <TableCell key={colIndex} className="px-4 py-3">
                   <div className="h-4 rounded bg-gray-200 animate-pulse" />
                 </TableCell>
               ))}
@@ -129,7 +129,7 @@ export const CustomTable = <T,>({
         <TableRow>
           <TableCell
             colSpan={columnCount}
-            className="px-4 py-6 text-center text-gray-500"
+            className="px-4 py-3 text-center text-gray-500"
           >
             Ma'lumot mavjud emas!
           </TableCell>
@@ -144,11 +144,11 @@ export const CustomTable = <T,>({
         className={cn(
           "bg-background",
           onRowClick && "cursor-pointer hover:bg-[#2ED0FF1A]",
-          rowsClassName
+          rowsClassName,
         )}
       >
         {isCheckable && (
-          <TableCell className="px-4 py-6">
+          <TableCell className="px-4 py-3">
             <Checkbox
               checked={selectedRows?.includes(row.original)}
               onCheckedChange={() => handleRowCheckboxChange(row.original)}
@@ -157,7 +157,7 @@ export const CustomTable = <T,>({
           </TableCell>
         )}
         {row.getVisibleCells().map((cell) => (
-          <TableCell key={cell.id} className="px-4 py-6">
+          <TableCell key={cell.id} className="px-4 py-3">
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </TableCell>
         ))}
@@ -185,7 +185,7 @@ export const CustomTable = <T,>({
                 {!header.isPlaceholder &&
                   flexRender(
                     header.column.columnDef.header,
-                    header.getContext()
+                    header.getContext(),
                   )}
               </TableHead>
             ))}
@@ -199,8 +199,8 @@ export const CustomTable = <T,>({
         .getFooterGroups()
         .some((group) =>
           group.headers.some(
-            (header) => !header.isPlaceholder && header.column.columnDef.footer
-          )
+            (header) => !header.isPlaceholder && header.column.columnDef.footer,
+          ),
         ) && (
         <tfoot className="border-t border-gray-100 bg-gray-50/50">
           {table.getFooterGroups().map((footerGroup) => (
@@ -215,7 +215,7 @@ export const CustomTable = <T,>({
                     ? null
                     : flexRender(
                         header.column.columnDef.footer,
-                        header.getContext()
+                        header.getContext(),
                       )}
                 </TableCell>
               ))}

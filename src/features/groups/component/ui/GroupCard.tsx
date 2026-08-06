@@ -41,8 +41,10 @@ export const GroupCard = ({ data, handleEdit }: Props) => {
       </div>
       <div className="flex gap-x-3 items-center">
         <div
-          className={`py-0.5 px-2 text-white text-xs font-medium opacity-70 ${
-            data.isActive ? "bg-primary" : "bg-red-800"
+          className={`py-0.5 px-2 text-white text-xs font-medium opacity-70 bg-linear-to-br ${
+            data.isActive
+              ? "from-purple-600 to-purple-800"
+              : "from-red-600 to-red-800"
           } rounded-full`}
         >
           {data.isActive ? "Aktiv" : "No aktiv"}

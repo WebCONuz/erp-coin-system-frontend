@@ -77,7 +77,7 @@ export const SecurityTab = ({
                 newPassword !== confirmPassword ||
                 changePassword.isPending
               }
-              className="gap-2 bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50"
+              className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 h-10 px-4 text-white disabled:opacity-50"
               onClick={() => {
                 changePassword.mutate(
                   { newPassword },

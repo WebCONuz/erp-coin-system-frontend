@@ -19,9 +19,9 @@ export const useRoleTable = () => {
             <span
               className={`${
                 value
-                  ? "border-primary text-primary bg-primary/20"
-                  : "border-gray-600 text-gray-600 bg-background"
-              } border py-1 px-2 rounded-xl text-sm`}
+                  ? "bg-linear-to-br from-emerald-600 to-emerald-800"
+                  : "bg-linear-to-br from-red-600 to-red-800"
+              } py-1 px-3 rounded-xl text-sm text-white`}
             >
               {value ? "Active" : "No-active"}
             </span>
@@ -42,7 +42,7 @@ export const useRoleTable = () => {
         },
       },
     ],
-    [t]
+    [t],
   );
 
   return {

@@ -108,7 +108,7 @@ export const GroupCategory = () => {
                 ))}
                 <Button
                   onClick={handleOpenCreate}
-                  className="mt-2 h-12 flex items-center gap-x-2 justify-center text-lg font-medium rounded-md bg-primary/90 hover:bg-primary text-white"
+                  className="mt-2 h-12 flex items-center gap-x-2 justify-center text-lg font-medium rounded-md bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white"
                 >
                   <Plus />
                   <span>{t("courses.btn.add")}</span>
