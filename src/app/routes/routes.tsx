@@ -26,14 +26,16 @@ const AdminTeachers = lazy(() => import("@/pages/teachers/admin/Teachers"));
 const AdminGroups = lazy(() => import("@/pages/groups/admin/Groups"));
 const GroupDetail = lazy(() => import("@/pages/groups/admin/GroupDetail"));
 const AdminStudents = lazy(() => import("@/pages/students/admin/Students"));
-const AdminStudentDetail = lazy(() => import("@/pages/students/admin/StudentDetail"));
+const AdminStudentDetail = lazy(
+  () => import("@/pages/students/admin/StudentDetail"),
+);
 const AdminControlLayput = lazy(
   () => import("@/pages/control/admin/AdminControlLayout"),
 );
-const AdminSubjects = lazy(() => import("@/pages/control/admin/SubjectsPage"));
+const AdminSubjects = lazy(() => import("@/pages/subjects/SubjectsPage"));
+const EmployeesPage = lazy(() => import("@/pages/employees/EmployeesPage"));
+const PlansPage = lazy(() => import("@/pages/plans/admin/PlansPage"));
 const RoomsPage = lazy(() => import("@/pages/control/admin/RoomsPage"));
-const EmployeesPage = lazy(() => import("@/pages/control/admin/EmployeesPage"));
-const PlansPage = lazy(() => import("@/pages/control/admin/PlansPage"));
 const ReasonsPage = lazy(() => import("@/pages/control/admin/ReasonsPage"));
 const SendMessagePage = lazy(
   () => import("@/pages/control/admin/SendMessagePage"),
@@ -118,24 +120,28 @@ export const router = createBrowserRouter([
             element: withSuspense(TenantsList),
           },
           {
+            path: "subjects",
+            element: withSuspense(AdminSubjects),
+          },
+          {
+            path: "employees",
+            element: withSuspense(EmployeesPage),
+          },
+          {
+            path: "plans",
+            element: withSuspense(PlansPage),
+          },
+          {
             path: "control",
             element: withSuspense(AdminControlLayput),
             children: [
               {
                 index: true,
-                element: withSuspense(AdminSubjects),
+                element: <Navigate to="reasons" replace />,
               },
               {
                 path: "rooms",
                 element: withSuspense(RoomsPage),
-              },
-              {
-                path: "employees",
-                element: withSuspense(EmployeesPage),
-              },
-              {
-                path: "plans",
-                element: withSuspense(PlansPage),
               },
               {
                 path: "reasons",

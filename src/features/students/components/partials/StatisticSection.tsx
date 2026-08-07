@@ -29,7 +29,7 @@ export const StatisticSection = ({ student }: Props) => {
       <StatCard
         icon={<Users size={20} className="text-blue-600" />}
         label="Guruhlar soni"
-        value={student?.groups?.length ?? 0}
+        value={student?.groupMemberships?.length ?? 0}
         iconBg="bg-blue-100 dark:bg-blue-900/40"
       />
       <StatCard

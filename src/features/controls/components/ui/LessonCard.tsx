@@ -7,7 +7,7 @@ interface Props {
 
 export const LessonCard = ({ data }: Props) => {
   return (
-    <div className="bg-bg-primary dark:bg-black rounded-xl p-4 relative">
+    <div className="rounded-xl p-4 relative border bg-background">
       <div className="absolute top-4 right-5 flex gap-x-2.5">
         <Pencil
           size="17"

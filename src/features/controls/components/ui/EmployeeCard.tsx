@@ -7,7 +7,7 @@ interface Props {
 
 export const EmployeeCard = ({ data }: Props) => {
   return (
-    <div className="bg-bg-primary dark:bg-black rounded-xl p-4 relative">
+    <div className="border bg-background rounded-xl p-4 relative">
       <div className="absolute top-4 right-5 flex gap-x-2.5">
         <Pencil
           size="17"

@@ -9,12 +9,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const SubjectHeader = () => {
+interface SubjectHeaderProps {
+  title?: string;
+  addLabel?: string;
+}
+
+export const SubjectHeader = ({
+  title = "Fanlar",
+  addLabel = "Fan qo'shish",
+}: SubjectHeaderProps) => {
   return (
     <nav className="space-y-3">
       <div className="flex items-start justify-between">
         <div className="space-y-3">
-          <h3 className="text-xl font-semibold">Fanlar</h3>
+          <h3 className="text-xl font-semibold">{title}</h3>
           <div className="flex gap-x-3">
             <Tabs
               defaultValue="active"
@@ -53,7 +61,7 @@ export const SubjectHeader = () => {
           className="bg-linear-to-br from-purple-500 to-purple-700 text-white rounded-lg px-4 h-10 gap-2 transition-all shadow-sm"
         >
           <Plus size={18} />
-          <span className="hidden sm:inline">Fan qo'shish</span>
+          <span className="hidden sm:inline">{addLabel}</span>
         </Button>
       </div>
     </nav>

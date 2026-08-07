@@ -8,6 +8,9 @@ import {
   Gift,
   LayoutDashboard,
   Building2,
+  BookOpen,
+  UserCog,
+  CalendarDays,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
@@ -35,6 +38,21 @@ export function AdminSidebar() {
       icon: GraduationCap,
     },
     { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
+    {
+      to: "/admin/subjects",
+      label: t("admin.header.subjects"),
+      icon: BookOpen,
+    },
+    {
+      to: "/admin/employees",
+      label: t("admin.header.employees"),
+      icon: UserCog,
+    },
+    {
+      to: "/admin/plans",
+      label: t("admin.header.plans"),
+      icon: CalendarDays,
+    },
     {
       to: "/admin/control",
       label: t("admin.header.control"),

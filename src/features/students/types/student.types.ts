@@ -60,11 +60,45 @@ export interface StudentStats {
   totalPurchases: number;
 }
 
+export interface StudentGroupFull {
+  id: string;
+  joinedAt: string;
+  isActive: boolean;
+  group: {
+    id: string;
+    name: string;
+    isActive: boolean;
+    course: {
+      id: string;
+      title: string;
+    };
+    teacher: {
+      id: string;
+      fullName: string;
+      phone: string;
+    };
+  };
+}
+
+export interface CoinRecieved {
+  id: string;
+  amount: 5;
+  direction: "earn" | "deduct";
+  sourceType: "bonus" | "manual" | "attendance" | "homework";
+  note: string;
+  createdAt: string;
+  teacher: {
+    id: string;
+    fullName: string;
+  };
+}
+
 export interface StudentDetailFull extends StudentDetail {
-  groups: StudentGroup[];
   coinTransactions: CoinTransaction[];
   purchases: StudentPurchase[];
   stats: StudentStats;
+  groupMemberships?: StudentGroupFull[];
+  coinTransactionsReceived?: CoinRecieved[];
 }
 
 // ─── List response ────────────────────────────────────────────────────────────

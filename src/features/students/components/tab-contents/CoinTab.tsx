@@ -126,7 +126,7 @@ export const CoinTab = ({
           </p>
           <span className="text-xs text-zinc-400">So'nggi 20 ta</span>
         </div>
-        {!student?.coinTransactions?.length ? (
+        {!student?.coinTransactionsReceived?.length ? (
           <EmptyState
             icon={<Coins size={20} />}
             title="Tranzaksiyalar mavjud emas"
@@ -134,10 +134,10 @@ export const CoinTab = ({
           />
         ) : (
           <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-            {student?.coinTransactions?.map((tx, idx) => (
+            {student?.coinTransactionsReceived?.map((tx, idx) => (
               <div
                 key={tx.id}
-                className={`flex items-center justify-between px-4 py-3 bg-white dark:bg-zinc-900 ${idx !== student?.coinTransactions?.length - 1 ? "border-b border-zinc-100 dark:border-zinc-800" : ""}`}
+                className={`flex items-center justify-between px-4 py-3 bg-white dark:bg-zinc-900 ${idx !== (student?.coinTransactionsReceived?.length ?? 0) - 1 ? "border-b border-zinc-100 dark:border-zinc-800" : ""}`}
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -147,11 +147,21 @@ export const CoinTab = ({
                       <Plus size={12} />
                     ) : (
                       <Minus size={12} />
-                    )}
+                    )}{" "}
                   </div>
                   <div>
                     <p className="text-sm text-zinc-700 dark:text-zinc-300">
-                      {tx?.note ?? tx?.sourceType}
+                      <b>
+                        {tx?.sourceType === "homework"
+                          ? "Uyga vazifa"
+                          : tx?.sourceType === "attendance"
+                            ? "Tadbirlar"
+                            : tx?.sourceType === "bonus"
+                              ? "Tartib-intizom"
+                              : "Qo'shimcha"}
+                      </b>
+                      {": "}
+                      {tx?.note ?? "-"}
                     </p>
                     <p className="text-xs text-zinc-400">
                       {formatDate(tx.createdAt, "dd.MM.yyyy")}

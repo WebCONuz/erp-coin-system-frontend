@@ -11,6 +11,9 @@
       "groups": "Guruhlar",
       "students": "Talabalar",
       "market": "Sovg'alar",
+      "subjects": "Fanlar",
+      "employees": "Xodimlar",
+      "plans": "Dars jadvali",
       "control": "Boshqarish",
       "tenants": "O'quv markazlar"
     },
