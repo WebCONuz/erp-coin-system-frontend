@@ -1,34 +1,38 @@
+import { useState } from "react";
 import {
   GiftCategory,
   ProductDataFilter,
   ProductGrid,
-} from "@/features/market/component";
+  RewardFormModal,
+} from "@/features/market/components";
+import { useAuth } from "@/features/auth/hooks/useLogin";
+import { ROLES } from "@/assets/constants";
 
 const Market = () => {
-  const clearFilters = () => console.log("Filters cleared");
-  const searchData = (val: string) => console.log(val);
-  const onAddGift = () => console.log("onAddGift");
-  const onAddCategory = () => console.log("onAddCategory");
-  const filterByCategory = (val: string) =>
-    console.log("filterByCategory:", val);
+  const { user } = useAuth();
+  const isStudent = user?.role.name === ROLES.STUDENT;
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenCreate = () => setIsModalOpen(true);
+  const handleClose = () => setIsModalOpen(false);
 
   return (
     <>
-      <ProductDataFilter
-        filterByCategory={filterByCategory}
-        onAddCategory={onAddCategory}
-        onAddGift={onAddGift}
-        onClear={clearFilters}
-        onSearch={searchData}
-      />
+      <ProductDataFilter onAddGift={isStudent ? undefined : handleOpenCreate} />
       <div className="grid grid-cols-5 gap-6">
         <div className="col-span-1">
           <GiftCategory />
         </div>
         <div className="col-span-4">
-          <ProductGrid />
+          <ProductGrid
+            onAddGift={isStudent ? undefined : handleOpenCreate}
+          />
         </div>
       </div>
+
+      {!isStudent && (
+        <RewardFormModal open={isModalOpen} onClose={handleClose} />
+      )}
     </>
   );
 };

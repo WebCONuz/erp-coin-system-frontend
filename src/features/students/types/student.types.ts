@@ -45,7 +45,7 @@ export interface StudentPurchase {
   id: string;
   itemName: string;
   price: number;
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "delivered" | "cancelled" | "rejected";
   adminNote: string | null;
   purchasedAt: string;
 }
@@ -82,7 +82,7 @@ export interface StudentGroupFull {
 
 export interface CoinRecieved {
   id: string;
-  amount: 5;
+  amount: number;
   direction: "earn" | "deduct";
   sourceType: "bonus" | "manual" | "attendance" | "homework";
   note: string;
@@ -93,11 +93,18 @@ export interface CoinRecieved {
   };
 }
 
+export interface AttendanceRecord {
+  id: string;
+  isPresent: boolean;
+  homeworkDone: boolean;
+  createdAt: string;
+}
+
 export interface StudentDetailFull extends StudentDetail {
-  coinTransactions: CoinTransaction[];
   purchases: StudentPurchase[];
   stats: StudentStats;
   groupMemberships?: StudentGroupFull[];
+  attendanceAsStudent?: AttendanceRecord[];
   coinTransactionsReceived?: CoinRecieved[];
 }
 

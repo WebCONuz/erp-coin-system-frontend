@@ -70,5 +70,5 @@ export const removeStudent = async (
   groupId: string,
   studentId: string,
 ): Promise<void> => {
-  await request.delete(`${ENDPOINTS.GROUPS}/${groupId}/${studentId}`);
+  await request.delete(`${ENDPOINTS.GROUPS}/${groupId}/students/${studentId}`);
 };

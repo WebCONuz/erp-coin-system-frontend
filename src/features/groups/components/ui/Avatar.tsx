@@ -1,3 +1,5 @@
+import { getFileUrl } from "@/lib/utils";
+
 interface Props {
   fullName: string;
   avatarUrl?: string;
@@ -6,7 +8,7 @@ export const Avatar = ({ fullName, avatarUrl }: Props) => {
   if (avatarUrl) {
     return (
       <img
-        src={avatarUrl}
+        src={getFileUrl(avatarUrl)}
         alt={fullName}
         className="w-10 h-10 rounded-full object-cover"
       />

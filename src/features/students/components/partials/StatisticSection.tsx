@@ -14,7 +14,7 @@ export const StatisticSection = ({ student }: Props) => {
       )
     : 0;
 
-  const lastTransaction = student?.coinTransactions?.[0];
+  const lastTransaction = student?.coinTransactionsReceived?.[0];
 
   const lastCoinActivity = lastTransaction
     ? `${lastTransaction.direction === "earn" ? "+" : "-"}${lastTransaction.amount} · ${formatDate(lastTransaction.createdAt, "dd.MM.yyyy")}`

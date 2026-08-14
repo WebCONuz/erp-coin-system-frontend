@@ -5,6 +5,7 @@ import { t } from "i18next";
 import { authQueryKeys } from "../constants";
 import { getMe, login, logout } from "../api";
 import { clearLocalStoragaData } from "@/services/helpers";
+import { ROLES } from "@/assets/constants";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
@@ -27,11 +28,12 @@ export const useAuth = () => {
   // login
   const loginMutation = useMutation({
     mutationFn: login,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: authQueryKeys.getMe() });
+    onSuccess: async (data) => {
       localStorage.setItem("is_authenticated", "true");
+      await queryClient.invalidateQueries({ queryKey: authQueryKeys.getMe() });
       toast.success(t("welcome_back"));
-      navigate("/admin");
+      const roleName = data?.user?.role?.name;
+      navigate(roleName === ROLES.STUDENT ? "/student" : "/admin");
     },
     onError: (error: any) => {
       toast.error(error?.data?.message || t("invalid_credentials"));

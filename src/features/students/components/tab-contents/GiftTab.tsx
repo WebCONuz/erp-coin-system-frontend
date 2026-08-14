@@ -46,13 +46,25 @@ export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
                     </span>
                   </div>
                   <Badge
-                    className={`mt-1 text-[10px] border-0 ${purchase.status === "approved" ? "bg-green-100 text-green-700" : purchase.status === "rejected" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}
+                    className={`mt-1 text-[10px] border-0 ${
+                      purchase.status === "approved" ||
+                      purchase.status === "delivered"
+                        ? "bg-green-100 text-green-700"
+                        : purchase.status === "rejected" ||
+                            purchase.status === "cancelled"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-amber-100 text-amber-700"
+                    }`}
                   >
                     {purchase.status === "approved"
                       ? "Tasdiqlangan"
-                      : purchase.status === "rejected"
-                        ? "Rad etilgan"
-                        : "Kutilmoqda"}
+                      : purchase.status === "delivered"
+                        ? "Topshirilgan"
+                        : purchase.status === "rejected"
+                          ? "Rad etilgan"
+                          : purchase.status === "cancelled"
+                            ? "Bekor qilingan"
+                            : "Kutilmoqda"}
                   </Badge>
                 </div>
               </div>

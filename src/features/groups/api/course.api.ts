@@ -34,3 +34,7 @@ export const updateCourse = async (
   );
   return response.data;
 };
+
+export const deleteCourse = async (courseId: string): Promise<void> => {
+  await request.delete(`${ENDPOINTS.COURSES}/${courseId}`);
+};

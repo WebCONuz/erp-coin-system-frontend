@@ -1,6 +1,6 @@
 import { Pencil, Plus, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCourses } from "../../hooks";
+import { useCourses, useDeleteCourse } from "../../hooks";
 import { NoData } from "@/components/partials/no-data";
 import { useTranslation } from "react-i18next";
 import { NoDataBox } from "@/features/tenants/components/ui";
@@ -11,6 +11,7 @@ import { CourseFormModal } from "../modals";
 
 export const GroupCategory = () => {
   const { data: courses, isLoading } = useCourses();
+  const deleteCourse = useDeleteCourse();
   const { t } = useTranslation();
   const [selectedCourse, setSelectedCourse] = useState<string>("all");
   const [searchParams, setSearchParams] = useSearchParams();
@@ -63,10 +64,17 @@ export const GroupCategory = () => {
     setActiveCourseData(undefined);
   };
 
+  const handleDelete = (e: React.MouseEvent, courseId: string) => {
+    e.stopPropagation();
+    if (window.confirm(t("courses.delete_confirm"))) {
+      deleteCourse.mutate(courseId);
+    }
+  };
+
   return (
     <>
       <aside className="flex flex-col gap-y-2.5 rounded-2xl bg-background p-6 shadow-sm min-h-[calc(100vh-105px)]">
-        <h3 className="text-lg font-semibold pb-3">Kurslar</h3>
+        <h3 className="text-lg font-semibold pb-3">{t("courses.title")}</h3>
 
         {isLoading ? (
           <PageLoading />
@@ -76,7 +84,7 @@ export const GroupCategory = () => {
               <NoDataBox
                 title={t("courses.no_data")}
                 btnText={t("courses.btn.create")}
-                btnFn={() => console.log("create")}
+                btnFn={handleOpenCreate}
               />
             ) : (
               <>
@@ -102,6 +110,7 @@ export const GroupCategory = () => {
                       <Trash
                         size="15"
                         className="text-gray-500 hover:text-red-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
+                        onClick={(e) => handleDelete(e, item.id)}
                       />
                     </div>
                   </div>

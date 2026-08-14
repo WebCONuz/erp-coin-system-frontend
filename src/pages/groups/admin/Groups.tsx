@@ -1,9 +1,9 @@
-import { GroupFormModal } from "@/features/groups/component/modals";
+import { GroupFormModal } from "@/features/groups/components/modals";
 import {
   GroupCategory,
   GroupGrid,
   HeaderFilter,
-} from "@/features/groups/component/section";
+} from "@/features/groups/components/section";
 import type { GroupItem } from "@/features/groups/types";
 import { useState } from "react";
 

@@ -1,5 +1,6 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { Eye, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export const useStudentTable = ({ handleEdit }: Props) => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const currentPage = Number(searchParams.get("page")) || 1;
@@ -24,7 +26,7 @@ export const useStudentTable = ({ handleEdit }: Props) => {
       },
       {
         accessorKey: "fullName",
-        header: "F.I.Sh",
+        header: t("students.table.full_name"),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-xs font-bold text-white shrink-0">
@@ -36,20 +38,20 @@ export const useStudentTable = ({ handleEdit }: Props) => {
       },
       {
         accessorKey: "phone",
-        header: "Telefon",
+        header: t("students.table.phone"),
       },
       {
         accessorKey: "email",
-        header: "Email",
+        header: t("students.table.email"),
         cell: ({ getValue }) => (
           <span className="text-muted-foreground">
-            {getValue<string | null>() ?? "Mavjud emas"}
+            {getValue<string | null>() ?? t("students.table.email_empty")}
           </span>
         ),
       },
       {
         accessorKey: "wallet",
-        header: "Balans (coin)",
+        header: t("students.table.balance"),
         cell: ({ row }) => (
           <span className="font-medium text-purple-600 dark:text-purple-400">
             {row.original.wallet?.balance ?? 0}
@@ -58,12 +60,12 @@ export const useStudentTable = ({ handleEdit }: Props) => {
       },
       {
         accessorKey: "createdAt",
-        header: "Qo'shilgan sana",
+        header: t("students.table.created_at"),
         cell: ({ getValue }) => formatDate(getValue<string>(), "dd.MM.yyyy"),
       },
       {
         accessorKey: "actions",
-        header: "Amallar",
+        header: t("students.table.actions"),
         cell: ({ row }) => (
           <div className="flex items-center gap-1">
             <Button
@@ -86,7 +88,7 @@ export const useStudentTable = ({ handleEdit }: Props) => {
         ),
       },
     ],
-    [currentPage, handleEdit, navigate],
+    [currentPage, handleEdit, navigate, t],
   );
 
   return { columns };

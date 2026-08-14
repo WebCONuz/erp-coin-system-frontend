@@ -1,21 +1,31 @@
 import React from "react";
 import { MoreVertical } from "lucide-react";
-import type { Product } from "@/types";
+import type { Reward } from "@/features/market/types";
+import { Button } from "@/components/ui/button";
+import { getFileUrl } from "@/lib/utils";
 
 interface ProductCardProps {
-  product: Product;
+  product: Reward;
+  onBuy?: (reward: Reward) => void;
+  isBuying?: boolean;
 }
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({
+  product,
+  onBuy,
+  isBuying,
+}) => {
   return (
     <div className="group w-full bg-card text-card-foreground rounded-xl shadow-sm border border-border/50 overflow-hidden transition-all hover:shadow-xl">
       {/* Rasm qismi */}
-      <div className="relative aspect-4/3 w-full">
-        <img
-          src={product.imageUrl}
-          alt={product.title}
-          className="w-full h-full object-cover transition-transform group-hover:scale-105"
-        />
+      <div className="relative aspect-4/3 w-full bg-muted">
+        {product.imageUrl && (
+          <img
+            src={getFileUrl(product.imageUrl)}
+            alt={product.title}
+            className="w-full h-full object-cover transition-transform group-hover:scale-105"
+          />
+        )}
 
         {/* O'ng yuqoridagi 3-nuqta tugmasi */}
         <button className="absolute top-4 right-4 p-2 bg-white/60 dark:bg-black/60 backdrop-blur-sm rounded-full text-slate-700 dark:text-slate-200 shadow-md hover:bg-white/80 dark:hover:bg-black/80 transition-colors">
@@ -43,7 +53,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               E
             </div>
             <span className="text-lg font-semibold text-slate-950 dark:text-slate-50 leading-none">
-              {product.price.toLocaleString("uz-UZ")}
+              {product.coinPrice.toLocaleString("uz-UZ")}
             </span>
             <span className="text-lg text-slate-500 dark:text-slate-400 font-normal">
               coin
@@ -55,6 +65,20 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.stock.toLocaleString("uz-UZ")} dona
           </span>
         </div>
+
+        {onBuy && (
+          <Button
+            className="w-full bg-linear-to-br from-purple-500 to-purple-700 text-white"
+            disabled={product.stock < 1 || isBuying}
+            onClick={() => onBuy(product)}
+          >
+            {product.stock < 1
+              ? "Tugagan"
+              : isBuying
+                ? "Yuborilmoqda..."
+                : "Sotib olish"}
+          </Button>
+        )}
       </div>
     </div>
   );

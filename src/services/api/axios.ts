@@ -7,7 +7,7 @@ interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3031";
 
 // Parallel kelgan so'rovlarni boshqarish uchun o'zgaruvchilar
 let isRefreshing = false;
@@ -57,6 +57,13 @@ request.interceptors.request.use(
 );
 
 /**
+ * Har doim bir xil shaklda (AxiosResponse yoki, javob bo'lmasa, xato) reject qilish uchun.
+ * Shu orqali chaqiruvchi tomonda `error?.data?.message` doim izchil ishlaydi.
+ */
+const rejectWithResponse = (error: AxiosError) =>
+  Promise.reject(error.response ?? error);
+
+/**
  * 2. RESPONSE INTERCEPTOR (Javob kelganda xatolarni tutish va Refresh)
  */
 request.interceptors.response.use(
@@ -65,23 +72,18 @@ request.interceptors.response.use(
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
     if (error.response?.status !== 401 || !originalRequest) {
-      if (error.response) {
-        return Promise.reject(error.response);
-      }
-      return Promise.reject(error);
+      return rejectWithResponse(error);
     }
 
     if (originalRequest._retry) {
       handleAutoLogout();
-      return Promise.reject(error);
+      return rejectWithResponse(error);
     }
 
     if (isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
-      })
-        .then(() => request(originalRequest))
-        .catch((err) => Promise.reject(err));
+      }).then(() => request(originalRequest));
     }
 
     originalRequest._retry = true;
@@ -89,7 +91,7 @@ request.interceptors.response.use(
 
     try {
       const isLogin: string | null = localStorage.getItem("is_authenticated");
-      if (!!isLogin) {
+      if (isLogin) {
         await axios.post(
           `${API_URL}${ENDPOINTS.REFRESH}`,
           {},
@@ -100,14 +102,14 @@ request.interceptors.response.use(
 
         return request(originalRequest);
       } else {
-        return Promise.reject(error.response);
+        return rejectWithResponse(error);
       }
     } catch (refreshError) {
       processQueue(refreshError as Error, false);
       isRefreshing = false;
 
       handleAutoLogout();
-      return Promise.reject(refreshError);
+      return rejectWithResponse(refreshError as AxiosError);
     }
   },
 );

@@ -10,6 +10,7 @@ export const ENDPOINTS = {
   STUDENTS: "/api/students",
   USERS: "/api/users",
   COIN_TRANSACTIONS: "/api/coin-transactions",
+  REWARDS: "/api/rewards",
   PURCHASES: "/api/purchases",
   MESSAGES: "/api/messages",
 };

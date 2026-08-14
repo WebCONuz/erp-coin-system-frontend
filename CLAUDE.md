@@ -13,8 +13,9 @@ npm run preview    # Preview production build
 
 **Environment:** Create a `.env` file with:
 ```
-VITE_API_URL=http://localhost:3001/api
+VITE_API_URL=http://localhost:3031
 ```
+Note: `ENDPOINTS` values (`src/services/endpoints/api-endpoints.ts`) already include the `/api` prefix (e.g. `/api/auth/login`), so `VITE_API_URL` must NOT end in `/api` or requests will double up (`/api/api/...`).
 
 ## Architecture Overview
 

@@ -11,6 +11,7 @@ import {
   removeStudent,
   createCourse,
   updateCourse,
+  deleteCourse,
 } from "../api";
 import type {
   AddStudentDto,
@@ -50,6 +51,17 @@ export const useUpdateCourse = (courseId: string) => {
       queryClient.invalidateQueries({
         queryKey: courseKeys.oneCourseById(courseId),
       });
+    },
+  });
+};
+
+export const useDeleteCourse = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (courseId: string) => deleteCourse(courseId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: courseKeys.allCourses() });
     },
   });
 };

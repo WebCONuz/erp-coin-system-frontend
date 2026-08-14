@@ -6,9 +6,9 @@ import {
   GroupInfo,
   StudentBalance,
   StudentsSection,
-} from "@/features/groups/component/section";
-import { GroupFormModal } from "@/features/groups/component/modals";
-import { AddStudentDrawer } from "@/features/groups/component/drawers";
+} from "@/features/groups/components/section";
+import { GroupFormModal } from "@/features/groups/components/modals";
+import { AddStudentDrawer } from "@/features/groups/components/drawers";
 import { BackListButton } from "@/components/shared/back";
 
 const GroupDetail = () => {

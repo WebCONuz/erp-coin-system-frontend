@@ -6,6 +6,7 @@ import StudentLayout from "@/app/layouts/StudentLayout";
 import { ProtectedRoute } from "./protected-route";
 import { PageLoader } from "@/components/shared/loaders";
 import NotFoundPage from "@/pages/errors/NotFound";
+import ForbiddenPage from "@/pages/errors/Forbidden";
 import LoginPage from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import ForgotPassword from "@/pages/auth/ForgotPassword";
@@ -185,6 +186,12 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+
+  // 403
+  {
+    path: "/403",
+    element: withSuspense(ForbiddenPage),
   },
 
   // 404

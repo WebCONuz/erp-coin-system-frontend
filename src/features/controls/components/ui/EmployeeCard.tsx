@@ -1,4 +1,5 @@
 import { Pencil, Trash } from "lucide-react";
+import { getFileUrl } from "@/lib/utils";
 import type { Employee } from "../../models";
 
 interface Props {
@@ -21,7 +22,7 @@ export const EmployeeCard = ({ data }: Props) => {
 
       <div className="flex gap-x-3 items-center mb-3">
         <img
-          src={data.avatarUrl}
+          src={getFileUrl(data.avatarUrl)}
           alt="avatar"
           className="w-10 h-10 rounded-full"
         />

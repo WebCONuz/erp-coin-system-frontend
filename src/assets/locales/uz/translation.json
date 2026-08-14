@@ -37,13 +37,26 @@
       "actions": "Harkatlar"
     }
   },
+  "students": {
+    "table": {
+      "full_name": "F.I.Sh",
+      "phone": "Telefon",
+      "email": "Email",
+      "email_empty": "Mavjud emas",
+      "balance": "Balans (coin)",
+      "created_at": "Qo'shilgan sana",
+      "actions": "Amallar"
+    }
+  },
   "courses": {
+    "title": "Kurslar",
     "all": "Barchasi",
     "btn": {
       "create": "Kurs yaratish",
       "add": "Kurs qo'shish"
     },
-    "no_data": "Hali kurslar mavjud emas!"
+    "no_data": "Hali kurslar mavjud emas!",
+    "delete_confirm": "Kursni o'chirishni tasdiqlaysizmi?"
   },
   "groups": {
     "no_data": "Hali guruhlar mavjud emas!",
