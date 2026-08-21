@@ -29,45 +29,77 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { rewardFormSchema, type RewardFormValues } from "../schema";
-import { useCreateReward } from "../hooks";
+import {
+  useCreateReward,
+  useRewardCategories,
+  useUpdateReward,
+} from "../hooks";
+import type { Reward } from "../types";
 
 interface RewardFormModalProps {
   open: boolean;
   onClose: () => void;
+  mode: "create" | "edit";
+  reward?: Reward;
 }
 
-export const RewardFormModal = ({ open, onClose }: RewardFormModalProps) => {
+const emptyValues: RewardFormValues = {
+  title: "",
+  description: "",
+  imageUrl: "",
+  coinPrice: 0,
+  stock: 0,
+  rewardType: "physical",
+  categoryId: "",
+};
+
+export const RewardFormModal = ({
+  open,
+  onClose,
+  mode,
+  reward,
+}: RewardFormModalProps) => {
+  const isEdit = mode === "edit";
   const createReward = useCreateReward();
+  const updateReward = useUpdateReward(reward?.id ?? "");
+  const isPending = createReward.isPending || updateReward.isPending;
+  const { data: categories } = useRewardCategories();
 
   const form = useForm<RewardFormValues>({
     resolver: zodResolver(rewardFormSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      coinPrice: 0,
-      stock: 0,
-      rewardType: "physical",
-    },
+    defaultValues: emptyValues,
   });
 
   useEffect(() => {
-    if (!open) {
+    if (isEdit && reward) {
       form.reset({
-        title: "",
-        description: "",
-        coinPrice: 0,
-        stock: 0,
-        rewardType: "physical",
+        title: reward.title,
+        description: reward.description ?? "",
+        imageUrl: reward.imageUrl ?? "",
+        coinPrice: reward.coinPrice,
+        stock: reward.stock,
+        rewardType: reward.rewardType,
+        categoryId: reward.categoryId,
       });
+    }
+  }, [isEdit, reward, form]);
+
+  useEffect(() => {
+    if (!open) {
+      form.reset(emptyValues);
     }
   }, [open, form]);
 
   const onSubmit = (values: RewardFormValues) => {
-    createReward.mutate(values, {
-      onSuccess: () => onClose(),
-      onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
-    });
+    const data = { ...values, imageUrl: values.imageUrl || undefined };
+    const onError = (error: any) =>
+      toast.error(error?.data?.message || "Xatolik yuz berdi");
+
+    if (isEdit && reward) {
+      updateReward.mutate(data, { onSuccess: () => onClose(), onError });
+    } else {
+      createReward.mutate(data, { onSuccess: () => onClose(), onError });
+    }
   };
 
   return (
@@ -75,7 +107,7 @@ export const RewardFormModal = ({ open, onClose }: RewardFormModalProps) => {
       <DialogContent className="sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            Yangi sovg'a yaratish
+            {isEdit ? "Sovg'ani tahrirlash" : "Yangi sovg'a yaratish"}
           </DialogTitle>
         </DialogHeader>
 
@@ -107,6 +139,20 @@ export const RewardFormModal = ({ open, onClose }: RewardFormModalProps) => {
                       className="resize-none h-24"
                       {...field}
                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Rasm URL (Ixtiyoriy)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -157,40 +203,73 @@ export const RewardFormModal = ({ open, onClose }: RewardFormModalProps) => {
               />
             </div>
 
-            <FormField
-              control={form.control}
-              name="rewardType"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Turi</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="physical">Jismoniy sovg'a</SelectItem>
-                      <SelectItem value="digital">Raqamli sovg'a</SelectItem>
-                      <SelectItem value="privilege">Imtiyoz</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="rewardType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Turi</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="physical">Jismoniy sovg'a</SelectItem>
+                        <SelectItem value="digital">Raqamli sovg'a</SelectItem>
+                        <SelectItem value="privilege">Imtiyoz</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="categoryId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Kategoriya</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Tanlang" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories?.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <DialogFooter className="pt-2 gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={onClose}
-                disabled={createReward.isPending}
+                disabled={isPending}
               >
                 Bekor qilish
               </Button>
-              <Button type="submit" disabled={createReward.isPending}>
-                {createReward.isPending ? "Yaratilmoqda..." : "Yaratish"}
+              <Button type="submit" disabled={isPending}>
+                {isPending
+                  ? isEdit
+                    ? "Saqlanmoqda..."
+                    : "Yaratilmoqda..."
+                  : isEdit
+                    ? "Saqlash"
+                    : "Yaratish"}
               </Button>
             </DialogFooter>
           </form>

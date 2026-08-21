@@ -1,8 +1,8 @@
-import { DashboardStats } from "@/features/dashboard/components/DashboardStats";
-import { ScheduleGrid } from "@/features/dashboard/components/ScheduleGrid";
+import { DashboardStats } from "@/features/dashboard/components";
 import { DashboardTitle } from "@/components/shared/title";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { useTranslation } from "react-i18next";
+import { MonthlyCalendar } from "@/features/plans/components";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -18,7 +18,7 @@ export default function DashboardPage() {
       />
 
       <DashboardStats />
-      <ScheduleGrid />
+      <MonthlyCalendar hasAction={false} />
     </div>
   );
 }

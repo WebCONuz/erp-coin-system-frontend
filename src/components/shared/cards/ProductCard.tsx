@@ -1,36 +1,69 @@
 import React from "react";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, Pencil, Trash } from "lucide-react";
 import type { Reward } from "@/features/market/types";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getFileUrl } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Reward;
   onBuy?: (reward: Reward) => void;
   isBuying?: boolean;
+  onEdit?: (reward: Reward) => void;
+  onDelete?: (reward: Reward) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   onBuy,
   isBuying,
+  onEdit,
+  onDelete,
 }) => {
   return (
     <div className="group w-full bg-card text-card-foreground rounded-xl shadow-sm border border-border/50 overflow-hidden transition-all hover:shadow-xl">
       {/* Rasm qismi */}
-      <div className="relative aspect-4/3 w-full bg-muted">
+      <div className="relative aspect-3/3 w-full bg-muted">
         {product.imageUrl && (
           <img
             src={getFileUrl(product.imageUrl)}
             alt={product.title}
-            className="w-full h-full object-cover transition-transform group-hover:scale-105"
+            className="w-full h-full object-cover"
           />
         )}
 
         {/* O'ng yuqoridagi 3-nuqta tugmasi */}
-        <button className="absolute top-4 right-4 p-2 bg-white/60 dark:bg-black/60 backdrop-blur-sm rounded-full text-slate-700 dark:text-slate-200 shadow-md hover:bg-white/80 dark:hover:bg-black/80 transition-colors">
-          <MoreVertical size={20} />
-        </button>
+        {(onEdit || onDelete) && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="absolute top-3 right-3 p-2 bg-gray-100 dark:bg-black/60 backdrop-blur-sm rounded-full text-slate-700 dark:text-slate-200 shadow-md hover:bg-black/10 dark:hover:bg-black/80 transition-colors">
+                <MoreVertical size={20} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {onEdit && (
+                <DropdownMenuItem onClick={() => onEdit(product)}>
+                  <Pencil className="text-blue-500" />
+                  Tahrirlash
+                </DropdownMenuItem>
+              )}
+              {onDelete && (
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => onDelete(product)}
+                >
+                  <Trash />
+                  O'chirish
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
 
       {/* Kontent qismi */}

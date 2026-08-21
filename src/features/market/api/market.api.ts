@@ -2,11 +2,15 @@ import { request } from "@/services/api";
 import { ENDPOINTS } from "@/services/endpoints";
 import type {
   CreatePurchaseDto,
+  CreateRewardCategoryDto,
   CreateRewardDto,
   Purchase,
   PurchasesResponse,
   Reward,
+  RewardCategory,
   RewardsResponse,
+  UpdateRewardCategoryDto,
+  UpdateRewardDto,
 } from "../types";
 
 export const getAllRewards = async (
@@ -23,6 +27,21 @@ export const createReward = async (data: CreateRewardDto): Promise<Reward> => {
   return res.data;
 };
 
+export const updateReward = async (
+  rewardId: string,
+  data: UpdateRewardDto,
+): Promise<Reward> => {
+  const res = await request.patch<Reward>(
+    `${ENDPOINTS.REWARDS}/${rewardId}`,
+    data,
+  );
+  return res.data;
+};
+
+export const deleteReward = async (rewardId: string): Promise<void> => {
+  await request.delete(`${ENDPOINTS.REWARDS}/${rewardId}`);
+};
+
 export const purchaseReward = async (
   data: CreatePurchaseDto,
 ): Promise<Purchase> => {
@@ -37,4 +56,39 @@ export const getMyPurchases = async (
     params,
   });
   return res.data;
+};
+
+// ─── Reward categories ────────────────────────────────────────────────────────
+export const getAllRewardCategories = async (): Promise<RewardCategory[]> => {
+  const res = await request.get<RewardCategory[]>(
+    ENDPOINTS.REWARD_CATEGORIES,
+  );
+  return res.data;
+};
+
+export const createRewardCategory = async (
+  data: CreateRewardCategoryDto,
+): Promise<RewardCategory> => {
+  const res = await request.post<RewardCategory>(
+    ENDPOINTS.REWARD_CATEGORIES,
+    data,
+  );
+  return res.data;
+};
+
+export const updateRewardCategory = async (
+  categoryId: string,
+  data: UpdateRewardCategoryDto,
+): Promise<RewardCategory> => {
+  const res = await request.patch<RewardCategory>(
+    `${ENDPOINTS.REWARD_CATEGORIES}/${categoryId}`,
+    data,
+  );
+  return res.data;
+};
+
+export const deleteRewardCategory = async (
+  categoryId: string,
+): Promise<void> => {
+  await request.delete(`${ENDPOINTS.REWARD_CATEGORIES}/${categoryId}`);
 };

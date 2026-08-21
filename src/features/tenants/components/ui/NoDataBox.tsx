@@ -5,14 +5,22 @@ interface Props {
   title: string;
   btnText: string;
   btnFn: () => void;
+  hasAction?: boolean;
 }
 
-export const NoDataBox = ({ title, btnText, btnFn }: Props) => {
+export const NoDataBox = ({
+  title,
+  btnText,
+  btnFn,
+  hasAction = true,
+}: Props) => {
   return (
     <NoData text={title}>
-      <Button onClick={btnFn} className="py-2 px-4 bg-primary text-white">
-        {btnText}
-      </Button>
+      {hasAction && (
+        <Button onClick={btnFn} className="py-2 px-4 bg-primary text-white">
+          {btnText}
+        </Button>
+      )}
     </NoData>
   );
 };

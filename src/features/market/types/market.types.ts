@@ -10,6 +10,7 @@ export interface Reward {
   rewardType: RewardType;
   imageUrl: string | null;
   isActive?: boolean;
+  categoryId: string;
 }
 
 export interface RewardsResponse {
@@ -26,10 +27,44 @@ export interface RewardsResponse {
 export interface CreateRewardDto {
   title: string;
   description?: string;
+  imageUrl?: string;
   coinPrice: number;
   stock: number;
   rewardType: RewardType;
+  categoryId: string;
+}
+
+export interface UpdateRewardDto {
+  title?: string;
+  description?: string;
+  imageUrl?: string;
+  coinPrice?: number;
+  stock?: number;
+  rewardType?: RewardType;
   categoryId?: string;
+}
+
+// ─── Reward categories (GET/POST/PATCH/DELETE /api/reward-category) ─────────
+export interface RewardCategory {
+  id: string;
+  name: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  tenantId: string;
+  createdById: string;
+  createdAt: string;
+  deletedAt: string | null;
+  _count: {
+    rewards: number;
+  };
+}
+
+export interface CreateRewardCategoryDto {
+  name: string;
+}
+
+export interface UpdateRewardCategoryDto {
+  name: string;
 }
 
 // ─── Purchases (student "buy") ───────────────────────────────────────────────

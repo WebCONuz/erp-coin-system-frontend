@@ -11,6 +11,10 @@ export const ENDPOINTS = {
   USERS: "/api/users",
   COIN_TRANSACTIONS: "/api/coin-transactions",
   REWARDS: "/api/rewards",
+  REWARD_CATEGORIES: "/api/reward-category",
   PURCHASES: "/api/purchases",
   MESSAGES: "/api/messages",
+  ROOMS: "/api/rooms",
+  SCHEDULE_TEMPLATES: "/api/schedule-templates",
+  SCHEDULE_EXCEPTIONS: "/api/schedule-exceptions",
 };

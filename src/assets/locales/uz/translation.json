@@ -65,5 +65,15 @@
       "add": "Gutuh qo'shish"
     },
     "student_count": "Sinfdagi o'quvchilar soni:"
+  },
+  "reward_categories": {
+    "title": "Kategoriyalar",
+    "all": "Barchasi",
+    "btn": {
+      "create": "Kategoriya yaratish",
+      "add": "Kategoriya qo'shish"
+    },
+    "no_data": "Hali kategoriyalar mavjud emas!",
+    "delete_confirm": "Kategoriyani o'chirishni tasdiqlaysizmi?"
   }
 }

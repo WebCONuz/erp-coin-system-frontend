@@ -8,3 +8,7 @@ export const purchaseKeys = {
     params ?? {},
   ],
 } as const;
+
+export const rewardCategoryKeys = {
+  allRewardCategories: () => ["all-reward-categories"],
+} as const;

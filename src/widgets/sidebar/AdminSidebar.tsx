@@ -26,37 +26,38 @@ export function AdminSidebar() {
 
   const navItems = [
     { to: "/admin", label: t("admin.header.main"), icon: Home, end: true },
-    {
-      to: "/admin/teachers",
-      label: t("admin.header.teachers"),
-      icon: UsersRound,
-    },
+
     { to: "/admin/groups", label: t("admin.header.groups"), icon: School },
     {
       to: "/admin/students",
       label: t("admin.header.students"),
       icon: GraduationCap,
     },
-    { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
     {
-      to: "/admin/subjects",
-      label: t("admin.header.subjects"),
-      icon: BookOpen,
+      to: "/admin/plans",
+      label: t("admin.header.plans"),
+      icon: CalendarDays,
     },
+    { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
     {
       to: "/admin/employees",
       label: t("admin.header.employees"),
       icon: UserCog,
     },
     {
-      to: "/admin/plans",
-      label: t("admin.header.plans"),
-      icon: CalendarDays,
-    },
-    {
       to: "/admin/control",
       label: t("admin.header.control"),
       icon: LayoutDashboard,
+    },
+    {
+      to: "/admin/subjects",
+      label: t("admin.header.subjects"),
+      icon: BookOpen,
+    },
+    {
+      to: "/admin/teachers",
+      label: t("admin.header.teachers"),
+      icon: UsersRound,
     },
   ];
 
