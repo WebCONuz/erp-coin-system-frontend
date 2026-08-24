@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Ban, Clock } from "lucide-react";
+import { Ban, Clock, Link } from "lucide-react";
 
 import {
   Dialog,
@@ -34,6 +34,7 @@ import {
   useUpdateException,
 } from "../hooks";
 import type { CalendarDayEntry } from "../types";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   open: boolean;
@@ -45,6 +46,7 @@ interface Props {
 type View = "choose" | "cancel" | "reschedule";
 
 export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
+  const navigate = useNavigate();
   const [view, setView] = useState<View>("choose");
   const hasException = !!entry?.exception;
 
@@ -162,6 +164,14 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
               <Clock size={16} className="text-amber-500" />
               Vaqtini o'zgartirish
             </Button>
+            <Button
+              variant="outline"
+              className="justify-start gap-2"
+              onClick={() => navigate(`/sessions/${entry?.template?.id ?? ""}`)}
+            >
+              <Link size={16} className="text-blue-500" />
+              Joriy sessiyaga o'tish
+            </Button>
           </div>
         )}
 
@@ -264,7 +274,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                     <FormLabel>Izoh (Ixtiyoriy)</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Masalan: Xona almashtirish sababli"
+                        placeholder="Masalan: Texnik ishlar sababli"
                         className="resize-none h-20"
                         {...field}
                       />

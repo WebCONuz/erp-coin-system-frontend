@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 import { courseKeys, groupKeys } from "../constants";
 import {
   getAllCourses,
@@ -67,7 +68,22 @@ export const useDeleteCourse = () => {
 };
 
 // GROUPS
-export const useGroups = (params?: Record<string, string | undefined>) => {
+export const useGroups = () => {
+  const [searchParams] = useSearchParams();
+  const params = {
+    courseId:
+      searchParams.get("course") == "all"
+        ? undefined
+        : searchParams.get("course") || undefined,
+    search: searchParams.get("search") || undefined,
+    isActive:
+      searchParams.get("status") === "active"
+        ? "true"
+        : searchParams.get("status") === "archive"
+          ? "false"
+          : undefined,
+  };
+
   return useQuery({
     queryKey: groupKeys.allGroups(params),
     queryFn: () => getAllGroups(params),

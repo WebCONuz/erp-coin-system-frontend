@@ -43,11 +43,12 @@ export const SubjectHeader = ({
                 </TabsTrigger>
               </TabsList>
             </Tabs>
+
             <Select onValueChange={() => console.log("---")}>
               <SelectTrigger className="w-40 h-10 py-5 rounded-lg bg-background border-border text-foreground hover:bg-accent/50 transition-colors">
                 <SelectValue placeholder="Barchasi" />
               </SelectTrigger>
-              <SelectContent className="rounded-lg border-border bg-popover text-popover-foreground">
+              <SelectContent className="rounded-lg border-border bg-popover text-popover-foreground translate-y-9.5 -translate-x-0.5">
                 <SelectItem value="all">Filiallar</SelectItem>
                 <SelectItem value="7a">al-Xorazmiy</SelectItem>
                 <SelectItem value="8a">Buyuk bilim</SelectItem>

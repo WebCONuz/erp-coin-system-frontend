@@ -13,35 +13,27 @@ export const GroupCard = ({ data, handleEdit }: Props) => {
   const navigate = useNavigate();
 
   return (
-    <div
-      className={`${
-        data.isActive
-          ? "border-primary/30 dark:primary-900"
-          : "border-red-100 dark:border-red-900"
-      } border p-4 bg-card text-card-foreground rounded-xl shadow-sm overflow-hidden transition-all hover:shadow-md relative`}
-    >
+    <div className="border p-3 bg-card text-card-foreground rounded-xl shadow-sm overflow-hidden transition-all hover:shadow-md relative">
       <div className="absolute top-4 right-5 flex gap-x-2.5">
         <Eye
-          size="17"
+          size="16"
           className="text-gray-500 hover:text-blue-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
           onClick={() => navigate(`/admin/groups/${data.id ?? ""}`)}
         />
         <Pencil
-          size="17"
+          size="16"
           className="text-gray-500 hover:text-green-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
           onClick={() => handleEdit(data)}
         />
         <Trash
-          size="17"
+          size="16"
           className="text-gray-500 hover:text-red-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
         />
       </div>
-      <div className="text-gray-400 mt-2 text-xs font-semibold mb-2">
-        {formatDate(data.createdAt, "dd.MM.yyyy, hh:mm")}
-      </div>
-      <div className="flex gap-x-3 items-center">
+      <div className="flex gap-x-3 items-center mt-1">
+        <h4 className="text-2xl font-semibold">{data.name}</h4>
         <div
-          className={`py-0.5 px-2 text-white text-xs font-medium opacity-70 bg-linear-to-br ${
+          className={`py-px px-1.5 text-white text-[10px] font-medium opacity-70 bg-linear-to-br ${
             data.isActive
               ? "from-purple-600 to-purple-800"
               : "from-red-600 to-red-800"
@@ -49,10 +41,12 @@ export const GroupCard = ({ data, handleEdit }: Props) => {
         >
           {data.isActive ? "Aktiv" : "No aktiv"}
         </div>
-        <h4 className="text-2xl font-semibold">{data.name}</h4>
       </div>
-      <div className="text-gray-400 mt-2">
+      <div className="text-gray-400 text-sm mt-2">
         {t("groups.student_count")} {data?._count?.students || 0}
+      </div>
+      <div className="text-gray-500 text-sm font-semibold">
+        Yaratilgan vaqti: {formatDate(data.createdAt, "dd.MM.yyyy, hh:mm")}
       </div>
     </div>
   );

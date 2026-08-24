@@ -5,9 +5,15 @@ interface Props {
   entry: CalendarDayEntry;
   onClick: () => void;
   hasAction?: boolean;
+  colorClass: string;
 }
 
-export const SessionChip = ({ entry, onClick, hasAction = true }: Props) => {
+export const SessionChip = ({
+  entry,
+  onClick,
+  hasAction = true,
+  colorClass,
+}: Props) => {
   const { template, exception, sessions } = entry;
   const isLocked = sessions.some((s) => s.isLocked);
   const topic = sessions.find((s) => s.topic)?.topic;
@@ -16,9 +22,15 @@ export const SessionChip = ({ entry, onClick, hasAction = true }: Props) => {
     return (
       <button
         onClick={onClick}
-        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-red-700 line-through bg-red-100 dark:bg-red-950/50 dark:text-red-400"
+        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-red-700 bg-red-100 dark:bg-red-950/50 dark:text-red-400"
       >
-        Bekor{exception.note ? ` — ${exception.note}` : ""}
+        <span className="line-through">
+          <b>Xona:</b> {template?.room?.name ?? "-"} -{" "}
+          {`${exception.startTime ?? template.startTime} : ${exception?.endTime ?? template.endTime}`}
+        </span>
+        <br />
+        Bekor qilindi
+        {exception.note ? `: ${exception.note}` : ": Texnik sababga ko'ra"}
       </button>
     );
   }
@@ -27,9 +39,16 @@ export const SessionChip = ({ entry, onClick, hasAction = true }: Props) => {
     return (
       <button
         onClick={hasAction ? onClick : () => {}}
-        className="flex w-full items-center gap-1 truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-amber-700 bg-amber-100 dark:bg-amber-950/50 dark:text-amber-400"
+        className="flex w-full items-center justify-between gap-1 truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-amber-700 bg-amber-100 dark:bg-amber-950/50 dark:text-amber-400"
       >
-        {exception.startTime ?? template.startTime}
+        <span>
+          <b>Xona:</b> {template?.room?.name ?? "-"} <br />
+          <b>Yangi vaqti:</b> {exception.startTime} : {exception?.endTime}
+          <br />
+          <b>Sabab: </b>
+          {exception.note ? `${exception.note}` : ": Texnik sababga ko'ra"}
+        </span>
+        <br />
         {topic ? ` ${topic}` : ""}
         <Pencil size={10} className="shrink-0" />
       </button>
@@ -51,10 +70,19 @@ export const SessionChip = ({ entry, onClick, hasAction = true }: Props) => {
   return (
     <button
       onClick={hasAction ? onClick : () => {}}
-      className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-blue-700 bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400"
+      className={`w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium ${colorClass}`}
     >
-      {template.startTime}
-      {topic ? ` ${topic}` : ""}
+      <b>Xona:</b> {template?.room?.name ?? "-"}
+      <br />
+      <b>Vaqti:</b> {`${template.startTime} : ${template.endTime}`}
+      <br />
+      {topic ? (
+        <>
+          <b>Vaqti:</b> <span>{topic}</span>
+        </>
+      ) : (
+        ""
+      )}
     </button>
   );
 };

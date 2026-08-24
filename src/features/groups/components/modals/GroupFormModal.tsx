@@ -17,13 +17,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -32,6 +25,7 @@ import { useCourses, useCreateGroup, useUpdateGroup } from "../../hooks";
 
 import { useTeachers } from "@/features/teachers/hooks";
 import type { GroupDetail, GroupItem } from "../../types";
+import { ControlledSelect } from "@/components/controls";
 
 interface GroupFormModalProps {
   open: boolean;
@@ -119,7 +113,7 @@ export const GroupFormModal = ({
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Masalan: Frontend-01"
+                      placeholder="Masalan: 5-A"
                       className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
                       {...field}
                     />
@@ -155,100 +149,44 @@ export const GroupFormModal = ({
             />
 
             {/* Kurs */}
-            <FormField
-              control={form.control}
-              name="courseId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-zinc-700 dark:text-zinc-300">
-                    Kurs
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isCoursesLoading}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50">
-                        <SelectValue
-                          placeholder={
-                            isCoursesLoading
-                              ? "Yuklanmoqda..."
-                              : "Kursni tanlang"
-                          }
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    {courses && courses.data.length ? (
-                      <SelectContent className="bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700">
-                        {courses.data.map((course) => (
-                          <SelectItem
-                            key={course.id}
-                            value={course.id}
-                            className="text-zinc-900 dark:text-zinc-50 focus:bg-zinc-100 dark:focus:bg-zinc-700"
-                          >
-                            {course.title}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    ) : (
-                      <SelectContent className="bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700">
-                        Kurslar mavjud emas
-                      </SelectContent>
-                    )}
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-x-4">
+              <div>
+                <ControlledSelect
+                  name="courseId"
+                  label="Kurs"
+                  control={form.control}
+                  options={
+                    courses && courses.data.length
+                      ? courses.data.map((item) => ({
+                          label: item.title,
+                          value: item.id,
+                        }))
+                      : []
+                  }
+                  isLoading={isCoursesLoading}
+                  placeholder="Kursni tanlang"
+                />
+              </div>
+              <div>
+                <ControlledSelect
+                  name="teacherId"
+                  label="O'qituvchi"
+                  control={form.control}
+                  options={
+                    teachers && teachers.data.length
+                      ? teachers.data.map((item) => ({
+                          label: item.fullName,
+                          value: item.id,
+                        }))
+                      : []
+                  }
+                  isLoading={isTeachersLoading}
+                  placeholder="O'qituvchini tanlang"
+                />
+              </div>
+            </div>
 
             {/* O'qituvchi */}
-            <FormField
-              control={form.control}
-              name="teacherId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-zinc-700 dark:text-zinc-300">
-                    O'qituvchi
-                  </FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    disabled={isTeachersLoading}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50">
-                        <SelectValue
-                          placeholder={
-                            isTeachersLoading
-                              ? "Yuklanmoqda..."
-                              : "O'qituvchini tanlang"
-                          }
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    {teachers && teachers.data.length > 0 ? (
-                      <SelectContent className="bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700">
-                        {teachers.data.map((teacher) => (
-                          <SelectItem
-                            key={teacher.id}
-                            value={teacher.id}
-                            className="text-zinc-900 dark:text-zinc-50 focus:bg-zinc-100 dark:focus:bg-zinc-700"
-                          >
-                            {teacher.fullName}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    ) : (
-                      <SelectContent className="bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700">
-                        O'qituvchilar mavjud emas
-                      </SelectContent>
-                    )}
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
             <DialogFooter className="pt-2 gap-2">
               <Button

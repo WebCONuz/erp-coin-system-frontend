@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronDown, Plus } from "lucide-react";
 import { toast } from "sonner";
 import {
   DndContext,
@@ -12,12 +12,12 @@ import {
 } from "@dnd-kit/core";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { PageLoading } from "@/components/loading";
 import { useGroups } from "@/features/groups/hooks";
 import {
@@ -33,18 +33,41 @@ import { DroppableColumn } from "./DroppableColumn";
 import { TemplateFormModal } from "./TemplateFormModal";
 
 const CARD_COLORS = [
-  "border-l-blue-500",
-  "border-l-amber-500",
-  "border-l-emerald-500",
-  "border-l-purple-500",
-  "border-l-pink-500",
+  "border-l-blue-500 bg-blue-100 dark:bg-blue-900/20",
+  "border-l-amber-500 bg-amber-100 dark:bg-amber-900/20",
+  "border-l-emerald-500 bg-emerald-50 dark:bg-emerald-900/20",
+  "border-l-pink-500 bg-pink-50 dark:bg-pink-900/20",
+  "border-l-fuchsia-500 bg-fuchsia-50 dark:bg-fuchsia-900/20",
+  "border-l-cyan-500 bg-cyan-50 dark:bg-cyan-900/20",
+  "border-l-sky-500 bg-sky-50 dark:bg-sky-900/20",
+  "border-l-purple-500 bg-purple-50 dark:bg-purple-900/20",
+  "border-l-yellow-500 bg-yellow-50 dark:bg-yellow-900/20",
+  "border-l-lime-500 bg-lime-50 dark:bg-lime-900/20",
 ];
 
-export const WeeklyKanban = () => {
-  const [groupFilter, setGroupFilter] = useState<string>("all");
+interface Props {
+  groupFilter?: string;
+  onGroupFilterChange?: (groupId: string) => void;
+}
+
+export const WeeklyKanban = ({
+  groupFilter: controlledGroupFilter,
+  onGroupFilterChange,
+}: Props = {}) => {
+  const [internalGroupFilter, setInternalGroupFilter] = useState<string>("");
+  const groupFilter = controlledGroupFilter ?? internalGroupFilter;
+  const setGroupFilter = onGroupFilterChange ?? setInternalGroupFilter;
+
   const { data: groups } = useGroups();
+
+  useEffect(() => {
+    if (!groupFilter && groups?.data.length) {
+      setGroupFilter(groups.data[0].id);
+    }
+  }, [groupFilter, groups]);
+
   const { data: templates, isLoading } = useScheduleTemplates({
-    groupId: groupFilter === "all" ? undefined : groupFilter,
+    groupId: groupFilter || undefined,
     limit: "100",
   });
   const deleteTemplate = useDeleteScheduleTemplate();
@@ -62,11 +85,26 @@ export const WeeklyKanban = () => {
     mode: "create" | "edit";
     weekday: Weekday;
     lockWeekday: boolean;
+    presetGroupId?: string;
+    lockGroup: boolean;
     template?: ScheduleTemplate;
-  }>({ open: false, mode: "create", weekday: "monday", lockWeekday: true });
+  }>({
+    open: false,
+    mode: "create",
+    weekday: "monday",
+    lockWeekday: true,
+    lockGroup: false,
+  });
 
   const openCreateForDay = (weekday: Weekday) =>
-    setModalState({ open: true, mode: "create", weekday, lockWeekday: true });
+    setModalState({
+      open: true,
+      mode: "create",
+      weekday,
+      lockWeekday: true,
+      presetGroupId: groupFilter,
+      lockGroup: true,
+    });
 
   const openCreateGeneric = () =>
     setModalState({
@@ -74,6 +112,7 @@ export const WeeklyKanban = () => {
       mode: "create",
       weekday: "monday",
       lockWeekday: false,
+      lockGroup: false,
     });
 
   const openEdit = (template: ScheduleTemplate) =>
@@ -82,6 +121,7 @@ export const WeeklyKanban = () => {
       mode: "edit",
       weekday: template.weekday,
       lockWeekday: true,
+      lockGroup: true,
       template,
     });
 
@@ -129,19 +169,32 @@ export const WeeklyKanban = () => {
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-lg font-semibold">Haftalik Shablon</h3>
         <div className="flex items-center gap-2">
-          <Select value={groupFilter} onValueChange={setGroupFilter}>
-            <SelectTrigger className="w-48">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Barcha guruhlar</SelectItem>
-              {groups?.data.map((group) => (
-                <SelectItem key={group.id} value={group.id}>
-                  {group.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-48 justify-between font-normal"
+              >
+                <span className="truncate">
+                  {groups?.data.find((g) => g.id === groupFilter)?.name ??
+                    "Guruh tanlang"}
+                </span>
+                <ChevronDown size={16} className="shrink-0 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuRadioGroup
+                value={groupFilter}
+                onValueChange={setGroupFilter}
+              >
+                {groups?.data.map((group) => (
+                  <DropdownMenuRadioItem key={group.id} value={group.id}>
+                    {group.name}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
             onClick={openCreateGeneric}
             className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white"
@@ -220,6 +273,8 @@ export const WeeklyKanban = () => {
         mode={modalState.mode}
         weekday={modalState.weekday}
         lockWeekday={modalState.lockWeekday}
+        presetGroupId={modalState.presetGroupId}
+        lockGroup={modalState.lockGroup}
         template={modalState.template}
       />
     </div>

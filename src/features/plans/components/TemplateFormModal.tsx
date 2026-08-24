@@ -20,22 +20,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { templateFormSchema, type TemplateFormValues } from "../schema";
-import {
-  useCreateScheduleTemplate,
-  useUpdateScheduleTemplate,
-} from "../hooks";
+import { useCreateScheduleTemplate, useUpdateScheduleTemplate } from "../hooks";
 import { WEEKDAY_LABELS } from "../constants";
 import { WEEKDAYS, type ScheduleTemplate, type Weekday } from "../types";
 import { useGroups } from "@/features/groups/hooks";
 import { useRooms } from "@/features/rooms/hooks";
+import { ControlledSelect } from "@/components/controls";
 
 interface TemplateFormModalProps {
   open: boolean;
@@ -43,6 +34,8 @@ interface TemplateFormModalProps {
   mode: "create" | "edit";
   weekday: Weekday;
   lockWeekday?: boolean;
+  presetGroupId?: string;
+  lockGroup?: boolean;
   template?: ScheduleTemplate;
 }
 
@@ -52,6 +45,8 @@ export const TemplateFormModal = ({
   mode,
   weekday,
   lockWeekday = true,
+  presetGroupId,
+  lockGroup = false,
   template,
 }: TemplateFormModalProps) => {
   const isEdit = mode === "edit";
@@ -87,13 +82,13 @@ export const TemplateFormModal = ({
     } else {
       form.reset({
         weekday,
-        groupId: "",
+        groupId: lockGroup ? (presetGroupId ?? "") : "",
         roomId: "",
         startTime: "",
         endTime: "",
       });
     }
-  }, [open, isEdit, template, weekday, form]);
+  }, [open, isEdit, template, weekday, lockGroup, presetGroupId, form]);
 
   const onError = (error: any) =>
     toast.error(error?.data?.message || "Xatolik yuz berdi");
@@ -135,89 +130,55 @@ export const TemplateFormModal = ({
                 </div>
               </div>
             ) : (
-              <FormField
-                control={form.control}
+              <ControlledSelect
                 name="weekday"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Hafta kuni</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {WEEKDAYS.map((day) => (
-                          <SelectItem key={day} value={day}>
-                            {WEEKDAY_LABELS[day]}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Hafta kuni"
+                control={form.control}
+                options={WEEKDAYS.map((item) => ({
+                  label: WEEKDAY_LABELS[item],
+                  value: item,
+                }))}
               />
             )}
 
-            {isEdit ? (
+            {isEdit || lockGroup ? (
               <div>
                 <FormLabel>Guruh</FormLabel>
                 <div className="mt-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
-                  {template?.group.name ?? "—"}
+                  {isEdit
+                    ? (template?.group.name ?? "—")
+                    : (groups?.data.find((g) => g.id === presetGroupId)?.name ??
+                      "—")}
                 </div>
               </div>
             ) : (
-              <FormField
-                control={form.control}
+              <ControlledSelect
                 name="groupId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Guruh</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Tanlang" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {groups?.data.map((group) => (
-                          <SelectItem key={group.id} value={group.id}>
-                            {group.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Guruh"
+                control={form.control}
+                options={
+                  groups?.data && groups.data.length > 0
+                    ? groups.data.map((item) => ({
+                        label: item.name,
+                        value: item.id,
+                      }))
+                    : []
+                }
               />
             )}
 
-            <FormField
-              control={form.control}
+            <ControlledSelect
               name="roomId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Xona</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Tanlang" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {rooms?.data.map((room) => (
-                        <SelectItem key={room.id} value={room.id}>
-                          {room.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Xona"
+              control={form.control}
+              options={
+                rooms?.data && rooms?.data.length > 0
+                  ? rooms?.data.map((item) => ({
+                      label: item.name,
+                      value: item.id,
+                    }))
+                  : []
+              }
             />
 
             <div className="grid grid-cols-2 gap-4">

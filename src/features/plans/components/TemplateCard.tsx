@@ -21,7 +21,7 @@ export const TemplateCard = ({
   return (
     <div
       onClick={onEdit}
-      className={`group relative cursor-pointer rounded-lg border-l-4 bg-card p-3 shadow-sm transition-all hover:shadow-md ${colorClass}`}
+      className={`group relative cursor-pointer rounded-lg border-l-4 p-3 shadow-sm transition-all hover:shadow-md ${colorClass}`}
     >
       <div className="absolute top-2 right-2 flex gap-x-1.5 opacity-0 transition-opacity group-hover:opacity-100">
         <button
@@ -43,13 +43,13 @@ export const TemplateCard = ({
           <Trash size={13} />
         </button>
       </div>
-      <p className="pr-10 text-sm font-semibold text-foreground">
-        {groupName}
+      <p className="pr-10 text-sm font-semibold text-foreground">{groupName}</p>
+      <p className="text-xs text-muted-foreground mt-1">
+        <b>Xona:</b> {roomName}
       </p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        {template.startTime} – {template.endTime}
+      <p className="text-xs text-muted-foreground">
+        <b>Vaqti:</b> {template.startTime} – {template.endTime}
       </p>
-      <p className="text-xs text-muted-foreground">{roomName}</p>
     </div>
   );
 };

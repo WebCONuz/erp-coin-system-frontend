@@ -5,7 +5,6 @@ import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { NoDataBox } from "@/features/tenants/components/ui";
 import type { GroupItem } from "../../types";
-import { useSearchParams } from "react-router-dom";
 
 interface Props {
   handleEdit: (group: GroupItem) => void;
@@ -13,20 +12,7 @@ interface Props {
 }
 
 export const GroupGrid = ({ handleEdit, handleCreate }: Props) => {
-  const [searchParams] = useSearchParams();
-  const { data: groups, isLoading } = useGroups({
-    courseId:
-      searchParams.get("course") == "all"
-        ? undefined
-        : searchParams.get("course") || undefined,
-    search: searchParams.get("search") || undefined,
-    isActive:
-      searchParams.get("status") === "active"
-        ? "true"
-        : searchParams.get("status") === "archive"
-          ? "false"
-          : undefined,
-  });
+  const { data: groups, isLoading } = useGroups();
   const { t } = useTranslation();
 
   return (
@@ -42,7 +28,7 @@ export const GroupGrid = ({ handleEdit, handleCreate }: Props) => {
               btnFn={() => handleCreate()}
             />
           ) : (
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid grid-cols-4 gap-4">
               {groups.data.map((item) => (
                 <GroupCard key={item.id} data={item} handleEdit={handleEdit} />
               ))}

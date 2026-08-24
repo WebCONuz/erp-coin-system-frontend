@@ -97,17 +97,19 @@ export const StudentDataFilter = ({
             </div>
 
             {/* Sinf tanlash */}
-            <Select>
-              <SelectTrigger className="w-40 py-4.5 rounded-lg bg-background border-border text-foreground hover:bg-accent/50 transition-colors">
-                <SelectValue placeholder="Barcha sinflar" />
-              </SelectTrigger>
-              <SelectContent className="rounded-lg border-border bg-popover text-popover-foreground">
-                <SelectItem value="all">Barcha sinflar</SelectItem>
-                <SelectItem value="7a">7-A sinf</SelectItem>
-                <SelectItem value="8a">8-A sinf</SelectItem>
-                <SelectItem value="9a">9-A sinf</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="shadow-sm rounded-lg">
+              <Select>
+                <SelectTrigger className="w-40 py-4.5 rounded-lg bg-background border-border text-foreground hover:bg-accent/50 transition-colors">
+                  <SelectValue placeholder="Barcha sinflar" />
+                </SelectTrigger>
+                <SelectContent className="rounded-lg border-border bg-popover text-popover-foreground translate-y-9 -translate-x-0.5">
+                  <SelectItem value="all">Barcha sinflar</SelectItem>
+                  <SelectItem value="7a">7-A sinf</SelectItem>
+                  <SelectItem value="8a">8-A sinf</SelectItem>
+                  <SelectItem value="9a">9-A sinf</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
             {/* Saralash (Sort) tugmalari */}
             <div className="flex items-center border border-border rounded-lg bg-background p-1 gap-1 shadow-sm">

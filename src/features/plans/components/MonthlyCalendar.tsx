@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   addMonths,
   eachDayOfInterval,
@@ -14,18 +14,19 @@ import {
   subMonths,
 } from "date-fns";
 import { uz } from "date-fns/locale";
-import { ChevronLeft, ChevronRight, Zap } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { PageLoading } from "@/components/loading";
 import { useGroups } from "@/features/groups/hooks";
 import { useScheduleCalendar } from "../hooks";
+import { TEMPLATE_CHIP_COLORS } from "../constants";
 import type { CalendarDayEntry } from "../types";
 import { SessionChip } from "./SessionChip";
 import { ExceptionModal } from "./ExceptionModal";
@@ -43,11 +44,19 @@ const WEEK_HEADER = [
 
 interface Props {
   hasAction?: boolean;
+  groupId?: string;
+  onGroupIdChange?: (groupId: string) => void;
 }
 
-export const MonthlyCalendar = ({ hasAction = true }: Props) => {
+export const MonthlyCalendar = ({
+  hasAction = true,
+  groupId: controlledGroupId,
+  onGroupIdChange,
+}: Props) => {
   const { data: groups } = useGroups();
-  const [groupId, setGroupId] = useState<string>("");
+  const [internalGroupId, setInternalGroupId] = useState<string>("");
+  const groupId = controlledGroupId ?? internalGroupId;
+  const setGroupId = onGroupIdChange ?? setInternalGroupId;
   const [viewDate, setViewDate] = useState(new Date());
   const [generateOpen, setGenerateOpen] = useState(false);
   const [exceptionState, setExceptionState] = useState<{
@@ -80,6 +89,25 @@ export const MonthlyCalendar = ({ hasAction = true }: Props) => {
   const selectedGroupName =
     groups?.data.find((g) => g.id === groupId)?.name ?? "";
 
+  const templateColors = useMemo(() => {
+    const colors: Record<string, string> = {};
+    let nextIndex = 0;
+
+    Object.keys(calendarData ?? {})
+      .sort()
+      .forEach((dateKey) => {
+        calendarData![dateKey].forEach((entry) => {
+          if (!colors[entry.template.id]) {
+            colors[entry.template.id] =
+              TEMPLATE_CHIP_COLORS[nextIndex % TEMPLATE_CHIP_COLORS.length];
+            nextIndex += 1;
+          }
+        });
+      });
+
+    return colors;
+  }, [calendarData]);
+
   const openException = (dateKey: string, entry: CalendarDayEntry) =>
     setExceptionState({ open: true, dateKey, entry });
   const closeException = () =>
@@ -109,18 +137,31 @@ export const MonthlyCalendar = ({ hasAction = true }: Props) => {
         </div>
 
         <div className="flex items-center gap-2">
-          <Select value={groupId} onValueChange={setGroupId}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Guruh tanlang" />
-            </SelectTrigger>
-            <SelectContent>
-              {groups?.data.map((group) => (
-                <SelectItem key={group.id} value={group.id}>
-                  {group.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-48 justify-between font-normal"
+              >
+                <span className="truncate">
+                  {selectedGroupName || "Guruh tanlang"}
+                </span>
+                <ChevronDown size={16} className="shrink-0 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuRadioGroup
+                value={groupId}
+                onValueChange={setGroupId}
+              >
+                {groups?.data.map((group) => (
+                  <DropdownMenuRadioItem key={group.id} value={group.id}>
+                    {group.name}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
           {hasAction && (
             <Button
               disabled={!groupId}
@@ -179,6 +220,10 @@ export const MonthlyCalendar = ({ hasAction = true }: Props) => {
                       entry={entry}
                       onClick={() => openException(dateKey, entry)}
                       hasAction={hasAction}
+                      colorClass={
+                        templateColors[entry.template.id] ??
+                        TEMPLATE_CHIP_COLORS[0]
+                      }
                     />
                   ))}
                 </div>
