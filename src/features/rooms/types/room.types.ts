@@ -5,19 +5,27 @@ export interface Room {
   capacity: number;
   description?: string | null;
   isActive: boolean;
-  isDeleted: boolean;
   createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  tenantId: string;
 }
 
-// Rooms list response is flat (data + pagination fields), unlike other
-// endpoints which nest pagination under `meta`.
 export interface RoomsResponse {
   data: Room[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface CreateRoomDto {
+  name: string;
+  capacity: number;
+  description?: string;
+}
+
+export interface UpdateRoomDto {
+  name?: string;
+  capacity?: number;
+  description?: string;
 }

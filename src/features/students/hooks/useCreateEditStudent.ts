@@ -11,12 +11,14 @@ import type { StudentDetail, StudentDetailFull } from "../types";
 import { useCreateStudent, useUpdateStudent } from "./useHook";
 
 interface Props {
+  open: boolean;
   isEdit: boolean;
   defaultRoleId?: string;
   onClose: () => void;
   student?: StudentDetail | StudentDetailFull;
 }
 export const useCreateEditStudent = ({
+  open,
   isEdit,
   defaultRoleId,
   onClose,

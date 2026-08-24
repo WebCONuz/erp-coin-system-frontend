@@ -9,6 +9,8 @@ export const ENDPOINTS = {
   GROUPS: "/api/groups",
   STUDENTS: "/api/students",
   USERS: "/api/users",
+  STAFF: "/api/users/staff",
+  ROLES: "/api/roles",
   COIN_TRANSACTIONS: "/api/coin-transactions",
   REWARDS: "/api/rewards",
   REWARD_CATEGORIES: "/api/reward-category",
