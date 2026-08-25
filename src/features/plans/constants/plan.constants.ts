@@ -25,6 +25,10 @@ export const TEMPLATE_CHIP_COLORS = [
   "text-lime-700 bg-lime-100 dark:bg-lime-950/50 dark:text-lime-400",
 ] as const;
 
+// Select qiymati sifatida ishlatiladi: shablonga alohida o'qituvchi
+// biriktirilmagan, guruhning o'z o'qituvchisi dars beradi.
+export const GROUP_TEACHER_VALUE = "group-teacher";
+
 export const scheduleTemplateKeys = {
   allTemplates: (params?: Record<string, any>) => [
     "all-schedule-templates",

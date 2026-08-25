@@ -50,8 +50,8 @@ export function AdminSidebar() {
       icon: LayoutDashboard,
     },
     {
-      to: "/admin/subjects",
-      label: t("admin.header.subjects"),
+      to: "/admin/sessions",
+      label: t("admin.header.sessions"),
       icon: BookOpen,
     },
     {

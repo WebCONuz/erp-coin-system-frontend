@@ -14,9 +14,9 @@ export const SessionChip = ({
   hasAction = true,
   colorClass,
 }: Props) => {
-  const { template, exception, sessions } = entry;
-  const isLocked = sessions.some((s) => s.isLocked);
-  const topic = sessions.find((s) => s.topic)?.topic;
+  const { template, exception, session } = entry;
+  const isLocked = session?.isLocked ?? false;
+  const topic = session?.topic;
 
   if (exception?.isCancelled) {
     return (

@@ -11,7 +11,7 @@
       "groups": "Guruhlar",
       "students": "Talabalar",
       "market": "Sovg'alar",
-      "subjects": "Fanlar",
+      "sessions": "Sessiyalar",
       "employees": "Xodimlar",
       "plans": "Dars jadvali",
       "control": "Boshqarish",
@@ -43,8 +43,8 @@
       "phone": "Telefon",
       "email": "Email",
       "email_empty": "Mavjud emas",
-      "balance": "Balans (coin)",
-      "created_at": "Qo'shilgan sana",
+      "balance": "Balans (tangalar soni)",
+      "created_at": "Yaratilgan sana",
       "actions": "Amallar"
     }
   },

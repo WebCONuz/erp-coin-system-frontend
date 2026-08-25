@@ -67,6 +67,7 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
                 label="Rol"
                 options={roleOptions}
                 isLoading={isRolesLoading}
+                placeholder="Rolni tanlang"
               />
 
               <ControlledInput
@@ -138,6 +139,7 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
                 label="Rol"
                 options={roleOptions}
                 isLoading={isRolesLoading}
+                placeholder="Rolni tanlang"
               />
 
               <div className="grid grid-cols-2 gap-3">

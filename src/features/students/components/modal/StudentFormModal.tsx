@@ -134,12 +134,12 @@ export const StudentFormModal = ({
                 placeholder="Parol kiriting"
                 type="password"
               />
-              <ControlledInput
+              {/* <ControlledInput
                 control={createForm.control}
                 name="roleId"
                 label="Rol ID"
                 placeholder="UUID formatida rol identifikatori"
-              />
+              /> */}
 
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput

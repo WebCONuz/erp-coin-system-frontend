@@ -22,10 +22,11 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { templateFormSchema, type TemplateFormValues } from "../schema";
 import { useCreateScheduleTemplate, useUpdateScheduleTemplate } from "../hooks";
-import { WEEKDAY_LABELS } from "../constants";
+import { GROUP_TEACHER_VALUE, WEEKDAY_LABELS } from "../constants";
 import { WEEKDAYS, type ScheduleTemplate, type Weekday } from "../types";
 import { useGroups } from "@/features/groups/hooks";
 import { useRooms } from "@/features/rooms/hooks";
+import { useTeachers } from "@/features/teachers/hooks";
 import { ControlledSelect } from "@/components/controls";
 
 interface TemplateFormModalProps {
@@ -56,6 +57,7 @@ export const TemplateFormModal = ({
 
   const { data: groups } = useGroups();
   const { data: rooms } = useRooms();
+  const { data: teachers } = useTeachers({});
 
   const form = useForm<TemplateFormValues>({
     resolver: zodResolver(templateFormSchema),
@@ -63,6 +65,7 @@ export const TemplateFormModal = ({
       weekday,
       groupId: "",
       roomId: "",
+      teacherId: GROUP_TEACHER_VALUE,
       startTime: "",
       endTime: "",
     },
@@ -76,6 +79,7 @@ export const TemplateFormModal = ({
         weekday: template.weekday,
         groupId: template.groupId,
         roomId: template.roomId,
+        teacherId: template.teacherId ?? GROUP_TEACHER_VALUE,
         startTime: template.startTime,
         endTime: template.endTime,
       });
@@ -84,6 +88,7 @@ export const TemplateFormModal = ({
         weekday,
         groupId: lockGroup ? (presetGroupId ?? "") : "",
         roomId: "",
+        teacherId: GROUP_TEACHER_VALUE,
         startTime: "",
         endTime: "",
       });
@@ -94,22 +99,48 @@ export const TemplateFormModal = ({
     toast.error(error?.data?.message || "Xatolik yuz berdi");
 
   const onSubmit = (values: TemplateFormValues) => {
+    const teacherId =
+      values.teacherId === GROUP_TEACHER_VALUE ? undefined : values.teacherId;
+
     if (isEdit && template) {
       updateTemplate.mutate(
         {
           startTime: values.startTime,
           endTime: values.endTime,
           roomId: values.roomId,
+          teacherId: teacherId ?? null,
         },
         { onSuccess: () => onClose(), onError },
       );
     } else {
-      createTemplate.mutate(values, {
-        onSuccess: () => onClose(),
-        onError,
-      });
+      createTemplate.mutate(
+        { ...values, teacherId },
+        {
+          onSuccess: () => onClose(),
+          onError,
+        },
+      );
     }
   };
+
+  const activeGroupId = isEdit
+    ? template?.groupId
+    : lockGroup
+      ? presetGroupId
+      : form.watch("groupId");
+  const groupDefaultTeacherName = groups?.data.find(
+    (g) => g.id === activeGroupId,
+  )?.teacher?.fullName;
+
+  const teacherOptions = [
+    {
+      value: GROUP_TEACHER_VALUE,
+      label: groupDefaultTeacherName
+        ? `Guruh o'qituvchisi (${groupDefaultTeacherName})`
+        : "Guruh o'qituvchisi",
+    },
+    ...(teachers?.data.map((t) => ({ label: t.fullName, value: t.id })) ?? []),
+  ];
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -138,6 +169,7 @@ export const TemplateFormModal = ({
                   label: WEEKDAY_LABELS[item],
                   value: item,
                 }))}
+                placeholder="Hafta kunini tanlang"
               />
             )}
 
@@ -164,6 +196,7 @@ export const TemplateFormModal = ({
                       }))
                     : []
                 }
+                placeholder="Guruhni tanlang"
               />
             )}
 
@@ -179,6 +212,15 @@ export const TemplateFormModal = ({
                     }))
                   : []
               }
+              placeholder="Xonani tanlang"
+            />
+
+            <ControlledSelect
+              name="teacherId"
+              label="O'qituvchi"
+              control={form.control}
+              options={teacherOptions}
+              placeholder="O'qituvchini tanlang"
             />
 
             <div className="grid grid-cols-2 gap-4">

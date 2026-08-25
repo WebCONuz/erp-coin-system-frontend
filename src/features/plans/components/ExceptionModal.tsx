@@ -167,10 +167,15 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
             <Button
               variant="outline"
               className="justify-start gap-2"
-              onClick={() => navigate(`/sessions/${entry?.template?.id ?? ""}`)}
+              onClick={() =>
+                navigate(`/admin/sessions/${entry?.session?.id ?? ""}`)
+              }
+              disabled={!entry?.session?.id}
             >
               <Link size={16} className="text-blue-500" />
-              Joriy sessiyaga o'tish
+              {!!entry?.session?.id
+                ? "Joriy dars ma'lumotlariga o'tish"
+                : "Bu kun bo'yicha dars yaratilmagan"}
             </Button>
           </div>
         )}

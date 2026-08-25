@@ -9,6 +9,8 @@ import {
   getYear,
   isSameMonth,
   isToday,
+  isValid,
+  parse,
   startOfMonth,
   startOfWeek,
   subMonths,
@@ -46,18 +48,35 @@ interface Props {
   hasAction?: boolean;
   groupId?: string;
   onGroupIdChange?: (groupId: string) => void;
+  month?: string; // "yyyy-MM"
+  onMonthChange?: (month: string) => void;
 }
 
 export const MonthlyCalendar = ({
   hasAction = true,
   groupId: controlledGroupId,
   onGroupIdChange,
+  month: controlledMonth,
+  onMonthChange,
 }: Props) => {
   const { data: groups } = useGroups();
   const [internalGroupId, setInternalGroupId] = useState<string>("");
   const groupId = controlledGroupId ?? internalGroupId;
   const setGroupId = onGroupIdChange ?? setInternalGroupId;
-  const [viewDate, setViewDate] = useState(new Date());
+
+  const [internalMonth, setInternalMonth] = useState<string>(() =>
+    format(new Date(), "yyyy-MM"),
+  );
+  const monthValue = controlledMonth || internalMonth;
+  const setMonthValue = onMonthChange ?? setInternalMonth;
+
+  const viewDate = useMemo(() => {
+    const parsed = parse(monthValue, "yyyy-MM", new Date());
+    return isValid(parsed) ? parsed : new Date();
+  }, [monthValue]);
+
+  const goToMonth = (next: Date) => setMonthValue(format(next, "yyyy-MM"));
+
   const [generateOpen, setGenerateOpen] = useState(false);
   const [exceptionState, setExceptionState] = useState<{
     open: boolean;
@@ -120,7 +139,7 @@ export const MonthlyCalendar = ({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setViewDate((d) => subMonths(d, 1))}
+            onClick={() => goToMonth(subMonths(viewDate, 1))}
           >
             <ChevronLeft size={18} />
           </Button>
@@ -130,7 +149,7 @@ export const MonthlyCalendar = ({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setViewDate((d) => addMonths(d, 1))}
+            onClick={() => goToMonth(addMonths(viewDate, 1))}
           >
             <ChevronRight size={18} />
           </Button>
@@ -169,7 +188,7 @@ export const MonthlyCalendar = ({
               className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white"
             >
               <Zap size={16} />
-              Sessiyalar yaratish
+              Darslar yaratish
             </Button>
           )}
         </div>

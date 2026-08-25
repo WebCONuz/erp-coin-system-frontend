@@ -5,6 +5,7 @@ export const templateFormSchema = z.object({
   weekday: z.enum(WEEKDAYS),
   groupId: z.string().min(1, "Guruh tanlanishi shart"),
   roomId: z.string().min(1, "Xona tanlanishi shart"),
+  teacherId: z.string().min(1, "O'qituvchini tanlang"),
   startTime: z.string().min(1, "Boshlanish vaqti kiritilishi shart"),
   endTime: z.string().min(1, "Tugash vaqti kiritilishi shart"),
 });

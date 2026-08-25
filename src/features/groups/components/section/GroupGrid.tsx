@@ -26,6 +26,7 @@ export const GroupGrid = ({ handleEdit, handleCreate }: Props) => {
               title={t("groups.no_data")}
               btnText={t("groups.btn.create")}
               btnFn={() => handleCreate()}
+              hasAction={false}
             />
           ) : (
             <div className="grid grid-cols-4 gap-4">

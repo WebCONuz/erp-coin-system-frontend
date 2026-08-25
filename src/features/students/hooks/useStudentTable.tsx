@@ -29,9 +29,20 @@ export const useStudentTable = ({ handleEdit }: Props) => {
         header: t("students.table.full_name"),
         cell: ({ row }) => (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-xs font-bold text-white shrink-0">
-              {row.original.fullName.charAt(0).toUpperCase()}
-            </div>
+            {row?.original?.avatarUrl ? (
+              <img
+                src={row?.original?.avatarUrl}
+                className="object-cover w-8 h-8 rounded-full"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-xs font-bold text-white shrink-0">
+                {row?.original?.fullName?.charAt(0)?.toUpperCase() ?? "A"}
+                {row?.original?.fullName
+                  ?.split(" ")?.[1]
+                  ?.charAt(0)
+                  ?.toUpperCase() ?? "A"}
+              </div>
+            )}
             <span>{row.original.fullName}</span>
           </div>
         ),
@@ -53,9 +64,9 @@ export const useStudentTable = ({ handleEdit }: Props) => {
         accessorKey: "wallet",
         header: t("students.table.balance"),
         cell: ({ row }) => (
-          <span className="font-medium text-purple-600 dark:text-purple-400">
+          <div className="font-medium text-purple-600 dark:text-purple-400">
             {row.original.wallet?.balance ?? 0}
-          </span>
+          </div>
         ),
       },
       {
@@ -71,7 +82,7 @@ export const useStudentTable = ({ handleEdit }: Props) => {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50 dark:hover:bg-green-950"
+              className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950"
               onClick={() => navigate(`/admin/students/${row.original.id}`)}
             >
               <Eye size={18} />
@@ -79,7 +90,7 @@ export const useStudentTable = ({ handleEdit }: Props) => {
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950"
+              className="h-8 w-8 text-purple-500 hover:text-purple-600 hover:bg-purple-100 dark:hover:bg-purple-950"
               onClick={() => handleEdit(row.original)}
             >
               <Pencil size={18} />

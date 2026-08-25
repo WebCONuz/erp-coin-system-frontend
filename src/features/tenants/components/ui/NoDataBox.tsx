@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 interface Props {
   title: string;
   btnText: string;
-  btnFn: () => void;
+  btnFn?: () => void;
   hasAction?: boolean;
 }
 

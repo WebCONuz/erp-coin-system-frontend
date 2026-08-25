@@ -20,13 +20,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
 import { rewardFormSchema, type RewardFormValues } from "../schema";
 import {
@@ -35,6 +28,7 @@ import {
   useUpdateReward,
 } from "../hooks";
 import type { Reward } from "../types";
+import { ControlledSelect } from "@/components/controls";
 
 interface RewardFormModalProps {
   open: boolean;
@@ -204,52 +198,31 @@ export const RewardFormModal = ({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+              <ControlledSelect
                 control={form.control}
                 name="rewardType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Turi</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="physical">Jismoniy sovg'a</SelectItem>
-                        <SelectItem value="digital">Raqamli sovg'a</SelectItem>
-                        <SelectItem value="privilege">Imtiyoz</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Turi"
+                options={[
+                  { label: "Jismoniy sovg'a", value: "physical" },
+                  { label: "Raqamli sovg'a", value: "digital" },
+                  { label: "Imtiyoz", value: "privilege" },
+                ]}
+                placeholder="Sovg'a turini tanlang"
               />
 
-              <FormField
+              <ControlledSelect
                 control={form.control}
                 name="categoryId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Kategoriya</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Tanlang" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {categories?.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                label="Kategoriya"
+                options={
+                  categories && categories.length > 0
+                    ? categories.map((item) => ({
+                        label: item.name,
+                        value: item.id,
+                      }))
+                    : []
+                }
+                placeholder="Kategoriyani tanlang"
               />
             </div>
 

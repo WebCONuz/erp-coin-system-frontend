@@ -10,6 +10,16 @@ import {
 import { GroupFormModal } from "@/features/groups/components/modals";
 import { AddStudentDrawer } from "@/features/groups/components/drawers";
 import { BackListButton } from "@/components/shared/back";
+import { useSessions } from "@/features/sessions/hooks";
+import { usePagination } from "@/hooks";
+import { PageLoading } from "@/components/loading";
+import { NoDataBox } from "@/features/tenants/components/ui";
+import {
+  SessionListCard,
+  SessionsFilterBar,
+} from "@/features/sessions/components";
+import { TablePagination } from "@/components/shared/table";
+import { NoData } from "@/components/partials/no-data";
 
 const GroupDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -19,6 +29,11 @@ const GroupDetail = () => {
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
 
   const { data: group, isLoading, isError } = useGroup(id!);
+  const { data: sessions, isLoading: isSessionLoading } = useSessions();
+  const pagination = usePagination({
+    totalItems: sessions?.meta?.total || 0,
+    initialPageSize: 20,
+  });
 
   if (isLoading) {
     return <GroupDetailSkeleton />;
@@ -56,6 +71,52 @@ const GroupDetail = () => {
           setIsAddStudentOpen={setIsAddStudentOpen}
         />
       </div>
+
+      {/* Bu guruh uchun yaratilgan sessiyalar */}
+      <section className="space-y-4 pt-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
+            Guruh sessiyalari
+          </h2>
+          <SessionsFilterBar hasAction={false} />
+        </div>
+
+        {isLoading || isSessionLoading ? (
+          <PageLoading />
+        ) : sessions?.data ? (
+          <>
+            {sessions.data.length === 0 ? (
+              <NoDataBox
+                title="Hali darslar mavjud emas!"
+                btnText="Dars qo'shish"
+                hasAction={false}
+              />
+            ) : (
+              <div className="grid grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 xl:gap-4">
+                {sessions.data.map((item) => (
+                  <SessionListCard
+                    data={item}
+                    key={item.id}
+                    hasAction={false}
+                  />
+                ))}
+              </div>
+            )}
+
+            {sessions.meta.total > 0 && (
+              <TablePagination
+                totalItems={sessions.meta.total}
+                currentPage={pagination.currentPage}
+                totalPages={pagination.totalPages}
+                pageSize={pagination.pageSize}
+                onPageChange={pagination.setPage}
+              />
+            )}
+          </>
+        ) : (
+          <NoData text="Ma'lumotlar yuklanmadi!" />
+        )}
+      </section>
 
       {/* Edit modal */}
       <GroupFormModal

@@ -33,7 +33,10 @@ const AdminStudentDetail = lazy(
 const AdminControlLayput = lazy(
   () => import("@/pages/control/admin/AdminControlLayout"),
 );
-const AdminSubjects = lazy(() => import("@/pages/subjects/SubjectsPage"));
+const AdminSessions = lazy(() => import("@/pages/sessions/SessionsPage"));
+const AdminSessionDetail = lazy(
+  () => import("@/pages/sessions/SessionDetailPage"),
+);
 const EmployeesPage = lazy(() => import("@/pages/employees/EmployeesPage"));
 const PlansPage = lazy(() => import("@/pages/plans/admin/PlansPage"));
 const RoomsPage = lazy(() => import("@/pages/control/admin/RoomsPage"));
@@ -121,8 +124,12 @@ export const router = createBrowserRouter([
             element: withSuspense(TenantsList),
           },
           {
-            path: "subjects",
-            element: withSuspense(AdminSubjects),
+            path: "sessions",
+            element: withSuspense(AdminSessions),
+          },
+          {
+            path: "sessions/:id",
+            element: withSuspense(AdminSessionDetail),
           },
           {
             path: "employees",

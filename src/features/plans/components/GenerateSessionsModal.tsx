@@ -10,21 +10,14 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form, FormLabel } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import {
   generateSessionsFormSchema,
   type GenerateSessionsFormValues,
 } from "../schema";
 import { useGenerateSessions } from "../hooks";
+import { ControlledDatePicker } from "@/components/controls";
 
 interface Props {
   open: boolean;
@@ -72,7 +65,7 @@ export const GenerateSessionsModal = ({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
-          <DialogTitle>Sessiyalar yaratish</DialogTitle>
+          <DialogTitle>Jadval bo'yicha darslar yaratish</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -85,31 +78,27 @@ export const GenerateSessionsModal = ({
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <FormField
+              <ControlledDatePicker
                 control={form.control}
                 name="fromDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Dan</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                placeholder="Sana"
+                className="min-w-42"
+                buttonClassName="h-8"
+                label="Dan"
               />
-              <FormField
+              <ControlledDatePicker
                 control={form.control}
                 name="toDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gacha</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                placeholder="Sana"
+                className="min-w-42"
+                buttonClassName="h-8"
+                label="Gacha"
+                disabled={!form.watch("fromDate")}
+                minDate={
+                  !!form.watch("fromDate")
+                    ? new Date(form.watch("fromDate"))
+                    : new Date()
+                }
               />
             </div>
 

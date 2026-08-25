@@ -24,9 +24,11 @@ export interface ScheduleTemplate {
   tenantId: string;
   groupId: string;
   roomId: string;
+  teacherId: string | null;
   createdById: string;
   group: { id: string; name: string };
   room: { id: string; name: string };
+  teacher: { id: string; fullName: string } | null;
   _count?: { exceptions: number };
 }
 
@@ -46,6 +48,7 @@ export interface CreateScheduleTemplateDto {
   endTime: string;
   groupId: string;
   roomId: string;
+  teacherId?: string;
 }
 
 export interface UpdateScheduleTemplateDto {
@@ -53,6 +56,7 @@ export interface UpdateScheduleTemplateDto {
   startTime?: string;
   endTime?: string;
   roomId?: string;
+  teacherId?: string | null;
 }
 
 // ─── Calendar (GET /api/schedule-templates/calendar) ─────────────────────────
@@ -84,7 +88,7 @@ export interface CalendarDayEntry {
     room: { id: string; name: string };
   };
   exception: ScheduleException | null;
-  sessions: CalendarSession[];
+  session: CalendarSession;
 }
 
 export type CalendarResponse = Record<string, CalendarDayEntry[]>;

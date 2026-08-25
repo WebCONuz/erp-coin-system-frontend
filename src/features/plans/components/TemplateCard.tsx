@@ -50,6 +50,11 @@ export const TemplateCard = ({
       <p className="text-xs text-muted-foreground">
         <b>Vaqti:</b> {template.startTime} – {template.endTime}
       </p>
+      {template.teacher && (
+        <p className="text-xs text-muted-foreground">
+          <b>O'qituvchi:</b> {template.teacher.fullName}
+        </p>
+      )}
     </div>
   );
 };

@@ -39,7 +39,7 @@ export const ControlledInput = <T extends FieldValues = FieldValues>({
   name,
   className,
   labelClassName,
-  inputClassName,
+  inputClassName = "h-10",
   type: inputType,
   required,
   isNumber,
@@ -84,7 +84,7 @@ export const ControlledInput = <T extends FieldValues = FieldValues>({
           <FormControl>
             <div
               className={cn(
-                "relative flex h-10 w-full items-center gap-1 rounded-lg border transition-colors",
+                "relative flex w-full items-center gap-1 rounded-lg border transition-colors",
                 fieldState.error
                   ? "border-red-500 bg--red-500/10 focus-within:border-red-500"
                   : "border-grey-100 dark:border-gray-700 bg-background focus-within:border-primary/80 dark:focus-within:border-primary/80",

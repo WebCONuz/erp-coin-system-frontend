@@ -12,6 +12,8 @@ export const ENDPOINTS = {
   STAFF: "/api/users/staff",
   ROLES: "/api/roles",
   COIN_TRANSACTIONS: "/api/coin-transactions",
+  COIN_RULES: "/api/coin-rules",
+  SESSIONS: "/api/sessions",
   REWARDS: "/api/rewards",
   REWARD_CATEGORIES: "/api/reward-category",
   PURCHASES: "/api/purchases",
