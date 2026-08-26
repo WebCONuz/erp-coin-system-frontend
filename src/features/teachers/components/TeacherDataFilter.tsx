@@ -1,4 +1,4 @@
-import { Plus, FileSpreadsheet, SearchIcon } from "lucide-react";
+import { Plus, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardTitle } from "@/components/shared/title";
@@ -6,37 +6,32 @@ import { ControlledInput } from "@/components/controls";
 import { useFilter } from "../hooks";
 import { Form } from "@/components/ui/form";
 
-export const TeacherDataFilter = () => {
+interface Props {
+  onAdd: () => void;
+}
+
+export const TeacherDataFilter = ({ onAdd }: Props) => {
   const { form } = useFilter();
+  const currentTab = form.watch("status");
 
   return (
     <Form {...form}>
       <div className="w-full space-y-3 py-4">
-        {/* 1-QATOR: Sarlavha va Harakat tugmalari */}
         <div className="flex items-center justify-between">
           <DashboardTitle title="O'qituvchilar" />
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => "1+++"}
-              className="bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg px-4 h-9 gap-2 shadow-sm duration-200"
-            >
-              <Plus size={18} />
-              <span className="hidden sm:inline">O'qituvchi qo'shish</span>
-            </Button>
-            <Button
-              onClick={() => "2+++"}
-              className="bg-linear-to-br from-emerald-500 to-emerald-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
-            >
-              <FileSpreadsheet size={18} />
-              <span className="hidden sm:inline">Exceldan yuklash</span>
-            </Button>
-          </div>
+          <Button
+            onClick={onAdd}
+            className="bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg px-4 h-9 gap-2 shadow-sm duration-200"
+          >
+            <Plus size={18} />
+            <span className="hidden sm:inline">O'qituvchi qo'shish</span>
+          </Button>
         </div>
 
-        {/* 2-QATOR: Filtrlash paneli */}
         <div className="flex flex-wrap items-center justify-between gap-4">
-          {/* Tablar */}
           <Tabs
+            value={currentTab}
+            onValueChange={(value) => form.setValue("status", value)}
             defaultValue="active"
             className="bg-muted/50 p-1 rounded-lg border border-border"
           >
@@ -56,7 +51,6 @@ export const TeacherDataFilter = () => {
             </TabsList>
           </Tabs>
 
-          {/* Qidiruv */}
           <div className="relative">
             <SearchIcon className="absolute z-2 left-2.5 top-1/2 -translate-y-1/2 text-primary/40 dark:text-gray-600" />
             <ControlledInput

@@ -9,7 +9,6 @@ import {
   LayoutDashboard,
   Building2,
   BookOpen,
-  UserCog,
   CalendarDays,
 } from "lucide-react";
 import { useState } from "react";
@@ -31,6 +30,11 @@ export function AdminSidebar() {
     {
       to: "/admin/students",
       label: t("admin.header.students"),
+      icon: UsersRound,
+    },
+    {
+      to: "/admin/teachers",
+      label: t("admin.header.teachers"),
       icon: GraduationCap,
     },
     {
@@ -40,11 +44,6 @@ export function AdminSidebar() {
     },
     { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
     {
-      to: "/admin/employees",
-      label: t("admin.header.employees"),
-      icon: UserCog,
-    },
-    {
       to: "/admin/control",
       label: t("admin.header.control"),
       icon: LayoutDashboard,
@@ -53,11 +52,6 @@ export function AdminSidebar() {
       to: "/admin/sessions",
       label: t("admin.header.sessions"),
       icon: BookOpen,
-    },
-    {
-      to: "/admin/teachers",
-      label: t("admin.header.teachers"),
-      icon: UsersRound,
     },
   ];
 

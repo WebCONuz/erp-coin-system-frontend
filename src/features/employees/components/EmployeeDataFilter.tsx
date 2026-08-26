@@ -2,9 +2,15 @@ import { Plus, SearchIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardTitle } from "@/components/shared/title";
-import { ControlledInput } from "@/components/controls";
+import {
+  ControlledInput,
+  ControlledSelect,
+  type IOption,
+} from "@/components/controls";
 import { Form } from "@/components/ui/form";
+import { useRoles } from "@/features/roles/hooks";
 import { useFilter } from "../hooks";
+import { ALL_VALUE } from "../constants";
 
 interface Props {
   onAdd: () => void;
@@ -13,6 +19,14 @@ interface Props {
 export const EmployeeDataFilter = ({ onAdd }: Props) => {
   const { form } = useFilter();
   const currentTab = form.watch("status");
+  const { data: roles } = useRoles();
+
+  const roleOptions: IOption[] = [
+    { value: ALL_VALUE, label: "Barcha rollar" },
+    ...(roles?.data
+      ?.filter((item) => item.name !== "student")
+      ?.map((r) => ({ value: r.id, label: r.displayName })) ?? []),
+  ];
 
   return (
     <Form {...form}>
@@ -51,14 +65,25 @@ export const EmployeeDataFilter = ({ onAdd }: Props) => {
             </TabsList>
           </Tabs>
 
-          <div className="relative">
-            <SearchIcon className="absolute z-2 left-2.5 top-1/2 -translate-y-1/2 text-primary/40 dark:text-gray-600" />
-            <ControlledInput
-              control={form.control}
-              placeholder="Ism yoki telefon bo'yicha qidirish"
-              name="search"
-              inputClassName="pl-7 rounded-lg h-10 border border-gray-300 min-w-75"
-            />
+          <div className="flex items-center gap-3">
+            <div className="w-44">
+              <ControlledSelect
+                control={form.control}
+                name="roleId"
+                options={roleOptions}
+                placeholder="Rol tanlang"
+              />
+            </div>
+
+            <div className="relative">
+              <SearchIcon className="absolute z-2 left-2.5 top-1/2 -translate-y-1/2 text-primary/40 dark:text-gray-600" />
+              <ControlledInput
+                control={form.control}
+                placeholder="Ism yoki telefon bo'yicha qidirish"
+                name="search"
+                inputClassName="pl-7 rounded-lg h-10 border border-gray-300 min-w-75"
+              />
+            </div>
           </div>
         </div>
       </div>

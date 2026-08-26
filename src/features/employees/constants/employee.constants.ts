@@ -5,3 +5,5 @@ export const employeeKeys = {
   ],
   oneEmployeeById: (id: string) => ["one-employee-by-id", id],
 } as const;
+
+export const ALL_VALUE = "all";

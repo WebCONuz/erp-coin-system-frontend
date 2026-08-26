@@ -78,7 +78,7 @@ const GroupDetail = () => {
           <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
             Guruh sessiyalari
           </h2>
-          <SessionsFilterBar hasAction={false} />
+          <SessionsFilterBar hasAction={false} pageName="group" />
         </div>
 
         {isLoading || isSessionLoading ? (

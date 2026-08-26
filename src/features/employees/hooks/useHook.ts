@@ -26,6 +26,7 @@ export const useEmployees = () => {
         : searchParams.get("status") === "active"
           ? "true"
           : undefined,
+    roleId: searchParams.get("roleId") || undefined,
     page: searchParams.get("page") || undefined,
   };
 

@@ -14,7 +14,7 @@ export const useFilter = () => {
   const form = useForm<FilterFormData>({
     defaultValues: {
       search: searchParams.get("search") || "",
-      status: searchParams.get("status") || "",
+      status: searchParams.get("status") || "active",
     },
   });
 

@@ -18,9 +18,14 @@ import { ALL_VALUE, sessionTypeOptions } from "../constants";
 interface Props {
   onAdd?: () => void;
   hasAction?: boolean;
+  pageName?: "teacher" | "group" | "session";
 }
 
-export const SessionsFilterBar = ({ onAdd, hasAction = true }: Props) => {
+export const SessionsFilterBar = ({
+  onAdd,
+  hasAction = true,
+  pageName = "session",
+}: Props) => {
   const { form } = useFilter();
   const { data: groups } = useSessionGroupOptions();
   const { data: teachers } = useSessionTeacherOptions();
@@ -57,24 +62,26 @@ export const SessionsFilterBar = ({ onAdd, hasAction = true }: Props) => {
         )}
 
         <div className="flex flex-wrap items-center gap-3">
-          <div className="w-44">
-            {hasAction && (
+          {pageName !== "group" && (
+            <div className="w-44">
               <ControlledSelect
                 control={form.control}
                 name="groupId"
                 options={groupOptions}
                 placeholder="Guruh"
               />
-            )}
-          </div>
-          <div className="w-44">
-            <ControlledSelect
-              control={form.control}
-              name="teacherId"
-              options={teacherOptions}
-              placeholder="O'qituvchi"
-            />
-          </div>
+            </div>
+          )}
+          {pageName !== "teacher" && (
+            <div className="w-44">
+              <ControlledSelect
+                control={form.control}
+                name="teacherId"
+                options={teacherOptions}
+                placeholder="O'qituvchi"
+              />
+            </div>
+          )}
           <div className="w-36">
             <ControlledSelect
               control={form.control}

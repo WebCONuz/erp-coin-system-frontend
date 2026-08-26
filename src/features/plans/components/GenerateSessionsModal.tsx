@@ -85,6 +85,7 @@ export const GenerateSessionsModal = ({
                 className="min-w-42"
                 buttonClassName="h-8"
                 label="Dan"
+                minDate={new Date()}
               />
               <ControlledDatePicker
                 control={form.control}
@@ -101,6 +102,11 @@ export const GenerateSessionsModal = ({
                 }
               />
             </div>
+            <p className="text-sm text-gray-600">
+              <span className="text-yellow-600">Eslatma!</span> Darslarni
+              "Belgilangan Jadval" bo'yicha faqat kelgusi sanalar uchun yaratish
+              mumkin, o'tib ketgan sanalar uchun mumkin emas!
+            </p>
 
             <DialogFooter className="pt-2 gap-2">
               <Button

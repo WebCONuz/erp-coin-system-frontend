@@ -24,6 +24,9 @@ const Market = lazy(() => import("@/pages/market/Market"));
 const TenantsList = lazy(() => import("@/pages/tenants/TenantsList"));
 const AdminDashboard = lazy(() => import("@/pages/dashboard/admin/Dashboard"));
 const AdminTeachers = lazy(() => import("@/pages/teachers/admin/Teachers"));
+const AdminTeacherDetail = lazy(
+  () => import("@/pages/teachers/admin/TeacherDetail"),
+);
 const AdminGroups = lazy(() => import("@/pages/groups/admin/Groups"));
 const GroupDetail = lazy(() => import("@/pages/groups/admin/GroupDetail"));
 const AdminStudents = lazy(() => import("@/pages/students/admin/Students"));
@@ -37,8 +40,8 @@ const AdminSessions = lazy(() => import("@/pages/sessions/SessionsPage"));
 const AdminSessionDetail = lazy(
   () => import("@/pages/sessions/SessionDetailPage"),
 );
-const EmployeesPage = lazy(() => import("@/pages/employees/EmployeesPage"));
 const PlansPage = lazy(() => import("@/pages/plans/admin/PlansPage"));
+const EmployeesPage = lazy(() => import("@/pages/control/admin/EmployeesPage"));
 const RoomsPage = lazy(() => import("@/pages/control/admin/RoomsPage"));
 const ReasonsPage = lazy(() => import("@/pages/control/admin/ReasonsPage"));
 const SendMessagePage = lazy(
@@ -100,6 +103,10 @@ export const router = createBrowserRouter([
             element: withSuspense(AdminTeachers),
           },
           {
+            path: "teachers/:id",
+            element: withSuspense(AdminTeacherDetail),
+          },
+          {
             path: "groups",
             element: withSuspense(AdminGroups),
           },
@@ -132,10 +139,6 @@ export const router = createBrowserRouter([
             element: withSuspense(AdminSessionDetail),
           },
           {
-            path: "employees",
-            element: withSuspense(EmployeesPage),
-          },
-          {
             path: "plans",
             element: withSuspense(PlansPage),
           },
@@ -162,6 +165,10 @@ export const router = createBrowserRouter([
               {
                 path: "roles",
                 element: withSuspense(RolesPage),
+              },
+              {
+                path: "employees",
+                element: withSuspense(EmployeesPage),
               },
             ],
           },

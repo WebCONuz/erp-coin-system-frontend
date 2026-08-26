@@ -1,34 +1,80 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { CustomTable, TablePagination } from "@/components/shared/table";
-import { TeacherDataFilter } from "@/features/teachers/components";
-import { useTeachers, useTable } from "@/features/teachers/hooks";
+import {
+  ChangePasswordModal,
+  TeacherDataFilter,
+  TeacherFormModal,
+} from "@/features/teachers/components";
+import {
+  useArchiveTeacher,
+  useRestoreTeacher,
+  useTeachers,
+  useTable,
+} from "@/features/teachers/hooks";
 import type { Teacher } from "@/features/teachers/types";
 import { usePagination } from "@/hooks";
-import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
 
 const Teachers = () => {
-  const [searchParams] = useSearchParams();
-  const { data: teachers, isLoading } = useTeachers({
-    search: searchParams.get("search") || undefined,
-    status: searchParams.get("status") || undefined,
-  });
-  const [selectedId, setSelectedId] = useState<string>();
+  const navigate = useNavigate();
 
-  const handleRowClick = (teacher: Teacher) => {
-    console.log(selectedId);
-    setSelectedId(teacher.id);
+  const { data: teachers, isLoading } = useTeachers();
+  const archiveTeacher = useArchiveTeacher();
+  const restoreTeacher = useRestoreTeacher();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingTeacher, setEditingTeacher] = useState<Teacher | null>(null);
+  const [passwordTeacher, setPasswordTeacher] = useState<Teacher | null>(null);
+
+  const handleCreate = () => {
+    setEditingTeacher(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (teacher: Teacher) => {
+    setEditingTeacher(teacher);
+    setIsModalOpen(true);
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+    setEditingTeacher(null);
+  };
+
+  const handleArchive = (teacher: Teacher) => {
+    if (!window.confirm(`"${teacher.fullName}" ni arxivlashni tasdiqlaysizmi?`))
+      return;
+
+    archiveTeacher.mutate(teacher.id, {
+      onError: (error: any) =>
+        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+    });
+  };
+
+  const handleRestore = (teacher: Teacher) => {
+    restoreTeacher.mutate(teacher.id, {
+      onError: (error: any) =>
+        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+    });
   };
 
   const { columns } = useTable({
-    handleRowClick,
+    onView: (teacher) =>
+      navigate(`/admin/teachers/${teacher.id}?teacherId=${teacher.id}`),
+    onEdit: handleEdit,
+    onChangePassword: setPasswordTeacher,
+    onArchive: handleArchive,
+    onRestore: handleRestore,
   });
+
   const pagination = usePagination({
     totalItems: teachers?.meta?.total || 0,
   });
 
   return (
     <>
-      <TeacherDataFilter />
+      <TeacherDataFilter onAdd={handleCreate} />
 
       <div className="w-full overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-900">
         <CustomTable
@@ -49,6 +95,19 @@ const Teachers = () => {
           onPageChange={pagination.setPage}
         />
       )}
+
+      <TeacherFormModal
+        open={isModalOpen}
+        onClose={handleClose}
+        mode={editingTeacher ? "edit" : "create"}
+        teacher={editingTeacher ?? undefined}
+      />
+
+      <ChangePasswordModal
+        open={!!passwordTeacher}
+        onClose={() => setPasswordTeacher(null)}
+        teacherId={passwordTeacher?.id ?? ""}
+      />
     </>
   );
 };
