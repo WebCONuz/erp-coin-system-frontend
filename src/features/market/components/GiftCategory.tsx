@@ -10,7 +10,11 @@ import { useEffect, useState } from "react";
 import { CategoryFormModal } from "./CategoryFormModal";
 import type { RewardCategory } from "../types";
 
-export const GiftCategory = () => {
+interface Props {
+  noAction?: boolean;
+}
+
+export const GiftCategory = ({ noAction = false }: Props) => {
   const { data: categories, isLoading } = useRewardCategories();
   const deleteCategory = useDeleteRewardCategory();
   const { t } = useTranslation();
@@ -55,7 +59,10 @@ export const GiftCategory = () => {
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (e: React.MouseEvent, categoryItem: RewardCategory) => {
+  const handleOpenEdit = (
+    e: React.MouseEvent,
+    categoryItem: RewardCategory,
+  ) => {
     e.stopPropagation();
     setModalMode("edit");
     setActiveCategoryData(categoryItem);
@@ -90,6 +97,7 @@ export const GiftCategory = () => {
                 title={t("reward_categories.no_data")}
                 btnText={t("reward_categories.btn.create")}
                 btnFn={handleOpenCreate}
+                hasAction={!noAction}
               />
             ) : (
               <>
@@ -111,27 +119,31 @@ export const GiftCategory = () => {
                         ({item._count?.rewards ?? 0})
                       </span>
                     </span>
-                    <div className="flex gap-x-2.5">
-                      <Pencil
-                        size="15"
-                        className="text-gray-500 hover:text-green-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
-                        onClick={(e) => handleOpenEdit(e, item)}
-                      />
-                      <Trash
-                        size="15"
-                        className="text-gray-500 hover:text-red-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
-                        onClick={(e) => handleDelete(e, item.id)}
-                      />
-                    </div>
+                    {!noAction && (
+                      <div className="flex gap-x-2.5">
+                        <Pencil
+                          size="15"
+                          className="text-gray-500 hover:text-green-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
+                          onClick={(e) => handleOpenEdit(e, item)}
+                        />
+                        <Trash
+                          size="15"
+                          className="text-gray-500 hover:text-red-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
+                          onClick={(e) => handleDelete(e, item.id)}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
-                <Button
-                  onClick={handleOpenCreate}
-                  className="mt-2 h-12 flex items-center gap-x-2 justify-center text-lg font-medium rounded-md bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white"
-                >
-                  <Plus />
-                  <span>{t("reward_categories.btn.add")}</span>
-                </Button>
+                {!noAction && (
+                  <Button
+                    onClick={handleOpenCreate}
+                    className="mt-2 h-12 flex items-center gap-x-2 justify-center text-lg font-medium rounded-md bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white"
+                  >
+                    <Plus />
+                    <span>{t("reward_categories.btn.add")}</span>
+                  </Button>
+                )}
               </>
             )}
           </>

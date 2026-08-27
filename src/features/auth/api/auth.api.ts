@@ -1,9 +1,9 @@
 import { request } from "@/services/api";
 import { ENDPOINTS } from "@/services/endpoints";
-import type { LoginDto, ResponseUserMe, UserMe } from "../types";
+import type { LoginDto, ResponseLogin, ResponseUserMe, UserMe } from "../types";
 
-export const login = async (data: LoginDto) => {
-  const res = await request.post(ENDPOINTS.LOGIN, data);
+export const login = async (data: LoginDto): Promise<ResponseLogin> => {
+  const res = await request.post<ResponseLogin>(ENDPOINTS.LOGIN, data);
   return res.data;
 };
 

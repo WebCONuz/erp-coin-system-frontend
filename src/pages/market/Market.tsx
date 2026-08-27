@@ -35,7 +35,7 @@ const Market = () => {
       <ProductDataFilter onAddGift={isStudent ? undefined : handleCreate} />
       <div className="grid grid-cols-5 gap-6">
         <div className="col-span-1">
-          <GiftCategory />
+          <GiftCategory noAction={isStudent} />
         </div>
         <div className="col-span-4">
           <ProductGrid

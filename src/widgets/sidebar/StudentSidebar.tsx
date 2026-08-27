@@ -3,56 +3,36 @@ import {
   Home,
   ChevronRight,
   UsersRound,
-  School,
-  GraduationCap,
   Gift,
-  LayoutDashboard,
   Building2,
-  BookOpen,
-  CalendarDays,
+  User,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { useTranslation } from "react-i18next";
 import { ROLES } from "@/assets/constants";
+import { Tooltip } from "./AdminSidebar";
 
 const LOGO = "/logo.png";
 
-export function AdminSidebar() {
+export const StudentSidebar = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
   const navItems = [
-    { to: "/admin", label: t("admin.header.main"), icon: Home, end: true },
-
-    { to: "/admin/groups", label: t("admin.header.groups"), icon: School },
+    { to: "/student", label: t("admin.header.main"), icon: Home, end: true },
     {
-      to: "/admin/students",
-      label: t("admin.header.students"),
+      to: "/student/profile",
+      label: t("students.header.profile"),
+      icon: User,
+    },
+    {
+      to: "/student/groups",
+      label: t("admin.header.groups"),
       icon: UsersRound,
     },
-    {
-      to: "/admin/teachers",
-      label: t("admin.header.teachers"),
-      icon: GraduationCap,
-    },
-    {
-      to: "/admin/plans",
-      label: t("admin.header.plans"),
-      icon: CalendarDays,
-    },
-    { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
-    {
-      to: "/admin/control",
-      label: t("admin.header.control"),
-      icon: LayoutDashboard,
-    },
-    {
-      to: "/admin/sessions",
-      label: t("admin.header.sessions"),
-      icon: BookOpen,
-    },
+    { to: "/student/market", label: t("admin.header.market"), icon: Gift },
   ];
 
   return (
@@ -144,28 +124,4 @@ export function AdminSidebar() {
       </nav>
     </aside>
   );
-}
-
-// Tooltip wrapper
-export function Tooltip({
-  label,
-  show,
-  children,
-}: {
-  label: string;
-  show: boolean;
-  children: React.ReactNode;
-}) {
-  if (!show) return <>{children}</>;
-  return (
-    <div className="group relative">
-      {children}
-      <div
-        className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 whitespace-nowrap rounded-md px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
-        style={{ backgroundColor: "#001a70" }}
-      >
-        {label}
-      </div>
-    </div>
-  );
-}
+};

@@ -33,12 +33,12 @@ export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
-                    {purchase?.itemName}
+                    {purchase?.reward?.title}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
                     <span className="flex items-center gap-1">
                       <Coins size={11} />
-                      {purchase?.price} coin
+                      {purchase?.coinSpent} coin
                     </span>
                     <span>·</span>
                     <span>

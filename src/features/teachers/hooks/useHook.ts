@@ -16,18 +16,26 @@ import type {
   UpdateTeacherDto,
 } from "../types";
 
-export const useTeachers = () => {
+// `explicitParams` lets call sites that just need a plain teacher list for a
+// select (GroupFormModal, TemplateFormModal) bypass the URL entirely, the way
+// they did before this hook started reading the teachers-list page's own
+// search params by default.
+export const useTeachers = (
+  explicitParams?: Record<string, string | undefined>,
+) => {
   const [searchParams] = useSearchParams();
-  const params = {
-    search: searchParams.get("search") || undefined,
-    isActive:
-      searchParams.get("status") === "archive"
-        ? "false"
-        : searchParams.get("status") === "active"
-          ? "true"
-          : undefined,
-    page: searchParams.get("page") || undefined,
-  };
+  const params =
+    explicitParams ??
+    {
+      search: searchParams.get("search") || undefined,
+      isActive:
+        searchParams.get("status") === "archive"
+          ? "false"
+          : searchParams.get("status") === "active"
+            ? "true"
+            : undefined,
+      page: searchParams.get("page") || undefined,
+    };
 
   return useQuery({
     queryKey: teacherKeys.allTeachers(params),

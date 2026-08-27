@@ -32,8 +32,14 @@ export const useAuth = () => {
       localStorage.setItem("is_authenticated", "true");
       await queryClient.invalidateQueries({ queryKey: authQueryKeys.getMe() });
       toast.success(t("welcome_back"));
-      const roleName = data?.user?.role?.name;
-      navigate(roleName === ROLES.STUDENT ? "/student" : "/admin");
+      const roleName = data?.user?.role;
+      navigate(
+        roleName === ROLES.STUDENT
+          ? "/student"
+          : roleName === ROLES.TEACHER
+            ? "/teacher"
+            : "/admin",
+      );
     },
     onError: (error: any) => {
       toast.error(error?.data?.message || t("invalid_credentials"));

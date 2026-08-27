@@ -29,3 +29,15 @@ export interface ResponseUserMe {
   message: string;
   data: UserMe;
 }
+
+export interface ResponseLogin {
+  status: string;
+  message: string;
+  user: {
+    id: string;
+    phone: string;
+    fullName: string;
+    role: string;
+    tenantId: string;
+  };
+}

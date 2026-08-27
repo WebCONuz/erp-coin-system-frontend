@@ -38,6 +38,9 @@
     }
   },
   "students": {
+    "header": {
+      "profile": "Shaxsiy profil"
+    },
     "table": {
       "full_name": "F.I.Sh",
       "phone": "Telefon",
