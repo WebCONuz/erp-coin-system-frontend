@@ -13,7 +13,6 @@ import {
   updateRewardCategory,
 } from "../api";
 import type {
-  CreatePurchaseDto,
   CreateRewardCategoryDto,
   CreateRewardDto,
   UpdateRewardCategoryDto,
@@ -98,7 +97,7 @@ export const usePurchaseReward = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: CreatePurchaseDto) => purchaseReward(data),
+    mutationFn: (rewardId: string) => purchaseReward(rewardId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rewardKeys.allRewards() });
       queryClient.invalidateQueries({ queryKey: purchaseKeys.allPurchases() });

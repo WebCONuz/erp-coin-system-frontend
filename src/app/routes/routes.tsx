@@ -18,6 +18,9 @@ const StudentDashboard = lazy(
   () => import("@/pages/dashboard/student/Dashboard"),
 );
 const StudentGroups = lazy(() => import("@/pages/groups/student/Group"));
+const StudentGroupDetail = lazy(
+  () => import("@/pages/groups/student/GroupDetail"),
+);
 const Market = lazy(() => import("@/pages/market/Market"));
 const StudentProfilePage = lazy(
   () => import("@/pages/students/student-profile/StudentProfilePage"),
@@ -195,6 +198,10 @@ export const router = createBrowserRouter([
           {
             path: "groups",
             element: withSuspense(StudentGroups),
+          },
+          {
+            path: "groups/:id",
+            element: withSuspense(StudentGroupDetail),
           },
           {
             path: "market",

@@ -6,7 +6,6 @@ import {
   getStudentById,
   deactivateStudent,
   changeStudentPassword,
-  uploadStudentAvatar,
   addStudentToGroup,
   removeStudentFromGroup,
   manualCoinTransaction,
@@ -93,16 +92,6 @@ export const useDeactivateStudent = (studentId: string) => {
 export const useChangeStudentPassword = (studentId: string) => {
   return useMutation({
     mutationFn: (data: ChangePasswordDto) => changeStudentPassword(studentId, data),
-  });
-};
-
-export const useUploadStudentAvatar = (studentId: string) => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (file: File) => uploadStudentAvatar(studentId, file),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentKeys.oneStudentById(studentId) });
-    },
   });
 };
 

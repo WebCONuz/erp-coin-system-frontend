@@ -5,10 +5,8 @@ import { NoData } from "@/components/partials/no-data";
 import { StatisticSection } from "@/features/students/components/partials";
 import { GiftTab } from "@/features/students/components/tab-contents";
 import {
-  ChangePasswordModal,
-  CoinHistoryTab,
   AttendanceHistoryTab,
-  EditProfileModal,
+  CoinHistoryTab,
   StudentProfileHeader,
 } from "@/features/student-profile/components";
 import { useMyProfile } from "@/features/student-profile/hooks";
@@ -22,8 +20,6 @@ const TAB_OPTIONS = [
 const StudentProfilePage = () => {
   const { data: student, isLoading, isError } = useMyProfile();
   const [activeTab, setActiveTab] = useState("attendance");
-  const [isEditOpen, setIsEditOpen] = useState(false);
-  const [isPasswordOpen, setIsPasswordOpen] = useState(false);
 
   if (isLoading) return <PageLoading />;
   if (isError || !student) {
@@ -32,11 +28,7 @@ const StudentProfilePage = () => {
 
   return (
     <div className="space-y-6">
-      <StudentProfileHeader
-        student={student}
-        onEdit={() => setIsEditOpen(true)}
-        onChangePassword={() => setIsPasswordOpen(true)}
-      />
+      <StudentProfileHeader student={student} />
 
       <StatisticSection student={student} />
 
@@ -57,18 +49,6 @@ const StudentProfilePage = () => {
         <CoinHistoryTab student={student} />
         <GiftTab student={student} />
       </Tabs>
-
-      <EditProfileModal
-        open={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        student={student}
-      />
-
-      <ChangePasswordModal
-        open={isPasswordOpen}
-        onClose={() => setIsPasswordOpen(false)}
-        studentId={student.id}
-      />
     </div>
   );
 };

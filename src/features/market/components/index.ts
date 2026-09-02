@@ -3,3 +3,4 @@ export * from "./ProductDataFilter";
 export * from "./GiftCategory";
 export * from "./RewardFormModal";
 export * from "./CategoryFormModal";
+export * from "./PurchaseHistoryTab";

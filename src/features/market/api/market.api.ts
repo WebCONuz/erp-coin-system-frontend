@@ -1,10 +1,9 @@
 import { request } from "@/services/api";
 import { ENDPOINTS } from "@/services/endpoints";
 import type {
-  CreatePurchaseDto,
   CreateRewardCategoryDto,
   CreateRewardDto,
-  Purchase,
+  PurchaseRewardResponse,
   PurchasesResponse,
   Reward,
   RewardCategory,
@@ -43,9 +42,11 @@ export const deleteReward = async (rewardId: string): Promise<void> => {
 };
 
 export const purchaseReward = async (
-  data: CreatePurchaseDto,
-): Promise<Purchase> => {
-  const res = await request.post<Purchase>(ENDPOINTS.PURCHASES, data);
+  rewardId: string,
+): Promise<PurchaseRewardResponse> => {
+  const res = await request.post<PurchaseRewardResponse>(
+    `${ENDPOINTS.REWARDS}/${rewardId}/purchase`,
+  );
   return res.data;
 };
 

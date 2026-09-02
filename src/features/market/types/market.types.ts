@@ -77,22 +77,23 @@ export type PurchaseStatus =
 
 export interface Purchase {
   id: string;
-  reward: Pick<Reward, "id" | "title" | "coinPrice" | "imageUrl">;
+  coinSpent: number;
   status: PurchaseStatus;
-  adminNote?: string | null;
-  createdAt: string;
+  purchasedAt: string;
+  student?: { id: string; fullName: string; phone: string };
+  reward: Pick<Reward, "id" | "title" | "coinPrice" | "imageUrl">;
 }
 
 export interface PurchasesResponse {
   data: Purchase[];
-  meta: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
-export interface CreatePurchaseDto {
-  rewardId: string;
+export interface PurchaseRewardResponse {
+  message: string;
+  purchaseId: string;
+  remainingCoins: number;
 }

@@ -52,21 +52,6 @@ export const changeStudentPassword = async (id: string, data: ChangePasswordDto)
   await request.patch(`${ENDPOINTS.USERS}/${id}/change-password`, data);
 };
 
-// ─── Avatar upload ───────────────────────────────────────────────────────────
-export const uploadStudentAvatar = async (
-  id: string,
-  file: File,
-): Promise<{ id: string; avatarUrl: string }> => {
-  const formData = new FormData();
-  formData.append("avatar", file);
-  const res = await request.patch<{ id: string; avatarUrl: string }>(
-    `${ENDPOINTS.STUDENTS}/${id}/avatar`,
-    formData,
-    { headers: { "Content-Type": "multipart/form-data" } },
-  );
-  return res.data;
-};
-
 // ─── Group membership ────────────────────────────────────────────────────────
 export const addStudentToGroup = async (groupId: string, studentId: string): Promise<void> => {
   await request.post(`${ENDPOINTS.GROUPS}/${groupId}/students`, { studentId });

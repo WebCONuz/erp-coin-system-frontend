@@ -27,14 +27,11 @@ export const ProductGrid = ({ onAddGift, onEdit }: Props) => {
     if (!window.confirm(`"${reward.title}" ni sotib olishni tasdiqlaysizmi?`))
       return;
 
-    purchaseReward.mutate(
-      { rewardId: reward.id },
-      {
-        onSuccess: () => toast.success("Sovg'a muvaffaqiyatli sotib olindi"),
-        onError: (error: any) =>
-          toast.error(error?.data?.message || "Xatolik yuz berdi"),
-      },
-    );
+    purchaseReward.mutate(reward.id, {
+      onSuccess: (res) => toast.success(res.message),
+      onError: (error: any) =>
+        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+    });
   };
 
   const handleDelete = (reward: Reward) => {
