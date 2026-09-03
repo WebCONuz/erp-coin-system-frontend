@@ -5,6 +5,7 @@ export const ENDPOINTS = {
   LOGOUT: "/api/auth/logout",
   TENANTS: "/api/tenants",
   TEACHERS: "/api/users/teachers",
+  TEACHER_SELF: "/api/teachers",
   COURSES: "/api/courses",
   GROUPS: "/api/groups",
   STUDENTS: "/api/students",

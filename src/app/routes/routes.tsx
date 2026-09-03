@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import AuthLayout from "@/app/layouts/AuthLayout";
 import AdminLayout from "@/app/layouts/AdminLayout";
 import StudentLayout from "@/app/layouts/StudentLayout";
+import TeacherLayout from "@/app/layouts/TeacherLayout";
 import { ProtectedRoute } from "./protected-route";
 import { PageLoader } from "@/components/shared/loaders";
 import NotFoundPage from "@/pages/errors/NotFound";
@@ -24,6 +25,31 @@ const StudentGroupDetail = lazy(
 const Market = lazy(() => import("@/pages/market/Market"));
 const StudentProfilePage = lazy(
   () => import("@/pages/students/student-profile/StudentProfilePage"),
+);
+
+// teacher
+const TeacherDashboard = lazy(
+  () => import("@/pages/dashboard/teacher/Dashboard"),
+);
+const TeacherGroups = lazy(() => import("@/pages/groups/teacher/Group"));
+const TeacherGroupDetail = lazy(
+  () => import("@/pages/groups/teacher/GroupDetail"),
+);
+const TeacherSessions = lazy(
+  () => import("@/pages/sessions/teacher/SessionsPage"),
+);
+const TeacherSessionDetail = lazy(
+  () => import("@/pages/sessions/teacher/SessionDetailPage"),
+);
+const TeacherStudents = lazy(() => import("@/pages/students/teacher/Students"));
+const TeacherStudentDetail = lazy(
+  () => import("@/pages/students/teacher/StudentDetail"),
+);
+const TeacherProfilePage = lazy(
+  () => import("@/pages/teachers/teacher-profile/ProfilePage"),
+);
+const TeacherCoinRules = lazy(
+  () => import("@/pages/coin-rules/teacher/CoinRulesPage"),
 );
 
 // admin
@@ -210,6 +236,55 @@ export const router = createBrowserRouter([
           {
             path: "profile",
             element: withSuspense(StudentProfilePage),
+          },
+        ],
+      },
+    ],
+  },
+
+  // TEACHER ROUTES
+  {
+    path: "/teacher",
+    element: <ProtectedRoute allowedRoles={[ROLES.TEACHER]} />,
+    children: [
+      {
+        element: <TeacherLayout />,
+        children: [
+          {
+            index: true,
+            element: withSuspense(TeacherDashboard),
+          },
+          {
+            path: "groups",
+            element: withSuspense(TeacherGroups),
+          },
+          {
+            path: "groups/:id",
+            element: withSuspense(TeacherGroupDetail),
+          },
+          {
+            path: "sessions",
+            element: withSuspense(TeacherSessions),
+          },
+          {
+            path: "sessions/:id",
+            element: withSuspense(TeacherSessionDetail),
+          },
+          {
+            path: "students",
+            element: withSuspense(TeacherStudents),
+          },
+          {
+            path: "students/:id",
+            element: withSuspense(TeacherStudentDetail),
+          },
+          {
+            path: "profile",
+            element: withSuspense(TeacherProfilePage),
+          },
+          {
+            path: "coin-rules",
+            element: withSuspense(TeacherCoinRules),
           },
         ],
       },
