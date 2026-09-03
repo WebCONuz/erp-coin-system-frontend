@@ -4,11 +4,11 @@ import { StudentSidebar } from "@/widgets/sidebar";
 
 export default function StudentLayout() {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen font-body">
       <StudentSidebar />
       <div className="flex flex-1 flex-col">
         <StudentNavbar />
-        <main className="p-6 bg-bg-primary dark:bg-black h-[calc(100vh-56px)] overflow-y-auto">
+        <main className="p-6 bg-paper h-[calc(100vh-64px)] overflow-y-auto">
           <Outlet />
         </main>
       </div>

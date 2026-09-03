@@ -6,11 +6,13 @@ import {
   Gift,
   Building2,
   User,
+  Sprout,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { useTranslation } from "react-i18next";
 import { ROLES } from "@/assets/constants";
+import { getLevelProgress } from "@/features/student-profile/lib/level";
 import { Tooltip } from "./AdminSidebar";
 
 const LOGO = "/logo.png";
@@ -19,6 +21,10 @@ export const StudentSidebar = () => {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
+
+  const { level, nextLevel, bandProgress, coinsToNext } = getLevelProgress(
+    user?.wallet?.balance ?? 0,
+  );
 
   const navItems = [
     { to: "/student", label: t("admin.header.main"), icon: Home, end: true },
@@ -37,13 +43,13 @@ export const StudentSidebar = () => {
 
   return (
     <aside
-      className={`relative border-r flex flex-col transition-all duration-300 ${
+      className={`relative border-r border-forest-light/60 bg-forest flex flex-col transition-all duration-300 ${
         collapsed ? "w-16" : "w-60"
       } min-h-screen`}
     >
       {/* Toggle button */}
       <div
-        className="w-6 h-6 rounded-md bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center absolute -right-3.75 top-4 z-10 text-white cursor-pointer"
+        className="w-6 h-6 rounded-full bg-gold flex items-center justify-center absolute -right-3 top-4 z-10 text-forest-deep cursor-pointer shadow-sm"
         onClick={() => setCollapsed((c) => !c)}
       >
         <ChevronRight
@@ -54,17 +60,20 @@ export const StudentSidebar = () => {
 
       {/* Logo */}
       <div
-        className={`flex gap-x-2 h-14.25 items-center px-3 overflow-hidden relative border-b z-20 ${collapsed ? "justify-center" : "justify-start"}`}
+        className={`flex gap-x-2 h-14.25 items-center px-3 overflow-hidden relative border-b border-forest-light/60 z-20 ${collapsed ? "justify-center" : "justify-start"}`}
       >
         <img
           src={LOGO}
           alt="bb-coin"
-          className="transition-all duration-300 w-6 h-6"
+          className="transition-all duration-300 w-7 h-7 rounded-lg"
         />
         {!collapsed && (
-          <span className="text-purple-600 dark:text-yellow-400 font-bold text-lg ">
-            BB-Coin
-          </span>
+          <div className="leading-tight overflow-hidden">
+            <p className="font-display text-gold-soft font-semibold text-lg truncate">
+              BB-Coin
+            </p>
+            <p className="text-[11px] text-paper/50 truncate">Bilim bog'i</p>
+          </div>
         )}
       </div>
 
@@ -76,10 +85,10 @@ export const StudentSidebar = () => {
               to={to}
               end={end}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors ${
+                `flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-linear-to-br from-purple-500 to-purple-700 text-white"
-                    : "hover:bg-purple-600/10 hover:text-black text-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/20"
+                    ? "bg-gold/15 text-gold-soft ring-1 ring-gold/40"
+                    : "text-paper/65 hover:bg-white/5 hover:text-paper"
                 } ${collapsed ? "justify-center" : ""}`
               }
             >
@@ -88,7 +97,7 @@ export const StudentSidebar = () => {
                   <Icon
                     size={18}
                     className="shrink-0"
-                    style={{ color: isActive ? "#fff" : undefined }}
+                    style={{ color: isActive ? "var(--color-gold)" : undefined }}
                   />
                   {!collapsed && <span>{label}</span>}
                 </>
@@ -102,10 +111,10 @@ export const StudentSidebar = () => {
           <NavLink
             to="/admin/tenants"
             className={({ isActive }) =>
-              `flex items-center gap-3 rounded-md px-3 py-3 text-sm transition-colors ${
+              `flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-linear-to-br from-purple-500 to-purple-700 text-white"
-                  : "hover:bg-purple-600/10 hover:text-black text-gray-700 dark:text-gray-300 dark:hover:text-white dark:hover:bg-white/20"
+                  ? "bg-gold/15 text-gold-soft ring-1 ring-gold/40"
+                  : "text-paper/65 hover:bg-white/5 hover:text-paper"
               } ${collapsed ? "justify-center" : ""}`
             }
           >
@@ -114,7 +123,7 @@ export const StudentSidebar = () => {
                 <Building2
                   size={18}
                   className="shrink-0"
-                  style={{ color: isActive ? "#fff" : undefined }}
+                  style={{ color: isActive ? "var(--color-gold)" : undefined }}
                 />
                 {!collapsed && <span>{t("admin.header.tenants")}</span>}
               </>
@@ -122,6 +131,44 @@ export const StudentSidebar = () => {
           </NavLink>
         )}
       </nav>
+
+      {/* Level footer */}
+      <div className={`relative z-20 p-2 ${collapsed ? "px-2" : ""}`}>
+        <Tooltip
+          label={`${level.daraja}-daraja — ${level.name}`}
+          show={collapsed}
+        >
+          <div
+            className={`rounded-2xl border border-gold/25 bg-forest-light p-3 ${collapsed ? "flex justify-center" : ""}`}
+          >
+            <div className={`flex items-center gap-2 ${collapsed ? "" : "mb-2"}`}>
+              <div className="w-7 h-7 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
+                <Sprout size={15} className="text-gold" />
+              </div>
+              {!collapsed && (
+                <p className="font-display text-sm text-paper font-semibold truncate">
+                  {level.daraja}-daraja
+                </p>
+              )}
+            </div>
+            {!collapsed && (
+              <>
+                <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gold transition-all duration-500"
+                    style={{ width: `${bandProgress}%` }}
+                  />
+                </div>
+                <p className="text-[11px] text-paper/50 mt-1.5">
+                  {nextLevel
+                    ? `Keyingi darajagacha ${coinsToNext} coin`
+                    : "Eng yuqori daraja"}
+                </p>
+              </>
+            )}
+          </div>
+        </Tooltip>
+      </div>
     </aside>
   );
 };

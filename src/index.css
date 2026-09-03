@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
+@import "@fontsource-variable/fredoka";
+@import "@fontsource-variable/plus-jakarta-sans";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -51,6 +53,22 @@
 @theme {
   --color-primary: #7f56d8;
   --color-bg-primary: #f3f4f8;
+
+  /* Student area ("BB-Coin garden") palette — scoped by usage, does not
+     touch the tokens above so admin/auth layouts stay untouched. */
+  --color-forest: #15302a;
+  --color-forest-deep: #0e211c;
+  --color-forest-light: #1e4038;
+  --color-paper: #f6f1e2;
+  --color-paper-soft: #fbf8ef;
+  --color-gold: #eda23b;
+  --color-gold-soft: #f7d9a8;
+  --color-bloom: #e75b49;
+  --color-ink: #1f2a24;
+  --color-ink-soft: #5b6b62;
+
+  --font-display: "Fredoka Variable", sans-serif;
+  --font-body: "Plus Jakarta Sans Variable", sans-serif;
 }
 
 :root {

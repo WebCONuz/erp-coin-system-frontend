@@ -2,14 +2,16 @@ import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
-import { StatisticSection } from "@/features/students/components/partials";
-import { GiftTab } from "@/features/students/components/tab-contents";
 import {
   AttendanceHistoryTab,
   CoinHistoryTab,
+  PurchaseHistoryTab,
+  ProfileStatsRow,
   StudentProfileHeader,
+  GardenMapCard,
 } from "@/features/student-profile/components";
 import { useMyProfile } from "@/features/student-profile/hooks";
+import { getLevelProgress } from "@/features/student-profile/lib/level";
 
 const TAB_OPTIONS = [
   { value: "attendance", label: "Davomat tarixi" },
@@ -26,19 +28,23 @@ const StudentProfilePage = () => {
     return <NoData text="Profil ma'lumotlari topilmadi" />;
   }
 
+  const progress = getLevelProgress(student.wallet?.balance ?? 0);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <StudentProfileHeader student={student} />
 
-      <StatisticSection student={student} />
+      <ProfileStatsRow student={student} />
+
+      <GardenMapCard progress={progress} />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-zinc-100 dark:bg-zinc-800 p-1 rounded-full h-auto flex-wrap gap-1">
+        <TabsList className="bg-white border border-ink/10 p-1 rounded-full h-auto flex-wrap gap-1">
           {TAB_OPTIONS.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="rounded-full px-4 py-2 text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+              className="rounded-full px-4 py-2 text-sm data-[state=active]:bg-forest data-[state=active]:text-paper"
             >
               {tab.label}
             </TabsTrigger>
@@ -47,7 +53,7 @@ const StudentProfilePage = () => {
 
         <AttendanceHistoryTab student={student} />
         <CoinHistoryTab student={student} />
-        <GiftTab student={student} />
+        <PurchaseHistoryTab student={student} />
       </Tabs>
     </div>
   );

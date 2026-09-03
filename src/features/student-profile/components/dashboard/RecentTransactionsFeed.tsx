@@ -1,5 +1,4 @@
 import { Coins, Minus, Plus } from "lucide-react";
-import { EmptyState } from "@/features/students/components/ui";
 import { formatDate } from "@/ustils";
 import type { DashboardTransaction } from "../../types";
 
@@ -17,53 +16,50 @@ export const RecentTransactionsFeed = ({
 }: {
   transactions: DashboardTransaction[];
 }) => (
-  <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 space-y-3">
-    <h3 className="text-sm font-semibold text-zinc-800 dark:text-zinc-200">
-      So'nggi harakatlar
+  <div className="rounded-2xl border border-ink/10 bg-white p-5">
+    <h3 className="font-display text-sm font-semibold text-ink mb-4">
+      So'nggi faoliyat
     </h3>
 
     {!transactions.length ? (
-      <EmptyState
-        icon={<Coins size={18} />}
-        title="Harakatlar mavjud emas"
-        text=""
-      />
+      <div className="flex flex-col items-center justify-center py-10 text-center">
+        <Coins size={22} className="text-ink-soft/50 mb-2" />
+        <p className="text-sm text-ink-soft">Harakatlar mavjud emas</p>
+      </div>
     ) : (
-      <div className="space-y-2">
+      <div className="space-y-1">
         {transactions.map((tx) => (
           <div
             key={tx.id}
-            className="flex items-center justify-between gap-3 px-1 py-1.5"
+            className="flex items-center justify-between gap-3 px-1 py-2"
           >
             <div className="flex items-center gap-2.5 min-w-0">
               <div
-                className={`w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-xs ${
+                className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-xs ${
                   tx.direction === "earn"
-                    ? "bg-green-100 dark:bg-green-900/40 text-green-600"
-                    : "bg-red-100 dark:bg-red-900/40 text-red-600"
+                    ? "bg-forest/10 text-forest"
+                    : "bg-bloom/10 text-bloom"
                 }`}
               >
                 {tx.direction === "earn" ? (
-                  <Plus size={12} />
+                  <Plus size={13} />
                 ) : (
-                  <Minus size={12} />
+                  <Minus size={13} />
                 )}
               </div>
               <div className="min-w-0">
-                <p className="text-sm text-zinc-700 dark:text-zinc-300 truncate">
+                <p className="text-sm text-ink truncate">
                   <b>{SOURCE_TYPE_LABELS[tx.sourceType] ?? "Qo'shimcha"}</b>
-                  {tx.note ? `: ${tx.note}` : ""}
+                  {tx.note ? ` — ${tx.note}` : ""}
                 </p>
-                <p className="text-xs text-zinc-400">
+                <p className="text-xs text-ink-soft">
                   {formatDate(tx.createdAt, "dd.MM.yyyy")}
                 </p>
               </div>
             </div>
             <span
               className={`text-sm font-semibold shrink-0 ${
-                tx.direction === "earn"
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-red-600 dark:text-red-400"
+                tx.direction === "earn" ? "text-forest" : "text-bloom"
               }`}
             >
               {tx.direction === "earn" ? "+" : "-"}

@@ -43,6 +43,16 @@ export const useRewards = () => {
   });
 };
 
+// Unfiltered active catalog — used by the student shop's hero/sidebar so
+// their "nearest goal" and category counts stay stable while the grid
+// itself is filtered by search/category.
+export const useRewardsCatalog = () => {
+  return useQuery({
+    queryKey: rewardKeys.allRewards({ isActive: "true" }),
+    queryFn: () => getAllRewards({ isActive: "true" }),
+  });
+};
+
 export const useCreateReward = () => {
   const queryClient = useQueryClient();
 

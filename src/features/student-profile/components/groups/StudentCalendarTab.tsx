@@ -17,9 +17,9 @@ import { uz } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/loading";
-import { TEMPLATE_CHIP_COLORS } from "@/features/plans/constants";
 import { useMySchedule } from "../../hooks";
 import { StudentSessionChip } from "./StudentSessionChip";
+import { getGroupAccent } from "./groupAccent";
 
 const WEEK_HEADER = [
   { label: "Du", className: "" },
@@ -27,8 +27,8 @@ const WEEK_HEADER = [
   { label: "Ch", className: "" },
   { label: "Pa", className: "" },
   { label: "Ju", className: "" },
-  { label: "Sh", className: "text-amber-500" },
-  { label: "Ya", className: "text-red-500" },
+  { label: "Sh", className: "text-gold" },
+  { label: "Ya", className: "text-bloom" },
 ];
 
 export const StudentCalendarTab = () => {
@@ -47,25 +47,20 @@ export const StudentCalendarTab = () => {
 
   const groupColors = useMemo(() => {
     const colors: Record<string, string> = {};
-    let nextIndex = 0;
 
-    Object.keys(calendarData ?? {})
-      .sort()
-      .forEach((dateKey) => {
-        calendarData![dateKey].forEach((entry) => {
-          if (!colors[entry.group.id]) {
-            colors[entry.group.id] =
-              TEMPLATE_CHIP_COLORS[nextIndex % TEMPLATE_CHIP_COLORS.length];
-            nextIndex += 1;
-          }
-        });
+    Object.values(calendarData ?? {}).forEach((entries) => {
+      entries.forEach((entry) => {
+        if (!colors[entry.group.id]) {
+          colors[entry.group.id] = getGroupAccent(entry.group.id).chip;
+        }
       });
+    });
 
     return colors;
   }, [calendarData]);
 
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4">
+    <div className="rounded-2xl border border-ink/10 bg-white p-4">
       <div className="mb-4 flex items-center justify-center gap-2">
         <Button
           variant="ghost"
@@ -74,7 +69,7 @@ export const StudentCalendarTab = () => {
         >
           <ChevronLeft size={18} />
         </Button>
-        <h3 className="w-40 text-center text-base font-semibold capitalize">
+        <h3 className="w-40 text-center text-base font-semibold capitalize text-ink">
           {format(viewDate, "LLLL yyyy", { locale: uz })}
         </h3>
         <Button
@@ -89,11 +84,11 @@ export const StudentCalendarTab = () => {
       {isLoading ? (
         <PageLoading />
       ) : (
-        <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-200 dark:bg-zinc-800">
+        <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10">
           {WEEK_HEADER.map((day) => (
             <div
               key={day.label}
-              className={`bg-zinc-50 dark:bg-zinc-900 px-2 py-1.5 text-center text-xs font-semibold ${day.className}`}
+              className={`bg-paper-soft px-2 py-1.5 text-center text-xs font-semibold text-ink-soft ${day.className}`}
             >
               {day.label}
             </div>
@@ -107,15 +102,15 @@ export const StudentCalendarTab = () => {
             return (
               <div
                 key={dateKey}
-                className={`min-h-24 space-y-1 bg-white dark:bg-zinc-900 p-1.5 ${
+                className={`min-h-24 space-y-1 bg-white p-1.5 ${
                   inMonth ? "" : "opacity-40"
                 }`}
               >
                 <span
                   className={`text-xs font-medium ${
                     isToday(day)
-                      ? "flex h-5 w-5 items-center justify-center rounded-full bg-purple-600 text-white"
-                      : "text-zinc-400"
+                      ? "flex h-5 w-5 items-center justify-center rounded-full bg-gold text-forest-deep"
+                      : "text-ink-soft"
                   }`}
                 >
                   {format(day, "d")}
@@ -125,7 +120,8 @@ export const StudentCalendarTab = () => {
                     key={`${entry.template.id}-${idx}`}
                     entry={entry}
                     colorClass={
-                      groupColors[entry.group.id] ?? TEMPLATE_CHIP_COLORS[0]
+                      groupColors[entry.group.id] ??
+                      getGroupAccent(entry.group.id).chip
                     }
                   />
                 ))}

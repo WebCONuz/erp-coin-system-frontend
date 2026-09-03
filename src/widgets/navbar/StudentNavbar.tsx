@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LogOut, Moon, Sun, User } from "lucide-react";
-import { useTheme } from "next-themes";
+import { Bell, Coins, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,7 +13,6 @@ import { useAuth } from "@/features/auth/hooks/useLogin";
 import { getFileUrl } from "@/lib/utils";
 
 export function StudentNavbar() {
-  const { theme, setTheme } = useTheme();
   const { user, logout } = useAuth();
 
   const initials = user?.fullName
@@ -27,42 +25,47 @@ export function StudentNavbar() {
     : "O";
 
   return (
-    <header className="w-full border-b bg-background">
-      <div className="flex h-14 items-center gap-4 px-4 sm:px-8">
+    <header className="w-full border-b border-ink/10 bg-paper">
+      <div className="flex h-16 items-center gap-3 px-4 sm:px-8">
         <div className="ml-auto flex items-center gap-3">
+          <div className="flex items-center gap-1.5 rounded-full bg-gold/15 border border-gold/30 pl-2 pr-3 py-1.5">
+            <span className="w-5 h-5 rounded-full bg-gold flex items-center justify-center shrink-0">
+              <Coins size={12} className="text-forest-deep" />
+            </span>
+            <span className="font-display text-sm font-semibold text-forest">
+              {user?.wallet?.balance ?? 0}
+            </span>
+            <span className="text-xs text-ink-soft">coin</span>
+          </div>
+
           <Button
             variant="outline"
             size="icon"
-            className="h-9 w-9 text-muted-foreground hover:text-foreground dark:border-yellow-600/40"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="relative h-9 w-9 border-ink/15 text-ink-soft hover:text-ink hover:bg-paper-soft"
           >
-            {theme === "dark" ? (
-              <Sun size={17} className="text-yellow-500" />
-            ) : (
-              <Moon size={17} />
-            )}
+            <Bell size={17} />
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="flex items-center gap-x-2 cursor-pointer">
-                <Avatar className="h-8 w-8 select-none">
+                <Avatar className="h-9 w-9 select-none ring-2 ring-gold/30">
                   {user?.avatarUrl && (
                     <AvatarImage
                       src={getFileUrl(user.avatarUrl)}
                       alt="avatar"
                     />
                   )}
-                  <AvatarFallback className="bg-linear-to-br from-purple-500 to-purple-700 text-white text-xs font-medium">
+                  <AvatarFallback className="bg-forest text-gold-soft text-xs font-semibold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
-                <div className="">
-                  <p className="text-sm font-medium leading-none">
+                <div className="hidden sm:block">
+                  <p className="text-sm font-medium leading-none text-ink">
                     {user?.fullName ?? "- -"}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {user?.phone ?? ""}
+                  <p className="text-xs text-ink-soft mt-1">
+                    {user?.role?.displayName ?? "O'quvchi"}
                   </p>
                 </div>
               </div>

@@ -19,7 +19,7 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
     return (
       <div
         title={`${group.name}: bekor qilindi${exception.note ? ` — ${exception.note}` : ""}`}
-        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-red-700 bg-red-100 dark:bg-red-950/50 dark:text-red-400"
+        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-bloom bg-bloom/10"
       >
         <span className="line-through">{group.name}</span>
         <br />
@@ -32,7 +32,7 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
     return (
       <div
         title={`${group.name}: vaqti o'zgardi — ${exception.startTime}:${exception.endTime}${exception.note ? ` (${exception.note})` : ""}`}
-        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-amber-700 bg-amber-100 dark:bg-amber-950/50 dark:text-amber-400"
+        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-gold bg-gold/15"
       >
         {group.name}
         <br />
@@ -45,7 +45,7 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
     return (
       <div
         title={`${group.name}: rejalashtirilgan dars — ${template.startTime}:${template.endTime}`}
-        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-zinc-500 bg-zinc-100 dark:bg-zinc-800 dark:text-zinc-400"
+        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-ink-soft bg-paper-soft"
       >
         {group.name}
         <br />

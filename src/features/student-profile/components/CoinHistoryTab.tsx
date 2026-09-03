@@ -1,6 +1,5 @@
 import { TabsContent } from "@/components/ui/tabs";
 import { Coins, Minus, Plus } from "lucide-react";
-import { EmptyState } from "@/features/students/components/ui";
 import type { StudentDetailFull } from "@/features/students/types";
 import { formatDate } from "@/ustils";
 
@@ -21,51 +20,51 @@ export const CoinHistoryTab = ({ student }: Props) => {
   return (
     <TabsContent value="coins" className="mt-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">
+        <h3 className="font-display text-sm font-semibold text-ink">
           Tanga tarixi
         </h3>
-        <span className="text-xs text-zinc-400">So'nggi 20 ta</span>
+        <span className="text-xs text-ink-soft">So'nggi 20 ta</span>
       </div>
 
       {!transactions.length ? (
-        <EmptyState
-          icon={<Coins size={20} />}
-          title="Tranzaksiyalar mavjud emas"
-          text="Coin qo'shilgach yoki ayirilgach, tarix shu yerda ko'rinadi."
-        />
+        <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-ink/10 bg-white">
+          <Coins size={22} className="text-ink-soft/50 mb-2" />
+          <p className="text-sm font-medium text-ink">
+            Tranzaksiyalar mavjud emas
+          </p>
+          <p className="text-xs text-ink-soft mt-1 max-w-xs">
+            Coin qo'shilgach yoki ayirilgach, tarix shu yerda ko'rinadi.
+          </p>
+        </div>
       ) : (
-        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+        <div className="rounded-2xl border border-ink/10 bg-white overflow-hidden">
           {transactions.map((tx, idx) => (
             <div
               key={tx.id}
-              className={`flex items-center justify-between px-4 py-3 bg-white dark:bg-zinc-900 ${
-                idx !== transactions.length - 1
-                  ? "border-b border-zinc-100 dark:border-zinc-800"
-                  : ""
+              className={`flex items-center justify-between px-4 py-3 ${
+                idx !== transactions.length - 1 ? "border-b border-ink/8" : ""
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <div
-                  className={`w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-xs ${
+                  className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-xs ${
                     tx.direction === "earn"
-                      ? "bg-green-100 dark:bg-green-900/40 text-green-600"
-                      : "bg-red-100 dark:bg-red-900/40 text-red-600"
+                      ? "bg-forest/10 text-forest"
+                      : "bg-bloom/10 text-bloom"
                   }`}
                 >
                   {tx.direction === "earn" ? (
-                    <Plus size={12} />
+                    <Plus size={13} />
                   ) : (
-                    <Minus size={12} />
+                    <Minus size={13} />
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm text-zinc-700 dark:text-zinc-300 truncate">
-                    <b>
-                      {SOURCE_TYPE_LABELS[tx.sourceType] ?? "Qo'shimcha"}
-                    </b>
-                    {tx.note ? `: ${tx.note}` : ""}
+                  <p className="text-sm text-ink truncate">
+                    <b>{SOURCE_TYPE_LABELS[tx.sourceType] ?? "Qo'shimcha"}</b>
+                    {tx.note ? ` — ${tx.note}` : ""}
                   </p>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs text-ink-soft">
                     {formatDate(tx.createdAt, "dd.MM.yyyy")}
                     {tx.teacher ? ` · ${tx.teacher.fullName}` : ""}
                   </p>
@@ -73,9 +72,7 @@ export const CoinHistoryTab = ({ student }: Props) => {
               </div>
               <span
                 className={`text-sm font-semibold shrink-0 ${
-                  tx.direction === "earn"
-                    ? "text-green-600 dark:text-green-400"
-                    : "text-red-600 dark:text-red-400"
+                  tx.direction === "earn" ? "text-forest" : "text-bloom"
                 }`}
               >
                 {tx.direction === "earn" ? "+" : "-"}
