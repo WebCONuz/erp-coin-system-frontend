@@ -17,6 +17,7 @@ export const SessionChip = ({
   const { template, exception, session } = entry;
   const isLocked = session?.isLocked ?? false;
   const topic = session?.topic;
+  const subjectName = session?.subject?.name ?? template?.subject?.name;
 
   if (exception?.isCancelled) {
     return (
@@ -72,6 +73,14 @@ export const SessionChip = ({
       onClick={hasAction ? onClick : () => {}}
       className={`w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium ${colorClass}`}
     >
+      {subjectName ? (
+        <>
+          <b>Fan:</b> {subjectName}
+          <br />
+        </>
+      ) : (
+        ""
+      )}
       <b>Xona:</b> {template?.room?.name ?? "-"}
       <br />
       <b>Vaqti:</b> {`${template.startTime} : ${template.endTime}`}

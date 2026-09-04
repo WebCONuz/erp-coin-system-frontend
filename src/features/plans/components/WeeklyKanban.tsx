@@ -173,7 +173,7 @@ export const WeeklyKanban = ({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="w-48 justify-between font-normal"
+                className="max-w-100 min-w-48 justify-between font-normal"
               >
                 <span className="truncate">
                   {groups?.data.find((g) => g.id === groupFilter)?.name ??
@@ -182,7 +182,7 @@ export const WeeklyKanban = ({
                 <ChevronDown size={16} className="shrink-0 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent align="end" className="w-60">
               <DropdownMenuRadioGroup
                 value={groupFilter}
                 onValueChange={setGroupFilter}

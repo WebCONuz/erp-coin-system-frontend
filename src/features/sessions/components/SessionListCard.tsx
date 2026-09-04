@@ -83,6 +83,11 @@ export const SessionListCard = ({
             Qulflangan
           </span>
         )}
+        {data.subject && (
+          <span className="inline-block px-2 py-0.5 rounded-4xl text-xs font-medium bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-400">
+            {data.subject.name}
+          </span>
+        )}
       </div>
 
       <h4 className="text-base font-semibold leading-5 mb-2 truncate">

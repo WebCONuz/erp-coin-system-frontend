@@ -17,7 +17,7 @@ export const TenantDataFilter = ({
     <div className="w-full space-y-3 py-4">
       {/* 1-QATOR: Sarlavha va Harakat tugmalari */}
       <div className="flex items-center justify-between">
-        <DashboardTitle title="O'qituvchilar" />
+        <DashboardTitle title="O'quv markazlar" />
         <div className="flex items-center gap-2">
           <Button
             onClick={addTenant}

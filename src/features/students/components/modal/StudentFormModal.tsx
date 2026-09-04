@@ -16,7 +16,6 @@ interface Props {
   onClose: () => void;
   mode: "create" | "edit";
   student?: StudentDetail | StudentDetailFull;
-  defaultRoleId?: string;
 }
 
 export const StudentFormModal = ({
@@ -24,14 +23,12 @@ export const StudentFormModal = ({
   onClose,
   mode,
   student,
-  defaultRoleId = "",
 }: Props) => {
   const isEdit = mode === "edit";
   const { isPending, onSubmitCreate, onSubmitEdit, createForm, editForm } =
     useCreateEditStudent({
       open,
       isEdit,
-      defaultRoleId,
       onClose,
       student,
     });
@@ -134,13 +131,6 @@ export const StudentFormModal = ({
                 placeholder="Parol kiriting"
                 type="password"
               />
-              {/* <ControlledInput
-                control={createForm.control}
-                name="roleId"
-                label="Rol ID"
-                placeholder="UUID formatida rol identifikatori"
-              /> */}
-
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput
                   control={createForm.control}

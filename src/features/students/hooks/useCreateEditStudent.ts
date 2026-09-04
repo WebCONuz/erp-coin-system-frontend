@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ROLES } from "@/assets/constants";
+import { useRoles } from "@/features/roles/hooks";
 import {
   createStudentSchema,
   editStudentSchema,
@@ -13,20 +15,22 @@ import { useCreateStudent, useUpdateStudent } from "./useHook";
 interface Props {
   open: boolean;
   isEdit: boolean;
-  defaultRoleId?: string;
   onClose: () => void;
   student?: StudentDetail | StudentDetailFull;
 }
 export const useCreateEditStudent = ({
   open,
   isEdit,
-  defaultRoleId,
   onClose,
   student,
 }: Props) => {
   const createStudent = useCreateStudent();
   const updateStudent = useUpdateStudent(student?.id ?? "");
   const isPending = createStudent.isPending || updateStudent.isPending;
+
+  const { data: roles } = useRoles();
+  const studentRoleId =
+    roles?.data.find((r) => r.name === ROLES.STUDENT)?.id ?? "";
 
   const createForm = useForm<CreateFormValues>({
     resolver: zodResolver(createStudentSchema),
@@ -71,10 +75,10 @@ export const useCreateEditStudent = ({
         fullName: "",
         phone: "",
         password: "",
-        roleId: defaultRoleId,
+        roleId: studentRoleId,
       });
     }
-  }, [open, isEdit, student, defaultRoleId, createForm, editForm]);
+  }, [open, isEdit, student, studentRoleId, createForm, editForm]);
 
   const onSubmitCreate = (values: CreateFormValues) => {
     const payload: CreateFormValues = {
@@ -83,6 +87,7 @@ export const useCreateEditStudent = ({
       password: values.password,
       roleId: values.roleId,
     };
+
     if (values.email) payload.email = values.email;
     if (values.parentPhone) payload.parentPhone = values.parentPhone;
     if (values.avatarUrl) payload.avatarUrl = values.avatarUrl;

@@ -25,9 +25,21 @@ import type {
   SendMessageDto,
   UpdatePurchaseStatusDto,
 } from "../types";
+import { useSearchParams } from "react-router-dom";
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
-export const useStudents = (params?: Record<string, string | undefined>) => {
+export const useStudents = (limit?: number) => {
+  const [searchParams] = useSearchParams();
+  const status = searchParams.get("status");
+
+  const params = {
+    search: searchParams.get("search") || undefined,
+    groupId: searchParams.get("group_id") || undefined,
+    isActive:
+      status === "archive" ? "false" : status === "active" ? "true" : undefined,
+    page: searchParams.get("page") || undefined,
+    limit: limit?.toString() || "20",
+  };
   return useQuery({
     queryKey: studentKeys.allStudents(params),
     queryFn: () => getAllStudents(params),
@@ -42,14 +54,18 @@ export const useStudentById = (id: string) => {
   });
 };
 
-export const useCoinTransactionHistory = (params?: Record<string, string | undefined>) => {
+export const useCoinTransactionHistory = (
+  params?: Record<string, string | undefined>,
+) => {
   return useQuery({
     queryKey: studentKeys.coinTransactions(params),
     queryFn: () => getCoinTransactionHistory(params),
   });
 };
 
-export const useStudentPurchases = (params?: Record<string, string | undefined>) => {
+export const useStudentPurchases = (
+  params?: Record<string, string | undefined>,
+) => {
   return useQuery({
     queryKey: studentKeys.purchases(params),
     queryFn: () => getStudentPurchases(params),
@@ -73,7 +89,9 @@ export const useUpdateStudent = (studentId: string) => {
     mutationFn: (data: UpdateStudentDto) => updateStudent(studentId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
-      queryClient.invalidateQueries({ queryKey: studentKeys.oneStudentById(studentId) });
+      queryClient.invalidateQueries({
+        queryKey: studentKeys.oneStudentById(studentId),
+      });
     },
   });
 };
@@ -81,25 +99,34 @@ export const useUpdateStudent = (studentId: string) => {
 export const useDeactivateStudent = (studentId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: DeactivateStudentDto) => deactivateStudent(studentId, data),
+    mutationFn: (data: DeactivateStudentDto) =>
+      deactivateStudent(studentId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
-      queryClient.invalidateQueries({ queryKey: studentKeys.oneStudentById(studentId) });
+      queryClient.invalidateQueries({
+        queryKey: studentKeys.oneStudentById(studentId),
+      });
     },
   });
 };
 
 export const useChangeStudentPassword = (studentId: string) => {
   return useMutation({
-    mutationFn: (data: ChangePasswordDto) => changeStudentPassword(studentId, data),
+    mutationFn: (data: ChangePasswordDto) =>
+      changeStudentPassword(studentId, data),
   });
 };
 
 export const useAddStudentToGroup = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ groupId, studentId }: { groupId: string; studentId: string }) =>
-      addStudentToGroup(groupId, studentId),
+    mutationFn: ({
+      groupId,
+      studentId,
+    }: {
+      groupId: string;
+      studentId: string;
+    }) => addStudentToGroup(groupId, studentId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
     },
@@ -112,7 +139,9 @@ export const useRemoveStudentFromGroup = (studentId: string) => {
     mutationFn: ({ groupId }: { groupId: string }) =>
       removeStudentFromGroup(groupId, studentId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentKeys.oneStudentById(studentId) });
+      queryClient.invalidateQueries({
+        queryKey: studentKeys.oneStudentById(studentId),
+      });
     },
   });
 };
@@ -122,8 +151,12 @@ export const useManualCoinTransaction = (studentId: string) => {
   return useMutation({
     mutationFn: (data: CoinTransactionManualDto) => manualCoinTransaction(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentKeys.oneStudentById(studentId) });
-      queryClient.invalidateQueries({ queryKey: studentKeys.coinTransactions() });
+      queryClient.invalidateQueries({
+        queryKey: studentKeys.oneStudentById(studentId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: studentKeys.coinTransactions(),
+      });
     },
   });
 };
@@ -133,8 +166,12 @@ export const useCancelCoinTransaction = (studentId: string) => {
   return useMutation({
     mutationFn: (id: string) => cancelCoinTransaction(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentKeys.oneStudentById(studentId) });
-      queryClient.invalidateQueries({ queryKey: studentKeys.coinTransactions() });
+      queryClient.invalidateQueries({
+        queryKey: studentKeys.oneStudentById(studentId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: studentKeys.coinTransactions(),
+      });
     },
   });
 };

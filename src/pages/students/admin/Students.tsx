@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import { useStudents } from "@/features/students/hooks";
 import type { StudentDetail } from "@/features/students/types";
 import {
@@ -9,18 +8,7 @@ import {
 import { StudentFormModal } from "@/features/students/components/modal";
 
 const Students = () => {
-  const [searchParams] = useSearchParams();
-  const status = searchParams.get("status");
-  const isActiveParam =
-    status === "archive" ? "false" : status === "active" ? "true" : undefined;
-
-  const { data: students, isLoading } = useStudents({
-    search: searchParams.get("search") || undefined,
-    groupId: searchParams.get("group_id") || undefined,
-    isActive: isActiveParam,
-    page: searchParams.get("page") || undefined,
-    limit: "20",
-  });
+  const { data: students, isLoading } = useStudents();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
@@ -38,8 +26,6 @@ const Students = () => {
     setModalOpen(true);
   };
 
-  const defaultRoleId = students?.data?.[0]?.role?.id ?? "";
-
   return (
     <div className="flex flex-col gap-y-6">
       <StudentDataFilter onAddStudent={handleCreate} />
@@ -56,7 +42,6 @@ const Students = () => {
         onClose={() => setModalOpen(false)}
         mode={modalMode}
         student={selectedStudent}
-        defaultRoleId={defaultRoleId}
       />
     </div>
   );

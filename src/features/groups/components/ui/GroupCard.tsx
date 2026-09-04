@@ -14,7 +14,7 @@ export const GroupCard = ({ data, handleEdit }: Props) => {
 
   return (
     <div className="border p-3 bg-card text-card-foreground rounded-xl shadow-sm overflow-hidden transition-all hover:shadow-md relative">
-      <div className="absolute top-5 right-4 flex gap-x-2.5">
+      <div className="absolute bottom-5 right-4 flex gap-x-2.5">
         <Eye
           size="16"
           className="text-gray-500 hover:text-blue-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"

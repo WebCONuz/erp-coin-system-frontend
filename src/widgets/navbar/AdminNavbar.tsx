@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { ROLES } from "@/assets/constants";
 import { useAllTenants } from "@/features/tenants/hooks";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { TENANT_KEY } from "@/features/tenants/constants";
 import { useEffect, useState } from "react";
 import type { TenentType } from "@/features/tenants/types";
@@ -64,6 +64,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentTenat, setCurrentTenant] = useState<string>();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const currentLang =
     LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
@@ -120,6 +121,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
 
     const name = getTenantName(id, tenants || []);
     setCurrentTenant(name);
+    navigate("/admin");
 
     // window.location.reload();
     queryClient.invalidateQueries();

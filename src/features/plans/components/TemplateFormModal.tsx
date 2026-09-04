@@ -20,13 +20,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { templateFormSchema, type TemplateFormValues } from "../schema";
+import { getTemplateFormSchema, type TemplateFormValues } from "../schema";
 import { useCreateScheduleTemplate, useUpdateScheduleTemplate } from "../hooks";
 import { GROUP_TEACHER_VALUE, WEEKDAY_LABELS } from "../constants";
 import { WEEKDAYS, type ScheduleTemplate, type Weekday } from "../types";
 import { useGroups } from "@/features/groups/hooks";
 import { useRooms } from "@/features/rooms/hooks";
 import { useTeachers } from "@/features/teachers/hooks";
+import { useSubjects } from "@/features/subjects/hooks";
+import { useCurrentTenant } from "@/features/tenants/hooks";
 import { ControlledSelect } from "@/components/controls";
 
 interface TemplateFormModalProps {
@@ -58,14 +60,18 @@ export const TemplateFormModal = ({
   const { data: groups } = useGroups();
   const { data: rooms } = useRooms();
   const { data: teachers } = useTeachers({});
+  const { data: subjects } = useSubjects();
+  const { isLearningCenter } = useCurrentTenant();
+  const showSubject = !isLearningCenter;
 
   const form = useForm<TemplateFormValues>({
-    resolver: zodResolver(templateFormSchema),
+    resolver: zodResolver(getTemplateFormSchema(showSubject)),
     defaultValues: {
       weekday,
       groupId: "",
       roomId: "",
       teacherId: GROUP_TEACHER_VALUE,
+      subjectId: "",
       startTime: "",
       endTime: "",
     },
@@ -77,9 +83,11 @@ export const TemplateFormModal = ({
     if (isEdit && template) {
       form.reset({
         weekday: template.weekday,
-        groupId: template.groupId,
-        roomId: template.roomId,
-        teacherId: template.teacherId ?? GROUP_TEACHER_VALUE,
+        groupId: template.groupId ?? template.group.id,
+        roomId: template.roomId ?? template.room.id,
+        teacherId:
+          template.teacherId ?? template.teacher?.id ?? GROUP_TEACHER_VALUE,
+        subjectId: template.subjectId ?? template.subject?.id ?? "",
         startTime: template.startTime,
         endTime: template.endTime,
       });
@@ -89,6 +97,7 @@ export const TemplateFormModal = ({
         groupId: lockGroup ? (presetGroupId ?? "") : "",
         roomId: "",
         teacherId: GROUP_TEACHER_VALUE,
+        subjectId: "",
         startTime: "",
         endTime: "",
       });
@@ -109,12 +118,13 @@ export const TemplateFormModal = ({
           endTime: values.endTime,
           roomId: values.roomId,
           teacherId: teacherId ?? null,
+          subjectId: values.subjectId || null,
         },
         { onSuccess: () => onClose(), onError },
       );
     } else {
       createTemplate.mutate(
-        { ...values, teacherId },
+        { ...values, teacherId, subjectId: values.subjectId || undefined },
         {
           onSuccess: () => onClose(),
           onError,
@@ -124,7 +134,7 @@ export const TemplateFormModal = ({
   };
 
   const activeGroupId = isEdit
-    ? template?.groupId
+    ? (template?.groupId ?? template?.group.id)
     : lockGroup
       ? presetGroupId
       : form.watch("groupId");
@@ -222,6 +232,22 @@ export const TemplateFormModal = ({
               options={teacherOptions}
               placeholder="O'qituvchini tanlang"
             />
+
+            {showSubject && (
+              <ControlledSelect
+                name="subjectId"
+                label="Fan"
+                required
+                control={form.control}
+                options={
+                  subjects?.data.map((item) => ({
+                    label: item.name,
+                    value: item.id,
+                  })) ?? []
+                }
+                placeholder="Fanni tanlang"
+              />
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <FormField

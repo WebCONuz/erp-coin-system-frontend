@@ -20,6 +20,7 @@ import { formatDate } from "@/ustils";
 import { sessionInfoFormSchema, type SessionInfoFormValues } from "../schema";
 import {
   useSessionRoomOptions,
+  useSessionSubjectOptions,
   useSessionTeacherOptions,
   useUpdateSession,
 } from "../hooks";
@@ -35,6 +36,7 @@ export const SessionInfoCard = ({ session }: Props) => {
   const updateSession = useUpdateSession(session.id);
   const { data: rooms } = useSessionRoomOptions();
   const { data: teachers } = useSessionTeacherOptions();
+  const { data: subjects } = useSessionSubjectOptions();
 
   const form = useForm<SessionInfoFormValues>({
     resolver: zodResolver(sessionInfoFormSchema),
@@ -44,6 +46,7 @@ export const SessionInfoCard = ({ session }: Props) => {
       endTime: session.endTime,
       roomId: session.roomId ?? session.room.id ?? "",
       teacherId: session.teacherId ?? session.teacher.id ?? "",
+      subjectId: session.subjectId ?? session.subject?.id ?? "",
     },
   });
 
@@ -54,12 +57,17 @@ export const SessionInfoCard = ({ session }: Props) => {
       endTime: session.endTime,
       roomId: session.roomId ?? session.room.id ?? "",
       teacherId: session.teacherId ?? session.teacher.id ?? "",
+      subjectId: session.subjectId ?? session.subject?.id ?? "",
     });
   }, [session, form]);
 
   const onSubmit = (values: SessionInfoFormValues) => {
     updateSession.mutate(
-      { ...values, topic: values.topic || undefined },
+      {
+        ...values,
+        topic: values.topic || undefined,
+        subjectId: values.subjectId || null,
+      },
       {
         onSuccess: () => toast.success("Dars ma'lumotlari yangilandi"),
         onError: (error: any) =>
@@ -72,6 +80,8 @@ export const SessionInfoCard = ({ session }: Props) => {
     rooms?.data.map((r) => ({ value: r.id, label: r.name })) ?? [];
   const teacherOptions =
     teachers?.data.map((t) => ({ value: t.id, label: t.fullName })) ?? [];
+  const subjectOptions =
+    subjects?.data.map((s) => ({ value: s.id, label: s.name })) ?? [];
 
   return (
     <div className="rounded-2xl bg-background p-6 shadow-sm space-y-4">
@@ -144,6 +154,14 @@ export const SessionInfoCard = ({ session }: Props) => {
               disabled={isLocked}
             />
           </div>
+
+          <ControlledSelect
+            control={form.control}
+            name="subjectId"
+            label="Fan (Ixtiyoriy)"
+            options={subjectOptions}
+            disabled={isLocked}
+          />
 
           <FormField
             control={form.control}

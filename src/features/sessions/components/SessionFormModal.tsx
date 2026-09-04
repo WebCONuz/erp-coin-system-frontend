@@ -28,6 +28,7 @@ import {
   useCreateSession,
   useSessionGroupOptions,
   useSessionRoomOptions,
+  useSessionSubjectOptions,
   useSessionTeacherOptions,
 } from "../hooks";
 import { sessionTypeOptions } from "../constants";
@@ -45,6 +46,7 @@ const emptyValues: SessionFormValues = {
   groupId: "",
   roomId: "",
   teacherId: "",
+  subjectId: "",
   topic: "",
 };
 
@@ -55,6 +57,7 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
   const { data: groups } = useSessionGroupOptions(open);
   const { data: rooms } = useSessionRoomOptions(open);
   const { data: teachers } = useSessionTeacherOptions(open);
+  const { data: subjects } = useSessionSubjectOptions(open);
 
   const form = useForm<SessionFormValues>({
     resolver: zodResolver(sessionFormSchema),
@@ -70,7 +73,11 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
     toast.error(error?.data?.message || "Xatolik yuz berdi");
 
   const onSubmit = (values: SessionFormValues) => {
-    const data = { ...values, topic: values.topic || undefined };
+    const data = {
+      ...values,
+      topic: values.topic || undefined,
+      subjectId: values.subjectId || undefined,
+    };
 
     createSession.mutate(data, {
       onSuccess: (session) => {
@@ -171,6 +178,19 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
                 placeholder="O'qituvchi tanlang"
               />
             </div>
+
+            <ControlledSelect
+              control={form.control}
+              name="subjectId"
+              label="Fan (Ixtiyoriy)"
+              options={
+                subjects?.data.map((s) => ({
+                  value: s.id,
+                  label: s.name,
+                })) ?? []
+              }
+              placeholder="Fanni tanlang"
+            />
 
             <FormField
               control={form.control}

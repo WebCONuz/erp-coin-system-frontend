@@ -20,6 +20,7 @@ export const ENDPOINTS = {
   PURCHASES: "/api/purchases",
   MESSAGES: "/api/messages",
   ROOMS: "/api/rooms",
+  SUBJECTS: "/api/subjects",
   SCHEDULE_TEMPLATES: "/api/schedule-templates",
   SCHEDULE_EXCEPTIONS: "/api/schedule-exceptions",
 };

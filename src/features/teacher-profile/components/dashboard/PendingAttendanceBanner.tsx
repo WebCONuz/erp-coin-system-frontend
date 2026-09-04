@@ -29,7 +29,7 @@ export const PendingAttendanceBanner = ({
             className="flex items-center justify-between gap-3 rounded-xl bg-white/60 hover:bg-white px-3 py-2 transition-colors"
           >
             <span className="text-sm text-ink truncate">
-              <b>{session.group.name}</b> ·{" "}
+              <b>{session.subject?.name ?? session.group.name}</b> ·{" "}
               {formatDate(session.sessionDate, "dd.MM.yyyy")} ·{" "}
               {session.startTime}–{session.endTime}
             </span>

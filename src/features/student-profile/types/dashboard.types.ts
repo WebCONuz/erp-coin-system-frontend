@@ -7,6 +7,7 @@ export interface DashboardSession {
   topic?: string | null;
   group: { id: string; name: string };
   room?: { id: string; name: string };
+  subject?: { id: string; name: string } | null;
 }
 
 export interface DashboardTransaction {

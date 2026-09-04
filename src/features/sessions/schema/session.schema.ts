@@ -10,6 +10,7 @@ export const sessionFormSchema = z.object({
   groupId: z.string().min(1, "Guruhni tanlang"),
   roomId: z.string().min(1, "Xonani tanlang"),
   teacherId: z.string().min(1, "O'qituvchini tanlang"),
+  subjectId: z.string().optional(),
   topic: z.string().optional(),
 });
 
@@ -21,6 +22,7 @@ export const sessionInfoFormSchema = z.object({
   endTime: z.string().min(1, "Tugash vaqti kiritilishi shart"),
   roomId: z.string().min(1, "Xonani tanlang"),
   teacherId: z.string().min(1, "O'qituvchini tanlang"),
+  subjectId: z.string().optional(),
 });
 
 export type SessionInfoFormValues = z.infer<typeof sessionInfoFormSchema>;

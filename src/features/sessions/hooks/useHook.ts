@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { getAllGroups } from "@/features/groups/api";
 import { getAllRooms } from "@/features/rooms/api";
+import { getAllSubjects } from "@/features/subjects/api";
 import { getAllTeachers } from "@/features/teachers/api/teachers.api";
 import { sessionKeys } from "../constants";
 import {
@@ -158,6 +159,14 @@ export const useSessionTeacherOptions = (enabled: boolean = true) => {
   return useQuery({
     queryKey: ["session-form-teachers"],
     queryFn: () => getAllTeachers({}),
+    enabled,
+  });
+};
+
+export const useSessionSubjectOptions = (enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ["session-form-subjects"],
+    queryFn: () => getAllSubjects({ isActive: "true" }),
     enabled,
   });
 };

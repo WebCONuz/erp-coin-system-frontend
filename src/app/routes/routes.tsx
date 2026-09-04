@@ -80,6 +80,7 @@ const SendMessagePage = lazy(
   () => import("@/pages/control/admin/SendMessagePage"),
 );
 const RolesPage = lazy(() => import("@/pages/control/admin/RolesPage"));
+const SubjectsPage = lazy(() => import("@/pages/subjects/SubjectsPage"));
 
 const withSuspense = (Component: React.ComponentType) => {
   return (
@@ -173,6 +174,10 @@ export const router = createBrowserRouter([
           {
             path: "plans",
             element: withSuspense(PlansPage),
+          },
+          {
+            path: "subjects",
+            element: withSuspense(SubjectsPage),
           },
           {
             path: "control",

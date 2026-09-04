@@ -111,6 +111,10 @@ export interface AttendanceRecord {
       id: string;
       name: string;
     };
+    subject?: {
+      id: string;
+      name: string;
+    } | null;
   };
 }
 

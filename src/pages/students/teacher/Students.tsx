@@ -12,14 +12,12 @@ import {
 
 const Students = () => {
   const [searchParams] = useSearchParams();
-  const search = searchParams.get("search") || undefined;
   const groupId = searchParams.get("groupId") || undefined;
-  const page = searchParams.get("page") || undefined;
 
-  const { data, isLoading } = useStudents({ search, groupId, page, limit: "20" });
+  const { data, isLoading } = useStudents(30);
   const pagination = usePagination({
     totalItems: data?.meta?.total || 0,
-    initialPageSize: 20,
+    initialPageSize: 30,
   });
 
   return (

@@ -13,6 +13,8 @@ interface CoinFormState {
   note: string;
 }
 
+const emptyCoinForm: CoinFormState = { amount: "", note: "" };
+
 export const CoinTab = ({
   student,
   isDeleted,
@@ -22,13 +24,15 @@ export const CoinTab = ({
 }) => {
   const { id } = useParams<{ id: string }>();
   const manualCoin = useManualCoinTransaction(id ?? "");
-  const [coinForm, setCoinForm] = useState<CoinFormState>({
-    amount: "",
-    note: "",
+  const [coinForms, setCoinForms] = useState<
+    Record<"earn" | "deduct", CoinFormState>
+  >({
+    earn: emptyCoinForm,
+    deduct: emptyCoinForm,
   });
 
   const handleCoinAction = (direction: "earn" | "deduct") => {
-    const amount = Number(coinForm.amount);
+    const amount = Number(coinForms[direction].amount);
     if (!amount || amount < 1 || !id) return;
     manualCoin.mutate(
       {
@@ -36,9 +40,12 @@ export const CoinTab = ({
         amount,
         direction,
         sourceType: "manual",
-        note: coinForm.note || undefined,
+        note: coinForms[direction].note || undefined,
       },
-      { onSuccess: () => setCoinForm({ amount: "", note: "" }) },
+      {
+        onSuccess: () =>
+          setCoinForms((p) => ({ ...p, [direction]: emptyCoinForm })),
+      },
     );
   };
 
@@ -79,11 +86,11 @@ export const CoinTab = ({
                   <input
                     type="number"
                     min={1}
-                    value={coinForm.amount}
+                    value={coinForms[dir].amount}
                     onChange={(e) =>
-                      setCoinForm((p) => ({
+                      setCoinForms((p) => ({
                         ...p,
-                        amount: e.target.value,
+                        [dir]: { ...p[dir], amount: e.target.value },
                       }))
                     }
                     placeholder="Miqdor..."
@@ -91,11 +98,11 @@ export const CoinTab = ({
                   />
                   <input
                     type="text"
-                    value={coinForm.note}
+                    value={coinForms[dir].note}
                     onChange={(e) =>
-                      setCoinForm((p) => ({
+                      setCoinForms((p) => ({
                         ...p,
-                        note: e.target.value,
+                        [dir]: { ...p[dir], note: e.target.value },
                       }))
                     }
                     placeholder="Sabab"
@@ -103,7 +110,7 @@ export const CoinTab = ({
                   />
                   <Button
                     size="sm"
-                    disabled={!coinForm.amount || manualCoin.isPending}
+                    disabled={!coinForms[dir].amount || manualCoin.isPending}
                     className={
                       isEarn
                         ? "bg-green-600 hover:bg-green-700 text-white"

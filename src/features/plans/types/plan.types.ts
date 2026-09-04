@@ -25,10 +25,12 @@ export interface ScheduleTemplate {
   groupId: string;
   roomId: string;
   teacherId: string | null;
+  subjectId: string | null;
   createdById: string;
   group: { id: string; name: string };
   room: { id: string; name: string };
   teacher: { id: string; fullName: string } | null;
+  subject: { id: string; name: string } | null;
   _count?: { exceptions: number };
 }
 
@@ -49,6 +51,7 @@ export interface CreateScheduleTemplateDto {
   groupId: string;
   roomId: string;
   teacherId?: string;
+  subjectId?: string;
 }
 
 export interface UpdateScheduleTemplateDto {
@@ -57,6 +60,7 @@ export interface UpdateScheduleTemplateDto {
   endTime?: string;
   roomId?: string;
   teacherId?: string | null;
+  subjectId?: string | null;
 }
 
 // ─── Calendar (GET /api/schedule-templates/calendar) ─────────────────────────
@@ -77,6 +81,7 @@ export interface CalendarSession {
   isLocked: boolean;
   sessionType: "lesson" | "exam" | "competition" | "extra";
   topic?: string | null;
+  subject?: { id: string; name: string } | null;
 }
 
 export interface CalendarDayEntry {
@@ -86,6 +91,7 @@ export interface CalendarDayEntry {
     startTime: string;
     endTime: string;
     room: { id: string; name: string };
+    subject?: { id: string; name: string } | null;
   };
   exception: ScheduleException | null;
   session: CalendarSession;

@@ -71,7 +71,7 @@ export const useTable = ({
           const groups = getValue<Group[]>();
 
           return (
-            <div className="flex gap-x-3 flex-wrap max-w-100">
+            <div className="flex gap-1 flex-wrap max-w-150">
               {groups.map((item) => (
                 <div
                   key={item.id}

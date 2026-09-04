@@ -36,6 +36,11 @@ export const TeacherSessionCard = ({ data }: { data: SessionItem }) => {
           {data.isLocked ? <Lock size={10} /> : <LockOpen size={10} />}
           {data.isLocked ? "Yo'qlama olindi" : "Kutilmoqda"}
         </span>
+        {data.subject && (
+          <span className="text-[11px] px-2 py-0.5 rounded-full font-medium bg-bloom/10 text-bloom">
+            {data.subject.name}
+          </span>
+        )}
       </div>
 
       <h4 className="text-base font-semibold text-ink truncate mb-1.5">

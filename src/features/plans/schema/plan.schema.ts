@@ -6,9 +6,21 @@ export const templateFormSchema = z.object({
   groupId: z.string().min(1, "Guruh tanlanishi shart"),
   roomId: z.string().min(1, "Xona tanlanishi shart"),
   teacherId: z.string().min(1, "O'qituvchini tanlang"),
+  subjectId: z.string().optional(),
   startTime: z.string().min(1, "Boshlanish vaqti kiritilishi shart"),
   endTime: z.string().min(1, "Tugash vaqti kiritilishi shart"),
 });
+
+// Fan tanlovi faqat "o'quv markaz" bo'lmagan tenantlar uchun ko'rsatiladi va
+// shundagina majburiy bo'ladi — ko'rinmaydigan maydonni required qilish
+// FormMessage'siz "jim" submit xatosiga olib keladi (TemplateFormModal'da
+// avval duch kelingan bug).
+export const getTemplateFormSchema = (subjectRequired: boolean) =>
+  subjectRequired
+    ? templateFormSchema.extend({
+        subjectId: z.string().min(1, "Fan tanlanishi shart"),
+      })
+    : templateFormSchema;
 
 export type TemplateFormValues = z.infer<typeof templateFormSchema>;
 

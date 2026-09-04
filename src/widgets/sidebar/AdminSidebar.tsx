@@ -9,10 +9,12 @@ import {
   LayoutDashboard,
   Building2,
   BookOpen,
+  BookText,
   CalendarDays,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
+import { useCurrentTenant } from "@/features/tenants/hooks";
 import { useTranslation } from "react-i18next";
 import { ROLES } from "@/assets/constants";
 
@@ -20,6 +22,7 @@ const LOGO = "/logo.png";
 
 export function AdminSidebar() {
   const { user } = useAuth();
+  const { isLearningCenter } = useCurrentTenant();
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
@@ -42,6 +45,15 @@ export function AdminSidebar() {
       label: t("admin.header.plans"),
       icon: CalendarDays,
     },
+    ...(isLearningCenter
+      ? []
+      : [
+          {
+            to: "/admin/subjects",
+            label: t("admin.header.subjects"),
+            icon: BookText,
+          },
+        ]),
     { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
     {
       to: "/admin/control",

@@ -22,7 +22,10 @@ export const StudentList = ({
 }: Props) => {
   const { t } = useTranslation();
   const { columns } = useStudentTable({ handleEdit });
-  const pagination = usePagination({ totalItems: data?.meta?.total || 0 });
+  const pagination = usePagination({
+    totalItems: data?.meta?.total || 0,
+    initialPageSize: 20,
+  });
 
   if (isLoading) return <PageLoading />;
 

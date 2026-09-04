@@ -15,6 +15,11 @@ export interface SessionTeacherRef {
   fullName: string;
 }
 
+export interface SessionSubjectRef {
+  id: string;
+  name: string;
+}
+
 export interface SessionItem {
   id: string;
   sessionDate: string;
@@ -27,9 +32,11 @@ export interface SessionItem {
   group: SessionGroupRef;
   room: SessionRoomRef;
   teacher: SessionTeacherRef;
+  subject?: SessionSubjectRef | null;
   groupId?: string;
   roomId?: string;
   teacherId?: string;
+  subjectId?: string | null;
 }
 
 export interface SessionsResponse {
@@ -51,6 +58,7 @@ export interface CreateSessionDto {
   roomId: string;
   teacherId: string;
   topic?: string;
+  subjectId?: string;
 }
 
 export interface UpdateSessionDto {
@@ -59,6 +67,7 @@ export interface UpdateSessionDto {
   endTime?: string;
   roomId?: string;
   teacherId?: string;
+  subjectId?: string | null;
 }
 
 // ─── Attendance ───────────────────────────────────────────────────────────────

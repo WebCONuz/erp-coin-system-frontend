@@ -160,7 +160,7 @@ export const MonthlyCalendar = ({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="w-48 justify-between font-normal"
+                className="max-w-100 min-w-48 justify-between font-normal"
               >
                 <span className="truncate">
                   {selectedGroupName || "Guruh tanlang"}
@@ -168,7 +168,7 @@ export const MonthlyCalendar = ({
                 <ChevronDown size={16} className="shrink-0 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent align="end" className="w-60">
               <DropdownMenuRadioGroup
                 value={groupId}
                 onValueChange={setGroupId}

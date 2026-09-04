@@ -8,6 +8,7 @@ export interface TeacherDashboardSession {
   isLocked: boolean;
   group: { id: string; name: string };
   room?: { id: string; name: string };
+  subject?: { id: string; name: string } | null;
 }
 
 export interface TeacherDashboardPendingSession {
@@ -17,6 +18,7 @@ export interface TeacherDashboardPendingSession {
   endTime: string;
   sessionType: string;
   group: { id: string; name: string };
+  subject?: { id: string; name: string } | null;
 }
 
 export interface TeacherDashboardTransaction {

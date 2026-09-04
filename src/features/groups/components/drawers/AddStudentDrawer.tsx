@@ -32,7 +32,7 @@ export const AddStudentDrawer = ({
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"single" | "bulk">("single");
 
-  const { data: studentsData, isLoading } = useStudents();
+  const { data: studentsData, isLoading } = useStudents(100);
   const addStudent = useAddStudent(group.id);
   const bulkAddStudents = useBulkAddStudents(group.id);
 
@@ -206,7 +206,7 @@ export const AddStudentDrawer = ({
               ) : filteredStudents.length === 0 ? (
                 <EmptyState search={search} />
               ) : (
-                <div className="space-y-2 pb-4">
+                <div className="space-y-2 pb-4 h-[calc(100vh-340px)] overflow-y-auto">
                   {filteredStudents.map((student) => (
                     <label
                       key={student.id}

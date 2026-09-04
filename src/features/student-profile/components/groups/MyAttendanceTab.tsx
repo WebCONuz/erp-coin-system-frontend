@@ -114,7 +114,13 @@ export const MyAttendanceTab = () => {
               >
                 <div className="min-w-0">
                   <p className="text-sm text-ink truncate">
-                    <b>{record.session.group.name}</b>
+                    <b>
+                      {record.session.subject?.name ??
+                        record.session.group.name}
+                    </b>
+                    {record.session.subject
+                      ? ` · ${record.session.group.name}`
+                      : ""}
                     {record.session.topic ? ` · ${record.session.topic}` : ""}
                   </p>
                   <p className="text-xs text-ink-soft">

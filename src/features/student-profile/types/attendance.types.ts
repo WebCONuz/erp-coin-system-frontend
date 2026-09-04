@@ -9,6 +9,7 @@ export interface MyAttendanceRecord {
     sessionType: string;
     topic?: string | null;
     group: { id: string; name: string };
+    subject?: { id: string; name: string } | null;
   };
 }
 
