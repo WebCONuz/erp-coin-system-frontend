@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -6,24 +8,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Form } from "@/components/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  ControlledInput,
+  ControlledSelect,
+  ControlledTextarea,
+} from "@/components/controls";
 import { useCreateCoinRule } from "@/features/coin-rules/hooks";
 import {
   directionOptions,
   sourceTypeOptions,
   triggerTypeOptions,
 } from "@/features/coin-rules/constants";
-import type {
-  CoinRuleDirection,
-  CoinRuleSourceType,
-  CoinRuleTriggerType,
-} from "@/features/coin-rules/types";
+import {
+  coinRuleFormSchema,
+  type CoinRuleFormValues,
+} from "@/features/coin-rules/schema";
 import { useMyTaughtGroups } from "../../hooks";
 
 interface Props {
@@ -31,67 +31,62 @@ interface Props {
   onClose: () => void;
 }
 
+const emptyValues: CoinRuleFormValues = {
+  name: "",
+  coinAmount: 1,
+  direction: "earn",
+  triggerType: "manual",
+  sourceType: undefined,
+  description: "",
+  groupId: "",
+};
+
 export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
   const { data: groups } = useMyTaughtGroups();
   const createRule = useCreateCoinRule();
 
-  const [name, setName] = useState("");
-  const [coinAmount, setCoinAmount] = useState("");
-  const [direction, setDirection] = useState<CoinRuleDirection>("earn");
-  const [triggerType, setTriggerType] = useState<CoinRuleTriggerType>("manual");
-  const [sourceType, setSourceType] = useState<CoinRuleSourceType | "">("");
-  const [groupId, setGroupId] = useState("");
-  const [description, setDescription] = useState("");
+  const form = useForm<CoinRuleFormValues>({
+    resolver: zodResolver(coinRuleFormSchema),
+    defaultValues: emptyValues,
+  });
 
-  const reset = () => {
-    setName("");
-    setCoinAmount("");
-    setDirection("earn");
-    setTriggerType("manual");
-    setSourceType("");
-    setGroupId("");
-    setDescription("");
-  };
+  const triggerType = form.watch("triggerType");
 
-  const handleClose = () => {
-    reset();
-    onClose();
-  };
+  useEffect(() => {
+    if (open) form.reset(emptyValues);
+  }, [open, form]);
 
-  const handleSubmit = () => {
-    const amount = Number(coinAmount);
-    if (!name.trim()) {
-      toast.error("Qoida nomini kiriting");
-      return;
+  useEffect(() => {
+    if (triggerType === "manual") {
+      form.setValue("sourceType", undefined);
     }
-    if (!amount || amount < 1) {
-      toast.error("Tanga miqdorini to'g'ri kiriting");
-      return;
-    }
-    if (!groupId) {
+  }, [triggerType, form]);
+
+  const onSubmit = (values: CoinRuleFormValues) => {
+    if (!values.groupId) {
       toast.error("Guruhni tanlang");
       return;
     }
-    if (triggerType === "auto" && !sourceType) {
+    if (values.triggerType === "auto" && !values.sourceType) {
       toast.error("Manba turini tanlang");
       return;
     }
 
     createRule.mutate(
       {
-        name: name.trim(),
-        coinAmount: amount,
-        direction,
-        triggerType,
+        name: values.name,
+        coinAmount: values.coinAmount,
+        direction: values.direction,
+        triggerType: values.triggerType,
         sourceType:
-          triggerType === "auto" ? (sourceType as CoinRuleSourceType) : undefined,
-        description: description || undefined,
-        groupId,
+          values.triggerType === "auto" ? values.sourceType : undefined,
+        description: values.description || undefined,
+        groupId: values.groupId,
       },
       {
         onSuccess: () => {
           toast.success("Qoida yaratildi");
-          handleClose();
+          onClose();
         },
         onError: (error: any) =>
           toast.error(error?.data?.message || "Xatolik yuz berdi"),
@@ -100,7 +95,7 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
+    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-ink">
@@ -108,140 +103,82 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-3 max-h-[70vh] overflow-y-auto">
-          <div>
-            <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-              Nomi
-            </label>
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Masalan: Darsga faol qatnashgani uchun"
-              className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-                Tanga miqdori
-              </label>
-              <input
-                type="number"
-                min={1}
-                value={coinAmount}
-                onChange={(e) => setCoinAmount(e.target.value)}
-                placeholder="10"
-                className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-                Yo'nalish
-              </label>
-              <Select
-                value={direction}
-                onValueChange={(v) => setDirection(v as CoinRuleDirection)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {directionOptions.map((o) => (
-                    <SelectItem key={o.value} value={String(o.value)}>
-                      {o.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-                Ishga tushirish turi
-              </label>
-              <Select
-                value={triggerType}
-                onValueChange={(v) => setTriggerType(v as CoinRuleTriggerType)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {triggerTypeOptions.map((o) => (
-                    <SelectItem key={o.value} value={String(o.value)}>
-                      {o.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {triggerType === "auto" && (
-              <div>
-                <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-                  Manba turi
-                </label>
-                <Select
-                  value={sourceType}
-                  onValueChange={(v) => setSourceType(v as CoinRuleSourceType)}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Tanlang" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {sourceTypeOptions.map((o) => (
-                      <SelectItem key={o.value} value={String(o.value)}>
-                        {o.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
-
-          <div>
-            <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-              Guruh
-            </label>
-            <Select value={groupId} onValueChange={setGroupId}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Guruhni tanlang" />
-              </SelectTrigger>
-              <SelectContent>
-                {(groups ?? []).map((g) => (
-                  <SelectItem key={g.id} value={g.id}>
-                    {g.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-              Izoh (ixtiyoriy)
-            </label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Qoida haqida qisqacha izoh..."
-              className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50 resize-none h-20"
-            />
-          </div>
-
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={createRule.isPending}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-3 max-h-[70vh] overflow-y-auto"
           >
-            {createRule.isPending ? "Yaratilmoqda..." : "Yaratish"}
-          </button>
-        </div>
+            <ControlledInput
+              control={form.control}
+              name="name"
+              label="Nomi"
+              placeholder="Masalan: Darsga faol qatnashgani uchun"
+              inputClassName="h-8"
+            />
+
+            <ControlledInput
+              control={form.control}
+              name="coinAmount"
+              label="Tanga miqdori"
+              placeholder="10"
+              isNumber
+              inputClassName="h-8"
+            />
+
+            <div className="grid grid-cols-2 gap-3">
+              <ControlledSelect
+                control={form.control}
+                name="direction"
+                label="Yo'nalish"
+                options={directionOptions}
+              />
+              <ControlledSelect
+                control={form.control}
+                name="triggerType"
+                label="Ishga tushirish turi"
+                options={triggerTypeOptions}
+              />
+
+              {triggerType === "auto" && (
+                <ControlledSelect
+                  control={form.control}
+                  name="sourceType"
+                  label="Manba turi"
+                  options={sourceTypeOptions}
+                  placeholder="Tanlang"
+                />
+              )}
+            </div>
+
+            <ControlledSelect
+              control={form.control}
+              name="groupId"
+              label="Guruh"
+              options={(groups ?? []).map((g) => ({
+                value: g.id,
+                label: g.name,
+              }))}
+              placeholder="Guruhni tanlang"
+              required
+            />
+
+            <ControlledTextarea
+              control={form.control}
+              name="description"
+              label="Izoh (ixtiyoriy)"
+              placeholder="Qoida haqida qisqacha izoh..."
+              className="resize-none h-20"
+            />
+
+            <button
+              type="submit"
+              disabled={createRule.isPending}
+              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
+            >
+              {createRule.isPending ? "Yaratilmoqda..." : "Yaratish"}
+            </button>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

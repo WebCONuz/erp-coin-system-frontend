@@ -6,6 +6,10 @@ import type {
   DeactivateStudentDto,
   ChangePasswordDto,
   CoinTransactionManualDto,
+  BulkManualCoinDto,
+  ApplyCoinRuleDto,
+  BulkCoinResponse,
+  ApplyCoinRuleResponse,
   SendMessageDto,
   UpdatePurchaseStatusDto,
   StudentDetail,
@@ -64,6 +68,26 @@ export const removeStudentFromGroup = async (groupId: string, studentId: string)
 // ─── Coin transactions ───────────────────────────────────────────────────────
 export const manualCoinTransaction = async (data: CoinTransactionManualDto): Promise<CoinTransaction> => {
   const res = await request.post<CoinTransaction>(`${ENDPOINTS.COIN_TRANSACTIONS}/manual`, data);
+  return res.data;
+};
+
+export const bulkManualCoinTransaction = async (
+  data: BulkManualCoinDto,
+): Promise<BulkCoinResponse> => {
+  const res = await request.post<BulkCoinResponse>(
+    `${ENDPOINTS.COIN_TRANSACTIONS}/bulk-manual`,
+    data,
+  );
+  return res.data;
+};
+
+export const applyCoinRule = async (
+  data: ApplyCoinRuleDto,
+): Promise<ApplyCoinRuleResponse> => {
+  const res = await request.post<ApplyCoinRuleResponse>(
+    `${ENDPOINTS.COIN_TRANSACTIONS}/apply-rule`,
+    data,
+  );
   return res.data;
 };
 

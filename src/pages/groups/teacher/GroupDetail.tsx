@@ -1,14 +1,27 @@
+import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { BookOpen, CalendarClock, Phone, Users } from "lucide-react";
+import { BookOpen, CalendarClock, Coins, Phone, Users } from "lucide-react";
 import { BackListButton } from "@/components/shared/back";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { useGroup } from "@/features/groups/hooks";
 import { getGroupAccent } from "@/lib/group-accent";
+import { BulkGiveCoinModal } from "@/features/teacher-profile/components/students";
 
 const GroupDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { data: group, isLoading, isError } = useGroup(id ?? "");
+  const [bulkCoinOpen, setBulkCoinOpen] = useState(false);
+
+  const bulkCoinStudents = useMemo(
+    () =>
+      (group?.students ?? []).map((gs) => ({
+        id: gs.student.id,
+        fullName: gs.student.fullName,
+        phone: gs.student.phone,
+      })),
+    [group],
+  );
 
   if (isLoading) return <PageLoading />;
   if (isError || !group) {
@@ -66,9 +79,21 @@ const GroupDetail = () => {
       </div>
 
       <div className="rounded-2xl border border-ink/10 bg-white p-5">
-        <h3 className="font-display text-sm font-semibold text-ink mb-4">
-          O'quvchilar ({group.students.length})
-        </h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-display text-sm font-semibold text-ink">
+            O'quvchilar ({group.students.length})
+          </h3>
+          {!!group.students.length && (
+            <button
+              type="button"
+              onClick={() => setBulkCoinOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl bg-forest text-paper px-3.5 py-2 text-xs font-medium hover:bg-forest-light transition-colors"
+            >
+              <Coins size={14} />
+              Tanga berish
+            </button>
+          )}
+        </div>
 
         {!group.students.length ? (
           <p className="text-sm text-ink-soft py-6 text-center">
@@ -96,6 +121,15 @@ const GroupDetail = () => {
           </div>
         )}
       </div>
+
+      <BulkGiveCoinModal
+        open={bulkCoinOpen}
+        onClose={() => setBulkCoinOpen(false)}
+        students={bulkCoinStudents}
+        groupId={group.id}
+        title="Guruhga ommaviy tanga berish"
+        subtitle={`${group.name} guruhi o'quvchilariga birdaniga tanga bering`}
+      />
     </div>
   );
 };

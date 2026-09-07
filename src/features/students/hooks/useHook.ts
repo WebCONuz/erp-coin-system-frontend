@@ -9,6 +9,8 @@ import {
   addStudentToGroup,
   removeStudentFromGroup,
   manualCoinTransaction,
+  bulkManualCoinTransaction,
+  applyCoinRule,
   cancelCoinTransaction,
   getCoinTransactionHistory,
   getStudentPurchases,
@@ -22,6 +24,8 @@ import type {
   DeactivateStudentDto,
   ChangePasswordDto,
   CoinTransactionManualDto,
+  BulkManualCoinDto,
+  ApplyCoinRuleDto,
   SendMessageDto,
   UpdatePurchaseStatusDto,
 } from "../types";
@@ -157,6 +161,28 @@ export const useManualCoinTransaction = (studentId: string) => {
       queryClient.invalidateQueries({
         queryKey: studentKeys.coinTransactions(),
       });
+    },
+  });
+};
+
+export const useBulkManualCoinTransaction = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: BulkManualCoinDto) => bulkManualCoinTransaction(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
+      queryClient.invalidateQueries({ queryKey: studentKeys.coinTransactions() });
+    },
+  });
+};
+
+export const useApplyCoinRule = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: ApplyCoinRuleDto) => applyCoinRule(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
+      queryClient.invalidateQueries({ queryKey: studentKeys.coinTransactions() });
     },
   });
 };

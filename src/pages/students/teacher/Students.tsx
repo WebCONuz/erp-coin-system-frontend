@@ -22,16 +22,17 @@ const Students = () => {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-ink">
-          O'quvchilarim
-        </h1>
-        <p className="text-sm text-ink-soft mt-1">
-          Dars beradigan guruhlaringizdagi barcha o'quvchilar
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-semibold text-ink">
+            O'quvchilarim
+          </h1>
+          <p className="text-sm text-ink-soft mt-1">
+            Dars beradigan guruhlaringizdagi barcha o'quvchilar
+          </p>
+        </div>
+        <TeacherStudentsFilterBar />
       </div>
-
-      <TeacherStudentsFilterBar />
 
       {isLoading ? (
         <PageLoading />

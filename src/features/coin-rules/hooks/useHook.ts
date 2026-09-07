@@ -39,6 +39,17 @@ export const useCoinRules = () => {
   });
 };
 
+// Bulk tanga berish formasi uchun â sahifa URL filtrlaridan mustaqil,
+// barcha faol qoidalarni oladi (select uchun ishlatiladi).
+export const useActiveCoinRulesList = (enabled: boolean = true) => {
+  const params = { isActive: "true", limit: "100" };
+  return useQuery({
+    queryKey: coinRuleKeys.allCoinRules(params),
+    queryFn: () => getAllCoinRules(params),
+    enabled,
+  });
+};
+
 export const useCoinRule = (id: string) => {
   return useQuery({
     queryKey: coinRuleKeys.oneCoinRuleById(id),

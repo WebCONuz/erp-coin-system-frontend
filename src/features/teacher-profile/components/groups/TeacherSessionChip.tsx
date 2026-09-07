@@ -7,16 +7,22 @@ const SESSION_TYPE_LABELS: Record<string, string> = {
   competition: "Musobaqa",
 };
 
-export const TeacherSessionChip = ({ entry }: { entry: TeacherCalendarEntry }) => {
-  const { template, exception, session, group } = entry;
+export const TeacherSessionChip = ({
+  entry,
+  groupName,
+}: {
+  entry: TeacherCalendarEntry;
+  groupName: string;
+}) => {
+  const { template, exception, session } = entry;
 
   if (exception?.isCancelled) {
     return (
       <div
-        title={`${group.name}: bekor qilindi${exception.note ? ` — ${exception.note}` : ""}`}
+        title={`${groupName}: bekor qilindi${exception.note ? ` — ${exception.note}` : ""}`}
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-bloom bg-bloom/10"
       >
-        <span className="line-through">{group.name}</span>
+        <span className="line-through">{groupName}</span>
         <br />
         Bekor qilindi
       </div>
@@ -26,10 +32,10 @@ export const TeacherSessionChip = ({ entry }: { entry: TeacherCalendarEntry }) =
   if (exception) {
     return (
       <div
-        title={`${group.name}: vaqti o'zgardi — ${exception.startTime}:${exception.endTime}${exception.note ? ` (${exception.note})` : ""}`}
+        title={`${groupName}: vaqti o'zgardi — ${exception.startTime}:${exception.endTime}${exception.note ? ` (${exception.note})` : ""}`}
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-gold bg-gold/15"
       >
-        {group.name}
+        {groupName}
         <br />
         {exception.startTime}:{exception.endTime}
       </div>
@@ -39,10 +45,10 @@ export const TeacherSessionChip = ({ entry }: { entry: TeacherCalendarEntry }) =
   if (!session) {
     return (
       <div
-        title={`${group.name}: rejalashtirilgan dars — ${template.startTime}:${template.endTime}`}
+        title={`${groupName}: rejalashtirilgan dars — ${template.startTime}:${template.endTime}`}
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-ink-soft bg-paper-soft"
       >
-        {group.name}
+        {groupName}
         <br />
         {template.startTime}:{template.endTime}
       </div>
@@ -51,12 +57,12 @@ export const TeacherSessionChip = ({ entry }: { entry: TeacherCalendarEntry }) =
 
   return (
     <div
-      title={`${group.name}: ${SESSION_TYPE_LABELS[session.sessionType] ?? session.sessionType}${session.topic ? ` — ${session.topic}` : ""}`}
+      title={`${groupName}: ${SESSION_TYPE_LABELS[session.sessionType] ?? session.sessionType}${session.topic ? ` — ${session.topic}` : ""}`}
       className={`w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium ${
         session.isLocked ? "text-forest bg-forest/10" : "text-gold bg-gold/15"
       }`}
     >
-      {group.name}
+      {groupName}
       <br />
       {session.startTime}:{session.endTime}
       {session.isLocked ? " · yo'qlama olindi" : ""}

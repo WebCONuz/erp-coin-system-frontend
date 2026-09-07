@@ -27,7 +27,6 @@ export interface TeacherCalendarEntry {
   template: TeacherScheduleTemplate;
   exception: TeacherScheduleException | null;
   session: TeacherScheduleSession | null;
-  group: { id: string; name: string };
 }
 
 export type TeacherCalendarResponse = Record<string, TeacherCalendarEntry[]>;

@@ -178,6 +178,56 @@ export interface CoinTransactionManualDto {
   sessionId?: string;
 }
 
+// ─── Bulk coin transactions ───────────────────────────────────────────────────
+export type BulkCoinSourceType =
+  | "attendance"
+  | "homework"
+  | "competition"
+  | "manual"
+  | "bonus"
+  | "purchase";
+
+export interface BulkManualCoinDto {
+  studentIds: string[];
+  amount: number;
+  direction: "earn" | "deduct";
+  sourceType: BulkCoinSourceType;
+  note?: string;
+  groupId?: string;
+  sessionId?: string;
+}
+
+export interface ApplyCoinRuleDto {
+  ruleId: string;
+  studentIds: string[];
+  note?: string;
+  sessionId?: string;
+}
+
+export interface BulkCoinResult {
+  studentId: string;
+  success: boolean;
+  transactionId?: string;
+  newBalance?: number;
+  error?: string;
+}
+
+export interface BulkCoinResponse {
+  totalRequested: number;
+  successCount: number;
+  failedCount: number;
+  results: BulkCoinResult[];
+}
+
+export interface ApplyCoinRuleResponse extends BulkCoinResponse {
+  rule: {
+    id: string;
+    name: string;
+    coinAmount: number;
+    direction: "earn" | "deduct";
+  };
+}
+
 export interface SendMessageDto {
   recipientPhone?: string;
   recipientEmail?: string;

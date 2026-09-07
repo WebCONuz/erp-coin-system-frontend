@@ -1,4 +1,4 @@
-import { Search, X, ArrowUpDown, Plus, FileSpreadsheet } from "lucide-react";
+import { Search, X, ArrowUpDown, Plus, FileSpreadsheet, Coins } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,11 +17,13 @@ import { useStudentFilter } from "../../hooks";
 interface StudentFilterProps {
   onAddStudent: () => void;
   onImportExcel?: () => void;
+  onBulkGiveCoin?: () => void;
 }
 
 export const StudentDataFilter = ({
   onAddStudent,
   onImportExcel,
+  onBulkGiveCoin,
 }: StudentFilterProps) => {
   const { form, clearFilters } = useStudentFilter();
 
@@ -39,6 +41,17 @@ export const StudentDataFilter = ({
               <Plus size={18} />
               <span className="hidden sm:inline">Talaba qo'shish</span>
             </Button>
+            {onBulkGiveCoin && (
+              <Button
+                onClick={onBulkGiveCoin}
+                className="bg-linear-to-br from-amber-500 to-amber-600 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
+              >
+                <Coins size={18} />
+                <span className="hidden sm:inline">
+                  Bir vaqtda tanga berish
+                </span>
+              </Button>
+            )}
             <Button
               onClick={onImportExcel}
               className="bg-linear-to-br from-emerald-500 to-emerald-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"

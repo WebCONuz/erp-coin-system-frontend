@@ -35,10 +35,10 @@ export const TeacherStudentsFilterBar = () => {
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Select value={groupId} onValueChange={setGroupId}>
-        <SelectTrigger className="w-52">
+        <SelectTrigger className="w-52 bg-white">
           <SelectValue placeholder="Guruhni tanlang" />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent className="bg-white">
           <SelectItem value={ALL_VALUE}>Barcha guruhlar</SelectItem>
           {(groups ?? []).map((g) => (
             <SelectItem key={g.id} value={g.id}>

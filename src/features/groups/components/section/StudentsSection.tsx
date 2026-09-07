@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { UserPlus } from "lucide-react";
+import { Coins, UserPlus } from "lucide-react";
 import { StudentTable } from "./StudentTable";
 import type { GroupDetail } from "../../types";
+import { BulkGiveCoinModal } from "@/features/students/components/modal";
 
 interface Props {
   group: GroupDetail;
@@ -17,6 +18,17 @@ export const StudentsSection = ({
   setIsAddStudentOpen,
 }: Props) => {
   const [search, setSearch] = useState("");
+  const [bulkCoinOpen, setBulkCoinOpen] = useState(false);
+
+  const bulkCoinStudents = useMemo(
+    () =>
+      group.students.map((gs) => ({
+        id: gs.student.id,
+        fullName: gs.student.fullName,
+        phone: gs.student.phone,
+      })),
+    [group.students],
+  );
 
   return (
     <div>
@@ -41,6 +53,15 @@ export const StudentsSection = ({
             onChange={(e) => setSearch(e.target.value)}
           />
           <Button
+            onClick={() => setBulkCoinOpen(true)}
+            disabled={!group.students.length}
+            size="default"
+            className="h-10 gap-2 bg-linear-to-br from-amber-500 to-amber-600 text-white disabled:opacity-50"
+          >
+            <Coins className="w-4 h-4" />
+            Tanga berish
+          </Button>
+          <Button
             onClick={() => setIsAddStudentOpen(true)}
             disabled={isFull}
             size="default"
@@ -54,6 +75,15 @@ export const StudentsSection = ({
 
       {/* students list */}
       <StudentTable group={group} search={search} />
+
+      <BulkGiveCoinModal
+        open={bulkCoinOpen}
+        onClose={() => setBulkCoinOpen(false)}
+        students={bulkCoinStudents}
+        groupId={group.id}
+        title="Guruhga ommaviy tanga berish"
+        subtitle={`${group.name} guruhi o'quvchilariga birdaniga tanga bering`}
+      />
     </div>
   );
 };

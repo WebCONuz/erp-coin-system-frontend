@@ -43,6 +43,7 @@ export const TeacherCalendarTab = () => {
   const [viewDate, setViewDate] = useState(() => new Date());
 
   const groupId = selectedGroupId || groups?.[0]?.id || "";
+  const groupName = groups?.find((g) => g.id === groupId)?.name ?? "";
 
   const year = getYear(viewDate);
   const month = getMonth(viewDate) + 1;
@@ -141,7 +142,11 @@ export const TeacherCalendarTab = () => {
                   {format(day, "d")}
                 </span>
                 {entries.map((entry, idx) => (
-                  <TeacherSessionChip key={`${entry.template.id}-${idx}`} entry={entry} />
+                  <TeacherSessionChip
+                    key={`${entry.template.id}-${idx}`}
+                    entry={entry}
+                    groupName={groupName}
+                  />
                 ))}
               </div>
             );
