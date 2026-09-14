@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { Bell, LogOut, User } from "lucide-react";
+import { Bell, ChevronDown, LogOut, User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,9 +12,19 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { getFileUrl } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+
+const LANGUAGES = [
+  { code: "uz", label: "O'zbekcha" },
+  { code: "uz_cr", label: "Кирилча" },
+  { code: "ru", label: "Русский" },
+];
 
 export function TeacherNavbar() {
+  const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
+  const currentLang =
+    LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
 
   const initials = user?.fullName
     ? user.fullName
@@ -28,6 +39,37 @@ export function TeacherNavbar() {
     <header className="w-full border-b border-ink/10 bg-paper">
       <div className="flex h-16 items-center gap-3 px-4 sm:px-8">
         <div className="ml-auto flex items-center gap-3">
+          {/* Language selector */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="h-9 gap-1.5 px-3 text-sm font-medium border-ink/15 text-ink-soft hover:text-ink hover:bg-paper-soft focus-visible:ring-0"
+              >
+                {currentLang.label}
+                <ChevronDown size={13} className="text-muted-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-36">
+              {LANGUAGES.map((lang) => (
+                <DropdownMenuItem
+                  key={lang.code}
+                  className={cn(
+                    "text-sm cursor-pointer justify-between",
+                    i18n.language === lang.code &&
+                      "text-purple-600 font-medium",
+                  )}
+                  onClick={() => i18n.changeLanguage(lang.code)}
+                >
+                  {lang.label}
+                  {i18n.language === lang.code && (
+                    <span className="h-1.5 w-1.5 rounded-full bg-purple-600" />
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button
             variant="outline"
             size="icon"
@@ -55,7 +97,7 @@ export function TeacherNavbar() {
                     {user?.fullName ?? "- -"}
                   </p>
                   <p className="text-xs text-ink-soft mt-1">
-                    {user?.role?.displayName ?? "O'qituvchi"}
+                    {user?.role?.displayName ?? t("common.teacher")}
                   </p>
                 </div>
               </div>
@@ -67,7 +109,7 @@ export function TeacherNavbar() {
               >
                 <NavLink to="/teacher/profile">
                   <User size={14} className="text-muted-foreground" />
-                  Profil
+                  {t("common.profile")}
                 </NavLink>
               </DropdownMenuItem>
 
@@ -78,7 +120,7 @@ export function TeacherNavbar() {
                 onClick={() => logout()}
               >
                 <LogOut size={14} />
-                Chiqish
+                {t("common.logoutAction")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

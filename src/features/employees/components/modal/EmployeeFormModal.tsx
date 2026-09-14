@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +21,7 @@ interface Props {
 }
 
 export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const { isPending, onSubmitCreate, onSubmitEdit, createForm, editForm } =
     useCreateEditEmployee({ open, isEdit, onClose, employee });
@@ -36,7 +38,7 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
       <DialogContent className="sm:max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Xodimni tahrirlash" : "Yangi xodim qo'shish"}
+            {isEdit ? t("employees.form.editTitle") : t("employees.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -50,13 +52,13 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
                 <ControlledInput
                   control={editForm.control}
                   name="fullName"
-                  label="F.I.Sh"
-                  placeholder="Sardor Rahimov"
+                  label={t("employees.form.fullNameLabel")}
+                  placeholder={t("employees.form.fullNamePlaceholder")}
                 />
                 <ControlledInput
                   control={editForm.control}
                   name="phone"
-                  label="Telefon raqam"
+                  label={t("common.phone")}
                   placeholder="+998901234567"
                 />
               </div>
@@ -64,16 +66,16 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
               <ControlledSelect
                 control={editForm.control}
                 name="roleId"
-                label="Rol"
+                label={t("employees.form.roleLabel")}
                 options={roleOptions}
                 isLoading={isRolesLoading}
-                placeholder="Rolni tanlang"
+                placeholder={t("employees.form.rolePlaceholder")}
               />
 
               <ControlledInput
                 control={editForm.control}
                 name="email"
-                label="Email (ixtiyoriy)"
+                label={`${t("common.email")} ${t("common.optional")}`}
                 placeholder="sardor@example.com"
                 type="email"
               />
@@ -81,7 +83,7 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
               <ControlledInput
                 control={editForm.control}
                 name="avatarUrl"
-                label="Avatar URL (ixtiyoriy)"
+                label={`${t("employees.form.avatarUrlLabel")} ${t("common.optional")}`}
                 placeholder="https://example.com/avatar.jpg"
               />
 
@@ -93,14 +95,14 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
                   disabled={isPending}
                   className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                 >
-                  Bekor qilish
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
                   className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  {isPending ? "Saqlanmoqda..." : "Saqlash"}
+                  {isPending ? t("common.saving") : t("common.save")}
                 </Button>
               </DialogFooter>
             </form>
@@ -114,21 +116,21 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
               <ControlledInput
                 control={createForm.control}
                 name="fullName"
-                label="F.I.Sh"
-                placeholder="Sardor Rahimov"
+                label={t("employees.form.fullNameLabel")}
+                placeholder={t("employees.form.fullNamePlaceholder")}
               />
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput
                   control={createForm.control}
                   name="phone"
-                  label="Telefon raqam"
+                  label={t("common.phone")}
                   placeholder="+998901234567"
                 />
                 <ControlledInput
                   control={createForm.control}
                   name="password"
-                  label="Parol"
-                  placeholder="Parol kiriting"
+                  label={t("employees.form.passwordLabel")}
+                  placeholder={t("employees.form.passwordPlaceholder")}
                   type="password"
                 />
               </div>
@@ -136,24 +138,24 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
               <ControlledSelect
                 control={createForm.control}
                 name="roleId"
-                label="Rol"
+                label={t("employees.form.roleLabel")}
                 options={roleOptions}
                 isLoading={isRolesLoading}
-                placeholder="Rolni tanlang"
+                placeholder={t("employees.form.rolePlaceholder")}
               />
 
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput
                   control={createForm.control}
                   name="email"
-                  label="Email (ixtiyoriy)"
+                  label={`${t("common.email")} ${t("common.optional")}`}
                   placeholder="ali@gmail.com"
                   type="email"
                 />
                 <ControlledInput
                   control={createForm.control}
                   name="parentPhone"
-                  label="Yaqin kishi telefoni (ixtiyoriy)"
+                  label={`${t("employees.form.parentPhoneLabel")} ${t("common.optional")}`}
                   placeholder="+998901234568"
                 />
               </div>
@@ -161,7 +163,7 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
               <ControlledInput
                 control={createForm.control}
                 name="avatarUrl"
-                label="Avatar URL (ixtiyoriy)"
+                label={`${t("employees.form.avatarUrlLabel")} ${t("common.optional")}`}
                 placeholder="https://example.com/avatar.jpg"
               />
 
@@ -173,14 +175,14 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
                   disabled={isPending}
                   className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                 >
-                  Bekor qilish
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
                   className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  {isPending ? "Qo'shilmoqda..." : "Qo'shish"}
+                  {isPending ? t("common.adding") : t("common.add")}
                 </Button>
               </DialogFooter>
             </form>

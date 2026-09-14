@@ -1,17 +1,15 @@
 import { z } from "zod";
 import { TENANT_TYPES } from "../types";
 
-export const tenantFormSchema = z.object({
-  name: z.string().min(1, "Markaz nomi kiritilishi shart"),
-  slug: z
-    .string()
-    .min(1, "Slug kiritilishi shart")
-    .regex(
-      /^[a-z0-9-]+$/,
-      "Slug faqat kichik lotin harflari, raqamlar va - belgisidan iborat bo'lishi mumkin",
-    ),
-  plan: z.string().optional(),
-  type: z.enum(TENANT_TYPES).optional().or(z.literal("")),
-});
+export const createTenantFormSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("tenants.schema.name_required")),
+    slug: z
+      .string()
+      .min(1, t("tenants.schema.slug_required"))
+      .regex(/^[a-z0-9-]+$/, t("tenants.schema.slug_invalid")),
+    plan: z.string().optional(),
+    type: z.enum(TENANT_TYPES).optional().or(z.literal("")),
+  });
 
-export type TenantFormValues = z.infer<typeof tenantFormSchema>;
+export type TenantFormValues = z.infer<ReturnType<typeof createTenantFormSchema>>;

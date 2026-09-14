@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Trash2, ChevronUp, ChevronDown, UserMinus, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ type SortKey = "name" | "joinedAt";
 type SortDir = "asc" | "desc";
 
 export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
+  const { t } = useTranslation();
   const [sortKey, setSortKey] = useState<SortKey>("joinedAt");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null);
@@ -88,19 +90,19 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
                   onClick={() => handleSort("name")}
                   className="flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
                 >
-                  Ism
+                  {t("groups.table.name")}
                   <SortIcon col="name" />
                 </button>
               </th>
               <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hidden sm:table-cell">
-                Telefon
+                {t("common.phone")}
               </th>
               <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hidden md:table-cell">
                 <button
                   onClick={() => handleSort("joinedAt")}
                   className="flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
                 >
-                  Qo'shilgan sana
+                  {t("groups.table.joinedAt")}
                   <SortIcon col="joinedAt" />
                 </button>
               </th>
@@ -115,8 +117,8 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
                   className="text-center py-12 text-zinc-400 dark:text-zinc-500"
                 >
                   {query
-                    ? `"${search}" bo'yicha hech narsa topilmadi`
-                    : "Guruhda hali o'quvchi yo'q"}
+                    ? t("groups.addStudent.noResultsFor", { search })
+                    : t("groups.table.empty")}
                 </td>
               </tr>
             ) : (
@@ -162,6 +164,7 @@ const StudentRow = ({
 }: StudentRowProps) => {
   const { student, joinedAt } = groupStudent;
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <tr className="border-b border-zinc-100 dark:border-zinc-800/60 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
@@ -211,13 +214,13 @@ const StudentRow = ({
               </div>
               <div>
                 <p className="font-medium text-zinc-900 dark:text-zinc-50">
-                  Guruhdan chiqarish
+                  {t("groups.table.removeTitle")}
                 </p>
                 <p className="text-zinc-500 dark:text-zinc-400 mt-0.5">
                   <span className="font-medium text-zinc-700 dark:text-zinc-300">
                     {student.fullName}
                   </span>{" "}
-                  ni guruhdan chiqarasizmi?
+                  {t("groups.table.removeConfirmSuffix")}
                 </p>
               </div>
             </div>
@@ -229,7 +232,7 @@ const StudentRow = ({
                 disabled={isRemoving}
                 className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs"
               >
-                Yo'q
+                {t("common.no")}
               </Button>
               <Button
                 size="sm"
@@ -237,7 +240,7 @@ const StudentRow = ({
                 disabled={isRemoving}
                 className="flex-1 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white text-xs"
               >
-                {isRemoving ? "..." : "Ha, chiqarish"}
+                {isRemoving ? "..." : t("groups.table.removeConfirmBtn")}
               </Button>
             </div>
           </PopoverContent>

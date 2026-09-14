@@ -15,7 +15,8 @@ import {
   startOfWeek,
   subMonths,
 } from "date-fns";
-import { uz } from "date-fns/locale";
+import { uz, ru } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 import { ChevronDown, ChevronLeft, ChevronRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,16 +35,6 @@ import { SessionChip } from "./SessionChip";
 import { ExceptionModal } from "./ExceptionModal";
 import { GenerateSessionsModal } from "./GenerateSessionsModal";
 
-const WEEK_HEADER = [
-  { label: "Du", className: "" },
-  { label: "Se", className: "" },
-  { label: "Ch", className: "" },
-  { label: "Pa", className: "" },
-  { label: "Ju", className: "" },
-  { label: "Sh", className: "text-amber-500" },
-  { label: "Ya", className: "text-red-500" },
-];
-
 interface Props {
   hasAction?: boolean;
   groupId?: string;
@@ -59,6 +50,17 @@ export const MonthlyCalendar = ({
   month: controlledMonth,
   onMonthChange,
 }: Props) => {
+  const { t, i18n } = useTranslation();
+  const dateLocale = i18n.language === "ru" ? ru : uz;
+  const WEEK_HEADER = [
+    { label: t("plans.weekdayShort.monday"), className: "" },
+    { label: t("plans.weekdayShort.tuesday"), className: "" },
+    { label: t("plans.weekdayShort.wednesday"), className: "" },
+    { label: t("plans.weekdayShort.thursday"), className: "" },
+    { label: t("plans.weekdayShort.friday"), className: "" },
+    { label: t("plans.weekdayShort.saturday"), className: "text-amber-500" },
+    { label: t("plans.weekdayShort.sunday"), className: "text-red-500" },
+  ];
   const { data: groups } = useGroups();
   const [internalGroupId, setInternalGroupId] = useState<string>("");
   const groupId = controlledGroupId ?? internalGroupId;
@@ -144,7 +146,7 @@ export const MonthlyCalendar = ({
             <ChevronLeft size={18} />
           </Button>
           <h3 className="w-40 text-center text-lg font-semibold capitalize">
-            {format(viewDate, "LLLL yyyy", { locale: uz })}
+            {format(viewDate, "LLLL yyyy", { locale: dateLocale })}
           </h3>
           <Button
             variant="ghost"
@@ -163,7 +165,7 @@ export const MonthlyCalendar = ({
                 className="max-w-100 min-w-48 justify-between font-normal"
               >
                 <span className="truncate">
-                  {selectedGroupName || "Guruh tanlang"}
+                  {selectedGroupName || t("plans.selectGroup")}
                 </span>
                 <ChevronDown size={16} className="shrink-0 opacity-50" />
               </Button>
@@ -188,7 +190,7 @@ export const MonthlyCalendar = ({
               className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white"
             >
               <Zap size={16} />
-              Darslar yaratish
+              {t("plans.generateSessions")}
             </Button>
           )}
         </div>
@@ -196,7 +198,7 @@ export const MonthlyCalendar = ({
 
       {!groupId ? (
         <p className="py-10 text-center text-muted-foreground">
-          Kalendarni ko'rish uchun guruh tanlang
+          {t("plans.selectGroupToView")}
         </p>
       ) : isLoading ? (
         <PageLoading />
@@ -252,20 +254,20 @@ export const MonthlyCalendar = ({
 
           <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-500" /> Oddiy
-              sessiya
+              <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />{" "}
+              {t("plans.legend.normal")}
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-500" /> Vaqt
-              o'zgargan
+              <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />{" "}
+              {t("plans.legend.rescheduled")}
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-500" /> Bekor
-              qilingan
+              <span className="h-2.5 w-2.5 rounded-full bg-red-500" />{" "}
+              {t("plans.legend.cancelled")}
             </span>
             <span className="flex items-center gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />{" "}
-              Qulflangan (yo'qlama kiritilgan)
+              {t("plans.legend.locked")}
             </span>
           </div>
         </>

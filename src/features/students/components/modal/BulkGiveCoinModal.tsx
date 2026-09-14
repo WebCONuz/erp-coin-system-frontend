@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Search, X, Users, Coins, CheckCircle2, XCircle } from "lucide-react";
 import {
   Sheet,
@@ -21,9 +22,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ControlledInput, ControlledSelect } from "@/components/controls";
-import { directionOptions } from "@/features/coin-rules/constants";
+import { getDirectionOptions } from "@/features/coin-rules/constants";
 import { useBulkGiveCoinForm } from "../../hooks";
-import { bulkCoinSourceTypeOptions } from "../../constants";
+import { getBulkCoinSourceTypeOptions } from "../../constants";
 
 export interface BulkCoinStudent {
   id: string;
@@ -46,10 +47,13 @@ export const BulkGiveCoinModal = ({
   onClose,
   students,
   groupId,
-  title = "Ommaviy tanga berish",
+  title,
   subtitle,
 }: Props) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
+  const directionOptions = getDirectionOptions(t);
+  const bulkCoinSourceTypeOptions = getBulkCoinSourceTypeOptions(t);
 
   const {
     form,
@@ -95,10 +99,10 @@ export const BulkGiveCoinModal = ({
       >
         <SheetHeader className="p-4 border-b border-zinc-200 dark:border-zinc-800">
           <SheetTitle className="text-zinc-900 dark:text-zinc-50">
-            {title}
+            {title ?? t("bulkCoin.defaultTitle")}
           </SheetTitle>
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            {subtitle ?? "Bir nechta o'quvchini tanlab, birdaniga tanga bering"}
+            {subtitle ?? t("bulkCoin.defaultSubtitle")}
           </p>
         </SheetHeader>
 
@@ -116,7 +120,7 @@ export const BulkGiveCoinModal = ({
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
-                  placeholder="Ism yoki telefon..."
+                  placeholder={t("bulkCoin.searchPlaceholder")}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="pl-9 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400"
@@ -145,13 +149,13 @@ export const BulkGiveCoinModal = ({
                   }
                   className="border-zinc-300 dark:border-zinc-600"
                 />
-                Hammasini belgilash
+                {t("bulkCoin.selectAll")}
               </label>
               <Badge
                 variant="secondary"
                 className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
               >
-                {selectedIds.length} ta tanlandi
+                {t("bulkCoin.selectedCount", { count: selectedIds.length })}
               </Badge>
             </div>
 
@@ -211,13 +215,13 @@ export const BulkGiveCoinModal = ({
                         value="rule"
                         className="flex-1 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 text-zinc-600 dark:text-zinc-400 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50"
                       >
-                        Tanga qoidasi
+                        {t("bulkCoin.tabs.rule")}
                       </TabsTrigger>
                       <TabsTrigger
                         value="custom"
                         className="flex-1 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 text-zinc-600 dark:text-zinc-400 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50"
                       >
-                        Maxsus sabab
+                        {t("bulkCoin.tabs.custom")}
                       </TabsTrigger>
                     </TabsList>
 
@@ -226,12 +230,12 @@ export const BulkGiveCoinModal = ({
                         <ControlledSelect
                           control={form.control}
                           name="ruleId"
-                          label="Qoidani tanlang"
+                          label={t("bulkCoin.rule.label")}
                           isLoading={isRulesLoading}
                           placeholder={
                             isRulesLoading
-                              ? "Yuklanmoqda..."
-                              : "Qoidani tanlang"
+                              ? t("bulkCoin.rule.loading")
+                              : t("bulkCoin.rule.label")
                           }
                           options={activeRules.map((rule) => ({
                             value: rule.id,
@@ -240,12 +244,12 @@ export const BulkGiveCoinModal = ({
                         />
                         {selectedRule && (
                           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1.5">
-                            Har bir tanlangan o'quvchiga{" "}
+                            {t("bulkCoin.rule.hintPrefix")}{" "}
                             <b className="text-zinc-700 dark:text-zinc-300">
                               {selectedRule.direction === "earn" ? "+" : "-"}
                               {selectedRule.coinAmount} coin
                             </b>{" "}
-                            beriladi.
+                            {t("bulkCoin.rule.hintSuffix")}
                           </p>
                         )}
                       </div>
@@ -258,12 +262,12 @@ export const BulkGiveCoinModal = ({
                           name="amount"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Miqdor</FormLabel>
+                              <FormLabel>{t("common.amount")}</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
                                   min={1}
-                                  placeholder="Masalan: 5"
+                                  placeholder={t("bulkCoin.custom.amountPlaceholder")}
                                   {...field}
                                   value={field.value ?? ""}
                                   onChange={(e) =>
@@ -278,14 +282,14 @@ export const BulkGiveCoinModal = ({
                         <ControlledSelect
                           control={form.control}
                           name="direction"
-                          label="Yo'nalish"
+                          label={t("common.direction")}
                           options={directionOptions}
                         />
                       </div>
                       <ControlledSelect
                         control={form.control}
                         name="sourceType"
-                        label="Manba"
+                        label={t("bulkCoin.custom.sourceLabel")}
                         options={bulkCoinSourceTypeOptions}
                       />
                     </TabsContent>
@@ -295,11 +299,11 @@ export const BulkGiveCoinModal = ({
                     <ControlledInput
                       control={form.control}
                       name="note"
-                      label="Sabab (ixtiyoriy)"
+                      label={t("bulkCoin.noteLabel")}
                       placeholder={
                         mode === "rule"
-                          ? "Berilmasa, qoida nomi asosida avtomatik yoziladi"
-                          : "Masalan: Darsda faol qatnashgani uchun"
+                          ? t("bulkCoin.notePlaceholderRule")
+                          : t("bulkCoin.notePlaceholderCustom")
                       }
                     />
                   </div>
@@ -315,7 +319,7 @@ export const BulkGiveCoinModal = ({
                       disabled={isPending}
                       className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                     >
-                      Bekor
+                      {t("common.cancel")}
                     </Button>
                     <Button
                       type="submit"
@@ -323,8 +327,8 @@ export const BulkGiveCoinModal = ({
                       className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
                     >
                       {isPending
-                        ? "Yuborilmoqda..."
-                        : `${selectedIds.length} ta o'quvchiga berish`}
+                        ? t("common.sending")
+                        : t("bulkCoin.submit", { count: selectedIds.length })}
                     </Button>
                   </div>
                 </div>
@@ -358,17 +362,19 @@ const ResultsView = ({
   onClose: () => void;
   onGiveMore: () => void;
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex-1 overflow-hidden flex flex-col">
       <div className="px-4 py-4 flex items-center gap-4 border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400">
           <CheckCircle2 size={15} />
-          {result.successCount} ta o'quvchi mukofotlandi
+          {t("bulkCoin.results.success", { count: result.successCount })}
         </div>
         {result.failedCount > 0 && (
           <div className="flex items-center gap-1.5 text-sm text-red-600 dark:text-red-400">
             <XCircle size={15} />
-            {result.failedCount} xato
+            {t("bulkCoin.results.failed", { count: result.failedCount })}
           </div>
         )}
       </div>
@@ -404,7 +410,9 @@ const ResultsView = ({
                   {r.success ? (
                     typeof r.newBalance === "number" && (
                       <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                        Yangi balans: {r.newBalance} coin
+                        {t("bulkCoin.results.newBalance", {
+                          balance: r.newBalance,
+                        })}
                       </p>
                     )
                   ) : (
@@ -425,24 +433,29 @@ const ResultsView = ({
           onClick={onGiveMore}
           className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
         >
-          Yana berish
+          {t("bulkCoin.giveMore")}
         </Button>
         <Button
           onClick={onClose}
           className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
         >
-          Yopish
+          {t("common.close")}
         </Button>
       </div>
     </div>
   );
 };
 
-const EmptyState = ({ search }: { search: string }) => (
-  <div className="flex flex-col items-center justify-center py-10 text-center">
-    <Users className="w-9 h-9 text-zinc-300 dark:text-zinc-600 mb-2" />
-    <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-      {search ? "Hech narsa topilmadi" : "O'quvchilar mavjud emas"}
-    </p>
-  </div>
-);
+const EmptyState = ({ search }: { search: string }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center justify-center py-10 text-center">
+      <Users className="w-9 h-9 text-zinc-300 dark:text-zinc-600 mb-2" />
+      <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+        {search
+          ? t("bulkCoin.emptyNoResults")
+          : t("bulkCoin.emptyNoStudents")}
+      </p>
+    </div>
+  );
+};

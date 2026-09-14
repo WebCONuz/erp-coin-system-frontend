@@ -1,4 +1,5 @@
 import { BookOpen, MoreVertical, Pencil, Trash } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export const SubjectCard = ({ data, onEdit, onDelete }: Props) => {
+  const { t } = useTranslation();
   return (
     <div className="border rounded-xl p-3 relative bg-white dark:bg-card shadow-sm">
       <div className="absolute top-3 right-2">
@@ -26,14 +28,14 @@ export const SubjectCard = ({ data, onEdit, onDelete }: Props) => {
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onEdit(data)}>
               <Pencil className="text-blue-500" />
-              Tahrirlash
+              {t("common.edit")}
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
               onClick={() => onDelete(data)}
             >
               <Trash />
-              O'chirish
+              {t("common.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -53,7 +55,7 @@ export const SubjectCard = ({ data, onEdit, onDelete }: Props) => {
 
         {!data.isActive && (
           <span className="inline-block px-2 py-0.5 rounded-4xl text-xs bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
-            Nofaol
+            {t("subjects.inactive")}
           </span>
         )}
       </div>

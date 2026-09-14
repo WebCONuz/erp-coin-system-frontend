@@ -1,52 +1,65 @@
 import { z } from "zod";
 import { WEEKDAYS } from "../types";
 
-export const templateFormSchema = z.object({
-  weekday: z.enum(WEEKDAYS),
-  groupId: z.string().min(1, "Guruh tanlanishi shart"),
-  roomId: z.string().min(1, "Xona tanlanishi shart"),
-  teacherId: z.string().min(1, "O'qituvchini tanlang"),
-  subjectId: z.string().optional(),
-  startTime: z.string().min(1, "Boshlanish vaqti kiritilishi shart"),
-  endTime: z.string().min(1, "Tugash vaqti kiritilishi shart"),
-});
+type TFn = (key: string) => string;
+
+export const createTemplateFormSchema = (t: TFn) =>
+  z.object({
+    weekday: z.enum(WEEKDAYS),
+    groupId: z.string().min(1, t("plans.schema.group_required")),
+    roomId: z.string().min(1, t("plans.schema.room_required")),
+    teacherId: z.string().min(1, t("plans.schema.teacher_required")),
+    subjectId: z.string().optional(),
+    startTime: z.string().min(1, t("sessions.schema.startTime_required")),
+    endTime: z.string().min(1, t("sessions.schema.endTime_required")),
+  });
 
 // Fan tanlovi faqat "o'quv markaz" bo'lmagan tenantlar uchun ko'rsatiladi va
 // shundagina majburiy bo'ladi — ko'rinmaydigan maydonni required qilish
 // FormMessage'siz "jim" submit xatosiga olib keladi (TemplateFormModal'da
 // avval duch kelingan bug).
-export const getTemplateFormSchema = (subjectRequired: boolean) =>
-  subjectRequired
-    ? templateFormSchema.extend({
-        subjectId: z.string().min(1, "Fan tanlanishi shart"),
+export const getTemplateFormSchema = (
+  subjectRequired: boolean,
+  t: TFn,
+) => {
+  const base = createTemplateFormSchema(t);
+  return subjectRequired
+    ? base.extend({
+        subjectId: z.string().min(1, t("plans.schema.subject_required")),
       })
-    : templateFormSchema;
+    : base;
+};
 
-export type TemplateFormValues = z.infer<typeof templateFormSchema>;
+export type TemplateFormValues = z.infer<
+  ReturnType<typeof createTemplateFormSchema>
+>;
 
-export const cancelExceptionFormSchema = z.object({
-  note: z.string().optional(),
-});
+export const createCancelExceptionFormSchema = (_t: TFn) =>
+  z.object({
+    note: z.string().optional(),
+  });
 
 export type CancelExceptionFormValues = z.infer<
-  typeof cancelExceptionFormSchema
+  ReturnType<typeof createCancelExceptionFormSchema>
 >;
 
-export const rescheduleExceptionFormSchema = z.object({
-  startTime: z.string().min(1, "Boshlanish vaqti kiritilishi shart"),
-  endTime: z.string().min(1, "Tugash vaqti kiritilishi shart"),
-  note: z.string().optional(),
-});
+export const createRescheduleExceptionFormSchema = (t: TFn) =>
+  z.object({
+    startTime: z.string().min(1, t("sessions.schema.startTime_required")),
+    endTime: z.string().min(1, t("sessions.schema.endTime_required")),
+    note: z.string().optional(),
+  });
 
 export type RescheduleExceptionFormValues = z.infer<
-  typeof rescheduleExceptionFormSchema
+  ReturnType<typeof createRescheduleExceptionFormSchema>
 >;
 
-export const generateSessionsFormSchema = z.object({
-  fromDate: z.string().min(1, "Boshlanish sanasi kiritilishi shart"),
-  toDate: z.string().min(1, "Tugash sanasi kiritilishi shart"),
-});
+export const createGenerateSessionsFormSchema = (t: TFn) =>
+  z.object({
+    fromDate: z.string().min(1, t("plans.schema.fromDate_required")),
+    toDate: z.string().min(1, t("plans.schema.toDate_required")),
+  });
 
 export type GenerateSessionsFormValues = z.infer<
-  typeof generateSessionsFormSchema
+  ReturnType<typeof createGenerateSessionsFormSchema>
 >;

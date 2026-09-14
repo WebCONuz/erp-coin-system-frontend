@@ -1,4 +1,5 @@
 import { Clock3, DoorOpen, GraduationCap, Pencil, Trash } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { ScheduleTemplate } from "../types";
 
 interface Props {
@@ -16,6 +17,7 @@ export const TemplateCard = ({
   onEdit,
   onDelete,
 }: Props) => {
+  const { t } = useTranslation();
   return (
     <div
       onClick={onEdit}
@@ -47,15 +49,16 @@ export const TemplateCard = ({
 
       {template.teacher && (
         <p className="text-xs text-muted-foreground flex items-center gap-x-1 mt-1">
-          <GraduationCap size={12} /> <b>O'qituvchi:</b>{" "}
+          <GraduationCap size={12} /> <b>{t("common.teacher")}:</b>{" "}
           {template.teacher.fullName}
         </p>
       )}
       <p className="text-xs text-muted-foreground flex items-center gap-x-1">
-        <DoorOpen size={12} /> <b>Xona:</b> "{template.room.name}"
+        <DoorOpen size={12} /> <b>{t("common.room")}:</b> "{template.room.name}
+        "
       </p>
       <p className="text-xs text-muted-foreground flex items-center gap-x-1">
-        <Clock3 size={12} /> <b>Vaqti:</b>
+        <Clock3 size={12} /> <b>{t("plans.card.timePrefix")}</b>
         {template.startTime} – {template.endTime}
       </p>
     </div>

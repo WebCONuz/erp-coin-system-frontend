@@ -1,27 +1,46 @@
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { uz } from "date-fns/locale";
+import { ru, uz } from "date-fns/locale";
 import { Minus, Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getFileUrl } from "@/lib/utils";
-import type { AdminDashboardActivity, DashboardActivitySourceType } from "../types";
+import type {
+  AdminDashboardActivity,
+  DashboardActivitySourceType,
+} from "../types";
 
 interface Props {
   activity?: AdminDashboardActivity[];
   isLoading?: boolean;
 }
 
-const SOURCE_LABELS: Record<DashboardActivitySourceType, string> = {
-  attendance: "Davomat",
-  homework: "Uy vazifasi",
-  competition: "Musobaqa",
-  manual: "Qo'lda",
-  bonus: "Bonus",
-  purchase: "Xarid",
-};
-
 export const ActivityFeed = ({ activity, isLoading }: Props) => {
+  const { t, i18n } = useTranslation();
+
+  const sourceLabels: Record<DashboardActivitySourceType, string> = {
+    attendance: t("admin.dashboard.activity.sourceTypes.attendance"),
+    homework: t("admin.dashboard.activity.sourceTypes.homework"),
+    competition: t("admin.dashboard.activity.sourceTypes.competition"),
+    manual: t("admin.dashboard.activity.sourceTypes.manual"),
+    bonus: t("admin.dashboard.activity.sourceTypes.bonus"),
+    purchase: t("admin.dashboard.activity.sourceTypes.purchase"),
+  };
+
+  const formatRelative = (date: string) => {
+    try {
+      return formatDistanceToNow(parseISO(date), {
+        addSuffix: true,
+        locale: i18n.language === "ru" ? ru : uz,
+      });
+    } catch {
+      return "";
+    }
+  };
+
   return (
     <div className="rounded-2xl bg-white dark:bg-zinc-900 p-5 shadow-sm">
-      <h3 className="mb-4 text-base font-semibold">So'nggi faoliyat</h3>
+      <h3 className="mb-4 text-base font-semibold">
+        {t("admin.dashboard.activity.title")}
+      </h3>
 
       {isLoading ? (
         <div className="space-y-3">
@@ -34,7 +53,7 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
         </div>
       ) : !activity?.length ? (
         <p className="py-8 text-center text-sm text-muted-foreground">
-          Hali faoliyat mavjud emas
+          {t("admin.dashboard.activity.empty")}
         </p>
       ) : (
         <div className="space-y-1">
@@ -81,7 +100,7 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
                   </div>
                   <p className="mt-0.5 truncate text-xs text-muted-foreground">
                     <b className="font-medium">
-                      {SOURCE_LABELS[item.sourceType] ?? item.sourceType}
+                      {sourceLabels[item.sourceType] ?? item.sourceType}
                     </b>
                     {item.note ? `: ${item.note}` : ""}
                   </p>
@@ -97,15 +116,4 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
       )}
     </div>
   );
-};
-
-const formatRelative = (date: string) => {
-  try {
-    return formatDistanceToNow(parseISO(date), {
-      addSuffix: true,
-      locale: uz,
-    });
-  } catch {
-    return "";
-  }
 };

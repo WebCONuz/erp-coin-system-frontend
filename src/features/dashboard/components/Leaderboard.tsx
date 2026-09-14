@@ -1,4 +1,5 @@
 import { Coins } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getFileUrl } from "@/lib/utils";
 import type { AdminDashboardLeaderboardEntry } from "../types";
 
@@ -10,11 +11,14 @@ interface Props {
 const MEDALS = ["🥇", "🥈", "🥉"];
 
 export const Leaderboard = ({ leaderboard, isLoading }: Props) => {
+  const { t } = useTranslation();
   const top = (leaderboard ?? []).slice(0, 5);
 
   return (
     <div className="rounded-2xl bg-white dark:bg-zinc-900 p-5 shadow-sm">
-      <h3 className="mb-4 text-base font-semibold">Reyting</h3>
+      <h3 className="mb-4 text-base font-semibold">
+        {t("admin.dashboard.leaderboard.title")}
+      </h3>
 
       {isLoading ? (
         <div className="space-y-3">
@@ -27,7 +31,7 @@ export const Leaderboard = ({ leaderboard, isLoading }: Props) => {
         </div>
       ) : !top.length ? (
         <p className="py-8 text-center text-sm text-muted-foreground">
-          Hali reyting mavjud emas
+          {t("admin.dashboard.leaderboard.empty")}
         </p>
       ) : (
         <div className="space-y-1">

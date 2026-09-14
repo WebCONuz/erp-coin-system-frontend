@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Search, X, Users, User } from "lucide-react";
 import {
   Sheet,
@@ -28,6 +29,7 @@ export const AddStudentDrawer = ({
   onClose,
   group,
 }: AddStudentDrawerProps) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"single" | "bulk">("single");
@@ -97,10 +99,10 @@ export const AddStudentDrawer = ({
       >
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-zinc-200 dark:border-zinc-800">
           <SheetTitle className="text-zinc-900 dark:text-zinc-50">
-            Student qo'shish
+            {t("groups.addStudent.title")}
           </SheetTitle>
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            {group.name} guruhiga o'quvchi qo'shish
+            {t("groups.addStudent.subtitle", { name: group.name })}
           </p>
         </SheetHeader>
 
@@ -120,14 +122,14 @@ export const AddStudentDrawer = ({
                 className="flex-1 gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 text-zinc-600 dark:text-zinc-400 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50"
               >
                 <User className="w-4 h-4" />
-                Bitta
+                {t("groups.addStudent.tabSingle")}
               </TabsTrigger>
               <TabsTrigger
                 value="bulk"
                 className="flex-1 gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 text-zinc-600 dark:text-zinc-400 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50"
               >
                 <Users className="w-4 h-4" />
-                Ko'p
+                {t("groups.addStudent.tabBulk")}
               </TabsTrigger>
             </TabsList>
           </div>
@@ -137,7 +139,7 @@ export const AddStudentDrawer = ({
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
               <Input
-                placeholder="Ism, telefon yoki email..."
+                placeholder={t("groups.addStudent.searchPlaceholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="pl-9 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
@@ -186,7 +188,7 @@ export const AddStudentDrawer = ({
                         disabled={isPending}
                         className="ml-3 shrink-0 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-xs"
                       >
-                        Qo'shish
+                        {t("common.add")}
                       </Button>
                     </div>
                   ))}
@@ -235,13 +237,13 @@ export const AddStudentDrawer = ({
             <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                  Tanlangan:
+                  {t("groups.addStudent.selected")}
                 </span>
                 <Badge
                   variant="secondary"
                   className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
                 >
-                  {selectedIds.length} ta
+                  {t("groups.addStudent.countUnit", { count: selectedIds.length })}
                 </Badge>
               </div>
               <div className="flex gap-2">
@@ -251,7 +253,7 @@ export const AddStudentDrawer = ({
                   disabled={isPending}
                   className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                 >
-                  Bekor
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   onClick={handleBulkAdd}
@@ -259,8 +261,10 @@ export const AddStudentDrawer = ({
                   className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
                 >
                   {isPending
-                    ? "Qo'shilmoqda..."
-                    : `${selectedIds.length} ta qo'shish`}
+                    ? t("common.adding")
+                    : t("groups.addStudent.addSelected", {
+                        count: selectedIds.length,
+                      })}
                 </Button>
               </div>
             </div>
@@ -282,16 +286,21 @@ const StudentListSkeleton = () => (
   </div>
 );
 
-const EmptyState = ({ search }: { search: string }) => (
-  <div className="flex flex-col items-center justify-center py-12 text-center">
-    <Users className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mb-3" />
-    <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-      {search ? "Hech narsa topilmadi" : "Qo'shish uchun student yo'q"}
-    </p>
-    {search && (
-      <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
-        "{search}" bo'yicha natija topilmadi
+const EmptyState = ({ search }: { search: string }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <Users className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mb-3" />
+      <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+        {search
+          ? t("groups.addStudent.noResults")
+          : t("groups.addStudent.noStudents")}
       </p>
-    )}
-  </div>
-);
+      {search && (
+        <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
+          {t("groups.addStudent.noResultsFor", { search })}
+        </p>
+      )}
+    </div>
+  );
+};

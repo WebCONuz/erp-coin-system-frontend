@@ -1,4 +1,5 @@
 import { DoorOpen, MoreVertical, Pencil, Trash, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export const RoomCard = ({ data, onEdit, onDelete }: Props) => {
+  const { t } = useTranslation();
   return (
     <div className="border rounded-xl p-3 relative bg-gray-100 dark:bg-card">
       <div className="absolute top-3 right-2">
@@ -26,14 +28,14 @@ export const RoomCard = ({ data, onEdit, onDelete }: Props) => {
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onEdit(data)}>
               <Pencil className="text-blue-500" />
-              Tahrirlash
+              {t("common.edit")}
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
               onClick={() => onDelete(data)}
             >
               <Trash />
-              O'chirish
+              {t("common.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -47,7 +49,7 @@ export const RoomCard = ({ data, onEdit, onDelete }: Props) => {
 
         <div className="flex items-center gap-1.5 text-sm text-muted-foreground pl-8">
           <Users size={14} />
-          <span>{data.capacity} kishilik</span>
+          <span>{t("rooms.capacityUnit", { count: data.capacity })}</span>
         </div>
 
         {data.description && (
@@ -58,7 +60,7 @@ export const RoomCard = ({ data, onEdit, onDelete }: Props) => {
 
         {!data.isActive && (
           <span className="inline-block px-2 py-0.5 rounded-4xl text-xs bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
-            Nofaol
+            {t("rooms.inactive")}
           </span>
         )}
       </div>

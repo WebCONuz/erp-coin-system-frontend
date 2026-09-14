@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -21,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { subjectFormSchema, type SubjectFormValues } from "../schema";
+import { createSubjectFormSchema, type SubjectFormValues } from "../schema";
 import { useCreateSubject, useUpdateSubject } from "../hooks";
 import type { Subject } from "../types";
 
@@ -38,10 +39,13 @@ const emptyValues: SubjectFormValues = {
 };
 
 export const SubjectFormModal = ({ open, onClose, mode, subject }: Props) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const createSubject = useCreateSubject();
   const updateSubject = useUpdateSubject(subject?.id ?? "");
   const isPending = createSubject.isPending || updateSubject.isPending;
+
+  const subjectFormSchema = useMemo(() => createSubjectFormSchema(t), [t]);
 
   const form = useForm<SubjectFormValues>({
     resolver: zodResolver(subjectFormSchema),
@@ -62,7 +66,7 @@ export const SubjectFormModal = ({ open, onClose, mode, subject }: Props) => {
   }, [open, isEdit, subject, form]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmit = (values: SubjectFormValues) => {
     const data = { ...values, description: values.description || undefined };
@@ -79,7 +83,7 @@ export const SubjectFormModal = ({ open, onClose, mode, subject }: Props) => {
       <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Fanni tahrirlash" : "Yangi fan qo'shish"}
+            {isEdit ? t("subjects.form.editTitle") : t("subjects.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -90,9 +94,9 @@ export const SubjectFormModal = ({ open, onClose, mode, subject }: Props) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Fan nomi</FormLabel>
+                  <FormLabel>{t("subjects.form.nameLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Masalan: Matematika" {...field} />
+                    <Input placeholder={t("subjects.form.namePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -104,10 +108,12 @@ export const SubjectFormModal = ({ open, onClose, mode, subject }: Props) => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tavsif (Ixtiyoriy)</FormLabel>
+                  <FormLabel>
+                    {t("common.description")} {t("common.optional")}
+                  </FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Masalan: Algebra va geometriya asoslari"
+                      placeholder={t("subjects.form.descriptionPlaceholder")}
                       className="resize-none h-20"
                       {...field}
                     />
@@ -124,16 +130,16 @@ export const SubjectFormModal = ({ open, onClose, mode, subject }: Props) => {
                 onClick={onClose}
                 disabled={isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

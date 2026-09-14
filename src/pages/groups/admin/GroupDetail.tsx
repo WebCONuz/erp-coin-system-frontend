@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useGroup } from "@/features/groups/hooks";
 import {
@@ -24,6 +25,7 @@ import { NoData } from "@/components/partials/no-data";
 const GroupDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddStudentOpen, setIsAddStudentOpen] = useState(false);
@@ -43,10 +45,10 @@ const GroupDetail = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
         <p className="text-zinc-500 dark:text-zinc-400">
-          Guruh ma'lumotlari topilmadi
+          {t("groups.detail.notFound")}
         </p>
         <Button variant="outline" onClick={() => navigate(-1)}>
-          Orqaga
+          {t("groups.detail.back")}
         </Button>
       </div>
     );
@@ -57,7 +59,7 @@ const GroupDetail = () => {
   return (
     <div className="space-y-3">
       {/* Breadcrumb / Back */}
-      <BackListButton title="Guruhlar" />
+      <BackListButton title={t("groups.detail.breadcrumb")} />
 
       {/* Guruh ma'lumotlari */}
       <div className="grid grid-cols-2 items-start gap-6">
@@ -76,7 +78,7 @@ const GroupDetail = () => {
       <section className="space-y-4 pt-4">
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
-            Guruh sessiyalari
+            {t("groups.detail.sessionsTitle")}
           </h2>
           <SessionsFilterBar hasAction={false} pageName="group" />
         </div>
@@ -87,8 +89,8 @@ const GroupDetail = () => {
           <>
             {sessions.data.length === 0 ? (
               <NoDataBox
-                title="Hali darslar mavjud emas!"
-                btnText="Dars qo'shish"
+                title={t("groups.detail.noSessions")}
+                btnText={t("groups.detail.addSession")}
                 hasAction={false}
               />
             ) : (
@@ -114,7 +116,7 @@ const GroupDetail = () => {
             )}
           </>
         ) : (
-          <NoData text="Ma'lumotlar yuklanmadi!" />
+          <NoData text={t("common.noData")} />
         )}
       </section>
 

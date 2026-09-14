@@ -1,5 +1,6 @@
 import { MoreVertical, Pencil, Power } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDate } from "@/ustils/format-date";
 import { useToggleTenantActive } from "../../hooks";
-import { TENANT_TYPE_LABELS } from "../../constants";
+import { getTenantTypeLabels } from "../../constants";
 import type { TenentType } from "../../types";
 
 interface Props {
@@ -17,17 +18,19 @@ interface Props {
 }
 
 export const TenantCard = ({ data, onEdit }: Props) => {
+  const { t } = useTranslation();
   const toggleActive = useToggleTenantActive();
+  const tenantTypeLabels = getTenantTypeLabels(t);
 
   const handleToggleActive = () => {
     const confirmMessage = data.isActive
-      ? `"${data.name}" markazini nofaollashtirishni tasdiqlaysizmi?`
-      : `"${data.name}" markazini faollashtirishni tasdiqlaysizmi?`;
+      ? t("tenants.deactivateConfirm", { name: data.name })
+      : t("tenants.activateConfirm", { name: data.name });
     if (!window.confirm(confirmMessage)) return;
 
     toggleActive.mutate(data.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -38,7 +41,7 @@ export const TenantCard = ({ data, onEdit }: Props) => {
           {data?.name}
           {!data.isActive && (
             <span className="inline-block px-2 py-0.5 rounded-4xl text-xs font-medium bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
-              Nofaol
+              {t("tenants.inactive")}
             </span>
           )}
         </h3>
@@ -49,22 +52,22 @@ export const TenantCard = ({ data, onEdit }: Props) => {
               : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"
           }`}
         >
-          {data.type ? TENANT_TYPE_LABELS[data.type] : "Tur tanlanmagan"}
+          {data.type ? tenantTypeLabels[data.type] : t("tenants.typeNotSet")}
         </span>
         <p className="text-sm text-muted-foreground mt-1">
-          Yaratilgan vaqti: {formatDate(data?.createdAt)}
+          {t("groups.info.created_at")} {formatDate(data?.createdAt)}
         </p>
         <div className="flex gap-x-4 mt-4 items-center">
           <div className="flex items-center gap-x-2">
-            <span>O'quvchilar:</span>
+            <span>{t("admin.header.students")}:</span>
             <div className="text-green-600 font-medium rounded-md">
-              {data?._count?.users || 0} ta
+              {t("tenants.countUnit", { count: data?._count?.users || 0 })}
             </div>
           </div>
           <div className="flex items-center gap-x-2">
-            <span>Guruhlar:</span>
+            <span>{t("admin.header.groups")}:</span>
             <div className="text-primary font-medium rounded-md">
-              {data?._count?.groups || 0} ta
+              {t("tenants.countUnit", { count: data?._count?.groups || 0 })}
             </div>
           </div>
         </div>
@@ -79,14 +82,14 @@ export const TenantCard = ({ data, onEdit }: Props) => {
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => onEdit(data)}>
             <Pencil className="text-blue-500" />
-            Tahrirlash
+            {t("common.edit")}
           </DropdownMenuItem>
           <DropdownMenuItem
             variant={data.isActive ? "destructive" : undefined}
             onClick={handleToggleActive}
           >
             <Power className={data.isActive ? "" : "text-green-500"} />
-            {data.isActive ? "Inactive" : "Active"}
+            {data.isActive ? t("tenants.deactivate") : t("tenants.activate")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

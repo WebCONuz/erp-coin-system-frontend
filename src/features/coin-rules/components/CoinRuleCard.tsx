@@ -1,11 +1,12 @@
 import { MoreVertical, Pencil, Trash, Zap, Hand, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { sourceTypeLabels } from "../constants";
+import { getSourceTypeLabels } from "../constants";
 import type { CoinRule } from "../types";
 
 interface Props {
@@ -16,6 +17,8 @@ interface Props {
 }
 
 export const CoinRuleCard = ({ data, groupName, onEdit, onDelete }: Props) => {
+  const { t } = useTranslation();
+  const sourceTypeLabels = getSourceTypeLabels(t);
   const isPlus = data.direction === "earn";
 
   return (
@@ -34,14 +37,14 @@ export const CoinRuleCard = ({ data, groupName, onEdit, onDelete }: Props) => {
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onEdit(data)}>
               <Pencil className="text-blue-500" />
-              Tahrirlash
+              {t("common.edit")}
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
               onClick={() => onDelete(data)}
             >
               <Trash />
-              O'chirish
+              {t("common.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -73,7 +76,9 @@ export const CoinRuleCard = ({ data, groupName, onEdit, onDelete }: Props) => {
           ) : (
             <Hand size={12} className="text-blue-500" />
           )}
-          {data.triggerType === "auto" ? "Avtomatik" : "Qo'lda"}
+          {data.triggerType === "auto"
+            ? t("coinRules.triggerType.auto")
+            : t("coinRules.triggerType.manual")}
         </span>
 
         {data.triggerType === "auto" && data.sourceType && (
@@ -91,7 +96,7 @@ export const CoinRuleCard = ({ data, groupName, onEdit, onDelete }: Props) => {
 
         {!data.isActive && (
           <span className="inline-block px-2 py-0.5 rounded-4xl text-xs bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
-            Nofaol
+            {t("coinRules.card.inactive")}
           </span>
         )}
       </div>

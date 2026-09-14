@@ -11,6 +11,7 @@ import {
   Settings,
   Receipt,
   LogOut,
+  type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,12 +41,6 @@ const LANGUAGES = [
   { code: "ru", label: "Русский" },
 ];
 
-const QUICK_ACTIONS = [
-  { key: "student", label: "Yangi talaba", icon: UserPlus },
-  { key: "group", label: "Yangi guruh", icon: BookOpen },
-  { key: "session", label: "Yangi sessiya", icon: CreditCard },
-];
-
 // Props
 interface AdminNavbarProps {
   onSidebarToggle?: () => void;
@@ -54,8 +49,14 @@ interface AdminNavbarProps {
 
 // Component
 export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
+
+  const quickActions: { key: string; label: string; icon: LucideIcon }[] = [
+    { key: "student", label: t("admin.navbar.newStudent"), icon: UserPlus },
+    { key: "group", label: t("admin.navbar.newGroup"), icon: BookOpen },
+    { key: "session", label: t("admin.navbar.newSession"), icon: CreditCard },
+  ];
   const { user, logout } = useAuth();
   const { data: tenants } = useAllTenants(
     user?.role?.name === ROLES.SUPER_ADMIN ||
@@ -137,12 +138,12 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
               variant="outline"
               className="h-9 gap-1 px-2.5 text-sm font-medium focus-visible:ring-0"
             >
-              <Plus size={15} /> Tezkor qo'shish
+              <Plus size={15} /> {t("admin.navbar.quickAdd")}
               <ChevronDown size={13} className="text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-44">
-            {QUICK_ACTIONS.map(({ key, label, icon: Icon }) => (
+            {quickActions.map(({ key, label, icon: Icon }) => (
               <DropdownMenuItem
                 key={key}
                 className="gap-2.5 text-sm cursor-pointer"
@@ -164,7 +165,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
                 variant="outline"
                 className="h-9 gap-2 px-2.5 text-sm font-medium focus-visible:ring-0"
               >
-                <span>{currentTenat ?? "Markazni tanlang"}</span>
+                <span>{currentTenat ?? t("admin.navbar.selectCenter")}</span>
                 <ChevronDown size={13} className="text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
@@ -251,7 +252,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
               {/* User info */}
               <div className="px-3 py-2.5 border-b">
                 <p className="text-sm font-medium leading-none">
-                  {user?.fullName ? user.fullName : "- -"}
+                  {user?.fullName ? user.fullName : t("admin.navbar.noName")}
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {user?.email ? user.email : ""}
@@ -263,15 +264,15 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
 
               <DropdownMenuItem className="gap-2.5 mt-1 text-sm cursor-pointer">
                 <User size={14} className="text-muted-foreground" />
-                Profil
+                {t("admin.navbar.profile")}
               </DropdownMenuItem>
               <DropdownMenuItem className="gap-2.5 text-sm cursor-pointer">
                 <Settings size={14} className="text-muted-foreground" />
-                Sozlamalar
+                {t("admin.navbar.settings")}
               </DropdownMenuItem>
               <DropdownMenuItem className="gap-2.5 text-sm cursor-pointer">
                 <Receipt size={14} className="text-muted-foreground" />
-                To'lov rejasi
+                {t("admin.navbar.paymentPlan")}
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
@@ -281,7 +282,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
                 onClick={() => logout()}
               >
                 <LogOut size={14} />
-                Chiqish
+                {t("admin.navbar.logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

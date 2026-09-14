@@ -1,4 +1,5 @@
 import { Search, Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,18 +14,20 @@ export const TenantDataFilter = ({
   onSearch,
   addTenant,
 }: TenantFilterProps) => {
+  const { t } = useTranslation();
+
   return (
     <div className="w-full space-y-3 py-4">
       {/* 1-QATOR: Sarlavha va Harakat tugmalari */}
       <div className="flex items-center justify-between">
-        <DashboardTitle title="O'quv markazlar" />
+        <DashboardTitle title={t("admin.header.tenants")} />
         <div className="flex items-center gap-2">
           <Button
             onClick={addTenant}
             className="bg-linear-to-br from-purple-500 to-purple-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
           >
             <Plus size={18} />
-            <span className="hidden sm:inline">Markaz qo'shish</span>
+            <span className="hidden sm:inline">{t("tenants.filter.add")}</span>
           </Button>
         </div>
       </div>
@@ -41,13 +44,13 @@ export const TenantDataFilter = ({
               value="active"
               className="rounded-md px-3 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
             >
-              Faol Markazlar
+              {t("tenants.filter.active")}
             </TabsTrigger>
             <TabsTrigger
               value="archive"
               className="rounded-md px-4 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
             >
-              Arxiv
+              {t("groups.tabs.archive")}
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -58,7 +61,7 @@ export const TenantDataFilter = ({
             <Search size={18} />
           </div>
           <Input
-            placeholder="Qidirish..."
+            placeholder={t("common.search")}
             className="border-none focus-visible:ring-0 w-64 h-9 placeholder:text-muted-foreground/50 bg-transparent dark:bg-[#0A0A0A]"
             onChange={(e) => onSearch(e.target.value)}
           />

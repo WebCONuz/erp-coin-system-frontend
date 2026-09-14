@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { TabsContent } from "@/components/ui/tabs";
 import { EmptyState } from "../ui";
 import { Trash2, UserPlus, Users } from "lucide-react";
@@ -14,6 +15,7 @@ export const GroupTab = ({
   student?: StudentDetailFull;
   isDeleted: boolean;
 }) => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const removeFromGroup = useRemoveStudentFromGroup(id ?? "");
 
@@ -21,7 +23,9 @@ export const GroupTab = ({
     <TabsContent value="groups" className="mt-4 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">
-          Guruhlar ro'yxati ({student?.groupMemberships?.length ?? 0})
+          {t("students.groupTab.title", {
+            count: student?.groupMemberships?.length ?? 0,
+          })}
         </h3>
         {!isDeleted && (
           <Button
@@ -29,16 +33,18 @@ export const GroupTab = ({
             className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 h-10 px-4 text-white"
           >
             <UserPlus size={14} />
-            Guruhga qo'shish
+            {t("students.detail.addToGroup")}
           </Button>
         )}
       </div>
       {!student?.groupMemberships?.length ? (
         <EmptyState
           icon={<Users size={20} />}
-          title="Hech qanday guruhga a'zo emas"
-          text={`${student?.fullName?.split(" ")?.[0]}ni faol guruhlardan biriga qo'shib, darslarga jalb qiling.`}
-          actionLabel={!isDeleted ? "Guruhga qo'shish" : undefined}
+          title={t("students.groupTab.emptyTitle")}
+          text={t("students.groupTab.emptyText", {
+            name: student?.fullName?.split(" ")?.[0],
+          })}
+          actionLabel={!isDeleted ? t("students.detail.addToGroup") : undefined}
         />
       ) : (
         <div className="space-y-2">
@@ -65,7 +71,9 @@ export const GroupTab = ({
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-xs text-zinc-400">
-                  {formatDate(g.joinedAt, "dd.MM.yyyy")} dan
+                  {t("students.groupTab.joinedSince", {
+                    date: formatDate(g.joinedAt, "dd.MM.yyyy"),
+                  })}
                 </span>
                 {!isDeleted && (
                   <Button

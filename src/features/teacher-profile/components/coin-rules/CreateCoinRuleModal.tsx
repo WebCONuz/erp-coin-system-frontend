@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -16,12 +17,12 @@ import {
 } from "@/components/controls";
 import { useCreateCoinRule } from "@/features/coin-rules/hooks";
 import {
-  directionOptions,
-  sourceTypeOptions,
-  triggerTypeOptions,
+  getDirectionOptions,
+  getSourceTypeOptions,
+  getTriggerTypeOptions,
 } from "@/features/coin-rules/constants";
 import {
-  coinRuleFormSchema,
+  createCoinRuleFormSchema,
   type CoinRuleFormValues,
 } from "@/features/coin-rules/schema";
 import { useMyTaughtGroups } from "../../hooks";
@@ -42,8 +43,15 @@ const emptyValues: CoinRuleFormValues = {
 };
 
 export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
+  const { t } = useTranslation();
   const { data: groups } = useMyTaughtGroups();
   const createRule = useCreateCoinRule();
+
+  const directionOptions = getDirectionOptions(t);
+  const triggerTypeOptions = getTriggerTypeOptions(t);
+  const sourceTypeOptions = getSourceTypeOptions(t);
+
+  const coinRuleFormSchema = useMemo(() => createCoinRuleFormSchema(t), [t]);
 
   const form = useForm<CoinRuleFormValues>({
     resolver: zodResolver(coinRuleFormSchema),
@@ -64,11 +72,11 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
 
   const onSubmit = (values: CoinRuleFormValues) => {
     if (!values.groupId) {
-      toast.error("Guruhni tanlang");
+      toast.error(t("coinRules.teacherForm.groupRequiredError"));
       return;
     }
     if (values.triggerType === "auto" && !values.sourceType) {
-      toast.error("Manba turini tanlang");
+      toast.error(t("coinRules.teacherForm.sourceTypeRequiredError"));
       return;
     }
 
@@ -85,11 +93,11 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
       },
       {
         onSuccess: () => {
-          toast.success("Qoida yaratildi");
+          toast.success(t("coinRules.teacherForm.createdToast"));
           onClose();
         },
         onError: (error: any) =>
-          toast.error(error?.data?.message || "Xatolik yuz berdi"),
+          toast.error(error?.data?.message || t("common.error")),
       },
     );
   };
@@ -99,7 +107,7 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-ink">
-            Yangi tanga qoidasi
+            {t("coinRules.teacherForm.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -111,15 +119,15 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
             <ControlledInput
               control={form.control}
               name="name"
-              label="Nomi"
-              placeholder="Masalan: Darsga faol qatnashgani uchun"
+              label={t("common.name")}
+              placeholder={t("coinRules.namePlaceholderTeacher")}
               inputClassName="h-8"
             />
 
             <ControlledInput
               control={form.control}
               name="coinAmount"
-              label="Tanga miqdori"
+              label={t("coinRules.amountLabel")}
               placeholder="10"
               isNumber
               inputClassName="h-8"
@@ -129,13 +137,13 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
               <ControlledSelect
                 control={form.control}
                 name="direction"
-                label="Yo'nalish"
+                label={t("common.direction")}
                 options={directionOptions}
               />
               <ControlledSelect
                 control={form.control}
                 name="triggerType"
-                label="Ishga tushirish turi"
+                label={t("coinRules.triggerTypeLabel")}
                 options={triggerTypeOptions}
               />
 
@@ -143,9 +151,9 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
                 <ControlledSelect
                   control={form.control}
                   name="sourceType"
-                  label="Manba turi"
+                  label={t("coinRules.sourceTypeLabel")}
                   options={sourceTypeOptions}
-                  placeholder="Tanlang"
+                  placeholder={t("common.select")}
                 />
               )}
             </div>
@@ -153,20 +161,20 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
             <ControlledSelect
               control={form.control}
               name="groupId"
-              label="Guruh"
+              label={t("common.group")}
               options={(groups ?? []).map((g) => ({
                 value: g.id,
                 label: g.name,
               }))}
-              placeholder="Guruhni tanlang"
+              placeholder={t("coinRules.groupPlaceholder")}
               required
             />
 
             <ControlledTextarea
               control={form.control}
               name="description"
-              label="Izoh (ixtiyoriy)"
-              placeholder="Qoida haqida qisqacha izoh..."
+              label={t("coinRules.descriptionLabel")}
+              placeholder={t("coinRules.descriptionPlaceholder")}
               className="resize-none h-20"
             />
 
@@ -175,7 +183,7 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
               disabled={createRule.isPending}
               className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
             >
-              {createRule.isPending ? "Yaratilmoqda..." : "Yaratish"}
+              {createRule.isPending ? t("common.creating") : t("common.create")}
             </button>
           </form>
         </Form>

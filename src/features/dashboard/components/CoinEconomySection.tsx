@@ -1,4 +1,5 @@
 import { Coins, TrendingDown, TrendingUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { StatsCard, WeeklyTrendChart } from "./ui";
 import type { AdminDashboardCoinEconomy } from "../types";
 
@@ -8,22 +9,26 @@ interface Props {
 }
 
 export const CoinEconomySection = ({ coinEconomy, isLoading }: Props) => {
+  const { t } = useTranslation();
+
   return (
     <div className="rounded-2xl bg-white dark:bg-zinc-900 p-5 shadow-sm">
-      <h3 className="mb-4 text-base font-semibold">Tanga iqtisodiyoti</h3>
+      <h3 className="mb-4 text-base font-semibold">
+        {t("admin.dashboard.coinEconomy.title")}
+      </h3>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <StatsCard
-          title="Aylanmada"
+          title={t("admin.dashboard.coinEconomy.inCirculation")}
           value={isLoading ? undefined : coinEconomy?.totalInCirculation}
           icon={<Coins size={18} />}
         />
         <StatsCard
-          title="Bu oy berildi"
+          title={t("admin.dashboard.coinEconomy.earnedThisMonth")}
           value={isLoading ? undefined : coinEconomy?.earnedThisMonth}
           icon={<TrendingUp size={18} className="text-emerald-500" />}
         />
         <StatsCard
-          title="Bu oy ayirildi"
+          title={t("admin.dashboard.coinEconomy.deductedThisMonth")}
           value={isLoading ? undefined : coinEconomy?.deductedThisMonth}
           icon={<TrendingDown size={18} className="text-red-500" />}
         />

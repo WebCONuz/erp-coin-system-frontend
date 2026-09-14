@@ -1,61 +1,67 @@
 import { z } from "zod";
 
-export const createStudentSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, "F.I.Sh kamida 2 ta belgi bo'lishi kerak")
-    .max(100, "F.I.Sh 100 ta belgidan oshmasligi kerak"),
-  phone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam bo'lishi kerak")
-    .max(13, "Telefon raqam juda uzun"),
-  password: z.string().min(6, "Parol kamida 6 ta belgi bo'lishi kerak"),
-  roleId: z.string().min(1, "Rol ID majburiy"),
-  email: z
-    .string()
-    .email("Email noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-  parentPhone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam")
-    .max(13, "Telefon raqam juda uzun")
-    .optional()
-    .or(z.literal("")),
-  avatarUrl: z
-    .string()
-    .url("URL noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-});
+export const createCreateStudentSchema = (t: (key: string) => string) =>
+  z.object({
+    fullName: z
+      .string()
+      .min(2, t("students.schema.fullName_min"))
+      .max(100, t("students.schema.fullName_max")),
+    phone: z
+      .string()
+      .min(9, t("students.schema.phone_min"))
+      .max(13, t("students.schema.phone_max")),
+    password: z.string().min(6, t("students.schema.password_min")),
+    roleId: z.string().min(1, t("students.schema.roleId_required")),
+    email: z
+      .string()
+      .email(t("students.schema.email_invalid"))
+      .optional()
+      .or(z.literal("")),
+    parentPhone: z
+      .string()
+      .min(9, t("students.schema.phone_min"))
+      .max(13, t("students.schema.phone_max"))
+      .optional()
+      .or(z.literal("")),
+    avatarUrl: z
+      .string()
+      .url(t("students.schema.url_invalid"))
+      .optional()
+      .or(z.literal("")),
+  });
 
-export const editStudentSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, "F.I.Sh kamida 2 ta belgi bo'lishi kerak")
-    .max(100, "F.I.Sh 100 ta belgidan oshmasligi kerak"),
-  phone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam bo'lishi kerak")
-    .max(13, "Telefon raqam juda uzun"),
-  email: z
-    .string()
-    .email("Email noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-  avatarUrl: z
-    .string()
-    .url("URL noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-  parentPhone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam")
-    .max(13, "Telefon raqam juda uzun")
-    .optional()
-    .or(z.literal("")),
-});
+export const createEditStudentSchema = (t: (key: string) => string) =>
+  z.object({
+    fullName: z
+      .string()
+      .min(2, t("students.schema.fullName_min"))
+      .max(100, t("students.schema.fullName_max")),
+    phone: z
+      .string()
+      .min(9, t("students.schema.phone_min"))
+      .max(13, t("students.schema.phone_max")),
+    email: z
+      .string()
+      .email(t("students.schema.email_invalid"))
+      .optional()
+      .or(z.literal("")),
+    avatarUrl: z
+      .string()
+      .url(t("students.schema.url_invalid"))
+      .optional()
+      .or(z.literal("")),
+    parentPhone: z
+      .string()
+      .min(9, t("students.schema.phone_min"))
+      .max(13, t("students.schema.phone_max"))
+      .optional()
+      .or(z.literal("")),
+  });
 
-export type CreateFormValues = z.infer<typeof createStudentSchema>;
+export type CreateFormValues = z.infer<
+  ReturnType<typeof createCreateStudentSchema>
+>;
 
-export type EditFormValues = z.infer<typeof editStudentSchema>;
+export type EditFormValues = z.infer<
+  ReturnType<typeof createEditStudentSchema>
+>;

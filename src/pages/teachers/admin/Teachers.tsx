@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { CustomTable, TablePagination } from "@/components/shared/table";
 import {
   ChangePasswordModal,
@@ -17,6 +18,7 @@ import type { Teacher } from "@/features/teachers/types";
 import { usePagination } from "@/hooks";
 
 const Teachers = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { data: teachers, isLoading } = useTeachers();
@@ -43,19 +45,19 @@ const Teachers = () => {
   };
 
   const handleArchive = (teacher: Teacher) => {
-    if (!window.confirm(`"${teacher.fullName}" ni arxivlashni tasdiqlaysizmi?`))
+    if (!window.confirm(t("teachers.archiveConfirm", { name: teacher.fullName })))
       return;
 
     archiveTeacher.mutate(teacher.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
   const handleRestore = (teacher: Teacher) => {
     restoreTeacher.mutate(teacher.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 

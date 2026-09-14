@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentDetailSkeleton } from "@/features/students/components/ui";
@@ -18,7 +19,7 @@ import {
   StudentDetailSidebar,
 } from "@/features/students/components/partials";
 import {
-  STUDENT_TAB_OPTIONS,
+  getStudentTabOptions,
   StudentActions,
 } from "@/features/students/constants";
 import type { ConfirmAction } from "@/features/students/types";
@@ -34,6 +35,7 @@ import { BackListButton } from "@/components/shared/back";
 const StudentDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const { data: student, isLoading, isError } = useStudentById(id ?? "");
   const deactivate = useDeactivateStudent(id ?? "");
@@ -45,7 +47,8 @@ const StudentDetail = () => {
 
   const isActive = student?.isActive ?? false;
   const isDeleted = student?.isDeleted ?? false;
-  const { confirmContent } = StudentActions(student);
+  const { confirmContent } = StudentActions(student, t);
+  const studentTabOptions = getStudentTabOptions(t);
 
   const handleConfirm = () => {
     if (!id) return;
@@ -71,10 +74,10 @@ const StudentDetail = () => {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
         <p className="text-zinc-500 dark:text-zinc-400">
-          Talaba ma'lumotlari topilmadi
+          {t("students.detail.notFound")}
         </p>
         <Button variant="outline" onClick={() => navigate(-1)}>
-          Orqaga
+          {t("common.back")}
         </Button>
       </div>
     );
@@ -82,7 +85,7 @@ const StudentDetail = () => {
 
   return (
     <div className="space-y-6">
-      <BackListButton title="Talabalar" />
+      <BackListButton title={t("admin.header.students")} />
       <StudentDetailHeader
         isActive={isActive}
         isDeleted={isDeleted}
@@ -98,7 +101,7 @@ const StudentDetail = () => {
           <StatisticSection student={student} />
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="bg-zinc-100 dark:bg-zinc-800 p-1 rounded-full h-auto flex-wrap gap-1">
-              {STUDENT_TAB_OPTIONS.map((tab) => (
+              {studentTabOptions.map((tab) => (
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}

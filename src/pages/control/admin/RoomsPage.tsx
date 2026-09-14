@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   RoomDataFilter,
   RoomCard,
@@ -14,6 +15,7 @@ import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 
 const RoomsPage = () => {
+  const { t } = useTranslation();
   const { data: rooms, isLoading } = useRooms();
   const pagination = usePagination({ totalItems: rooms?.meta?.total || 0 });
 
@@ -38,12 +40,12 @@ const RoomsPage = () => {
   };
 
   const handleDelete = (room: Room) => {
-    if (!window.confirm(`"${room.name}" xonasini o'chirishni tasdiqlaysizmi?`))
+    if (!window.confirm(t("rooms.deleteConfirm", { name: room.name })))
       return;
 
     deleteRoom.mutate(room.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -57,8 +59,8 @@ const RoomsPage = () => {
         <>
           {rooms.data.length === 0 ? (
             <NoDataBox
-              title="Hali xonalar mavjud emas!"
-              btnText="Xona qo'shish"
+              title={t("rooms.noData")}
+              btnText={t("rooms.addRoom")}
               btnFn={handleCreate}
               hasAction={false}
             />
@@ -86,7 +88,7 @@ const RoomsPage = () => {
           )}
         </>
       ) : (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       )}
 
       <RoomFormModal

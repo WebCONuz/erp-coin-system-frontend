@@ -44,14 +44,15 @@ export const GroupCard = ({ data, handleEdit }: Props) => {
               : "from-red-600 to-red-800"
           } rounded-full`}
         >
-          {data.isActive ? "Aktiv" : "No aktiv"}
+          {data.isActive ? t("groups.card.active") : t("groups.card.inactive")}
         </div>
       </div>
       <div className="text-gray-400 text-sm mt-2">
         {t("groups.student_count")} {data?._count?.students || 0}
       </div>
       <div className="text-gray-500 text-sm font-semibold">
-        Yaratilgan vaqti: {formatDate(data.createdAt, "dd.MM.yyyy, hh:mm")}
+        {t("groups.info.created_at")}{" "}
+        {formatDate(data.createdAt, "dd.MM.yyyy, hh:mm")}
       </div>
     </div>
   );

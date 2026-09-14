@@ -1,21 +1,22 @@
 import { z } from "zod";
 
-export const groupFormSchema = z.object({
-  name: z
-    .string()
-    .min(1, "Guruh nomi majburiy")
-    .min(2, "Guruh nomi kamida 2 ta belgi bo'lishi kerak")
-    .max(100, "Guruh nomi 100 ta belgidan oshmasligi kerak"),
+export const createGroupFormSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z
+      .string()
+      .min(1, t("groups.schema.name_required"))
+      .min(2, t("groups.schema.name_min"))
+      .max(100, t("groups.schema.name_max")),
 
-  maxStudents: z
-    .number("Son kiriting")
-    .int("Butun son kiriting")
-    .min(1, "Kamida 1 ta student bo'lishi kerak")
-    .max(30, "30 tadan oshmasligi kerak"),
+    maxStudents: z
+      .number(t("groups.schema.max_students_number"))
+      .int(t("groups.schema.max_students_int"))
+      .min(1, t("groups.schema.max_students_min"))
+      .max(30, t("groups.schema.max_students_max")),
 
-  courseId: z.string().min(1, "Kursni tanlang"),
+    courseId: z.string().min(1, t("groups.schema.course_required")),
 
-  teacherId: z.string().min(1, "O'qituvchini tanlang"),
-});
+    teacherId: z.string().min(1, t("groups.schema.teacher_required")),
+  });
 
-export type GroupFormValues = z.infer<typeof groupFormSchema>;
+export type GroupFormValues = z.infer<ReturnType<typeof createGroupFormSchema>>;

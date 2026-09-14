@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -23,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ControlledDatePicker, ControlledSelect } from "@/components/controls";
-import { sessionFormSchema, type SessionFormValues } from "../schema";
+import { createSessionFormSchema, type SessionFormValues } from "../schema";
 import {
   useCreateSession,
   useSessionGroupOptions,
@@ -31,7 +32,7 @@ import {
   useSessionSubjectOptions,
   useSessionTeacherOptions,
 } from "../hooks";
-import { sessionTypeOptions } from "../constants";
+import { getSessionTypeOptions } from "../constants";
 
 interface Props {
   open: boolean;
@@ -51,6 +52,7 @@ const emptyValues: SessionFormValues = {
 };
 
 export const SessionFormModal = ({ open, onClose }: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const createSession = useCreateSession();
 
@@ -58,6 +60,9 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
   const { data: rooms } = useSessionRoomOptions(open);
   const { data: teachers } = useSessionTeacherOptions(open);
   const { data: subjects } = useSessionSubjectOptions(open);
+
+  const sessionFormSchema = useMemo(() => createSessionFormSchema(t), [t]);
+  const sessionTypeOptions = getSessionTypeOptions(t);
 
   const form = useForm<SessionFormValues>({
     resolver: zodResolver(sessionFormSchema),
@@ -70,7 +75,7 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
   }, [open, form]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmit = (values: SessionFormValues) => {
     const data = {
@@ -93,7 +98,7 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
       <DialogContent className="sm:max-w-110 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            Yangi sessiya qo'shish
+            {t("sessions.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -103,15 +108,15 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
               <ControlledDatePicker
                 control={form.control}
                 name="sessionDate"
-                placeholder="Sana"
+                placeholder={t("common.date")}
                 className="min-w-42"
                 buttonClassName="h-8"
-                label="Sessiya sanasi"
+                label={t("sessions.form.dateLabel")}
               />
               <ControlledSelect
                 control={form.control}
                 name="sessionType"
-                label="Sessiya turi"
+                label={t("sessions.form.typeLabel")}
                 options={sessionTypeOptions}
               />
             </div>
@@ -122,7 +127,7 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
                 name="startTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Boshlanish vaqti</FormLabel>
+                    <FormLabel>{t("sessions.startTimeLabel")}</FormLabel>
                     <FormControl>
                       <Input type="time" {...field} />
                     </FormControl>
@@ -135,7 +140,7 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
                 name="endTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tugash vaqti</FormLabel>
+                    <FormLabel>{t("sessions.endTimeLabel")}</FormLabel>
                     <FormControl>
                       <Input type="time" {...field} />
                     </FormControl>
@@ -148,48 +153,48 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
             <ControlledSelect
               control={form.control}
               name="groupId"
-              label="Guruh"
+              label={t("common.group")}
               options={
                 groups?.data.map((g) => ({ value: g.id, label: g.name })) ?? []
               }
-              placeholder="Guruhni tanlang"
+              placeholder={t("sessions.form.groupPlaceholder")}
             />
 
             <div className="grid grid-cols-2 gap-3">
               <ControlledSelect
                 control={form.control}
                 name="roomId"
-                label="Xona"
+                label={t("common.room")}
                 options={
                   rooms?.data.map((r) => ({ value: r.id, label: r.name })) ?? []
                 }
-                placeholder="Xonani tanlang"
+                placeholder={t("sessions.form.roomPlaceholder")}
               />
               <ControlledSelect
                 control={form.control}
                 name="teacherId"
-                label="O'qituvchi"
+                label={t("common.teacher")}
                 options={
-                  teachers?.data.map((t) => ({
-                    value: t.id,
-                    label: t.fullName,
+                  teachers?.data.map((tch) => ({
+                    value: tch.id,
+                    label: tch.fullName,
                   })) ?? []
                 }
-                placeholder="O'qituvchi tanlang"
+                placeholder={t("sessions.form.teacherPlaceholder")}
               />
             </div>
 
             <ControlledSelect
               control={form.control}
               name="subjectId"
-              label="Fan (Ixtiyoriy)"
+              label={t("sessions.subjectLabelOptional")}
               options={
                 subjects?.data.map((s) => ({
                   value: s.id,
                   label: s.name,
                 })) ?? []
               }
-              placeholder="Fanni tanlang"
+              placeholder={t("sessions.form.subjectPlaceholder")}
             />
 
             <FormField
@@ -197,10 +202,10 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
               name="topic"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Mavzu (Ixtiyoriy)</FormLabel>
+                  <FormLabel>{t("sessions.form.topicLabelOptional")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Masalan: OOP asoslari"
+                      placeholder={t("sessions.topicPlaceholder")}
                       className="resize-none h-20"
                       {...field}
                     />
@@ -217,10 +222,12 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
                 onClick={onClose}
                 disabled={createSession.isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={createSession.isPending}>
-                {createSession.isPending ? "Yaratilmoqda..." : "Yaratish"}
+                {createSession.isPending
+                  ? t("common.creating")
+                  : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

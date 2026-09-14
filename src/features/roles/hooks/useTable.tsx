@@ -1,6 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { Pencil, Trash } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/ustils";
 import { useAuth } from "@/features/auth/hooks/useLogin";
@@ -13,19 +14,20 @@ interface Props {
 }
 
 export const useRoleTable = ({ handleEdit, handleDelete }: Props) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const canDeleteRoles =
     user?.role.name === ROLES.SUPER_ADMIN || user?.role.name === ROLES.CREATOR;
 
   const columns = useMemo<ColumnDef<Role>[]>(
     () => [
-      { accessorKey: "displayName", header: "Rol nomi" },
-      { accessorKey: "name", header: "Kod" },
-      { accessorKey: "level", header: "Daraja" },
-      { accessorKey: "scope", header: "Scope" },
+      { accessorKey: "displayName", header: t("roles.table.displayName") },
+      { accessorKey: "name", header: t("roles.table.code") },
+      { accessorKey: "level", header: t("roles.table.level") },
+      { accessorKey: "scope", header: t("roles.table.scope") },
       {
         accessorKey: "isActive",
-        header: "Holati",
+        header: t("common.status"),
         cell: ({ getValue }) => {
           const value = getValue<boolean>();
           return (
@@ -36,19 +38,19 @@ export const useRoleTable = ({ handleEdit, handleDelete }: Props) => {
                   : "bg-linear-to-br from-red-600 to-red-800"
               } py-1 px-3 rounded-xl text-sm text-white`}
             >
-              {value ? "Faol" : "Faol emas"}
+              {value ? t("roles.table.active") : t("roles.table.inactive")}
             </span>
           );
         },
       },
       {
         accessorKey: "createdAt",
-        header: "Yaratilgan vaqti",
+        header: t("roles.table.createdAt"),
         cell: ({ getValue }) => formatDate(getValue<string>(), "dd.MM.yyyy"),
       },
       {
         accessorKey: "actions",
-        header: "Amallar",
+        header: t("common.actions"),
         cell: ({ row }) => (
           <div className="flex gap-x-2">
             <Button
@@ -74,7 +76,7 @@ export const useRoleTable = ({ handleEdit, handleDelete }: Props) => {
         ),
       },
     ],
-    [handleEdit, handleDelete, canDeleteRoles],
+    [handleEdit, handleDelete, canDeleteRoles, t],
   );
 
   return {

@@ -1,5 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { ProductCard } from "@/components/shared/cards";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export const ProductGrid = ({ onAddGift, onEdit }: Props) => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const isStudent = user?.role.name === ROLES.STUDENT;
@@ -24,35 +26,35 @@ export const ProductGrid = ({ onAddGift, onEdit }: Props) => {
   const deleteReward = useDeleteReward();
 
   const handleBuy = (reward: Reward) => {
-    if (!window.confirm(`"${reward.title}" ni sotib olishni tasdiqlaysizmi?`))
+    if (!window.confirm(t("market.buyConfirm", { title: reward.title })))
       return;
 
     purchaseReward.mutate(reward.id, {
       onSuccess: (res) => toast.success(res.message),
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
   const handleDelete = (reward: Reward) => {
-    if (!window.confirm(`"${reward.title}" ni o'chirishni tasdiqlaysizmi?`))
+    if (!window.confirm(t("market.deleteConfirm", { title: reward.title })))
       return;
 
     deleteReward.mutate(reward.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
   if (isLoading) return <PageLoading />;
 
-  if (!rewards?.data) return <NoData text="Ma'lumotlar yuklanmadi!" />;
+  if (!rewards?.data) return <NoData text={t("common.noData")} />;
 
   if (rewards.data.length === 0) {
     return (
       <NoDataBox
-        title="Hali sovg'alar mavjud emas!"
-        btnText="Sovg'a yaratish"
+        title={t("market.noGifts")}
+        btnText={t("market.createGift")}
         btnFn={onAddGift ?? (() => {})}
         hasAction={searchParams.get("status") === "active"}
       />

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { AlertTriangle, ArrowRight, CalendarClock, Gift } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { AdminDashboardNeedsAttention } from "../types";
 
 interface Props {
@@ -7,6 +8,8 @@ interface Props {
 }
 
 export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
+  const { t } = useTranslation();
+
   if (!needsAttention) return null;
 
   const { pendingPurchases, pendingAttendanceSessions } = needsAttention;
@@ -21,7 +24,7 @@ export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
         />
         <div className="flex-1 space-y-2">
           <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
-            E'tibor talab qiladi
+            {t("admin.dashboard.needsAttention")}
           </p>
 
           <div className="flex flex-wrap gap-2">
@@ -31,7 +34,9 @@ export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
                 className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
               >
                 <Gift size={13} />
-                {pendingPurchases} ta xarid tasdiqlashni kutmoqda
+                {t("admin.dashboard.pendingPurchases", {
+                  count: pendingPurchases,
+                })}
                 <ArrowRight size={12} />
               </Link>
             )}
@@ -41,7 +46,9 @@ export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
                 className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
               >
                 <CalendarClock size={13} />
-                {pendingAttendanceSessions} ta darsda yo'qlama kiritilmagan
+                {t("admin.dashboard.pendingAttendance", {
+                  count: pendingAttendanceSessions,
+                })}
                 <ArrowRight size={12} />
               </Link>
             )}

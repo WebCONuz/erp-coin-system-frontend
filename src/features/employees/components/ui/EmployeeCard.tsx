@@ -5,6 +5,7 @@ import {
   Archive,
   ArchiveRestore,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getFileUrl } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -29,6 +30,7 @@ export const EmployeeCard = ({
   onArchive,
   onRestore,
 }: Props) => {
+  const { t } = useTranslation();
   return (
     <div className="border bg-background rounded-xl p-4 relative">
       <div className="absolute top-4 right-4">
@@ -41,11 +43,11 @@ export const EmployeeCard = ({
           <DropdownMenuContent align="end" className="w-42">
             <DropdownMenuItem onClick={() => onEdit(data)}>
               <Pencil className="text-blue-500" />
-              Tahrirlash
+              {t("common.edit")}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onChangePassword(data)}>
               <KeyRound className="text-amber-500" />
-              Parolni o'zgartirish
+              {t("employees.changePasswordTitle")}
             </DropdownMenuItem>
             {data.isActive ? (
               <DropdownMenuItem
@@ -53,12 +55,12 @@ export const EmployeeCard = ({
                 onClick={() => onArchive(data)}
               >
                 <Archive />
-                Arxivlash
+                {t("employees.archive")}
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem onClick={() => onRestore(data)}>
                 <ArchiveRestore className="text-emerald-500" />
-                Arxivdan tiklash
+                {t("employees.restore")}
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -95,7 +97,7 @@ export const EmployeeCard = ({
           </span>
           {!data.isActive && (
             <span className="px-2 py-0.5 rounded-4xl text-xs bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
-              Arxivlangan
+              {t("employees.archived")}
             </span>
           )}
         </div>

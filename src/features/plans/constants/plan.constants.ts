@@ -1,14 +1,16 @@
 import type { Weekday } from "../types";
 
-export const WEEKDAY_LABELS: Record<Weekday, string> = {
-  monday: "Dushanba",
-  tuesday: "Seshanba",
-  wednesday: "Chorshanba",
-  thursday: "Payshanba",
-  friday: "Juma",
-  saturday: "Shanba",
-  sunday: "Yakshanba",
-};
+export const getWeekdayLabels = (
+  t: (key: string) => string,
+): Record<Weekday, string> => ({
+  monday: t("plans.weekday.monday"),
+  tuesday: t("plans.weekday.tuesday"),
+  wednesday: t("plans.weekday.wednesday"),
+  thursday: t("plans.weekday.thursday"),
+  friday: t("plans.weekday.friday"),
+  saturday: t("plans.weekday.saturday"),
+  sunday: t("plans.weekday.sunday"),
+});
 
 // Har bir shablonga barqaror, alohida rang berish uchun (qizil/sariq/yashil
 // istisno/qulflangan holatlariga band qilingani uchun ular bu ro'yxatda yo'q).

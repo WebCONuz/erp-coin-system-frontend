@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChevronDown, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   DndContext,
   DragOverlay,
@@ -25,7 +26,7 @@ import {
   useDeleteScheduleTemplate,
   useMoveScheduleTemplate,
 } from "../hooks";
-import { WEEKDAY_LABELS } from "../constants";
+import { getWeekdayLabels } from "../constants";
 import { WEEKDAYS, type ScheduleTemplate, type Weekday } from "../types";
 import { TemplateCard } from "./TemplateCard";
 import { DraggableTemplateCard } from "./DraggableTemplateCard";
@@ -54,6 +55,8 @@ export const WeeklyKanban = ({
   groupFilter: controlledGroupFilter,
   onGroupFilterChange,
 }: Props = {}) => {
+  const { t } = useTranslation();
+  const WEEKDAY_LABELS = getWeekdayLabels(t);
   const [internalGroupFilter, setInternalGroupFilter] = useState<string>("");
   const groupFilter = controlledGroupFilter ?? internalGroupFilter;
   const setGroupFilter = onGroupFilterChange ?? setInternalGroupFilter;
@@ -128,16 +131,11 @@ export const WeeklyKanban = ({
   const closeModal = () => setModalState((s) => ({ ...s, open: false }));
 
   const handleDelete = (template: ScheduleTemplate) => {
-    if (
-      !window.confirm(
-        "Bu shablonni o'chirsangiz, kelajakdagi sessiyalar yaratilmaydi. Mavjud sessiyalarga ta'sir etmaydi. Davom etasizmi?",
-      )
-    )
-      return;
+    if (!window.confirm(t("plans.deleteTemplateConfirm"))) return;
 
     deleteTemplate.mutate(template.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -159,7 +157,7 @@ export const WeeklyKanban = ({
       { templateId: template.id, weekday: newWeekday },
       {
         onError: (error: any) =>
-          toast.error(error?.data?.message || "Xatolik yuz berdi"),
+          toast.error(error?.data?.message || t("common.error")),
       },
     );
   };
@@ -167,7 +165,7 @@ export const WeeklyKanban = ({
   return (
     <div className="rounded-2xl bg-background p-4 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-lg font-semibold">Haftalik Shablon</h3>
+        <h3 className="text-lg font-semibold">{t("plans.weeklyTemplate")}</h3>
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -177,7 +175,7 @@ export const WeeklyKanban = ({
               >
                 <span className="truncate">
                   {groups?.data.find((g) => g.id === groupFilter)?.name ??
-                    "Guruh tanlang"}
+                    t("plans.selectGroup")}
                 </span>
                 <ChevronDown size={16} className="shrink-0 opacity-50" />
               </Button>
@@ -200,7 +198,7 @@ export const WeeklyKanban = ({
             className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white"
           >
             <Plus size={18} />
-            Shablon qo'shish
+            {t("plans.addTemplate")}
           </Button>
         </div>
       </div>
@@ -244,7 +242,7 @@ export const WeeklyKanban = ({
                       onClick={() => openCreateForDay(weekday)}
                       className="rounded-lg border border-dashed border-border py-2 text-xs text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
                     >
-                      + Qo'shish
+                      + {t("common.add")}
                     </button>
                   </div>
                 </DroppableColumn>

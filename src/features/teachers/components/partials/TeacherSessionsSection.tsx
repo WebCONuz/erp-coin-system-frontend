@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   SessionListCard,
   SessionsFilterBar,
@@ -10,6 +11,7 @@ import { NoData } from "@/components/partials/no-data";
 import { useSessions } from "@/features/sessions/hooks";
 
 export const TeacherSessionsSection = () => {
+  const { t } = useTranslation();
   const { data: sessions, isLoading } = useSessions();
   const pagination = usePagination({
     totalItems: sessions?.meta?.total || 0,
@@ -20,7 +22,7 @@ export const TeacherSessionsSection = () => {
     <section className="space-y-4 pt-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50 mb-3">
-          O'qituvchi sessiyalari
+          {t("teachers.sessionsSection.title")}
         </h2>
         <SessionsFilterBar hasAction={false} pageName="teacher" />
       </div>
@@ -31,8 +33,8 @@ export const TeacherSessionsSection = () => {
         <>
           {sessions.data.length === 0 ? (
             <NoDataBox
-              title="Hali darslar mavjud emas!"
-              btnText="Dars qo'shish"
+              title={t("groups.detail.noSessions")}
+              btnText={t("groups.detail.addSession")}
               hasAction={false}
             />
           ) : (
@@ -54,7 +56,7 @@ export const TeacherSessionsSection = () => {
           )}
         </>
       ) : (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       )}
     </section>
   );

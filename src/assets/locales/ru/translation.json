@@ -1,1 +1,919 @@
-{}
+{
+  "welcome_back": "Добро пожаловать!",
+  "invalid_credentials": "Введены неверные данные",
+  "logout": "Вы успешно вышли из системы!",
+  "no_loading": "Данные не загружены!",
+  "re_try": "Повторить попытку",
+  "common": {
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "saving": "Сохранение...",
+    "create": "Создать",
+    "creating": "Создание...",
+    "add": "Добавить",
+    "adding": "Добавление...",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "deleting": "Удаление...",
+    "search": "Поиск...",
+    "yes": "Да",
+    "no": "Нет",
+    "confirm": "Подтвердить",
+    "close": "Закрыть",
+    "back": "Назад",
+    "loading": "Загрузка...",
+    "sending": "Отправка...",
+    "error": "Произошла ошибка",
+    "success": "Выполнено успешно",
+    "noData": "Данные не загружены!",
+    "optional": "(необязательно)",
+    "actions": "Действия",
+    "status": "Статус",
+    "all": "Все",
+    "select": "Выберите",
+    "clear": "Очистить",
+    "name": "Название",
+    "description": "Описание",
+    "phone": "Телефон",
+    "email": "Email",
+    "date": "Дата",
+    "group": "Группа",
+    "teacher": "Учитель",
+    "student": "Ученик",
+    "subject": "Предмет",
+    "room": "Кабинет",
+    "amount": "Количество",
+    "note": "Примечание",
+    "active": "Активный",
+    "inactive": "Неактивный",
+    "direction": "Направление",
+    "profile": "Профиль",
+    "logoutAction": "Выйти",
+    "coinLabel": "coin"
+  },
+  "sourceTypes": {
+    "bonus": "Бонус",
+    "attendance": "Посещаемость",
+    "homework": "Домашнее задание",
+    "competition": "Соревнование",
+    "purchase": "Покупка",
+    "manual": "Вручную"
+  },
+  "coinRules": {
+    "direction": {
+      "earn": "Награда (+)",
+      "deduct": "Штраф (-)"
+    },
+    "triggerType": {
+      "auto": "Автоматически",
+      "manual": "Вручную"
+    },
+    "sourceType": {
+      "attendance": "Посещаемость",
+      "homework": "Домашнее задание",
+      "competition": "Соревнование",
+      "bonus": "Бонус",
+      "penalty": "Штраф"
+    },
+    "namePlaceholderAdmin": "Например: За посещение урока",
+    "namePlaceholderTeacher": "Например: За активное участие на уроке",
+    "amountLabel": "Количество монет",
+    "directionPlaceholder": "Выберите направление",
+    "triggerTypeLabel": "Тип запуска",
+    "triggerTypePlaceholder": "Выберите тип",
+    "sourceTypeLabel": "Тип источника",
+    "sourceTypePlaceholder": "Выберите тип источника",
+    "groupLabelOptional": "Группа (необязательно)",
+    "groupPlaceholder": "Выберите группу",
+    "allGroups": "Все группы",
+    "descriptionLabel": "Описание (необязательно)",
+    "descriptionPlaceholder": "Краткое описание правила...",
+    "adminForm": {
+      "createTitle": "Добавить новую причину",
+      "editTitle": "Редактировать причину"
+    },
+    "teacherForm": {
+      "title": "Новое правило монет",
+      "groupRequiredError": "Выберите группу",
+      "sourceTypeRequiredError": "Выберите тип источника",
+      "createdToast": "Правило создано"
+    },
+    "card": {
+      "inactive": "Неактивно"
+    },
+    "schema": {
+      "name_required": "Название обязательно для заполнения",
+      "amount_min": "Количество монет должно быть не менее 1",
+      "direction_required": "Выберите направление",
+      "triggerType_required": "Выберите тип запуска",
+      "sourceType_required": "Для автоматического правила необходимо выбрать тип источника"
+    }
+  },
+  "bulkCoin": {
+    "defaultTitle": "Массовая выдача монет",
+    "defaultSubtitle": "Выберите нескольких учеников и выдайте монеты сразу",
+    "searchPlaceholder": "Имя или телефон...",
+    "selectAll": "Выбрать всех",
+    "selectedCount": "Выбрано: {{count}}",
+    "tabs": {
+      "rule": "Правило монет",
+      "custom": "Особая причина"
+    },
+    "rule": {
+      "label": "Выберите правило",
+      "loading": "Загрузка...",
+      "hintPrefix": "Каждому выбранному ученику",
+      "hintSuffix": "будет начислено."
+    },
+    "custom": {
+      "amountPlaceholder": "Например: 5",
+      "sourceLabel": "Источник"
+    },
+    "noteLabel": "Причина (необязательно)",
+    "notePlaceholderRule": "Если не указано, будет заполнено автоматически на основе названия правила",
+    "notePlaceholderCustom": "Например: За активное участие на уроке",
+    "submit": "Выдать {{count}} ученикам",
+    "results": {
+      "success": "{{count}} учеников награждено",
+      "failed": "{{count}} ошибок",
+      "newBalance": "Новый баланс: {{balance}} coin"
+    },
+    "giveMore": "Выдать ещё",
+    "emptyNoResults": "Ничего не найдено",
+    "emptyNoStudents": "Учеников нет",
+    "minOneStudent": "Выберите хотя бы 1 ученика",
+    "schema": {
+      "amount_int": "Введите целое число",
+      "rule_required": "Выберите правило монет",
+      "amount_invalid": "Введите корректное количество"
+    }
+  },
+  "admin": {
+    "header": {
+      "main": "Главная",
+      "teachers": "Учителя",
+      "groups": "Группы",
+      "students": "Студенты",
+      "market": "Подарки",
+      "sessions": "Занятия",
+      "employees": "Сотрудники",
+      "plans": "Расписание",
+      "subjects": "Предметы",
+      "control": "Управление",
+      "tenants": "Учебные центры"
+    },
+    "navbar": {
+      "quickAdd": "Быстрое добавление",
+      "newStudent": "Новый студент",
+      "newGroup": "Новая группа",
+      "newSession": "Новое занятие",
+      "selectCenter": "Выберите центр",
+      "profile": "Профиль",
+      "settings": "Настройки",
+      "paymentPlan": "Тарифный план",
+      "logout": "Выйти",
+      "noName": "- -"
+    },
+    "dashboard": {
+      "title": "Здравствуйте, {{name}}",
+      "description": "Добро пожаловать на платформу EduCoin!",
+      "defaultUser": "Уважаемый пользователь",
+      "todaySessions": "Сегодня {{count}} занятий",
+      "needsAttention": "Требует внимания",
+      "pendingPurchases": "{{count}} покупок ожидают подтверждения",
+      "pendingAttendance": "{{count}} занятий без отметки посещаемости",
+      "stats": {
+        "groups": "Группы",
+        "students": "Студенты",
+        "teachers": "Учителя",
+        "subjects": "Предметы",
+        "rewards": "Подарки"
+      },
+      "coinEconomy": {
+        "title": "Экономика монет",
+        "inCirculation": "В обороте",
+        "earnedThisMonth": "Начислено в этом месяце",
+        "deductedThisMonth": "Списано в этом месяце",
+        "earned": "Заработано",
+        "deducted": "Списано",
+        "noTrendData": "Данных пока нет"
+      },
+      "activity": {
+        "title": "Последняя активность",
+        "empty": "Активности пока нет",
+        "newBalance": "Новый баланс: {{balance}} coin",
+        "sourceTypes": {
+          "attendance": "Посещаемость",
+          "homework": "Домашнее задание",
+          "competition": "Соревнование",
+          "manual": "Вручную",
+          "bonus": "Бонус",
+          "purchase": "Покупка"
+        }
+      },
+      "leaderboard": {
+        "title": "Рейтинг",
+        "empty": "Рейтинга пока нет"
+      }
+    },
+    "tenants": {
+      "no_data": "В системе пока нет арендаторов!",
+      "create": "Создать арендатора"
+    }
+  },
+  "tenants": {
+    "type": {
+      "learning_center": "Учебный центр",
+      "school": "Школа",
+      "academic_lyceum": "Академический лицей",
+      "college": "Колледж",
+      "university": "Университет"
+    },
+    "schema": {
+      "name_required": "Название центра обязательно для заполнения",
+      "slug_required": "Slug обязателен для заполнения",
+      "slug_invalid": "Slug может содержать только строчные латинские буквы, цифры и символ -"
+    },
+    "form": {
+      "editTitle": "Редактировать центр",
+      "createTitle": "Добавить новый центр",
+      "nameLabel": "Название центра",
+      "namePlaceholder": "Например: Gullola EDU",
+      "slugLabel": "Slug",
+      "slugPlaceholder": "Например: gullola-edu",
+      "typeLabel": "Тип организации (необязательно)",
+      "typePlaceholder": "Выберите тип",
+      "planLabel": "Тариф (необязательно)",
+      "planPlaceholder": "Например: pro"
+    },
+    "deactivateConfirm": "Вы уверены, что хотите деактивировать центр \"{{name}}\"?",
+    "activateConfirm": "Вы уверены, что хотите активировать центр \"{{name}}\"?",
+    "inactive": "Неактивный",
+    "typeNotSet": "Тип не выбран",
+    "countUnit": "{{count}}",
+    "deactivate": "Деактивировать",
+    "activate": "Активировать",
+    "filter": {
+      "add": "Добавить центр",
+      "active": "Активные центры"
+    }
+  },
+  "subjects": {
+    "title": "Предметы",
+    "addSubject": "Добавить предмет",
+    "activeTab": "Активные предметы",
+    "inactiveTab": "Неактивные предметы",
+    "searchPlaceholder": "Поиск по названию предмета",
+    "schema": {
+      "name_required": "Название предмета обязательно для заполнения"
+    },
+    "form": {
+      "editTitle": "Редактировать предмет",
+      "createTitle": "Добавить новый предмет",
+      "nameLabel": "Название предмета",
+      "namePlaceholder": "Например: Математика",
+      "descriptionPlaceholder": "Например: Основы алгебры и геометрии"
+    },
+    "inactive": "Неактивный",
+    "noData": "Предметов пока нет!",
+    "deleteConfirm": "Вы уверены, что хотите удалить предмет \"{{name}}\"?"
+  },
+  "rooms": {
+    "title": "Кабинеты",
+    "addRoom": "Добавить кабинет",
+    "activeTab": "Активные кабинеты",
+    "inactiveTab": "Неактивные кабинеты",
+    "searchPlaceholder": "Поиск по названию кабинета",
+    "schema": {
+      "name_required": "Название кабинета обязательно для заполнения",
+      "capacity_min": "Вместимость должна быть не менее 1",
+      "capacity_max": "Вместимость не должна превышать 300"
+    },
+    "form": {
+      "editTitle": "Редактировать кабинет",
+      "createTitle": "Добавить новый кабинет",
+      "nameLabel": "Название кабинета",
+      "namePlaceholder": "Например: Room 101",
+      "capacityLabel": "Вместимость (кол-во мест)",
+      "descriptionPlaceholder": "Например: 3 этаж, есть кондиционер"
+    },
+    "capacityUnit": "{{count}} мест",
+    "inactive": "Неактивный",
+    "noData": "Кабинетов пока нет!",
+    "deleteConfirm": "Вы уверены, что хотите удалить кабинет \"{{name}}\"?"
+  },
+  "roles": {
+    "title": "Роли",
+    "addRole": "Добавить роль",
+    "deleteConfirm": "Вы уверены, что хотите удалить роль \"{{name}}\"?",
+    "schema": {
+      "name_min": "Название роли должно содержать не менее 2 символов",
+      "displayName_min": "Отображаемое имя должно содержать не менее 2 символов",
+      "level_min": "Уровень не может быть отрицательным",
+      "scope_required": "Scope обязателен для заполнения"
+    },
+    "form": {
+      "editTitle": "Редактировать роль",
+      "createTitle": "Создать новую роль",
+      "nameLabel": "Название роли (код)",
+      "namePlaceholder": "Например: teacher",
+      "displayNameLabel": "Отображаемое имя",
+      "displayNamePlaceholder": "Например: Учитель",
+      "levelLabel": "Уровень",
+      "scopeLabel": "Scope",
+      "canDeleteLabel": "Разрешить удаление этой роли в дальнейшем"
+    },
+    "table": {
+      "displayName": "Название роли",
+      "code": "Код",
+      "level": "Уровень",
+      "scope": "Scope",
+      "active": "Активна",
+      "inactive": "Неактивна",
+      "createdAt": "Дата создания"
+    }
+  },
+  "employees": {
+    "title": "Сотрудники",
+    "addEmployee": "Добавить сотрудника",
+    "noData": "Сотрудников пока нет!",
+    "archiveConfirm": "Вы уверены, что хотите архивировать \"{{name}}\"?",
+    "passwordChanged": "Пароль успешно изменён",
+    "changePasswordTitle": "Изменить пароль",
+    "archive": "Архивировать",
+    "restore": "Восстановить из архива",
+    "archived": "В архиве",
+    "schema": {
+      "fullName_min": "ФИО должно содержать не менее 2 символов",
+      "fullName_max": "ФИО не должно превышать 100 символов",
+      "phone_min": "Номер телефона должен содержать не менее 9 цифр",
+      "phone_max": "Номер телефона слишком длинный",
+      "password_min": "Пароль должен содержать не менее 6 символов",
+      "role_required": "Необходимо выбрать роль",
+      "email_invalid": "Неверный формат email",
+      "parentPhone_min": "Номер телефона должен содержать не менее 9 цифр",
+      "url_invalid": "Неверный формат URL",
+      "newPassword_same": "Новый пароль должен отличаться от старого"
+    },
+    "form": {
+      "editTitle": "Редактировать сотрудника",
+      "createTitle": "Добавить нового сотрудника",
+      "fullNameLabel": "ФИО",
+      "fullNamePlaceholder": "Sardor Rahimov",
+      "roleLabel": "Роль",
+      "rolePlaceholder": "Выберите роль",
+      "avatarUrlLabel": "URL аватара",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "Введите пароль",
+      "parentPhoneLabel": "Телефон близкого человека",
+      "oldPasswordLabel": "Текущий пароль",
+      "oldPasswordPlaceholder": "Введите, если меняете свой пароль",
+      "newPasswordLabel": "Новый пароль",
+      "newPasswordPlaceholder": "Введите новый пароль"
+    },
+    "filter": {
+      "allRoles": "Все роли",
+      "active": "Активные сотрудники",
+      "archive": "Архив",
+      "rolePlaceholder": "Выберите роль",
+      "searchPlaceholder": "Поиск по имени или телефону"
+    }
+  },
+  "reasons": {
+    "title": "Награды и штрафы",
+    "addReason": "Добавить причину",
+    "rewardsTab": "Награды",
+    "penaltiesTab": "Штрафы",
+    "searchPlaceholder": "Поиск по названию причины",
+    "noData": "Причин пока нет!",
+    "deleteConfirm": "Вы уверены, что хотите удалить причину \"{{name}}\"?"
+  },
+  "controls": {
+    "title": "Управление",
+    "sendMessage": "Отправить сообщение",
+    "messageTextLabel": "Текст сообщения:",
+    "send": "Отправить"
+  },
+  "teachers": {
+    "table": {
+      "full_name": "Имя-фамилия",
+      "phone": "Телефон",
+      "email": "Электронная почта",
+      "created_at": "Дата создания",
+      "updated_at": "Последнее обновление",
+      "taught_groups": "Группы",
+      "actions": "Действия"
+    },
+    "schema": {
+      "fullName_min": "ФИО должно содержать не менее 2 символов",
+      "fullName_max": "ФИО не должно превышать 100 символов",
+      "phone_min": "Номер телефона должен содержать не менее 9 цифр",
+      "phone_max": "Номер телефона слишком длинный",
+      "password_min": "Пароль должен содержать не менее 6 символов",
+      "email_invalid": "Неверный формат email",
+      "url_invalid": "Неверный формат URL",
+      "newPassword_sameAsOld": "Новый пароль должен отличаться от старого"
+    },
+    "form": {
+      "createTitle": "Добавить нового учителя",
+      "editTitle": "Редактировать учителя"
+    },
+    "roleNotFound": "Роль учителя не найдена",
+    "passwordChanged": "Пароль успешно изменён",
+    "currentPasswordLabel": "Текущий пароль (необязательно)",
+    "currentPasswordPlaceholder": "Введите, если меняете свой пароль",
+    "securityTab": {
+      "changePasswordTitle": "Изменить пароль"
+    },
+    "filter": {
+      "addTeacher": "Добавить учителя",
+      "activeTeachers": "Активные учителя"
+    },
+    "header": {
+      "password": "Пароль",
+      "restore": "Восстановить"
+    },
+    "groupsSection": {
+      "title": "Группы ({{count}})",
+      "empty": "Прикреплённых групп нет",
+      "studentsCount": "{{count}} / {{max}} учеников"
+    },
+    "sessionsSection": {
+      "title": "Занятия учителя"
+    },
+    "archiveConfirm": "Вы уверены, что хотите архивировать \"{{name}}\"?",
+    "notFound": "Учитель не найден!"
+  },
+  "students": {
+    "header": {
+      "profile": "Личный профиль"
+    },
+    "table": {
+      "full_name": "ФИО",
+      "phone": "Телефон",
+      "email": "Email",
+      "email_empty": "Отсутствует",
+      "balance": "Баланс (количество монет)",
+      "created_at": "Дата создания",
+      "actions": "Действия"
+    },
+    "sendMessage": {
+      "title": "Отправить сообщение",
+      "recipientLabel": "Кому отправить",
+      "parent": "Родитель",
+      "channelLabel": "Канал отправки",
+      "messageLabel": "Текст сообщения",
+      "messagePlaceholder": "Введите ваше сообщение...",
+      "send": "Отправить"
+    },
+    "form": {
+      "createTitle": "Добавить нового студента",
+      "editTitle": "Редактировать студента",
+      "fullNameLabel": "ФИО",
+      "fullNamePlaceholder": "Sardor Rahimov",
+      "phoneLabel": "Номер телефона",
+      "emailLabel": "Email (необязательно)",
+      "parentPhoneLabel": "Телефон родителя (необязательно)",
+      "avatarUrlLabel": "URL аватара (необязательно)",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "Введите пароль"
+    },
+    "schema": {
+      "fullName_min": "ФИО должно содержать не менее 2 символов",
+      "fullName_max": "ФИО не должно превышать 100 символов",
+      "phone_min": "Номер телефона должен содержать не менее 9 цифр",
+      "phone_max": "Номер телефона слишком длинный",
+      "password_min": "Пароль должен содержать не менее 6 символов",
+      "roleId_required": "ID роли обязателен",
+      "email_invalid": "Неверный формат email",
+      "url_invalid": "Неверный формат URL"
+    },
+    "detail": {
+      "coinBalance": "Баланс coin",
+      "noLastActivity": "Нет последней активности",
+      "groupsCount": "Количество групп",
+      "purchased": "Куплено",
+      "attendance": "Посещаемость",
+      "parentPhonePrefix": "Родитель:",
+      "memberSince": "С {{date}}",
+      "message": "Сообщение",
+      "securitySettings": "Настройки безопасности",
+      "archive": "Архивировать",
+      "activate": "Активировать",
+      "quickActions": "Быстрые действия",
+      "editInfo": "Редактировать информацию",
+      "addToGroup": "Добавить в группу",
+      "contact": "Контакты",
+      "recentActivity": "Последняя активность",
+      "infoUpdated": "Информация обновлена",
+      "registered": "Зарегистрирован в системе",
+      "notFound": "Информация о студенте не найдена"
+    },
+    "actions": {
+      "archiveTitle": "Архивировать студента",
+      "archiveDescription": "Архивировать \"{{name}}\"? Активность студента будет приостановлена, но данные сохранятся. Вы сможете активировать его позже.",
+      "archiveLabel": "Да, архивировать",
+      "restoreTitle": "Активировать студента",
+      "restoreDescription": "Активировать \"{{name}}\" повторно? Студент вновь получит доступ к системе.",
+      "restoreLabel": "Да, активировать",
+      "deleteTitle": "Удалить студента",
+      "deleteDescription": "Удалить \"{{name}}\"? Это действие полностью удалит студента из системы (мягкое удаление). Восстановление возможно только администратором.",
+      "deleteLabel": "Да, удалить"
+    },
+    "status": {
+      "deleted": "Удалён",
+      "archived": "В архиве"
+    },
+    "tabs": {
+      "info": "Информация",
+      "groups": "Группы",
+      "coins": "Монеты",
+      "gifts": "Подарки",
+      "security": "Безопасность"
+    },
+    "filter": {
+      "class": "Класс",
+      "addStudent": "Добавить студента",
+      "bulkGiveCoin": "Массовая выдача монет",
+      "importExcel": "Импорт данных из Excel",
+      "activeStudents": "Активные ученики",
+      "allClasses": "Все классы"
+    },
+    "giftTab": {
+      "title": "Купленные подарки ({{count}})",
+      "emptyTitle": "Подарки пока не куплены",
+      "emptyText": "{{name}} ещё не обменял(а) монеты на что-либо в магазине подарков.",
+      "status": {
+        "approved": "Подтверждено",
+        "delivered": "Вручено",
+        "rejected": "Отклонено",
+        "cancelled": "Отменено",
+        "pending": "Ожидается"
+      }
+    },
+    "groupTab": {
+      "title": "Список групп ({{count}})",
+      "emptyTitle": "Не состоит ни в одной группе",
+      "emptyText": "Добавьте {{name}} в одну из активных групп, чтобы включить в занятия.",
+      "joinedSince": "С {{date}}"
+    },
+    "infoTab": {
+      "personalInfo": "Личная информация",
+      "fullNameLabel": "Полное имя",
+      "parentPhoneLabel": "Телефон родителя",
+      "systemInfo": "Системная информация",
+      "roleLabel": "Роль",
+      "registeredLabel": "Дата регистрации",
+      "editButton": "Редактировать информацию"
+    },
+    "securityTab": {
+      "changePasswordTitle": "Изменить пароль",
+      "newPasswordLabel": "Новый пароль",
+      "newPasswordPlaceholder": "Введите новый пароль",
+      "confirmPasswordLabel": "Подтвердите пароль",
+      "confirmPasswordPlaceholder": "Введите пароль повторно",
+      "passwordMismatch": "Пароли не совпадают",
+      "dangerZone": "Опасная зона",
+      "archiveDesc": "Для студентов, не оплативших обучение или временно приостановивших его. Данные сохраняются и могут быть активированы позже.",
+      "activateDesc": "Студент в архиве. Активировав, вы восстановите его доступ к системе.",
+      "deleteDesc": "Для студентов, полностью завершивших обучение или добавленных по ошибке. Мягкое удаление — данные сохраняются в базе, но не отображаются в системе."
+    },
+    "coinTab": {
+      "currentBalance": "Текущий баланс",
+      "addCoin": "Добавить coin",
+      "deductCoin": "Списать coin",
+      "reason": "Причина",
+      "deduct": "Списать",
+      "historyTitle": "История транзакций",
+      "last20": "Последние 20",
+      "noTransactions": "Транзакций нет",
+      "noTransactionsText": "После начисления или списания coin, история будет отображаться здесь.",
+      "sourceLabels": {
+        "homework": "Домашнее задание",
+        "attendance": "Мероприятия",
+        "bonus": "Дисциплина",
+        "other": "Дополнительно"
+      }
+    },
+    "contactRow": {
+      "copied": "Скопировано",
+      "copyFailed": "Не удалось скопировать"
+    }
+  },
+  "courses": {
+    "title": "Курсы",
+    "all": "Все",
+    "btn": {
+      "create": "Создать курс",
+      "add": "Добавить курс"
+    },
+    "no_data": "Курсов пока нет!",
+    "delete_confirm": "Вы уверены, что хотите удалить курс?",
+    "schema": {
+      "title_min": "Название курса должно содержать не менее 2 символов"
+    },
+    "form": {
+      "create_title": "Создать новый курс",
+      "edit_title": "Редактировать курс",
+      "title_label": "Название курса",
+      "title_placeholder": "Например: Frontend Foundation",
+      "description_label": "О курсе (необязательно)",
+      "description_placeholder": "Краткая информация о курсе..."
+    }
+  },
+  "groups": {
+    "no_data": "Групп пока нет!",
+    "btn": {
+      "create": "Создать группу",
+      "add": "Добавить группу"
+    },
+    "student_count": "Количество учеников в классе:",
+    "list_title": "Список групп",
+    "search_placeholder": "Название группы",
+    "tabs": {
+      "active": "Активные",
+      "archive": "Архив"
+    },
+    "info": {
+      "name_label": "Название группы:",
+      "full_badge": "Заполнена",
+      "created_at": "Дата создания:",
+      "course": "Курс",
+      "spots_left": "До заполнения группы",
+      "spots_count": "осталось {{count}} мест"
+    },
+    "card": {
+      "active": "Активна",
+      "inactive": "Неактивна"
+    },
+    "schema": {
+      "name_required": "Название группы обязательно",
+      "name_min": "Название группы должно содержать не менее 2 символов",
+      "name_max": "Название группы не должно превышать 100 символов",
+      "max_students_number": "Введите число",
+      "max_students_int": "Введите целое число",
+      "max_students_min": "Должно быть не менее 1 студента",
+      "max_students_max": "Не должно превышать 30",
+      "course_required": "Выберите курс",
+      "teacher_required": "Выберите учителя"
+    },
+    "form": {
+      "create_title": "Создать новую группу",
+      "edit_title": "Редактировать группу",
+      "name_label": "Название группы",
+      "name_placeholder": "Например: 5-A",
+      "max_students_label": "Максимальное количество студентов",
+      "course_placeholder": "Выберите курс",
+      "teacher_placeholder": "Выберите учителя"
+    },
+    "addStudent": {
+      "title": "Добавить студента",
+      "subtitle": "Добавить ученика в группу {{name}}",
+      "tabSingle": "Один",
+      "tabBulk": "Несколько",
+      "searchPlaceholder": "Имя, телефон или email...",
+      "selected": "Выбрано:",
+      "countUnit": "{{count}}",
+      "addSelected": "Добавить {{count}}",
+      "noResults": "Ничего не найдено",
+      "noStudents": "Нет студентов для добавления",
+      "noResultsFor": "По запросу \"{{search}}\" ничего не найдено"
+    },
+    "detail": {
+      "notFound": "Информация о группе не найдена",
+      "back": "Назад",
+      "breadcrumb": "Группы",
+      "sessionsTitle": "Занятия группы",
+      "noSessions": "Занятий пока нет!",
+      "addSession": "Добавить занятие"
+    },
+    "students": {
+      "title": "Ученики",
+      "count": "{{count}} учеников",
+      "giveCoin": "Выдать монеты",
+      "groupFull": "Группа заполнена",
+      "bulkCoinTitle": "Массовая выдача монет группе",
+      "bulkCoinSubtitle": "Выдайте монеты сразу всем ученикам группы {{name}}"
+    },
+    "table": {
+      "name": "Имя",
+      "joinedAt": "Дата присоединения",
+      "empty": "В группе пока нет учеников",
+      "removeTitle": "Удалить из группы",
+      "removeConfirmSuffix": "удалить из группы?",
+      "removeConfirmBtn": "Да, удалить"
+    },
+    "balance": {
+      "title": "Статистика учеников",
+      "avgTitle": "Средний баланс BB-coin",
+      "avgEmpty1": "Пока нет данных. После того как данные соберутся, здесь появится график",
+      "avgEmpty2": "среднего баланса группы",
+      "activityTitle": "Недельная активность группы",
+      "activityEmpty1": "Ожидается анализ активности.",
+      "activityEmpty2": "Недельная активность группы будет отображена здесь"
+    }
+  },
+  "sessions": {
+    "type": {
+      "lesson": "Урок",
+      "exam": "Экзамен",
+      "competition": "Соревнование",
+      "extra": "Дополнительное"
+    },
+    "schema": {
+      "date_required": "Дата обязательна для заполнения",
+      "startTime_required": "Время начала обязательно для заполнения",
+      "endTime_required": "Время окончания обязательно для заполнения",
+      "type_required": "Выберите тип занятия",
+      "group_required": "Выберите группу",
+      "room_required": "Выберите кабинет",
+      "teacher_required": "Выберите учителя"
+    },
+    "infoUpdated": "Информация о занятии обновлена",
+    "locked": "Заблокировано",
+    "startTimeLabel": "Время начала",
+    "endTimeLabel": "Время окончания",
+    "topicLabel": "Тема",
+    "topicPlaceholder": "Например: Основы ООП",
+    "subjectLabelOptional": "Предмет (необязательно)",
+    "attendanceTaken": "Посещаемость отмечена",
+    "pending": "Ожидается",
+    "typeLabel": "Тип",
+    "filter": {
+      "allGroups": "Все группы",
+      "allTeachers": "Все учителя",
+      "allTypes": "Все типы",
+      "addSession": "Добавить занятие"
+    },
+    "attendance": {
+      "title": "Посещаемость",
+      "groupNotSet": "Группа не определена",
+      "noStudents": "В группе нет учеников",
+      "present": "Присутствовал",
+      "homework": "Домашнее задание"
+    },
+    "deleteConfirm": "Вы уверены, что хотите удалить занятие группы \"{{group}}\" в {{time}}?",
+    "noSessions": "Занятий пока нет!",
+    "backToList": "Вернуться к занятиям",
+    "notFound": "Занятие не найдено!",
+    "statusPanel": {
+      "lockConfirm": "Вы уверены, что хотите заблокировать занятие? После блокировки для редактирования посещаемости и данных потребуется сначала снять блокировку.",
+      "locked": "Занятие заблокировано",
+      "unlockConfirm": "Вы уверены, что хотите снять блокировку с занятия?",
+      "unlocked": "Блокировка занятия снята",
+      "deleteConfirm": "Вы уверены, что хотите полностью удалить занятие?",
+      "deleted": "Занятие удалено",
+      "notLocked": "Занятие ещё не заблокировано",
+      "unlockAction": "Снять блокировку",
+      "lockAction": "Заблокировать"
+    },
+    "form": {
+      "createTitle": "Добавить новое занятие",
+      "dateLabel": "Дата занятия",
+      "typeLabel": "Тип занятия",
+      "groupPlaceholder": "Выберите группу",
+      "roomPlaceholder": "Выберите кабинет",
+      "teacherPlaceholder": "Выберите учителя",
+      "subjectPlaceholder": "Выберите предмет",
+      "topicLabelOptional": "Тема (необязательно)"
+    }
+  },
+  "plans": {
+    "weekday": {
+      "monday": "Понедельник",
+      "tuesday": "Вторник",
+      "wednesday": "Среда",
+      "thursday": "Четверг",
+      "friday": "Пятница",
+      "saturday": "Суббота",
+      "sunday": "Воскресенье"
+    },
+    "weekdayShort": {
+      "monday": "Пн",
+      "tuesday": "Вт",
+      "wednesday": "Ср",
+      "thursday": "Чт",
+      "friday": "Пт",
+      "saturday": "Сб",
+      "sunday": "Вс"
+    },
+    "schema": {
+      "group_required": "Необходимо выбрать группу",
+      "room_required": "Необходимо выбрать кабинет",
+      "teacher_required": "Выберите учителя",
+      "subject_required": "Необходимо выбрать предмет",
+      "fromDate_required": "Дата начала обязательна для заполнения",
+      "toDate_required": "Дата окончания обязательна для заполнения"
+    },
+    "deleteTemplateConfirm": "Если вы удалите этот шаблон, будущие занятия не будут создаваться. На существующие занятия это не повлияет. Продолжить?",
+    "weeklyTemplate": "Недельный шаблон",
+    "selectGroup": "Выберите группу",
+    "addTemplate": "Добавить шаблон",
+    "generateSessions": "Создать занятия",
+    "selectGroupToView": "Выберите группу для просмотра календаря",
+    "templateForm": {
+      "editTitle": "Редактировать шаблон",
+      "createTitle": "Добавить новый шаблон",
+      "weekdayLabel": "День недели",
+      "weekdayPlaceholder": "Выберите день недели",
+      "groupTeacherOption": "Учитель группы",
+      "groupTeacherOptionWithName": "Учитель группы ({{name}})"
+    },
+    "card": {
+      "timePrefix": "Время:"
+    },
+    "exception": {
+      "cancelSession": "Отменить это занятие",
+      "rescheduleTime": "Изменить время",
+      "goToSessionDetails": "Перейти к информации о занятии",
+      "noSessionYet": "На этот день занятие не создано",
+      "revertConfirm": "Вернуть к стандартному шаблону?",
+      "cancelReasonPlaceholder": "Например: По случаю праздника",
+      "rescheduleReasonPlaceholder": "Например: По техническим причинам",
+      "revertToTemplate": "Вернуть к шаблону",
+      "back": "Назад"
+    },
+    "generate": {
+      "title": "Создать занятия по расписанию",
+      "from": "С",
+      "to": "По",
+      "warningLabel": "Внимание!",
+      "warningText": "Занятия по \"Установленному расписанию\" можно создавать только на будущие даты, для прошедших дат это невозможно!",
+      "action": "Создать занятия",
+      "resultToast": "Создано занятий: {{created}}, отменено (исключение): {{cancelled}}, пропущено (уже существовало): {{skipped}}"
+    },
+    "legend": {
+      "normal": "Обычное занятие",
+      "rescheduled": "Время изменено",
+      "cancelled": "Отменено",
+      "locked": "Заблокировано (посещаемость отмечена)"
+    },
+    "chip": {
+      "cancelled": "Отменено",
+      "technicalReason": "По техническим причинам",
+      "newTime": "Новое время",
+      "reason": "Причина"
+    },
+    "tabs": {
+      "kanban": "Недельный шаблон (Kanban)",
+      "calendar": "Месячный календарь"
+    }
+  },
+  "reward_categories": {
+    "title": "Категории",
+    "title_singular": "Категория",
+    "all": "Все",
+    "btn": {
+      "create": "Создать категорию",
+      "add": "Добавить категорию"
+    },
+    "no_data": "Категорий пока нет!",
+    "delete_confirm": "Вы уверены, что хотите удалить категорию?"
+  },
+  "market": {
+    "categoryForm": {
+      "editTitle": "Редактировать категорию",
+      "createTitle": "Создать новую категорию",
+      "nameLabel": "Название категории",
+      "namePlaceholder": "Например: Электронные устройства"
+    },
+    "rewardForm": {
+      "editTitle": "Редактировать подарок",
+      "createTitle": "Создать новый подарок",
+      "titleLabel": "Название подарка",
+      "titlePlaceholder": "Например: Книга",
+      "descriptionLabel": "Описание (необязательно)",
+      "descriptionPlaceholder": "Краткая информация о подарке...",
+      "imageUrlLabel": "URL изображения (необязательно)",
+      "priceLabel": "Цена (coin)",
+      "stockLabel": "Количество штук",
+      "typeLabel": "Тип",
+      "typePlaceholder": "Выберите тип подарка",
+      "categoryPlaceholder": "Выберите категорию",
+      "type": {
+        "physical": "Физический подарок",
+        "digital": "Цифровой подарок",
+        "privilege": "Привилегия"
+      }
+    },
+    "schema": {
+      "title_required": "Название подарка обязательно для заполнения",
+      "url_invalid": "Введите корректный URL",
+      "price_min": "Цена должна быть больше 0",
+      "stock_min": "Количество штук не может быть отрицательным",
+      "category_required": "Необходимо выбрать категорию",
+      "categoryName_min": "Название категории должно содержать не менее 2 символов"
+    },
+    "filter": {
+      "addGift": "Добавить подарок",
+      "activeGifts": "Активные подарки"
+    },
+    "buyConfirm": "Вы уверены, что хотите купить \"{{title}}\"?",
+    "deleteConfirm": "Вы уверены, что хотите удалить \"{{title}}\"?",
+    "noGifts": "Подарков пока нет!",
+    "createGift": "Создать подарок",
+    "stockCount": "{{count}} шт.",
+    "outOfStock": "Закончилось",
+    "buy": "Купить"
+  }
+}

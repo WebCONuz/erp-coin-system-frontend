@@ -1,4 +1,5 @@
 // import { UniversalTable } from "@/components/shared/table";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 // import { mockStudents } from "@/features/students/constants/student.mock";
@@ -6,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 // import type { ColumnDef } from "@/types";
 
 const SendMessagePage = () => {
+  const { t } = useTranslation();
   // const columns: ColumnDef<Student>[] = [
   //   {
   //     header: "Nomi",
@@ -37,11 +39,11 @@ const SendMessagePage = () => {
         /> */}
       </div>
       <div className="col-span-1">
-        <p className="mb-1 font-semibold text-lg">Xarbar matni:</p>
+        <p className="mb-1 font-semibold text-lg">{t("controls.messageTextLabel")}</p>
         <Textarea className="h-80" />
         <div className="flex justify-end mt-4">
           <Button className="bg-linear-to-br from-purple-500 to-purple-700 h-10 px-4 text-white">
-            Yuborish
+            {t("controls.send")}
           </Button>
         </div>
       </div>

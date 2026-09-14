@@ -6,6 +6,7 @@ import {
   GraduationCap,
   Pencil,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { CalendarDayEntry } from "../types";
 
 interface Props {
@@ -21,6 +22,7 @@ export const SessionChip = ({
   hasAction = true,
   colorClass,
 }: Props) => {
+  const { t } = useTranslation();
   const { template, exception, session } = entry;
   const isLocked = session?.isLocked ?? false;
   const topic = session?.topic;
@@ -34,12 +36,12 @@ export const SessionChip = ({
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-red-700 bg-red-100 dark:bg-red-950/50 dark:text-red-400"
       >
         <span className="line-through">
-          <b>Xona:</b> {template?.room?.name ?? "-"} -{" "}
+          <b>{t("common.room")}:</b> {template?.room?.name ?? "-"} -{" "}
           {`${exception.startTime ?? template.startTime} : ${exception?.endTime ?? template.endTime}`}
         </span>
         <br />
-        Bekor qilindi
-        {exception.note ? `: ${exception.note}` : ": Texnik sababga ko'ra"}
+        {t("plans.chip.cancelled")}
+        {exception.note ? `: ${exception.note}` : `: ${t("plans.chip.technicalReason")}`}
       </button>
     );
   }
@@ -51,11 +53,12 @@ export const SessionChip = ({
         className="flex w-full items-center justify-between gap-1 truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-amber-700 bg-amber-100 dark:bg-amber-950/50 dark:text-amber-400"
       >
         <span>
-          <b>Xona:</b> {template?.room?.name ?? "-"} <br />
-          <b>Yangi vaqti:</b> {exception.startTime} : {exception?.endTime}
+          <b>{t("common.room")}:</b> {template?.room?.name ?? "-"} <br />
+          <b>{t("plans.chip.newTime")}:</b> {exception.startTime} :{" "}
+          {exception?.endTime}
           <br />
-          <b>Sabab: </b>
-          {exception.note ? `${exception.note}` : ": Texnik sababga ko'ra"}
+          <b>{t("plans.chip.reason")}: </b>
+          {exception.note ? `${exception.note}` : t("plans.chip.technicalReason")}
         </span>
         <br />
         {topic ? ` ${topic}` : ""}
@@ -71,7 +74,7 @@ export const SessionChip = ({
         className="flex w-full items-center gap-1 truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-emerald-700 bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400"
       >
         <Check size={10} className="shrink-0" />
-        Qulflangan
+        {t("sessions.locked")}
       </button>
     );
   }

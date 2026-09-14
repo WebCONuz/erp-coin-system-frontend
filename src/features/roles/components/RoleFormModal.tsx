@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -23,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { ROLES } from "@/assets/constants";
-import { roleFormSchema, type RoleFormValues } from "../schema";
+import { createRoleFormSchema, type RoleFormValues } from "../schema";
 import { useCreateRole, useUpdateRole } from "../hooks";
 import type { Role } from "../types";
 
@@ -43,6 +44,7 @@ const emptyValues: RoleFormValues = {
 };
 
 export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const { user } = useAuth();
   const canSetCanDelete =
@@ -51,6 +53,8 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
   const createRole = useCreateRole();
   const updateRole = useUpdateRole(role?.id ?? "");
   const isPending = createRole.isPending || updateRole.isPending;
+
+  const roleFormSchema = useMemo(() => createRoleFormSchema(t), [t]);
 
   const form = useForm<RoleFormValues>({
     resolver: zodResolver(roleFormSchema),
@@ -74,7 +78,7 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
   }, [open, isEdit, role, form]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmit = (values: RoleFormValues) => {
     const data = canSetCanDelete ? values : { ...values, canDelete: undefined };
@@ -91,7 +95,7 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
       <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Rolni tahrirlash" : "Yangi rol yaratish"}
+            {isEdit ? t("roles.form.editTitle") : t("roles.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -102,9 +106,9 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rol nomi (kod)</FormLabel>
+                  <FormLabel>{t("roles.form.nameLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Masalan: teacher" {...field} />
+                    <Input placeholder={t("roles.form.namePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -116,9 +120,9 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
               name="displayName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Ko'rsatiladigan nom</FormLabel>
+                  <FormLabel>{t("roles.form.displayNameLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Masalan: O'qituvchi" {...field} />
+                    <Input placeholder={t("roles.form.displayNamePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -131,7 +135,7 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
                 name="level"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Daraja</FormLabel>
+                    <FormLabel>{t("roles.form.levelLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -152,7 +156,7 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
                 name="scope"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Scope</FormLabel>
+                    <FormLabel>{t("roles.form.scopeLabel")}</FormLabel>
                     <FormControl>
                       <Input disabled placeholder="tenant" {...field} />
                     </FormControl>
@@ -175,7 +179,7 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
                       />
                     </FormControl>
                     <FormLabel className="mt-0!">
-                      Bu rolni keyinchalik o'chirish mumkin bo'lsin
+                      {t("roles.form.canDeleteLabel")}
                     </FormLabel>
                   </FormItem>
                 )}
@@ -189,16 +193,16 @@ export const RoleFormModal = ({ open, onClose, mode, role }: Props) => {
                 onClick={onClose}
                 disabled={isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

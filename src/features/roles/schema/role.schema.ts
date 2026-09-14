@@ -1,13 +1,12 @@
 import { z } from "zod";
 
-export const roleFormSchema = z.object({
-  name: z.string().min(2, "Rol nomi kamida 2 ta belgidan iborat bo'lishi kerak"),
-  displayName: z
-    .string()
-    .min(2, "Ko'rsatiladigan nom kamida 2 ta belgidan iborat bo'lishi kerak"),
-  level: z.number().min(0, "Daraja manfiy bo'lishi mumkin emas"),
-  scope: z.string().min(1, "Scope kiritilishi shart"),
-  canDelete: z.boolean(),
-});
+export const createRoleFormSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(2, t("roles.schema.name_min")),
+    displayName: z.string().min(2, t("roles.schema.displayName_min")),
+    level: z.number().min(0, t("roles.schema.level_min")),
+    scope: z.string().min(1, t("roles.schema.scope_required")),
+    canDelete: z.boolean(),
+  });
 
-export type RoleFormValues = z.infer<typeof roleFormSchema>;
+export type RoleFormValues = z.infer<ReturnType<typeof createRoleFormSchema>>;

@@ -1,4 +1,5 @@
 import { BookOpen, User, Phone, Edit, Users, Eye } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import type { GroupDetail } from "../../types";
@@ -12,6 +13,7 @@ interface GroupInfoProps {
 
 export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const studentCount = group.students.length;
   const isFull = studentCount >= group.maxStudents;
   const fillPercent = Math.round((studentCount / group.maxStudents) * 100);
@@ -23,17 +25,17 @@ export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
         <div>
           <div className="flex items-center gap-3 mb-1">
             <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
-              Guruh nomi:{" "}
+              {t("groups.info.name_label")}{" "}
               <span className="font-extrabold text-blue-400">{group.name}</span>
             </h2>
             {isFull && (
               <Badge variant="destructive" className="">
-                To'lgan
+                {t("groups.info.full_badge")}
               </Badge>
             )}
           </div>
           <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Yaratilgan vaqti:{" "}
+            {t("groups.info.created_at")}{" "}
             {new Date(group.createdAt).toLocaleDateString("uz-UZ")}
           </p>
         </div>
@@ -46,7 +48,7 @@ export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
           className="gap-2 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 shrink-0"
         >
           <Edit className="w-4 h-4" />
-          Tahrirlash
+          {t("common.edit")}
         </Button>
       </div>
 
@@ -57,7 +59,9 @@ export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
             <BookOpen className="w-5 h-5 text-white" />
           </div>
           <div className="min-w-0">
-            <p className="text-zinc-500 dark:text-zinc-400 mb-2">Kurs</p>
+            <p className="text-zinc-500 dark:text-zinc-400 mb-2">
+              {t("groups.info.course")}
+            </p>
             <p className="text-lg font-medium text-zinc-900 dark:text-zinc-50 truncate">
               {group.course.title}
             </p>
@@ -73,7 +77,9 @@ export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
             <User className="w-6 h-6 text-white" />
           </div>
           <div className="min-w-0">
-            <p className="text-zinc-500 dark:text-zinc-400 mb-2">O'qituvchi</p>
+            <p className="text-zinc-500 dark:text-zinc-400 mb-2">
+              {t("common.teacher")}
+            </p>
             <p className="text-lg font-medium text-zinc-900 dark:text-zinc-50 truncate">
               {group?.teacher?.fullName}
             </p>
@@ -101,10 +107,12 @@ export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
               <Users className="w-5 h-5 text-white" />
             </div>
             <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Guruh to'lishiga
+              {t("groups.info.spots_left")}
             </p>
             <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              {Math.max(0, group.maxStudents - studentCount)} ta joy bor
+              {t("groups.info.spots_count", {
+                count: Math.max(0, group.maxStudents - studentCount),
+              })}
             </p>
           </div>
 

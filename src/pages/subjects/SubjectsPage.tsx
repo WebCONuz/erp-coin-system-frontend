@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   SubjectDataFilter,
   SubjectCard,
@@ -14,6 +15,7 @@ import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 
 const SubjectsPage = () => {
+  const { t } = useTranslation();
   const { data: subjects, isLoading } = useSubjects();
   const pagination = usePagination({
     totalItems: subjects?.meta?.total || 0,
@@ -41,12 +43,12 @@ const SubjectsPage = () => {
   };
 
   const handleDelete = (subject: Subject) => {
-    if (!window.confirm(`"${subject.name}" fanini o'chirishni tasdiqlaysizmi?`))
+    if (!window.confirm(t("subjects.deleteConfirm", { name: subject.name })))
       return;
 
     deleteSubject.mutate(subject.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -60,8 +62,8 @@ const SubjectsPage = () => {
         <>
           {subjects.data.length === 0 ? (
             <NoDataBox
-              title="Hali fanlar mavjud emas!"
-              btnText="Fan qo'shish"
+              title={t("subjects.noData")}
+              btnText={t("subjects.addSubject")}
               btnFn={handleCreate}
               hasAction={false}
             />
@@ -89,7 +91,7 @@ const SubjectsPage = () => {
           )}
         </>
       ) : (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       )}
 
       <SubjectFormModal

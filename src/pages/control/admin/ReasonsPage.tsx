@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   CoinRuleDataFilter,
   CoinRuleCard,
@@ -18,6 +19,7 @@ import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 
 const ReasonsPage = () => {
+  const { t } = useTranslation();
   const { data: coinRules, isLoading } = useCoinRules();
   const { data: groupsData } = useActiveGroups();
   const pagination = usePagination({ totalItems: coinRules?.meta?.total || 0 });
@@ -49,12 +51,12 @@ const ReasonsPage = () => {
   };
 
   const handleDelete = (rule: CoinRule) => {
-    if (!window.confirm(`"${rule.name}" sababini o'chirishni tasdiqlaysizmi?`))
+    if (!window.confirm(t("reasons.deleteConfirm", { name: rule.name })))
       return;
 
     deleteCoinRule.mutate(rule.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -68,8 +70,8 @@ const ReasonsPage = () => {
         <>
           {coinRules.data.length === 0 ? (
             <NoDataBox
-              title="Hali sabablar mavjud emas!"
-              btnText="Sabab qo'shish"
+              title={t("reasons.noData")}
+              btnText={t("reasons.addReason")}
               btnFn={handleCreate}
               hasAction={false}
             />
@@ -98,7 +100,7 @@ const ReasonsPage = () => {
           )}
         </>
       ) : (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       )}
 
       <CoinRuleFormModal

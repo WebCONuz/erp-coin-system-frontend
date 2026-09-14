@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   SessionsFilterBar,
   SessionListCard,
@@ -14,6 +15,7 @@ import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 
 const SessionsPage = () => {
+  const { t } = useTranslation();
   const { data: sessions, isLoading } = useSessions();
   const pagination = usePagination({
     totalItems: sessions?.meta?.total || 0,
@@ -26,14 +28,17 @@ const SessionsPage = () => {
   const handleDelete = (session: SessionItem) => {
     if (
       !window.confirm(
-        `"${session.group.name}" guruhining ${session.startTime} dagi darsini o'chirishni tasdiqlaysizmi?`,
+        t("sessions.deleteConfirm", {
+          group: session.group.name,
+          time: session.startTime,
+        }),
       )
     )
       return;
 
     deleteSession.mutate(session.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -47,8 +52,8 @@ const SessionsPage = () => {
         <>
           {sessions.data.length === 0 ? (
             <NoDataBox
-              title="Hali Sessiyalar mavjud emas!"
-              btnText="Sessiya qo'shish"
+              title={t("sessions.noSessions")}
+              btnText={t("sessions.filter.addSession")}
               btnFn={() => setIsModalOpen(true)}
               hasAction={false}
             />
@@ -75,7 +80,7 @@ const SessionsPage = () => {
           )}
         </>
       ) : (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       )}
 
       <SessionFormModal

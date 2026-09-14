@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { MessageSquare, Mail, Phone, Send } from "lucide-react";
 import {
   Dialog,
@@ -18,6 +19,7 @@ interface Props {
 }
 
 export const SendMessageModal = ({ open, onClose, student }: Props) => {
+  const { t } = useTranslation();
   const [message, setMessage] = useState("");
   const [viaSms, setViaSms] = useState(true);
   const [viaEmail, setViaEmail] = useState(false);
@@ -72,7 +74,7 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
                 className="text-blue-600 dark:text-blue-400"
               />
             </div>
-            Xabar yuborish
+            {t("students.sendMessage.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -94,7 +96,7 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
           {hasParentPhone && (
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                Kimga yuborish
+                {t("students.sendMessage.recipientLabel")}
               </label>
               <div className="flex gap-2">
                 <button
@@ -107,7 +109,7 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
                   }`}
                 >
                   <Phone size={14} />
-                  O'quvchi
+                  {t("common.student")}
                   <span className="text-xs opacity-60">{student.phone}</span>
                 </button>
                 <button
@@ -120,7 +122,7 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
                   }`}
                 >
                   <Phone size={14} />
-                  Ota-ona
+                  {t("students.sendMessage.parent")}
                   <span className="text-xs opacity-60">
                     {student.parentPhone}
                   </span>
@@ -132,7 +134,7 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
           {/* Channel checkboxes */}
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-              Yuborish kanali
+              {t("students.sendMessage.channelLabel")}
             </label>
             <div className="flex gap-3">
               <label
@@ -186,12 +188,12 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
           {/* Message textarea */}
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-              Xabar matni
+              {t("students.sendMessage.messageLabel")}
             </label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Xabaringizni kiriting..."
+              placeholder={t("students.sendMessage.messagePlaceholder")}
               rows={4}
               className="w-full px-3 py-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 outline-none focus:border-purple-400 transition-colors resize-none"
             />
@@ -208,7 +210,7 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
             onClick={handleClose}
             className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
           >
-            Bekor qilish
+            {t("common.cancel")}
           </Button>
           <Button
             disabled={!canSend || sendMessage.isPending}
@@ -216,7 +218,9 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
             className="gap-2 bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-50"
           >
             <Send size={14} />
-            {sendMessage.isPending ? "Yuborilmoqda..." : "Yuborish"}
+            {sendMessage.isPending
+              ? t("common.sending")
+              : t("students.sendMessage.send")}
           </Button>
         </DialogFooter>
       </DialogContent>

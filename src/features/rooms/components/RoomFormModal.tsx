@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -21,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { roomFormSchema, type RoomFormValues } from "../schema";
+import { createRoomFormSchema, type RoomFormValues } from "../schema";
 import { useCreateRoom, useUpdateRoom } from "../hooks";
 import type { Room } from "../types";
 
@@ -39,10 +40,13 @@ const emptyValues: RoomFormValues = {
 };
 
 export const RoomFormModal = ({ open, onClose, mode, room }: Props) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const createRoom = useCreateRoom();
   const updateRoom = useUpdateRoom(room?.id ?? "");
   const isPending = createRoom.isPending || updateRoom.isPending;
+
+  const roomFormSchema = useMemo(() => createRoomFormSchema(t), [t]);
 
   const form = useForm<RoomFormValues>({
     resolver: zodResolver(roomFormSchema),
@@ -64,7 +68,7 @@ export const RoomFormModal = ({ open, onClose, mode, room }: Props) => {
   }, [open, isEdit, room, form]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmit = (values: RoomFormValues) => {
     const data = { ...values, description: values.description || undefined };
@@ -81,7 +85,7 @@ export const RoomFormModal = ({ open, onClose, mode, room }: Props) => {
       <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Xonani tahrirlash" : "Yangi xona qo'shish"}
+            {isEdit ? t("rooms.form.editTitle") : t("rooms.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -92,9 +96,9 @@ export const RoomFormModal = ({ open, onClose, mode, room }: Props) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Xona nomi</FormLabel>
+                  <FormLabel>{t("rooms.form.nameLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Masalan: Room 101" {...field} />
+                    <Input placeholder={t("rooms.form.namePlaceholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -106,7 +110,7 @@ export const RoomFormModal = ({ open, onClose, mode, room }: Props) => {
               name="capacity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Sig'imi (o'rindiqlar soni)</FormLabel>
+                  <FormLabel>{t("rooms.form.capacityLabel")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -128,10 +132,12 @@ export const RoomFormModal = ({ open, onClose, mode, room }: Props) => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tavsif (Ixtiyoriy)</FormLabel>
+                  <FormLabel>
+                    {t("common.description")} {t("common.optional")}
+                  </FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Masalan: 3-qavat, konditsioner mavjud"
+                      placeholder={t("rooms.form.descriptionPlaceholder")}
                       className="resize-none h-20"
                       {...field}
                     />
@@ -148,16 +154,16 @@ export const RoomFormModal = ({ open, onClose, mode, room }: Props) => {
                 onClick={onClose}
                 disabled={isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

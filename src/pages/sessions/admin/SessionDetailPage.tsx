@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/loading";
@@ -11,6 +12,7 @@ import {
 import { useSession } from "@/features/sessions/hooks";
 
 const SessionDetailPage = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { data: session, isLoading } = useSession(id ?? "");
@@ -23,19 +25,21 @@ const SessionDetailPage = () => {
         className="gap-2 -ml-2"
       >
         <ArrowLeft size={16} />
-        Sessiyalar qaytish
+        {t("sessions.backToList")}
       </Button>
 
       {isLoading ? (
         <PageLoading />
       ) : !session ? (
-        <NoData text="Dars topilmadi!" />
+        <NoData text={t("sessions.notFound")} />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-6">
             <SessionInfoCard session={session} />
             <div className="rounded-2xl bg-background p-6 shadow-sm space-y-4">
-              <h3 className="text-lg font-semibold">Yo'qlama</h3>
+              <h3 className="text-lg font-semibold">
+                {t("sessions.attendance.title")}
+              </h3>
               <AttendanceTable
                 sessionId={session.id}
                 groupId={session.group.id}

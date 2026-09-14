@@ -1,4 +1,5 @@
 import { format, parseISO } from "date-fns";
+import { useTranslation } from "react-i18next";
 import type { CoinEconomyTrendPoint } from "../../types";
 
 interface Props {
@@ -6,25 +7,29 @@ interface Props {
 }
 
 export const WeeklyTrendChart = ({ data }: Props) => {
+  const { t } = useTranslation();
+
   if (!data.length) {
     return (
       <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
-        Hali ma'lumot yo'q
+        {t("admin.dashboard.coinEconomy.noTrendData")}
       </div>
     );
   }
 
   const max = Math.max(1, ...data.map((d) => Math.max(d.earned, d.deducted)));
+  const earnedLabel = t("admin.dashboard.coinEconomy.earned");
+  const deductedLabel = t("admin.dashboard.coinEconomy.deducted");
 
   return (
     <div>
       <div className="mb-3 flex items-center gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-emerald-500" /> Ishlab
-          topildi
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />{" "}
+          {earnedLabel}
         </span>
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-red-500" /> Ayirildi
+          <span className="h-2 w-2 rounded-full bg-red-500" /> {deductedLabel}
         </span>
       </div>
 
@@ -36,14 +41,14 @@ export const WeeklyTrendChart = ({ data }: Props) => {
           >
             <div className="flex h-full w-full items-end justify-center gap-1">
               <div
-                title={`Ishlab topildi: ${point.earned}`}
+                title={`${earnedLabel}: ${point.earned}`}
                 className="w-2.5 rounded-t bg-emerald-500 transition-all sm:w-3"
                 style={{
                   height: `${Math.max(2, (point.earned / max) * 100)}%`,
                 }}
               />
               <div
-                title={`Ayirildi: ${point.deducted}`}
+                title={`${deductedLabel}: ${point.deducted}`}
                 className="w-2.5 rounded-t bg-red-500 transition-all sm:w-3"
                 style={{
                   height: `${Math.max(2, (point.deducted / max) * 100)}%`,

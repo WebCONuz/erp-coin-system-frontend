@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { StudentStatusBadge } from "../../constants";
 import type { ConfirmAction, StudentDetailFull } from "../../types";
 import { Badge } from "@/components/ui/badge";
@@ -42,7 +43,8 @@ export const StudentDetailHeader = ({
   setActiveTab,
   setConfirmAction,
 }: Props) => {
-  const statusBadge = StudentStatusBadge(isActive, isDeleted);
+  const { t } = useTranslation();
+  const statusBadge = StudentStatusBadge(isActive, isDeleted, t);
   const avatarLetter = student?.fullName?.charAt(0)?.toUpperCase() ?? "A";
 
   return (
@@ -84,12 +86,14 @@ export const StudentDetailHeader = ({
           {student?.parentPhone && (
             <span className="flex items-center gap-1.5 text-blue-500 dark:text-blue-400">
               <PhoneCall size={13} />
-              Ota-ona: {student?.parentPhone}
+              {t("students.detail.parentPhonePrefix")} {student?.parentPhone}
             </span>
           )}
           <span className="flex items-center gap-1.5">
             <Calendar size={13} />
-            {formatDate(student?.createdAt, "dd.MM.yyyy")} dan buyon
+            {t("students.detail.memberSince", {
+              date: formatDate(student?.createdAt, "dd.MM.yyyy"),
+            })}
           </span>
         </div>
       </div>
@@ -103,7 +107,7 @@ export const StudentDetailHeader = ({
             onClick={() => setIsMsgOpen(true)}
           >
             <MessageSquare size={14} />
-            Xabar
+            {t("students.detail.message")}
           </Button>
         )}
         {!isDeleted && (
@@ -113,7 +117,7 @@ export const StudentDetailHeader = ({
             onClick={() => setIsEditOpen(true)}
           >
             <Pencil size={14} />
-            Tahrirlash
+            {t("common.edit")}
           </Button>
         )}
         {!isDeleted && (
@@ -130,7 +134,7 @@ export const StudentDetailHeader = ({
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem onClick={() => setActiveTab("security")}>
                 <Pencil size={14} />
-                Xavfsizlik sozlamalari
+                {t("students.detail.securitySettings")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -139,14 +143,16 @@ export const StudentDetailHeader = ({
                 }
               >
                 {isActive ? <Archive size={14} /> : <Power size={14} />}
-                {isActive ? "Arxivlash" : "Faollashtirish"}
+                {isActive
+                  ? t("students.detail.archive")
+                  : t("students.detail.activate")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 variant="destructive"
                 onClick={() => setConfirmAction("delete")}
               >
                 <Trash2 size={14} />
-                O'chirish
+                {t("common.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

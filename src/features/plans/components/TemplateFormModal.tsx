@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -22,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { getTemplateFormSchema, type TemplateFormValues } from "../schema";
 import { useCreateScheduleTemplate, useUpdateScheduleTemplate } from "../hooks";
-import { GROUP_TEACHER_VALUE, WEEKDAY_LABELS } from "../constants";
+import { GROUP_TEACHER_VALUE, getWeekdayLabels } from "../constants";
 import { WEEKDAYS, type ScheduleTemplate, type Weekday } from "../types";
 import { useGroups } from "@/features/groups/hooks";
 import { useRooms } from "@/features/rooms/hooks";
@@ -52,6 +53,7 @@ export const TemplateFormModal = ({
   lockGroup = false,
   template,
 }: TemplateFormModalProps) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const createTemplate = useCreateScheduleTemplate();
   const updateTemplate = useUpdateScheduleTemplate(template?.id ?? "");
@@ -63,9 +65,15 @@ export const TemplateFormModal = ({
   const { data: subjects } = useSubjects();
   const { isLearningCenter } = useCurrentTenant();
   const showSubject = !isLearningCenter;
+  const WEEKDAY_LABELS = getWeekdayLabels(t);
+
+  const templateFormSchema = useMemo(
+    () => getTemplateFormSchema(showSubject, t),
+    [showSubject, t],
+  );
 
   const form = useForm<TemplateFormValues>({
-    resolver: zodResolver(getTemplateFormSchema(showSubject)),
+    resolver: zodResolver(templateFormSchema),
     defaultValues: {
       weekday,
       groupId: "",
@@ -105,7 +113,7 @@ export const TemplateFormModal = ({
   }, [open, isEdit, template, weekday, lockGroup, presetGroupId, form]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmit = (values: TemplateFormValues) => {
     const teacherId =
@@ -146,10 +154,13 @@ export const TemplateFormModal = ({
     {
       value: GROUP_TEACHER_VALUE,
       label: groupDefaultTeacherName
-        ? `Guruh o'qituvchisi (${groupDefaultTeacherName})`
-        : "Guruh o'qituvchisi",
+        ? t("plans.templateForm.groupTeacherOptionWithName", {
+            name: groupDefaultTeacherName,
+          })
+        : t("plans.templateForm.groupTeacherOption"),
     },
-    ...(teachers?.data.map((t) => ({ label: t.fullName, value: t.id })) ?? []),
+    ...(teachers?.data.map((tch) => ({ label: tch.fullName, value: tch.id })) ??
+      []),
   ];
 
   return (
@@ -157,7 +168,9 @@ export const TemplateFormModal = ({
       <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Shablonni tahrirlash" : "Yangi shablon qo'shish"}
+            {isEdit
+              ? t("plans.templateForm.editTitle")
+              : t("plans.templateForm.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -165,7 +178,7 @@ export const TemplateFormModal = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {isEdit || lockWeekday ? (
               <div>
-                <FormLabel>Hafta kuni</FormLabel>
+                <FormLabel>{t("plans.templateForm.weekdayLabel")}</FormLabel>
                 <div className="mt-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 bg-muted/50 px-3 py-2 text-sm">
                   {WEEKDAY_LABELS[weekday]}
                 </div>
@@ -173,19 +186,19 @@ export const TemplateFormModal = ({
             ) : (
               <ControlledSelect
                 name="weekday"
-                label="Hafta kuni"
+                label={t("plans.templateForm.weekdayLabel")}
                 control={form.control}
                 options={WEEKDAYS.map((item) => ({
                   label: WEEKDAY_LABELS[item],
                   value: item,
                 }))}
-                placeholder="Hafta kunini tanlang"
+                placeholder={t("plans.templateForm.weekdayPlaceholder")}
               />
             )}
 
             {isEdit || lockGroup ? (
               <div>
-                <FormLabel>Guruh</FormLabel>
+                <FormLabel>{t("common.group")}</FormLabel>
                 <div className="mt-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
                   {isEdit
                     ? (template?.group.name ?? "—")
@@ -196,7 +209,7 @@ export const TemplateFormModal = ({
             ) : (
               <ControlledSelect
                 name="groupId"
-                label="Guruh"
+                label={t("common.group")}
                 control={form.control}
                 options={
                   groups?.data && groups.data.length > 0
@@ -206,13 +219,13 @@ export const TemplateFormModal = ({
                       }))
                     : []
                 }
-                placeholder="Guruhni tanlang"
+                placeholder={t("sessions.form.groupPlaceholder")}
               />
             )}
 
             <ControlledSelect
               name="roomId"
-              label="Xona"
+              label={t("common.room")}
               control={form.control}
               options={
                 rooms?.data && rooms?.data.length > 0
@@ -222,21 +235,21 @@ export const TemplateFormModal = ({
                     }))
                   : []
               }
-              placeholder="Xonani tanlang"
+              placeholder={t("sessions.form.roomPlaceholder")}
             />
 
             <ControlledSelect
               name="teacherId"
-              label="O'qituvchi"
+              label={t("common.teacher")}
               control={form.control}
               options={teacherOptions}
-              placeholder="O'qituvchini tanlang"
+              placeholder={t("sessions.schema.teacher_required")}
             />
 
             {showSubject && (
               <ControlledSelect
                 name="subjectId"
-                label="Fan"
+                label={t("common.subject")}
                 required
                 control={form.control}
                 options={
@@ -245,7 +258,7 @@ export const TemplateFormModal = ({
                     value: item.id,
                   })) ?? []
                 }
-                placeholder="Fanni tanlang"
+                placeholder={t("sessions.form.subjectPlaceholder")}
               />
             )}
 
@@ -255,7 +268,7 @@ export const TemplateFormModal = ({
                 name="startTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Boshlanish vaqti</FormLabel>
+                    <FormLabel>{t("sessions.startTimeLabel")}</FormLabel>
                     <FormControl>
                       <Input type="time" {...field} />
                     </FormControl>
@@ -268,7 +281,7 @@ export const TemplateFormModal = ({
                 name="endTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tugash vaqti</FormLabel>
+                    <FormLabel>{t("sessions.endTimeLabel")}</FormLabel>
                     <FormControl>
                       <Input type="time" {...field} />
                     </FormControl>
@@ -285,16 +298,16 @@ export const TemplateFormModal = ({
                 onClick={onClose}
                 disabled={isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

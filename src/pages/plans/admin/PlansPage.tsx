@@ -1,10 +1,12 @@
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { WeeklyKanban, MonthlyCalendar } from "@/features/plans/components";
 import { updateSearchParams } from "@/ustils";
 
 const PlansPage = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "kanban";
   const groupId = searchParams.get("groupId") || "";
@@ -26,13 +28,13 @@ const PlansPage = () => {
           value="kanban"
           className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
         >
-          Haftalik Shablon (Kanban)
+          {t("plans.tabs.kanban")}
         </TabsTrigger>
         <TabsTrigger
           value="calendar"
           className="rounded-md px-4 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
         >
-          Oylik Kalendar
+          {t("plans.tabs.calendar")}
         </TabsTrigger>
       </TabsList>
 

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Ban, Clock, Link } from "lucide-react";
 
 import {
@@ -23,8 +24,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import {
-  cancelExceptionFormSchema,
-  rescheduleExceptionFormSchema,
+  createCancelExceptionFormSchema,
+  createRescheduleExceptionFormSchema,
   type CancelExceptionFormValues,
   type RescheduleExceptionFormValues,
 } from "../schema";
@@ -46,6 +47,7 @@ interface Props {
 type View = "choose" | "cancel" | "reschedule";
 
 export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [view, setView] = useState<View>("choose");
   const hasException = !!entry?.exception;
@@ -57,6 +59,15 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
     createException.isPending ||
     updateException.isPending ||
     deleteException.isPending;
+
+  const cancelExceptionFormSchema = useMemo(
+    () => createCancelExceptionFormSchema(t),
+    [t],
+  );
+  const rescheduleExceptionFormSchema = useMemo(
+    () => createRescheduleExceptionFormSchema(t),
+    [t],
+  );
 
   const cancelForm = useForm<CancelExceptionFormValues>({
     resolver: zodResolver(cancelExceptionFormSchema),
@@ -93,7 +104,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
   }, [open, entry]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const submitCancel = (values: CancelExceptionFormValues) => {
     if (hasException && entry?.exception) {
@@ -131,7 +142,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
 
   const handleRevert = () => {
     if (!entry?.exception) return;
-    if (!window.confirm("Standart shablonga qaytarilsinmi?")) return;
+    if (!window.confirm(t("plans.exception.revertConfirm"))) return;
 
     deleteException.mutate(entry.exception.id, {
       onSuccess: () => onClose(),
@@ -154,7 +165,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
               onClick={() => setView("cancel")}
             >
               <Ban size={16} className="text-red-500" />
-              Bu darsni bekor qilish
+              {t("plans.exception.cancelSession")}
             </Button>
             <Button
               variant="outline"
@@ -162,7 +173,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
               onClick={() => setView("reschedule")}
             >
               <Clock size={16} className="text-amber-500" />
-              Vaqtini o'zgartirish
+              {t("plans.exception.rescheduleTime")}
             </Button>
             <Button
               variant="outline"
@@ -174,8 +185,8 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
             >
               <Link size={16} className="text-blue-500" />
               {!!entry?.session?.id
-                ? "Joriy dars ma'lumotlariga o'tish"
-                : "Bu kun bo'yicha dars yaratilmagan"}
+                ? t("plans.exception.goToSessionDetails")
+                : t("plans.exception.noSessionYet")}
             </Button>
           </div>
         )}
@@ -191,10 +202,10 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                 name="note"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Izoh (Ixtiyoriy)</FormLabel>
+                    <FormLabel>{t("common.description")} {t("common.optional")}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Masalan: Bayram sababli"
+                        placeholder={t("plans.exception.cancelReasonPlaceholder")}
                         className="resize-none h-20"
                         {...field}
                       />
@@ -213,7 +224,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                     disabled={isPending}
                     onClick={handleRevert}
                   >
-                    Andozaga qaytarish
+                    {t("plans.exception.revertToTemplate")}
                   </Button>
                 )}
                 <Button
@@ -222,14 +233,14 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                   disabled={isPending}
                   onClick={() => (hasException ? onClose() : setView("choose"))}
                 >
-                  {hasException ? "Yopish" : "Orqaga"}
+                  {hasException ? t("common.close") : t("plans.exception.back")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
                   className="bg-red-600 hover:bg-red-700 text-white"
                 >
-                  {isPending ? "Saqlanmoqda..." : "Tasdiqlash"}
+                  {isPending ? t("common.saving") : t("common.confirm")}
                 </Button>
               </DialogFooter>
             </form>
@@ -248,7 +259,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                   name="startTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Boshlanish vaqti</FormLabel>
+                      <FormLabel>{t("sessions.startTimeLabel")}</FormLabel>
                       <FormControl>
                         <Input type="time" {...field} />
                       </FormControl>
@@ -261,7 +272,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                   name="endTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tugash vaqti</FormLabel>
+                      <FormLabel>{t("sessions.endTimeLabel")}</FormLabel>
                       <FormControl>
                         <Input type="time" {...field} />
                       </FormControl>
@@ -276,10 +287,12 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                 name="note"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Izoh (Ixtiyoriy)</FormLabel>
+                    <FormLabel>{t("common.description")} {t("common.optional")}</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Masalan: Texnik ishlar sababli"
+                        placeholder={t(
+                          "plans.exception.rescheduleReasonPlaceholder",
+                        )}
                         className="resize-none h-20"
                         {...field}
                       />
@@ -298,7 +311,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                     disabled={isPending}
                     onClick={handleRevert}
                   >
-                    Andozaga qaytarish
+                    {t("plans.exception.revertToTemplate")}
                   </Button>
                 )}
                 <Button
@@ -307,10 +320,10 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                   disabled={isPending}
                   onClick={() => (hasException ? onClose() : setView("choose"))}
                 >
-                  {hasException ? "Yopish" : "Orqaga"}
+                  {hasException ? t("common.close") : t("plans.exception.back")}
                 </Button>
                 <Button type="submit" disabled={isPending}>
-                  {isPending ? "Saqlanmoqda..." : "Saqlash"}
+                  {isPending ? t("common.saving") : t("common.save")}
                 </Button>
               </DialogFooter>
             </form>

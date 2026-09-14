@@ -1,10 +1,13 @@
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { contolsHeader } from "../../constants";
+import { getControlsHeader } from "../../constants";
 
 export const ControlsHeader = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
+  const contolsHeader = getControlsHeader(t);
 
   return (
     <header className="mt-2">

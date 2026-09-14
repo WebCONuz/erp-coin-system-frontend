@@ -46,7 +46,9 @@ export const useTable = ({
         cell: ({ getValue }) => {
           return (
             <>
-              {getValue<string>() ? String(getValue<string>()) : "Mavjud emas"}
+              {getValue<string>()
+                ? String(getValue<string>())
+                : t("students.table.email_empty")}
             </>
           );
         },
@@ -86,15 +88,15 @@ export const useTable = ({
       },
       {
         accessorKey: "isActive",
-        header: "Holat",
+        header: t("common.status"),
         cell: ({ getValue }) =>
           getValue<boolean>() ? (
             <span className="px-2 py-0.5 rounded-4xl text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
-              Faol
+              {t("common.active")}
             </span>
           ) : (
             <span className="px-2 py-0.5 rounded-4xl text-xs bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
-              Arxivlangan
+              {t("students.status.archived")}
             </span>
           ),
       },

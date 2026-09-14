@@ -1,27 +1,29 @@
 import { z } from "zod";
 
-export const rewardFormSchema = z.object({
-  title: z.string().min(1, "Sovg'a nomi kiritilishi shart"),
-  description: z.string().optional(),
-  imageUrl: z
-    .string()
-    .url("To'g'ri URL kiriting")
-    .optional()
-    .or(z.literal("")),
-  coinPrice: z.number().min(1, "Narx 0 dan katta bo'lishi kerak"),
-  stock: z.number().min(0, "Dona soni manfiy bo'lishi mumkin emas"),
-  rewardType: z.enum(["physical", "digital", "privilege"]),
-  categoryId: z.string().min(1, "Kategoriya tanlanishi shart"),
-});
+type TFn = (key: string) => string;
 
-export type RewardFormValues = z.infer<typeof rewardFormSchema>;
+export const createRewardFormSchema = (t: TFn) =>
+  z.object({
+    title: z.string().min(1, t("market.schema.title_required")),
+    description: z.string().optional(),
+    imageUrl: z
+      .string()
+      .url(t("market.schema.url_invalid"))
+      .optional()
+      .or(z.literal("")),
+    coinPrice: z.number().min(1, t("market.schema.price_min")),
+    stock: z.number().min(0, t("market.schema.stock_min")),
+    rewardType: z.enum(["physical", "digital", "privilege"]),
+    categoryId: z.string().min(1, t("market.schema.category_required")),
+  });
 
-export const rewardCategoryFormSchema = z.object({
-  name: z.string().min(2, {
-    message: "Kategoriya nomi kamida 2 ta belgidan iborat bo'lishi kerak",
-  }),
-});
+export type RewardFormValues = z.infer<ReturnType<typeof createRewardFormSchema>>;
+
+export const createRewardCategoryFormSchema = (t: TFn) =>
+  z.object({
+    name: z.string().min(2, { message: t("market.schema.categoryName_min") }),
+  });
 
 export type RewardCategoryFormValues = z.infer<
-  typeof rewardCategoryFormSchema
+  ReturnType<typeof createRewardCategoryFormSchema>
 >;

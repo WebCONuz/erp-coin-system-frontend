@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { TabsContent } from "@/components/ui/tabs";
 import {
   AlertTriangle,
@@ -24,6 +25,7 @@ export const SecurityTab = ({
   isDeleted: boolean;
   setConfirmAction: (action: ConfirmAction) => void;
 }) => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -36,38 +38,42 @@ export const SecurityTab = ({
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <Lock size={16} className="text-zinc-500" />
-            Parolni o'zgartirish
+            {t("students.securityTab.changePasswordTitle")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                Yangi parol
+                {t("students.securityTab.newPasswordLabel")}
               </label>
               <input
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Yangi parol kiriting"
+                placeholder={t("students.securityTab.newPasswordPlaceholder")}
                 className="w-full h-10 px-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 outline-none focus:border-purple-400 transition-colors"
               />
             </div>
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                Parolni tasdiqlang
+                {t("students.securityTab.confirmPasswordLabel")}
               </label>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Parolni qaytadan kiriting"
+                placeholder={t(
+                  "students.securityTab.confirmPasswordPlaceholder",
+                )}
                 className="w-full h-10 px-3 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 outline-none focus:border-purple-400 transition-colors"
               />
             </div>
           </div>
           {newPassword && newPassword !== confirmPassword && (
-            <p className="text-xs text-red-500">Parollar mos emas</p>
+            <p className="text-xs text-red-500">
+              {t("students.securityTab.passwordMismatch")}
+            </p>
           )}
           <div className="flex justify-end pt-1">
             <Button
@@ -92,8 +98,8 @@ export const SecurityTab = ({
             >
               <ShieldCheck size={14} />
               {changePassword.isPending
-                ? "Saqlanmoqda..."
-                : "Parolni o'zgartirish"}
+                ? t("common.saving")
+                : t("students.securityTab.changePasswordTitle")}
             </Button>
           </div>
         </CardContent>
@@ -104,7 +110,7 @@ export const SecurityTab = ({
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold flex items-center gap-2 text-red-600 dark:text-red-400">
             <AlertTriangle size={16} />
-            Xavfli hudud
+            {t("students.securityTab.dangerZone")}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -118,12 +124,14 @@ export const SecurityTab = ({
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                  {isActive ? "Talabani arxivlash" : "Talabani faollashtirish"}
+                  {isActive
+                    ? t("students.actions.archiveTitle")
+                    : t("students.actions.restoreTitle")}
                 </p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   {isActive
-                    ? "To'lov qilmagan yoki vaqtinchalik to'xtatgan talabalar uchun. Ma'lumotlar saqlanadi, keyinchalik qayta faollashtiriladi."
-                    : "Talaba arxivda. Faollashtirish orqali tizimga kirishini tiklashingiz mumkin."}
+                    ? t("students.securityTab.archiveDesc")
+                    : t("students.securityTab.activateDesc")}
                 </p>
               </div>
             </div>
@@ -135,11 +143,11 @@ export const SecurityTab = ({
               disabled={isDeleted}
             >
               {isActive ? (
-                "Arxivlash"
+                t("students.detail.archive")
               ) : (
                 <>
                   <Power size={14} />
-                  Faollashtirish
+                  {t("students.detail.activate")}
                 </>
               )}
             </Button>
@@ -152,12 +160,10 @@ export const SecurityTab = ({
               </div>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
-                  Talabani o'chirish
+                  {t("students.actions.deleteTitle")}
                 </p>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  O'qishni to'liq tugatgan yoki noto'g'ri qo'shilgan talabalar
-                  uchun. Soft delete — ma'lumotlar bazada saqlanadi, tizimda
-                  ko'rinmaydi.
+                  {t("students.securityTab.deleteDesc")}
                 </p>
               </div>
             </div>
@@ -169,7 +175,7 @@ export const SecurityTab = ({
               onClick={() => setConfirmAction("delete")}
             >
               <PowerOff size={14} />
-              {isDeleted ? "O'chirilgan" : "O'chirish"}
+              {isDeleted ? t("students.status.deleted") : t("common.delete")}
             </Button>
           </div>
         </CardContent>

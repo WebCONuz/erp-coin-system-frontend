@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const { isPending, onSubmitCreate, onSubmitEdit, createForm, editForm } =
     useCreateEditTeacher({ open, isEdit, onClose, teacher });
@@ -28,7 +30,9 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
       <DialogContent className="sm:max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "O'qituvchini tahrirlash" : "Yangi o'qituvchi qo'shish"}
+            {isEdit
+              ? t("teachers.form.editTitle")
+              : t("teachers.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -42,13 +46,13 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
                 <ControlledInput
                   control={editForm.control}
                   name="fullName"
-                  label="F.I.Sh"
+                  label={t("students.form.fullNameLabel")}
                   placeholder="Alisher Karimov"
                 />
                 <ControlledInput
                   control={editForm.control}
                   name="phone"
-                  label="Telefon raqam"
+                  label={t("students.form.phoneLabel")}
                   placeholder="+998901234567"
                 />
               </div>
@@ -56,7 +60,7 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
               <ControlledInput
                 control={editForm.control}
                 name="email"
-                label="Email (ixtiyoriy)"
+                label={t("students.form.emailLabel")}
                 placeholder="alisher@example.com"
                 type="email"
               />
@@ -64,7 +68,7 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
               <ControlledInput
                 control={editForm.control}
                 name="avatarUrl"
-                label="Avatar URL (ixtiyoriy)"
+                label={t("students.form.avatarUrlLabel")}
                 placeholder="https://example.com/avatar.jpg"
               />
 
@@ -76,14 +80,14 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
                   disabled={isPending}
                   className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                 >
-                  Bekor qilish
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
                   className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  {isPending ? "Saqlanmoqda..." : "Saqlash"}
+                  {isPending ? t("common.saving") : t("common.save")}
                 </Button>
               </DialogFooter>
             </form>
@@ -97,7 +101,7 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
               <ControlledInput
                 control={createForm.control}
                 name="fullName"
-                label="F.I.Sh"
+                label={t("students.form.fullNameLabel")}
                 placeholder="Alisher Karimov"
               />
 
@@ -105,14 +109,14 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
                 <ControlledInput
                   control={createForm.control}
                   name="phone"
-                  label="Telefon raqam"
+                  label={t("students.form.phoneLabel")}
                   placeholder="+998901234567"
                 />
                 <ControlledInput
                   control={createForm.control}
                   name="password"
-                  label="Parol"
-                  placeholder="Parol kiriting"
+                  label={t("students.form.passwordLabel")}
+                  placeholder={t("students.form.passwordPlaceholder")}
                   type="password"
                 />
               </div>
@@ -120,7 +124,7 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
               <ControlledInput
                 control={createForm.control}
                 name="email"
-                label="Email (ixtiyoriy)"
+                label={t("students.form.emailLabel")}
                 placeholder="alisher@example.com"
                 type="email"
               />
@@ -128,7 +132,7 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
               <ControlledInput
                 control={createForm.control}
                 name="avatarUrl"
-                label="Avatar URL (ixtiyoriy)"
+                label={t("students.form.avatarUrlLabel")}
                 placeholder="https://example.com/avatar.jpg"
               />
 
@@ -140,14 +144,14 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
                   disabled={isPending}
                   className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                 >
-                  Bekor qilish
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
                   className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  {isPending ? "Qo'shilmoqda..." : "Qo'shish"}
+                  {isPending ? t("common.adding") : t("common.add")}
                 </Button>
               </DialogFooter>
             </form>

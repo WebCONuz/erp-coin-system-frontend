@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -21,9 +22,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ControlledSelect } from "@/components/controls";
-import { tenantFormSchema, type TenantFormValues } from "../schema";
+import { createTenantFormSchema, type TenantFormValues } from "../schema";
 import { useCreateTenant, useUpdateTenant } from "../hooks";
-import { TENANT_TYPE_OPTIONS } from "../constants";
+import { getTenantTypeOptions } from "../constants";
 import type { TenentType } from "../types";
 
 interface Props {
@@ -41,10 +42,14 @@ const emptyValues: TenantFormValues = {
 };
 
 export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const createTenant = useCreateTenant();
   const updateTenant = useUpdateTenant(tenant?.id ?? "");
   const isPending = createTenant.isPending || updateTenant.isPending;
+
+  const tenantFormSchema = useMemo(() => createTenantFormSchema(t), [t]);
+  const tenantTypeOptions = getTenantTypeOptions(t);
 
   const form = useForm<TenantFormValues>({
     resolver: zodResolver(tenantFormSchema),
@@ -67,7 +72,7 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
   }, [open, isEdit, tenant, form]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmit = (values: TenantFormValues) => {
     const data = {
@@ -88,7 +93,7 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
       <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Markazni tahrirlash" : "Yangi markaz qo'shish"}
+            {isEdit ? t("tenants.form.editTitle") : t("tenants.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -99,9 +104,12 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Markaz nomi</FormLabel>
+                  <FormLabel>{t("tenants.form.nameLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Masalan: Gullola EDU" {...field} />
+                    <Input
+                      placeholder={t("tenants.form.namePlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,9 +121,12 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
               name="slug"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Slug</FormLabel>
+                  <FormLabel>{t("tenants.form.slugLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Masalan: gullola-edu" {...field} />
+                    <Input
+                      placeholder={t("tenants.form.slugPlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -125,9 +136,9 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
             <ControlledSelect
               control={form.control}
               name="type"
-              label="Tashkilot turi (Ixtiyoriy)"
-              options={TENANT_TYPE_OPTIONS}
-              placeholder="Turini tanlang"
+              label={t("tenants.form.typeLabel")}
+              options={tenantTypeOptions}
+              placeholder={t("tenants.form.typePlaceholder")}
             />
 
             <FormField
@@ -135,9 +146,12 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
               name="plan"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tarif (Ixtiyoriy)</FormLabel>
+                  <FormLabel>{t("tenants.form.planLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Masalan: pro" {...field} />
+                    <Input
+                      placeholder={t("tenants.form.planPlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -151,16 +165,16 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
                 onClick={onClose}
                 disabled={isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

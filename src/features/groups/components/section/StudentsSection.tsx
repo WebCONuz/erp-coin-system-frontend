@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Coins, UserPlus } from "lucide-react";
@@ -17,6 +18,7 @@ export const StudentsSection = ({
   isFull,
   setIsAddStudentOpen,
 }: Props) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [bulkCoinOpen, setBulkCoinOpen] = useState(false);
 
@@ -37,10 +39,10 @@ export const StudentsSection = ({
         {/* title */}
         <div>
           <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
-            O'quvchilar
+            {t("groups.students.title")}
           </h3>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
-            {group.students.length} ta o'quvchi
+            {t("groups.students.count", { count: group.students.length })}
           </p>
         </div>
 
@@ -48,7 +50,7 @@ export const StudentsSection = ({
         <div className="flex gap-x-2">
           <Input
             className="h-10 bg-white w-65 px-4"
-            placeholder="Qidirish..."
+            placeholder={t("common.search")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -59,7 +61,7 @@ export const StudentsSection = ({
             className="h-10 gap-2 bg-linear-to-br from-amber-500 to-amber-600 text-white disabled:opacity-50"
           >
             <Coins className="w-4 h-4" />
-            Tanga berish
+            {t("groups.students.giveCoin")}
           </Button>
           <Button
             onClick={() => setIsAddStudentOpen(true)}
@@ -68,7 +70,9 @@ export const StudentsSection = ({
             className="h-10 gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white disabled:opacity-50"
           >
             <UserPlus className="w-4 h-4" />
-            {isFull ? "Guruh to'lgan" : "Student qo'shish"}
+            {isFull
+              ? t("groups.students.groupFull")
+              : t("groups.addStudent.title")}
           </Button>
         </div>
       </div>
@@ -81,8 +85,8 @@ export const StudentsSection = ({
         onClose={() => setBulkCoinOpen(false)}
         students={bulkCoinStudents}
         groupId={group.id}
-        title="Guruhga ommaviy tanga berish"
-        subtitle={`${group.name} guruhi o'quvchilariga birdaniga tanga bering`}
+        title={t("groups.students.bulkCoinTitle")}
+        subtitle={t("groups.students.bulkCoinSubtitle", { name: group.name })}
       />
     </div>
   );

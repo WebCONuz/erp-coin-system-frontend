@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Lock, LockOpen, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/ustils";
@@ -15,44 +16,39 @@ interface Props {
 }
 
 export const SessionStatusPanel = ({ session }: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const lockSession = useLockSession(session.id);
   const unlockSession = useUnlockSession(session.id);
   const deleteSession = useDeleteSession();
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const handleLock = () => {
-    if (
-      !window.confirm(
-        "Darsni qulflashni tasdiqlaysizmi? Qulflangach yo'qlama va ma'lumotlarni tahrirlash uchun avval qulfni ochish kerak bo'ladi.",
-      )
-    )
-      return;
+    if (!window.confirm(t("sessions.statusPanel.lockConfirm"))) return;
 
     lockSession.mutate(undefined, {
-      onSuccess: () => toast.success("Dars qulflandi"),
+      onSuccess: () => toast.success(t("sessions.statusPanel.locked")),
       onError,
     });
   };
 
   const handleUnlock = () => {
-    if (!window.confirm("Darsning qulfini ochishni tasdiqlaysizmi?")) return;
+    if (!window.confirm(t("sessions.statusPanel.unlockConfirm"))) return;
 
     unlockSession.mutate(undefined, {
-      onSuccess: () => toast.success("Dars qulfi ochildi"),
+      onSuccess: () => toast.success(t("sessions.statusPanel.unlocked")),
       onError,
     });
   };
 
   const handleDelete = () => {
-    if (!window.confirm("Darsni butunlay o'chirishni tasdiqlaysizmi?"))
-      return;
+    if (!window.confirm(t("sessions.statusPanel.deleteConfirm"))) return;
 
     deleteSession.mutate(session.id, {
       onSuccess: () => {
-        toast.success("Dars o'chirildi");
+        toast.success(t("sessions.statusPanel.deleted"));
         navigate("/admin/sessions");
       },
       onError,
@@ -66,11 +62,11 @@ export const SessionStatusPanel = ({ session }: Props) => {
           {session.isLocked ? (
             <span className="flex items-center gap-1.5">
               <Lock size={14} />
-              Qulflangan
+              {t("sessions.locked")}
               {session.lockedAt && ` — ${formatDateTime(session.lockedAt)}`}
             </span>
           ) : (
-            <span>Dars hali qulflanmagan</span>
+            <span>{t("sessions.statusPanel.notLocked")}</span>
           )}
         </div>
 
@@ -83,7 +79,7 @@ export const SessionStatusPanel = ({ session }: Props) => {
               className="gap-2"
             >
               <LockOpen size={16} />
-              Qulfni ochish
+              {t("sessions.statusPanel.unlockAction")}
             </Button>
           ) : (
             <Button
@@ -93,7 +89,7 @@ export const SessionStatusPanel = ({ session }: Props) => {
               className="gap-2"
             >
               <Lock size={16} />
-              Qulflash
+              {t("sessions.statusPanel.lockAction")}
             </Button>
           )}
 
@@ -104,7 +100,7 @@ export const SessionStatusPanel = ({ session }: Props) => {
             className="gap-2 text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/50"
           >
             <Trash size={16} />
-            O'chirish
+            {t("common.delete")}
           </Button>
         </div>
       </div>

@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -20,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea"; // Description uchun textarea
 import { Button } from "@/components/ui/button";
-import { courseFormSchema, type CourseFormValues } from "../../schema";
+import { createCourseFormSchema, type CourseFormValues } from "../../schema";
 import { useCreateCourse, useUpdateCourse } from "../../hooks";
 
 // Kurs uchun sodda tip interfeysi
@@ -43,11 +44,14 @@ export const CourseFormModal = ({
   mode,
   course,
 }: CourseFormModalProps) => {
+  const { t } = useTranslation();
   const createCourse = useCreateCourse();
   const updateCourse = useUpdateCourse(course?.id ?? "");
   const isPending = createCourse.isPending || updateCourse.isPending;
 
   const isEdit = mode === "edit";
+
+  const courseFormSchema = useMemo(() => createCourseFormSchema(t), [t]);
 
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseFormSchema),
@@ -91,7 +95,7 @@ export const CourseFormModal = ({
       <DialogContent className="sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Kursni tahrirlash" : "Yangi kurs yaratish"}
+            {isEdit ? t("courses.form.edit_title") : t("courses.form.create_title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -104,11 +108,11 @@ export const CourseFormModal = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-zinc-700 dark:text-zinc-300">
-                    Kurs nomi
+                    {t("courses.form.title_label")}
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Masalan: Frontend Foundation"
+                      placeholder={t("courses.form.title_placeholder")}
                       className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50"
                       {...field}
                     />
@@ -125,11 +129,11 @@ export const CourseFormModal = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-zinc-700 dark:text-zinc-300">
-                    Kurs haqida (Ixtiyoriy)
+                    {t("courses.form.description_label")}
                   </FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Kurs haqida qisqacha ma'lumot..."
+                      placeholder={t("courses.form.description_placeholder")}
                       className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 resize-none h-24"
                       {...field}
                     />
@@ -147,7 +151,7 @@ export const CourseFormModal = ({
                 disabled={isPending}
                 className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -156,11 +160,11 @@ export const CourseFormModal = ({
               >
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

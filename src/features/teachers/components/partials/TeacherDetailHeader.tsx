@@ -7,6 +7,7 @@ import {
   Pencil,
   Phone,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/ustils";
@@ -28,6 +29,7 @@ export const TeacherDetailHeader = ({
   onArchive,
   onRestore,
 }: Props) => {
+  const { t } = useTranslation();
   const avatarLetter = teacher.fullName.charAt(0).toUpperCase();
 
   return (
@@ -67,7 +69,9 @@ export const TeacherDetailHeader = ({
                 : "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400"
             }`}
           >
-            {teacher.isActive ? "Faol" : "Arxivlangan"}
+            {teacher.isActive
+              ? t("common.active")
+              : t("students.status.archived")}
           </Badge>
           <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 border-0">
             {teacher.role.displayName}
@@ -86,7 +90,9 @@ export const TeacherDetailHeader = ({
           )}
           <span className="flex items-center gap-1.5">
             <Calendar size={13} />
-            {formatDate(teacher.createdAt, "dd.MM.yyyy")} dan buyon
+            {t("students.detail.memberSince", {
+              date: formatDate(teacher.createdAt, "dd.MM.yyyy"),
+            })}
           </span>
         </div>
       </div>
@@ -94,7 +100,7 @@ export const TeacherDetailHeader = ({
       <div className="flex flex-wrap items-center gap-2 shrink-0">
         <Button variant="outline" size="sm" className="gap-2" onClick={onChangePassword}>
           <KeyRound size={14} />
-          Parol
+          {t("teachers.header.password")}
         </Button>
         <Button
           size="sm"
@@ -102,7 +108,7 @@ export const TeacherDetailHeader = ({
           onClick={onEdit}
         >
           <Pencil size={14} />
-          Tahrirlash
+          {t("common.edit")}
         </Button>
         {teacher.isActive ? (
           <Button
@@ -112,7 +118,7 @@ export const TeacherDetailHeader = ({
             onClick={onArchive}
           >
             <Archive size={14} />
-            Arxivlash
+            {t("students.detail.archive")}
           </Button>
         ) : (
           <Button
@@ -122,7 +128,7 @@ export const TeacherDetailHeader = ({
             onClick={onRestore}
           >
             <ArchiveRestore size={14} />
-            Tiklash
+            {t("teachers.header.restore")}
           </Button>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { TabsContent } from "@/components/ui/tabs";
 import { EmptyState } from "../ui";
 import { Coins, Gift } from "lucide-react";
@@ -6,17 +7,31 @@ import { formatDate } from "@/ustils";
 import { Badge } from "@/components/ui/badge";
 
 export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
+  const { t } = useTranslation();
+
+  const statusLabels: Record<string, string> = {
+    approved: t("students.giftTab.status.approved"),
+    delivered: t("students.giftTab.status.delivered"),
+    rejected: t("students.giftTab.status.rejected"),
+    cancelled: t("students.giftTab.status.cancelled"),
+    pending: t("students.giftTab.status.pending"),
+  };
+
   return (
     <TabsContent value="gifts" className="mt-4">
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">
-          Sotib olingan sovg'alar ({student?.purchases?.length ?? 0})
+          {t("students.giftTab.title", {
+            count: student?.purchases?.length ?? 0,
+          })}
         </h3>
         {!student?.purchases?.length ? (
           <EmptyState
             icon={<Gift size={20} />}
-            title="Hali hech qanday sovg'a sotib olinmagan"
-            text={`${student?.fullName?.split(" ")[0]} coinlarini sovg'alar do'konidan biror narsaga almashtirmagan.`}
+            title={t("students.giftTab.emptyTitle")}
+            text={t("students.giftTab.emptyText", {
+              name: student?.fullName?.split(" ")[0],
+            })}
           />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -56,15 +71,7 @@ export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
                           : "bg-amber-100 text-amber-700"
                     }`}
                   >
-                    {purchase.status === "approved"
-                      ? "Tasdiqlangan"
-                      : purchase.status === "delivered"
-                        ? "Topshirilgan"
-                        : purchase.status === "rejected"
-                          ? "Rad etilgan"
-                          : purchase.status === "cancelled"
-                            ? "Bekor qilingan"
-                            : "Kutilmoqda"}
+                    {statusLabels[purchase.status] ?? purchase.status}
                   </Badge>
                 </div>
               </div>

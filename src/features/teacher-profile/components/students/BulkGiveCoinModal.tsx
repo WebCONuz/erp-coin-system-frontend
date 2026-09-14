@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Coins, Search, Users, CheckCircle2, XCircle } from "lucide-react";
 import {
   Dialog,
@@ -18,9 +19,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ControlledInput, ControlledSelect } from "@/components/controls";
-import { directionOptions } from "@/features/coin-rules/constants";
+import { getDirectionOptions } from "@/features/coin-rules/constants";
 import { useBulkGiveCoinForm } from "@/features/students/hooks";
-import { bulkCoinSourceTypeOptions } from "@/features/students/constants";
+import { getBulkCoinSourceTypeOptions } from "@/features/students/constants";
 
 export interface BulkCoinStudent {
   id: string;
@@ -43,10 +44,13 @@ export const BulkGiveCoinModal = ({
   onClose,
   students,
   groupId,
-  title = "Ommaviy tanga berish",
+  title,
   subtitle,
 }: Props) => {
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
+  const directionOptions = getDirectionOptions(t);
+  const bulkCoinSourceTypeOptions = getBulkCoinSourceTypeOptions(t);
 
   const {
     form,
@@ -88,9 +92,11 @@ export const BulkGiveCoinModal = ({
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
       <DialogContent className="sm:max-w-xl max-h-[85vh] flex flex-col overflow-hidden">
         <DialogHeader>
-          <DialogTitle className="font-display text-ink">{title}</DialogTitle>
+          <DialogTitle className="font-display text-ink">
+            {title ?? t("bulkCoin.defaultTitle")}
+          </DialogTitle>
           <DialogDescription className="text-ink-soft">
-            {subtitle ?? "Bir nechta o'quvchini tanlab, birdaniga tanga bering"}
+            {subtitle ?? t("bulkCoin.defaultSubtitle")}
           </DialogDescription>
         </DialogHeader>
 
@@ -112,7 +118,7 @@ export const BulkGiveCoinModal = ({
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Ism yoki telefon..."
+                placeholder={t("bulkCoin.searchPlaceholder")}
                 className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
               />
             </div>
@@ -130,10 +136,10 @@ export const BulkGiveCoinModal = ({
                   }
                   className="border-ink/20 data-[state=checked]:bg-forest data-[state=checked]:border-forest"
                 />
-                Hammasini belgilash
+                {t("bulkCoin.selectAll")}
               </label>
               <span className="text-xs font-medium text-forest bg-forest/10 rounded-full px-2.5 py-1">
-                {selectedIds.length} ta tanlandi
+                {t("bulkCoin.selectedCount", { count: selectedIds.length })}
               </span>
             </div>
 
@@ -143,7 +149,9 @@ export const BulkGiveCoinModal = ({
                 <div className="flex flex-col items-center justify-center py-8 text-center">
                   <Users size={20} className="text-ink-soft/40 mb-2" />
                   <p className="text-sm text-ink-soft">
-                    {search ? "Hech narsa topilmadi" : "O'quvchilar mavjud emas"}
+                    {search
+                      ? t("bulkCoin.emptyNoResults")
+                      : t("bulkCoin.emptyNoStudents")}
                   </p>
                 </div>
               ) : (
@@ -189,7 +197,7 @@ export const BulkGiveCoinModal = ({
                         : "border-ink/10 text-ink-soft"
                     }`}
                   >
-                    Tanga qoidasi
+                    {t("bulkCoin.tabs.rule")}
                   </button>
                   <button
                     type="button"
@@ -202,7 +210,7 @@ export const BulkGiveCoinModal = ({
                         : "border-ink/10 text-ink-soft"
                     }`}
                   >
-                    Maxsus sabab
+                    {t("bulkCoin.tabs.custom")}
                   </button>
                 </div>
 
@@ -212,10 +220,12 @@ export const BulkGiveCoinModal = ({
                       <ControlledSelect
                         control={form.control}
                         name="ruleId"
-                        label="Qoidani tanlang"
+                        label={t("bulkCoin.rule.label")}
                         isLoading={isRulesLoading}
                         placeholder={
-                          isRulesLoading ? "Yuklanmoqda..." : "Qoidani tanlang"
+                          isRulesLoading
+                            ? t("bulkCoin.rule.loading")
+                            : t("bulkCoin.rule.label")
                         }
                         options={activeRules.map((rule) => ({
                           value: rule.id,
@@ -224,12 +234,12 @@ export const BulkGiveCoinModal = ({
                       />
                       {selectedRule && (
                         <p className="text-xs text-ink-soft mt-1.5">
-                          Har bir tanlangan o'quvchiga{" "}
+                          {t("bulkCoin.rule.hintPrefix")}{" "}
                           <b className="text-ink">
                             {selectedRule.direction === "earn" ? "+" : "-"}
                             {selectedRule.coinAmount} coin
                           </b>{" "}
-                          beriladi.
+                          {t("bulkCoin.rule.hintSuffix")}
                         </p>
                       )}
                     </div>
@@ -241,12 +251,12 @@ export const BulkGiveCoinModal = ({
                           name="amount"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Miqdor</FormLabel>
+                              <FormLabel>{t("common.amount")}</FormLabel>
                               <FormControl>
                                 <Input
                                   type="number"
                                   min={1}
-                                  placeholder="Masalan: 5"
+                                  placeholder={t("bulkCoin.custom.amountPlaceholder")}
                                   {...field}
                                   value={field.value ?? ""}
                                   onChange={(e) =>
@@ -263,14 +273,14 @@ export const BulkGiveCoinModal = ({
                         <ControlledSelect
                           control={form.control}
                           name="direction"
-                          label="Yo'nalish"
+                          label={t("common.direction")}
                           options={directionOptions}
                         />
                       </div>
                       <ControlledSelect
                         control={form.control}
                         name="sourceType"
-                        label="Manba"
+                        label={t("bulkCoin.custom.sourceLabel")}
                         options={bulkCoinSourceTypeOptions}
                       />
                     </>
@@ -279,11 +289,11 @@ export const BulkGiveCoinModal = ({
                   <ControlledInput
                     control={form.control}
                     name="note"
-                    label="Sabab (ixtiyoriy)"
+                    label={t("bulkCoin.noteLabel")}
                     placeholder={
                       mode === "rule"
-                        ? "Berilmasa, qoida nomi asosida avtomatik yoziladi"
-                        : "Masalan: Darsda faol qatnashgani uchun"
+                        ? t("bulkCoin.notePlaceholderRule")
+                        : t("bulkCoin.notePlaceholderCustom")
                     }
                   />
                 </div>
@@ -294,8 +304,8 @@ export const BulkGiveCoinModal = ({
                   className="w-full shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
                 >
                   {isPending
-                    ? "Yuborilmoqda..."
-                    : `${selectedIds.length} ta o'quvchiga berish`}
+                    ? t("common.sending")
+                    : t("bulkCoin.submit", { count: selectedIds.length })}
                 </button>
               </form>
             </Form>
@@ -327,17 +337,19 @@ const ResultsView = ({
   onClose: () => void;
   onGiveMore: () => void;
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="flex flex-col gap-3 overflow-hidden flex-1 min-h-0">
       <div className="flex items-center gap-4 shrink-0">
         <div className="flex items-center gap-1.5 text-sm text-forest">
           <CheckCircle2 size={15} />
-          {result.successCount} muvaffaqiyatli
+          {t("bulkCoin.results.success", { count: result.successCount })}
         </div>
         {result.failedCount > 0 && (
           <div className="flex items-center gap-1.5 text-sm text-bloom">
             <XCircle size={15} />
-            {result.failedCount} xato
+            {t("bulkCoin.results.failed", { count: result.failedCount })}
           </div>
         )}
       </div>
@@ -369,7 +381,9 @@ const ResultsView = ({
                 {r.success ? (
                   typeof r.newBalance === "number" && (
                     <p className="text-xs text-ink-soft mt-0.5">
-                      Yangi balans: {r.newBalance} coin
+                      {t("bulkCoin.results.newBalance", {
+                        balance: r.newBalance,
+                      })}
                     </p>
                   )
                 ) : (
@@ -387,14 +401,14 @@ const ResultsView = ({
           onClick={onGiveMore}
           className="flex-1 rounded-xl border border-ink/10 text-ink-soft px-4 py-2.5 text-sm font-medium hover:bg-paper-soft transition-colors"
         >
-          Yana berish
+          {t("bulkCoin.giveMore")}
         </button>
         <button
           type="button"
           onClick={onClose}
           className="flex-1 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors"
         >
-          Yopish
+          {t("common.close")}
         </button>
       </div>
     </div>

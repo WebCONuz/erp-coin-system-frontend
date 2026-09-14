@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import { toast } from "sonner";
@@ -13,12 +14,14 @@ export const ContactRow = ({
   label: string;
   value: string;
 }) => {
+  const { t } = useTranslation();
+
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(value);
-      toast.success("Nusxalandi");
+      toast.success(t("students.contactRow.copied"));
     } catch {
-      toast.error("Nusxalab bo'lmadi");
+      toast.error(t("students.contactRow.copyFailed"));
     }
   };
 

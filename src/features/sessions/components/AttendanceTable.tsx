@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/loading";
@@ -16,6 +17,7 @@ interface Props {
 type LocalRecord = { isPresent: boolean; homeworkDone: boolean };
 
 export const AttendanceTable = ({ sessionId, groupId, isLocked }: Props) => {
+  const { t } = useTranslation();
   const { data: group, isLoading: isGroupLoading } = useGroup(groupId ?? "");
   const { data: attendance, isLoading: isAttendanceLoading } =
     useAttendance(sessionId);
@@ -56,7 +58,7 @@ export const AttendanceTable = ({ sessionId, groupId, isLocked }: Props) => {
       {
         onSuccess: (res) => toast.success(res.message),
         onError: (error: any) =>
-          toast.error(error?.data?.message || "Xatolik yuz berdi"),
+          toast.error(error?.data?.message || t("common.error")),
       },
     );
   };
@@ -64,7 +66,7 @@ export const AttendanceTable = ({ sessionId, groupId, isLocked }: Props) => {
   if (!groupId) {
     return (
       <p className="py-6 text-center text-sm text-muted-foreground">
-        Guruh aniqlanmadi
+        {t("sessions.attendance.groupNotSet")}
       </p>
     );
   }
@@ -74,7 +76,7 @@ export const AttendanceTable = ({ sessionId, groupId, isLocked }: Props) => {
   if (!group?.students.length) {
     return (
       <p className="py-6 text-center text-sm text-muted-foreground">
-        Guruhda o'quvchilar mavjud emas
+        {t("sessions.attendance.noStudents")}
       </p>
     );
   }
@@ -85,11 +87,17 @@ export const AttendanceTable = ({ sessionId, groupId, isLocked }: Props) => {
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
             <tr>
-              <th className="px-4 py-2.5 text-left font-medium">O'quvchi</th>
-              <th className="px-4 py-2.5 text-left font-medium">Telefon</th>
-              <th className="px-4 py-2.5 text-center font-medium">Keldi</th>
+              <th className="px-4 py-2.5 text-left font-medium">
+                {t("common.student")}
+              </th>
+              <th className="px-4 py-2.5 text-left font-medium">
+                {t("common.phone")}
+              </th>
               <th className="px-4 py-2.5 text-center font-medium">
-                Uy vazifasi
+                {t("sessions.attendance.present")}
+              </th>
+              <th className="px-4 py-2.5 text-center font-medium">
+                {t("sessions.attendance.homework")}
               </th>
             </tr>
           </thead>
@@ -135,7 +143,7 @@ export const AttendanceTable = ({ sessionId, groupId, isLocked }: Props) => {
       {!isLocked && (
         <div className="flex justify-end">
           <Button onClick={handleSave} disabled={saveAttendance.isPending}>
-            {saveAttendance.isPending ? "Saqlanmoqda..." : "Saqlash"}
+            {saveAttendance.isPending ? t("common.saving") : t("common.save")}
           </Button>
         </div>
       )}

@@ -1,28 +1,36 @@
 import { z } from "zod";
 
-export const sessionFormSchema = z.object({
-  sessionDate: z.string().min(1, "Sana kiritilishi shart"),
-  startTime: z.string().min(1, "Boshlanish vaqti kiritilishi shart"),
-  endTime: z.string().min(1, "Tugash vaqti kiritilishi shart"),
-  sessionType: z.enum(["lesson", "exam", "trial"], {
-    message: "Dars turini tanlang",
-  }),
-  groupId: z.string().min(1, "Guruhni tanlang"),
-  roomId: z.string().min(1, "Xonani tanlang"),
-  teacherId: z.string().min(1, "O'qituvchini tanlang"),
-  subjectId: z.string().optional(),
-  topic: z.string().optional(),
-});
+type TFn = (key: string) => string;
 
-export type SessionFormValues = z.infer<typeof sessionFormSchema>;
+export const createSessionFormSchema = (t: TFn) =>
+  z.object({
+    sessionDate: z.string().min(1, t("sessions.schema.date_required")),
+    startTime: z.string().min(1, t("sessions.schema.startTime_required")),
+    endTime: z.string().min(1, t("sessions.schema.endTime_required")),
+    sessionType: z.enum(["lesson", "exam", "trial"], {
+      message: t("sessions.schema.type_required"),
+    }),
+    groupId: z.string().min(1, t("sessions.schema.group_required")),
+    roomId: z.string().min(1, t("sessions.schema.room_required")),
+    teacherId: z.string().min(1, t("sessions.schema.teacher_required")),
+    subjectId: z.string().optional(),
+    topic: z.string().optional(),
+  });
 
-export const sessionInfoFormSchema = z.object({
-  topic: z.string().optional(),
-  startTime: z.string().min(1, "Boshlanish vaqti kiritilishi shart"),
-  endTime: z.string().min(1, "Tugash vaqti kiritilishi shart"),
-  roomId: z.string().min(1, "Xonani tanlang"),
-  teacherId: z.string().min(1, "O'qituvchini tanlang"),
-  subjectId: z.string().optional(),
-});
+export type SessionFormValues = z.infer<
+  ReturnType<typeof createSessionFormSchema>
+>;
 
-export type SessionInfoFormValues = z.infer<typeof sessionInfoFormSchema>;
+export const createSessionInfoFormSchema = (t: TFn) =>
+  z.object({
+    topic: z.string().optional(),
+    startTime: z.string().min(1, t("sessions.schema.startTime_required")),
+    endTime: z.string().min(1, t("sessions.schema.endTime_required")),
+    roomId: z.string().min(1, t("sessions.schema.room_required")),
+    teacherId: z.string().min(1, t("sessions.schema.teacher_required")),
+    subjectId: z.string().optional(),
+  });
+
+export type SessionInfoFormValues = z.infer<
+  ReturnType<typeof createSessionInfoFormSchema>
+>;

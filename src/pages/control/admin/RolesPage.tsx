@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { CustomTable, TablePagination } from "@/components/shared/table";
 import { DashboardTitle } from "@/components/shared/title";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import type { Role } from "@/features/roles/types";
 import { usePagination } from "@/hooks";
 
 const RolesPage = () => {
+  const { t } = useTranslation();
   const { data: roles, isLoading } = useRoles();
   const pagination = usePagination({ totalItems: roles?.meta?.total || 0 });
   const deleteRole = useDeleteRole();
@@ -33,12 +35,12 @@ const RolesPage = () => {
   };
 
   const handleDelete = (role: Role) => {
-    if (!window.confirm(`"${role.displayName}" rolini o'chirishni tasdiqlaysizmi?`))
+    if (!window.confirm(t("roles.deleteConfirm", { name: role.displayName })))
       return;
 
     deleteRole.mutate(role.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -47,13 +49,13 @@ const RolesPage = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <DashboardTitle title="Rollar" />
+        <DashboardTitle title={t("roles.title")} />
         <Button
           onClick={handleCreate}
           className="bg-linear-to-br from-purple-500 to-purple-700 text-white rounded-lg px-4 h-9 gap-2 shadow-sm"
         >
           <Plus size={18} />
-          Rol qo'shish
+          {t("roles.addRole")}
         </Button>
       </div>
 

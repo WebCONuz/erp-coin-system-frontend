@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   EmployeeDataFilter,
   EmployeeFormModal,
@@ -20,6 +21,7 @@ import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 
 const EmployeesPage = () => {
+  const { t } = useTranslation();
   const { data: employees, isLoading } = useEmployees();
   const pagination = usePagination({ totalItems: employees?.meta?.total || 0 });
 
@@ -49,20 +51,20 @@ const EmployeesPage = () => {
 
   const handleArchive = (employee: Employee) => {
     if (
-      !window.confirm(`"${employee.fullName}" ni arxivlashni tasdiqlaysizmi?`)
+      !window.confirm(t("employees.archiveConfirm", { name: employee.fullName }))
     )
       return;
 
     archiveEmployee.mutate(employee.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
   const handleRestore = (employee: Employee) => {
     restoreEmployee.mutate(employee.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -76,8 +78,8 @@ const EmployeesPage = () => {
         <>
           {employees.data.length === 0 ? (
             <NoDataBox
-              title="Hali xodimlar mavjud emas!"
-              btnText="Xodim qo'shish"
+              title={t("employees.noData")}
+              btnText={t("employees.addEmployee")}
               btnFn={handleCreate}
               hasAction={false}
             />
@@ -107,7 +109,7 @@ const EmployeesPage = () => {
           )}
         </>
       ) : (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       )}
 
       <EmployeeFormModal

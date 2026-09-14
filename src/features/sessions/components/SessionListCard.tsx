@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   CalendarDays,
   Clock,
@@ -15,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDate } from "@/ustils";
-import { sessionTypeLabels } from "../constants";
+import { getSessionTypeLabels } from "../constants";
 import type { SessionItem } from "../types";
 
 interface Props {
@@ -35,7 +36,9 @@ export const SessionListCard = ({
   onDelete,
   hasAction = true,
 }: Props) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const sessionTypeLabels = getSessionTypeLabels(t);
 
   return (
     <div
@@ -62,7 +65,7 @@ export const SessionListCard = ({
                 }}
               >
                 <Trash />
-                O'chirish
+                {t("common.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -80,7 +83,7 @@ export const SessionListCard = ({
         {data.isLocked && (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-4xl text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
             <Lock size={11} />
-            Qulflangan
+            {t("sessions.locked")}
           </span>
         )}
         {data.subject && (
@@ -106,13 +109,13 @@ export const SessionListCard = ({
         <div className="flex items-center gap-1.5">
           <DoorOpen size={14} />
           <span>
-            <b>Xona:</b> "{data.room.name}"
+            <b>{t("common.room")}:</b> "{data.room.name}"
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <UsersRound size={14} />
           <span>
-            <b>O'qituvchi: </b>
+            <b>{t("common.teacher")}: </b>
             {data.teacher.fullName}
           </span>
         </div>
@@ -120,7 +123,7 @@ export const SessionListCard = ({
 
       {data.topic && (
         <p className="text-sm mt-2 line-clamp-2 border-t pt-2">
-          Mavzu: {data.topic}
+          {t("sessions.topicLabel")}: {data.topic}
         </p>
       )}
     </div>

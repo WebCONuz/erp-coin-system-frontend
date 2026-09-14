@@ -1,4 +1,5 @@
 import { BookOpen, Gift, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { FeaturedCoinCard } from "./FeaturedCoinCard";
 import { StatCard } from "./StatCard";
 import type { StudentDetailFull } from "../../types";
@@ -8,6 +9,7 @@ interface Props {
   student?: StudentDetailFull;
 }
 export const StatisticSection = ({ student }: Props) => {
+  const { t } = useTranslation();
   const attendancePercent = student?.stats?.totalSessions
     ? Math.round(
         (student?.stats.presentCount / student?.stats.totalSessions) * 100,
@@ -28,19 +30,19 @@ export const StatisticSection = ({ student }: Props) => {
       />
       <StatCard
         icon={<Users size={20} className="text-blue-600" />}
-        label="Guruhlar soni"
+        label={t("students.detail.groupsCount")}
         value={student?.groupMemberships?.length ?? 0}
         iconBg="bg-blue-100 dark:bg-blue-900/40"
       />
       <StatCard
         icon={<Gift size={20} className="text-pink-600" />}
-        label="Sotib olingan"
+        label={t("students.detail.purchased")}
         value={student?.stats?.totalPurchases ?? 0}
         iconBg="bg-pink-100 dark:bg-pink-900/40"
       />
       <StatCard
         icon={<BookOpen size={20} className="text-green-600" />}
-        label="Davomat"
+        label={t("students.detail.attendance")}
         value={`${student?.stats?.presentCount ?? 0}/${student?.stats?.totalSessions ?? 0}`}
         iconBg="bg-green-100 dark:bg-green-900/40"
         ring={attendancePercent}

@@ -1,5 +1,6 @@
 import { Hand, Users, Zap } from "lucide-react";
-import { sourceTypeLabels } from "@/features/coin-rules/constants";
+import { useTranslation } from "react-i18next";
+import { getSourceTypeLabels } from "@/features/coin-rules/constants";
 import type { CoinRule } from "@/features/coin-rules/types";
 
 export const TeacherCoinRuleCard = ({
@@ -9,6 +10,8 @@ export const TeacherCoinRuleCard = ({
   data: CoinRule;
   groupName?: string;
 }) => {
+  const { t } = useTranslation();
+  const sourceTypeLabels = getSourceTypeLabels(t);
   const isPlus = data.direction === "earn";
 
   return (
@@ -21,7 +24,7 @@ export const TeacherCoinRuleCard = ({
         <h4 className="text-sm font-semibold text-ink pr-2">{data.name}</h4>
         {!data.isActive && (
           <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-paper-soft text-ink-soft">
-            Nofaol
+            {t("coinRules.card.inactive")}
           </span>
         )}
       </div>
@@ -48,7 +51,9 @@ export const TeacherCoinRuleCard = ({
           ) : (
             <Hand size={11} className="text-forest" />
           )}
-          {data.triggerType === "auto" ? "Avtomatik" : "Qo'lda"}
+          {data.triggerType === "auto"
+            ? t("coinRules.triggerType.auto")
+            : t("coinRules.triggerType.manual")}
         </span>
 
         {data.triggerType === "auto" && data.sourceType && (

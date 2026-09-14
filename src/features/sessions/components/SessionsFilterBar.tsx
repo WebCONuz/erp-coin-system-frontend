@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { DashboardTitle } from "@/components/shared/title";
@@ -12,7 +13,7 @@ import {
   useSessionGroupOptions,
   useSessionTeacherOptions,
 } from "../hooks";
-import { ALL_VALUE, sessionTypeOptions } from "../constants";
+import { ALL_VALUE, getSessionTypeOptions } from "../constants";
 
 interface Props {
   onAdd?: () => void;
@@ -25,23 +26,27 @@ export const SessionsFilterBar = ({
   hasAction = true,
   pageName = "session",
 }: Props) => {
+  const { t } = useTranslation();
   const { form } = useFilter();
   const { data: groups } = useSessionGroupOptions();
   const { data: teachers } = useSessionTeacherOptions();
 
   const groupOptions: IOption[] = [
-    { value: ALL_VALUE, label: "Barcha guruhlar" },
+    { value: ALL_VALUE, label: t("sessions.filter.allGroups") },
     ...(groups?.data ?? []).map((g) => ({ value: g.id, label: g.name })),
   ];
 
   const teacherOptions: IOption[] = [
-    { value: ALL_VALUE, label: "Barcha o'qituvchilar" },
-    ...(teachers?.data ?? []).map((t) => ({ value: t.id, label: t.fullName })),
+    { value: ALL_VALUE, label: t("sessions.filter.allTeachers") },
+    ...(teachers?.data ?? []).map((tch) => ({
+      value: tch.id,
+      label: tch.fullName,
+    })),
   ];
 
   const typeOptions: IOption[] = [
-    { value: ALL_VALUE, label: "Barcha turlar" },
-    ...sessionTypeOptions,
+    { value: ALL_VALUE, label: t("sessions.filter.allTypes") },
+    ...getSessionTypeOptions(t),
   ];
 
   return (
@@ -49,13 +54,15 @@ export const SessionsFilterBar = ({
       <div className={`${hasAction && "w-full"} space-y-3`}>
         {hasAction && (
           <div className="flex items-center justify-between">
-            <DashboardTitle title="Sessiyalar" />
+            <DashboardTitle title={t("admin.header.sessions")} />
             <Button
               onClick={onAdd}
               className="bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg px-4 h-9 gap-2 shadow-sm duration-200"
             >
               <Plus size={18} />
-              <span className="hidden sm:inline">Sessiya qo'shish</span>
+              <span className="hidden sm:inline">
+                {t("sessions.filter.addSession")}
+              </span>
             </Button>
           </div>
         )}
@@ -67,7 +74,7 @@ export const SessionsFilterBar = ({
                 control={form.control}
                 name="groupId"
                 options={groupOptions}
-                placeholder="Guruh"
+                placeholder={t("common.group")}
               />
             </div>
           )}
@@ -77,7 +84,7 @@ export const SessionsFilterBar = ({
                 control={form.control}
                 name="teacherId"
                 options={teacherOptions}
-                placeholder="O'qituvchi"
+                placeholder={t("common.teacher")}
               />
             </div>
           )}
@@ -86,13 +93,13 @@ export const SessionsFilterBar = ({
               control={form.control}
               name="sessionType"
               options={typeOptions}
-              placeholder="Turi"
+              placeholder={t("sessions.typeLabel")}
             />
           </div>
           <ControlledDatePicker
             control={form.control}
             name="date"
-            placeholder="Sana"
+            placeholder={t("common.date")}
             className="min-w-42"
             buttonClassName="h-8"
           />

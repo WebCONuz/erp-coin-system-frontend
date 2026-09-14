@@ -6,18 +6,20 @@ export const sessionKeys = {
   attendanceBySessionId: (id: string) => ["session-attendance", id],
 } as const;
 
-export const sessionTypeOptions: IOption[] = [
-  { value: "lesson", label: "Dars" },
-  { value: "exam", label: "Imtihon" },
-  { value: "competition", label: "Musobaqa" },
-  { value: "extra", label: "Qo'shimcha" },
+export const getSessionTypeOptions = (t: (key: string) => string): IOption[] => [
+  { value: "lesson", label: t("sessions.type.lesson") },
+  { value: "exam", label: t("sessions.type.exam") },
+  { value: "competition", label: t("sessions.type.competition") },
+  { value: "extra", label: t("sessions.type.extra") },
 ];
 
-export const sessionTypeLabels: Record<string, string> = {
-  lesson: "Dars",
-  exam: "Imtihon",
-  competition: "Musobaqa",
-  extra: "Qo'shimcha",
-};
+export const getSessionTypeLabels = (
+  t: (key: string) => string,
+): Record<string, string> => ({
+  lesson: t("sessions.type.lesson"),
+  exam: t("sessions.type.exam"),
+  competition: t("sessions.type.competition"),
+  extra: t("sessions.type.extra"),
+});
 
 export const ALL_VALUE = "all";

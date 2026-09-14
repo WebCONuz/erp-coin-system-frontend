@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -14,7 +15,7 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { ControlledInput } from "@/components/controls";
 import {
-  changeTeacherPasswordSchema,
+  createChangeTeacherPasswordSchema,
   type ChangeTeacherPasswordFormValues,
 } from "../../schema";
 import { useChangeTeacherPassword } from "../../hooks";
@@ -26,7 +27,13 @@ interface Props {
 }
 
 export const ChangePasswordModal = ({ open, onClose, teacherId }: Props) => {
+  const { t } = useTranslation();
   const changePassword = useChangeTeacherPassword(teacherId);
+
+  const changeTeacherPasswordSchema = useMemo(
+    () => createChangeTeacherPasswordSchema(t),
+    [t],
+  );
 
   const form = useForm<ChangeTeacherPasswordFormValues>({
     resolver: zodResolver(changeTeacherPasswordSchema),
@@ -47,11 +54,11 @@ export const ChangePasswordModal = ({ open, onClose, teacherId }: Props) => {
       },
       {
         onSuccess: () => {
-          toast.success("Parol muvaffaqiyatli o'zgartirildi");
+          toast.success(t("teachers.passwordChanged"));
           onClose();
         },
         onError: (error: any) =>
-          toast.error(error?.data?.message || "Xatolik yuz berdi"),
+          toast.error(error?.data?.message || t("common.error")),
       },
     );
   };
@@ -60,7 +67,7 @@ export const ChangePasswordModal = ({ open, onClose, teacherId }: Props) => {
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
-          <DialogTitle>Parolni o'zgartirish</DialogTitle>
+          <DialogTitle>{t("teachers.securityTab.changePasswordTitle")}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -68,15 +75,15 @@ export const ChangePasswordModal = ({ open, onClose, teacherId }: Props) => {
             <ControlledInput
               control={form.control}
               name="oldPassword"
-              label="Joriy parol (ixtiyoriy)"
-              placeholder="Agar o'zingizniki bo'lsa kiriting"
+              label={t("teachers.currentPasswordLabel")}
+              placeholder={t("teachers.currentPasswordPlaceholder")}
               type="password"
             />
             <ControlledInput
               control={form.control}
               name="newPassword"
-              label="Yangi parol"
-              placeholder="Yangi parol kiriting"
+              label={t("students.securityTab.newPasswordLabel")}
+              placeholder={t("students.securityTab.newPasswordPlaceholder")}
               type="password"
             />
 
@@ -87,10 +94,12 @@ export const ChangePasswordModal = ({ open, onClose, teacherId }: Props) => {
                 onClick={onClose}
                 disabled={changePassword.isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={changePassword.isPending}>
-                {changePassword.isPending ? "Saqlanmoqda..." : "Saqlash"}
+                {changePassword.isPending
+                  ? t("common.saving")
+                  : t("common.save")}
               </Button>
             </DialogFooter>
           </form>

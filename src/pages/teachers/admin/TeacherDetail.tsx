@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { BackListButton } from "@/components/shared/back";
@@ -20,6 +21,7 @@ import {
 } from "@/features/teachers/hooks";
 
 const TeacherDetail = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { data: teacher, isLoading } = useTeacherById(id ?? "");
 
@@ -30,11 +32,15 @@ const TeacherDetail = () => {
   const [isPasswordOpen, setIsPasswordOpen] = useState(false);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const handleArchive = () => {
     if (!id || !teacher) return;
-    if (!window.confirm(`"${teacher.fullName}" ni arxivlashni tasdiqlaysizmi?`))
+    if (
+      !window.confirm(
+        t("teachers.archiveConfirm", { name: teacher.fullName }),
+      )
+    )
       return;
     archiveTeacher.mutate(id, { onError });
   };
@@ -45,11 +51,11 @@ const TeacherDetail = () => {
   };
 
   if (isLoading) return <PageLoading />;
-  if (!teacher) return <NoData text="O'qituvchi topilmadi!" />;
+  if (!teacher) return <NoData text={t("teachers.notFound")} />;
 
   return (
     <div className="space-y-6">
-      <BackListButton title="O'qituvchilar" />
+      <BackListButton title={t("admin.header.teachers")} />
 
       <TeacherDetailHeader
         teacher={teacher}

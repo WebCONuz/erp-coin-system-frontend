@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { TabsContent } from "@/components/ui/tabs";
 import { EmptyState } from "../ui";
 import { Coins, Minus, Plus } from "lucide-react";
@@ -22,6 +23,7 @@ export const CoinTab = ({
   student?: StudentDetailFull;
   isDeleted: boolean;
 }) => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const manualCoin = useManualCoinTransaction(id ?? "");
   const [coinForms, setCoinForms] = useState<
@@ -57,7 +59,7 @@ export const CoinTab = ({
         </div>
         <div>
           <p className="text-xs text-amber-600 dark:text-amber-400 font-medium uppercase tracking-wide">
-            Joriy balans
+            {t("students.coinTab.currentBalance")}
           </p>
           <p className="text-3xl font-bold text-amber-700 dark:text-amber-300">
             {student?.wallet?.balance ?? 0}{" "}
@@ -73,7 +75,9 @@ export const CoinTab = ({
             return (
               <div key={dir} className="space-y-2">
                 <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
-                  {isEarn ? "Coin qo'shish" : "Coindan ayirish"}
+                  {isEarn
+                    ? t("students.coinTab.addCoin")
+                    : t("students.coinTab.deductCoin")}
                 </p>
                 <div
                   className={`flex items-center gap-3 p-4 rounded-xl border ${isEarn ? "border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/30" : "border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30"}`}
@@ -93,7 +97,7 @@ export const CoinTab = ({
                         [dir]: { ...p[dir], amount: e.target.value },
                       }))
                     }
-                    placeholder="Miqdor..."
+                    placeholder={`${t("common.amount")}...`}
                     className="flex-1 bg-transparent border-0 outline-none text-sm text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400 w-0"
                   />
                   <input
@@ -105,7 +109,7 @@ export const CoinTab = ({
                         [dir]: { ...p[dir], note: e.target.value },
                       }))
                     }
-                    placeholder="Sabab"
+                    placeholder={t("students.coinTab.reason")}
                     className="flex-1 bg-transparent border-0 outline-none text-sm text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400 border-l border-zinc-200 dark:border-zinc-700 pl-3 w-0"
                   />
                   <Button
@@ -118,7 +122,7 @@ export const CoinTab = ({
                     }
                     onClick={() => handleCoinAction(dir)}
                   >
-                    {isEarn ? "Qo'shish" : "Ayirish"}
+                    {isEarn ? t("common.add") : t("students.coinTab.deduct")}
                   </Button>
                 </div>
               </div>
@@ -129,15 +133,17 @@ export const CoinTab = ({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-            Tranzaksiya tarixi
+            {t("students.coinTab.historyTitle")}
           </p>
-          <span className="text-xs text-zinc-400">So'nggi 20 ta</span>
+          <span className="text-xs text-zinc-400">
+            {t("students.coinTab.last20")}
+          </span>
         </div>
         {!student?.coinTransactionsReceived?.length ? (
           <EmptyState
             icon={<Coins size={20} />}
-            title="Tranzaksiyalar mavjud emas"
-            text="Coin qo'shilgach yoki ayirilgach, tarix shu yerda ko'rinadi."
+            title={t("students.coinTab.noTransactions")}
+            text={t("students.coinTab.noTransactionsText")}
           />
         ) : (
           <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
@@ -160,12 +166,12 @@ export const CoinTab = ({
                     <p className="text-sm text-zinc-700 dark:text-zinc-300">
                       <b>
                         {tx?.sourceType === "homework"
-                          ? "Uyga vazifa"
+                          ? t("students.coinTab.sourceLabels.homework")
                           : tx?.sourceType === "attendance"
-                            ? "Tadbirlar"
+                            ? t("students.coinTab.sourceLabels.attendance")
                             : tx?.sourceType === "bonus"
-                              ? "Tartib-intizom"
-                              : "Qo'shimcha"}
+                              ? t("students.coinTab.sourceLabels.bonus")
+                              : t("students.coinTab.sourceLabels.other")}
                       </b>
                       {": "}
                       {tx?.note ?? "-"}

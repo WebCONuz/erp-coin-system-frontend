@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { useRoles } from "@/features/roles/hooks";
 import { ROLES } from "@/assets/constants";
 import {
-  createTeacherSchema,
-  editTeacherSchema,
+  createCreateTeacherSchema,
+  createEditTeacherSchema,
   type CreateTeacherFormValues,
   type EditTeacherFormValues,
 } from "../schema";
@@ -34,12 +35,19 @@ export const useCreateEditTeacher = ({
   onClose,
   teacher,
 }: Props) => {
+  const { t } = useTranslation();
   const { data: roles } = useRoles();
   const teacherRoleId = roles?.data.find((r) => r.name === ROLES.TEACHER)?.id;
 
   const createTeacher = useCreateTeacher();
   const updateTeacher = useUpdateTeacher(teacher?.id ?? "");
   const isPending = createTeacher.isPending || updateTeacher.isPending;
+
+  const createTeacherSchema = useMemo(
+    () => createCreateTeacherSchema(t),
+    [t],
+  );
+  const editTeacherSchema = useMemo(() => createEditTeacherSchema(t), [t]);
 
   const createForm = useForm<CreateTeacherFormValues>({
     resolver: zodResolver(createTeacherSchema),
@@ -70,11 +78,11 @@ export const useCreateEditTeacher = ({
   }, [open, isEdit, teacher, createForm, editForm]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmitCreate = (values: CreateTeacherFormValues) => {
     if (!teacherRoleId) {
-      toast.error("O'qituvchi roli topilmadi");
+      toast.error(t("teachers.roleNotFound"));
       return;
     }
 

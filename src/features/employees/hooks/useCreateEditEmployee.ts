@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
-  createEmployeeSchema,
-  editEmployeeSchema,
+  createCreateEmployeeSchema,
+  createEditEmployeeSchema,
   type CreateEmployeeFormValues,
   type EditEmployeeFormValues,
 } from "../schema";
@@ -24,9 +25,16 @@ export const useCreateEditEmployee = ({
   onClose,
   employee,
 }: Props) => {
+  const { t } = useTranslation();
   const createEmployee = useCreateEmployee();
   const updateEmployee = useUpdateEmployee(employee?.id ?? "");
   const isPending = createEmployee.isPending || updateEmployee.isPending;
+
+  const createEmployeeSchema = useMemo(
+    () => createCreateEmployeeSchema(t),
+    [t],
+  );
+  const editEmployeeSchema = useMemo(() => createEditEmployeeSchema(t), [t]);
 
   const createForm = useForm<CreateEmployeeFormValues>({
     resolver: zodResolver(createEmployeeSchema),
@@ -80,7 +88,7 @@ export const useCreateEditEmployee = ({
   }, [open, isEdit, employee, createForm, editForm]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmitCreate = (values: CreateEmployeeFormValues) => {
     const payload: CreateEmployeeFormValues = {

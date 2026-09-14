@@ -1,1 +1,919 @@
-{}
+{
+  "welcome_back": "Хуш келибсиз!",
+  "invalid_credentials": "Киритилган маълумотлар нотўғри",
+  "logout": "Тизимдан муваффақиятли чиқилди!",
+  "no_loading": "Маълумотлар юкланмади!",
+  "re_try": "Қайта уриниш",
+  "common": {
+    "cancel": "Бекор қилиш",
+    "save": "Сақлаш",
+    "saving": "Сақланмоқда...",
+    "create": "Яратиш",
+    "creating": "Яратилмоқда...",
+    "add": "Қўшиш",
+    "adding": "Қўшилмоқда...",
+    "edit": "Таҳрирлаш",
+    "delete": "Ўчириш",
+    "deleting": "Ўчирилмоқда...",
+    "search": "Қидириш...",
+    "yes": "Ҳа",
+    "no": "Йўқ",
+    "confirm": "Тасдиқлаш",
+    "close": "Ёпиш",
+    "back": "Орқага",
+    "loading": "Юкланмоқда...",
+    "sending": "Юборилмоқда...",
+    "error": "Хатолик юз берди",
+    "success": "Муваффақиятли бажарилди",
+    "noData": "Маълумотлар юкланмади!",
+    "optional": "(ихтиёрий)",
+    "actions": "Амаллар",
+    "status": "Ҳолат",
+    "all": "Барчаси",
+    "select": "Танланг",
+    "clear": "Тозалаш",
+    "name": "Номи",
+    "description": "Изоҳ",
+    "phone": "Телефон",
+    "email": "Email",
+    "date": "Сана",
+    "group": "Гуруҳ",
+    "teacher": "Ўқитувчи",
+    "student": "Ўқувчи",
+    "subject": "Фан",
+    "room": "Хона",
+    "amount": "Миқдор",
+    "note": "Изоҳ",
+    "active": "Фаол",
+    "inactive": "Нофаол",
+    "direction": "Йўналиш",
+    "profile": "Профил",
+    "logoutAction": "Чиқиш",
+    "coinLabel": "coin"
+  },
+  "sourceTypes": {
+    "bonus": "Бонус",
+    "attendance": "Давомат",
+    "homework": "Уй вазифаси",
+    "competition": "Мусобақа",
+    "purchase": "Харид",
+    "manual": "Қўлда"
+  },
+  "coinRules": {
+    "direction": {
+      "earn": "Мукофот (+)",
+      "deduct": "Жарима (-)"
+    },
+    "triggerType": {
+      "auto": "Автоматик",
+      "manual": "Қўлда"
+    },
+    "sourceType": {
+      "attendance": "Давомат",
+      "homework": "Уй вазифаси",
+      "competition": "Мусобақа",
+      "bonus": "Бонус",
+      "penalty": "Жарима"
+    },
+    "namePlaceholderAdmin": "Масалан: Дарсга келгани учун",
+    "namePlaceholderTeacher": "Масалан: Дарсга фаол қатнашгани учун",
+    "amountLabel": "Танга миқдори",
+    "directionPlaceholder": "Йўналишни танланг",
+    "triggerTypeLabel": "Ишга тушириш тури",
+    "triggerTypePlaceholder": "Турини танланг",
+    "sourceTypeLabel": "Манба тури",
+    "sourceTypePlaceholder": "Манба турини танланг",
+    "groupLabelOptional": "Гуруҳ (Ихтиёрий)",
+    "groupPlaceholder": "Гуруҳни танланг",
+    "allGroups": "Барча гуруҳлар",
+    "descriptionLabel": "Изоҳ (Ихтиёрий)",
+    "descriptionPlaceholder": "Қоида ҳақида қисқача изоҳ...",
+    "adminForm": {
+      "createTitle": "Янги сабаб қўшиш",
+      "editTitle": "Сабабни таҳрирлаш"
+    },
+    "teacherForm": {
+      "title": "Янги танга қоидаси",
+      "groupRequiredError": "Гуруҳни танланг",
+      "sourceTypeRequiredError": "Манба турини танланг",
+      "createdToast": "Қоида яратилди"
+    },
+    "card": {
+      "inactive": "Нофаол"
+    },
+    "schema": {
+      "name_required": "Номи киритилиши шарт",
+      "amount_min": "Танга миқдори камида 1 бўлиши керак",
+      "direction_required": "Йўналишни танланг",
+      "triggerType_required": "Ишга тушириш турини танланг",
+      "sourceType_required": "Автоматик қоида учун манба тури танланиши шарт"
+    }
+  },
+  "bulkCoin": {
+    "defaultTitle": "Оммавий танга бериш",
+    "defaultSubtitle": "Бир нечта ўқувчини танлаб, бирданига танга беринг",
+    "searchPlaceholder": "Исм ёки телефон...",
+    "selectAll": "Ҳаммасини белгилаш",
+    "selectedCount": "{{count}} та танланди",
+    "tabs": {
+      "rule": "Танга қоидаси",
+      "custom": "Махсус сабаб"
+    },
+    "rule": {
+      "label": "Қоидани танланг",
+      "loading": "Юкланмоқда...",
+      "hintPrefix": "Ҳар бир танланган ўқувчига",
+      "hintSuffix": "берилади."
+    },
+    "custom": {
+      "amountPlaceholder": "Масалан: 5",
+      "sourceLabel": "Манба"
+    },
+    "noteLabel": "Сабаб (ихтиёрий)",
+    "notePlaceholderRule": "Берилмаса, қоида номи асосида автоматик ёзилади",
+    "notePlaceholderCustom": "Масалан: Дарсда фаол қатнашгани учун",
+    "submit": "{{count}} та ўқувчига бериш",
+    "results": {
+      "success": "{{count}} та ўқувчи мукофотланди",
+      "failed": "{{count}} хато",
+      "newBalance": "Янги баланс: {{balance}} coin"
+    },
+    "giveMore": "Яна бериш",
+    "emptyNoResults": "Ҳеч нарса топилмади",
+    "emptyNoStudents": "Ўқувчилар мавжуд эмас",
+    "minOneStudent": "Камида 1 та ўқувчи танланг",
+    "schema": {
+      "amount_int": "Бутун сон киритинг",
+      "rule_required": "Танга қоидасини танланг",
+      "amount_invalid": "Миқдорни тўғри киритинг"
+    }
+  },
+  "admin": {
+    "header": {
+      "main": "Асосий",
+      "teachers": "Ўқитувчилар",
+      "groups": "Гуруҳлар",
+      "students": "Талабалар",
+      "market": "Совғалар",
+      "sessions": "Сессиялар",
+      "employees": "Ходимлар",
+      "plans": "Дарс жадвали",
+      "subjects": "Фанлар",
+      "control": "Бошқариш",
+      "tenants": "Ўқув марказлар"
+    },
+    "navbar": {
+      "quickAdd": "Тезкор қўшиш",
+      "newStudent": "Янги талаба",
+      "newGroup": "Янги гуруҳ",
+      "newSession": "Янги сессия",
+      "selectCenter": "Марказни танланг",
+      "profile": "Профил",
+      "settings": "Созламалар",
+      "paymentPlan": "Тўлов режаси",
+      "logout": "Чиқиш",
+      "noName": "- -"
+    },
+    "dashboard": {
+      "title": "Салом, {{name}}",
+      "description": "EduCoin платформасига хуш келибсиз!",
+      "defaultUser": "Ҳурматли фойдаланувчи",
+      "todaySessions": "Бугун {{count}} та дарс",
+      "needsAttention": "Эътибор талаб қилади",
+      "pendingPurchases": "{{count}} та харид тасдиқлашни кутмоқда",
+      "pendingAttendance": "{{count}} та дарсда йўқлама киритилмаган",
+      "stats": {
+        "groups": "Гуруҳлар",
+        "students": "Талабалар",
+        "teachers": "Ўқитувчилар",
+        "subjects": "Фанлар",
+        "rewards": "Совғалар"
+      },
+      "coinEconomy": {
+        "title": "Танга иқтисодиёти",
+        "inCirculation": "Айланмада",
+        "earnedThisMonth": "Бу ой берилди",
+        "deductedThisMonth": "Бу ой айирилди",
+        "earned": "Ишлаб топилди",
+        "deducted": "Айирилди",
+        "noTrendData": "Ҳали маълумот йўқ"
+      },
+      "activity": {
+        "title": "Сўнгги фаолият",
+        "empty": "Ҳали фаолият мавжуд эмас",
+        "newBalance": "Янги баланс: {{balance}} coin",
+        "sourceTypes": {
+          "attendance": "Давомат",
+          "homework": "Уй вазифаси",
+          "competition": "Мусобақа",
+          "manual": "Қўлда",
+          "bonus": "Бонус",
+          "purchase": "Харид"
+        }
+      },
+      "leaderboard": {
+        "title": "Рейтинг",
+        "empty": "Ҳали рейтинг мавжуд эмас"
+      }
+    },
+    "tenants": {
+      "no_data": "Тизимда ҳали ижарачилар мавжуд эмас!",
+      "create": "Ижарачи яратиш"
+    }
+  },
+  "tenants": {
+    "type": {
+      "learning_center": "Ўқув марказ",
+      "school": "Мактаб",
+      "academic_lyceum": "Академик лицей",
+      "college": "Коллеж",
+      "university": "Университет"
+    },
+    "schema": {
+      "name_required": "Марказ номи киритилиши шарт",
+      "slug_required": "Slug киритилиши шарт",
+      "slug_invalid": "Slug фақат кичик лотин ҳарфлари, рақамлар ва - белгисидан иборат бўлиши мумкин"
+    },
+    "form": {
+      "editTitle": "Марказни таҳрирлаш",
+      "createTitle": "Янги марказ қўшиш",
+      "nameLabel": "Марказ номи",
+      "namePlaceholder": "Масалан: Gullola EDU",
+      "slugLabel": "Slug",
+      "slugPlaceholder": "Масалан: gullola-edu",
+      "typeLabel": "Ташкилот тури (Ихтиёрий)",
+      "typePlaceholder": "Турини танланг",
+      "planLabel": "Тариф (Ихтиёрий)",
+      "planPlaceholder": "Масалан: pro"
+    },
+    "deactivateConfirm": "\"{{name}}\" марказини нофаоллаштиришни тасдиқлайсизми?",
+    "activateConfirm": "\"{{name}}\" марказини фаоллаштиришни тасдиқлайсизми?",
+    "inactive": "Нофаол",
+    "typeNotSet": "Тур танланмаган",
+    "countUnit": "{{count}} та",
+    "deactivate": "Нофаоллаштириш",
+    "activate": "Фаоллаштириш",
+    "filter": {
+      "add": "Марказ қўшиш",
+      "active": "Фаол Марказлар"
+    }
+  },
+  "subjects": {
+    "title": "Фанлар",
+    "addSubject": "Фан қўшиш",
+    "activeTab": "Фаол фанлар",
+    "inactiveTab": "Нофаол фанлар",
+    "searchPlaceholder": "Фан номи бўйича қидириш",
+    "schema": {
+      "name_required": "Фан номи киритилиши шарт"
+    },
+    "form": {
+      "editTitle": "Фанни таҳрирлаш",
+      "createTitle": "Янги фан қўшиш",
+      "nameLabel": "Фан номи",
+      "namePlaceholder": "Масалан: Математика",
+      "descriptionPlaceholder": "Масалан: Алгебра ва геометрия асослари"
+    },
+    "inactive": "Нофаол",
+    "noData": "Ҳали фанлар мавжуд эмас!",
+    "deleteConfirm": "\"{{name}}\" фанини ўчиришни тасдиқлайсизми?"
+  },
+  "rooms": {
+    "title": "Хоналар",
+    "addRoom": "Хона қўшиш",
+    "activeTab": "Фаол хоналар",
+    "inactiveTab": "Нофаол хоналар",
+    "searchPlaceholder": "Хона номи бўйича қидириш",
+    "schema": {
+      "name_required": "Хона номи киритилиши шарт",
+      "capacity_min": "Сиғим камида 1 бўлиши керак",
+      "capacity_max": "Сиғим 300 дан ошмаслиги керак"
+    },
+    "form": {
+      "editTitle": "Хонани таҳрирлаш",
+      "createTitle": "Янги хона қўшиш",
+      "nameLabel": "Хона номи",
+      "namePlaceholder": "Масалан: Room 101",
+      "capacityLabel": "Сиғими (ўриндиқлар сони)",
+      "descriptionPlaceholder": "Масалан: 3-қават, кондиционер мавжуд"
+    },
+    "capacityUnit": "{{count}} кишилик",
+    "inactive": "Нофаол",
+    "noData": "Ҳали хоналар мавжуд эмас!",
+    "deleteConfirm": "\"{{name}}\" хонасини ўчиришни тасдиқлайсизми?"
+  },
+  "roles": {
+    "title": "Роллар",
+    "addRole": "Рол қўшиш",
+    "deleteConfirm": "\"{{name}}\" ролини ўчиришни тасдиқлайсизми?",
+    "schema": {
+      "name_min": "Рол номи камида 2 та белгидан иборат бўлиши керак",
+      "displayName_min": "Кўрсатиладиган ном камида 2 та белгидан иборат бўлиши керак",
+      "level_min": "Даража манфий бўлиши мумкин эмас",
+      "scope_required": "Scope киритилиши шарт"
+    },
+    "form": {
+      "editTitle": "Ролни таҳрирлаш",
+      "createTitle": "Янги рол яратиш",
+      "nameLabel": "Рол номи (код)",
+      "namePlaceholder": "Масалан: teacher",
+      "displayNameLabel": "Кўрсатиладиган ном",
+      "displayNamePlaceholder": "Масалан: Ўқитувчи",
+      "levelLabel": "Даража",
+      "scopeLabel": "Scope",
+      "canDeleteLabel": "Бу ролни кейинчалик ўчириш мумкин бўлсин"
+    },
+    "table": {
+      "displayName": "Рол номи",
+      "code": "Код",
+      "level": "Даража",
+      "scope": "Scope",
+      "active": "Фаол",
+      "inactive": "Фаол эмас",
+      "createdAt": "Яратилган вақти"
+    }
+  },
+  "employees": {
+    "title": "Ходимлар",
+    "addEmployee": "Ходим қўшиш",
+    "noData": "Ҳали ходимлар мавжуд эмас!",
+    "archiveConfirm": "\"{{name}}\" ни архивлашни тасдиқлайсизми?",
+    "passwordChanged": "Парол муваффақиятли ўзгартирилди",
+    "changePasswordTitle": "Паролни ўзгартириш",
+    "archive": "Архивлаш",
+    "restore": "Архивдан тиклаш",
+    "archived": "Архивланган",
+    "schema": {
+      "fullName_min": "Ф.И.Ш камида 2 та белги бўлиши керак",
+      "fullName_max": "Ф.И.Ш 100 та белгидан ошмаслиги керак",
+      "phone_min": "Телефон рақам камида 9 та рақам бўлиши керак",
+      "phone_max": "Телефон рақам жуда узун",
+      "password_min": "Парол камида 6 та белги бўлиши керак",
+      "role_required": "Рол танланиши шарт",
+      "email_invalid": "Email нотўғри форматда",
+      "parentPhone_min": "Телефон рақам камида 9 та рақам",
+      "url_invalid": "URL нотўғри форматда",
+      "newPassword_same": "Янги парол эскисидан фарқ қилиши керак"
+    },
+    "form": {
+      "editTitle": "Ходимни таҳрирлаш",
+      "createTitle": "Янги ходим қўшиш",
+      "fullNameLabel": "Ф.И.Ш",
+      "fullNamePlaceholder": "Сардор Раҳимов",
+      "roleLabel": "Рол",
+      "rolePlaceholder": "Ролни танланг",
+      "avatarUrlLabel": "Avatar URL",
+      "passwordLabel": "Парол",
+      "passwordPlaceholder": "Парол киритинг",
+      "parentPhoneLabel": "Яқин киши телефони",
+      "oldPasswordLabel": "Жорий парол",
+      "oldPasswordPlaceholder": "Агар ўзингизники бўлса киритинг",
+      "newPasswordLabel": "Янги парол",
+      "newPasswordPlaceholder": "Янги парол киритинг"
+    },
+    "filter": {
+      "allRoles": "Барча роллар",
+      "active": "Фаол ходимлар",
+      "archive": "Архив",
+      "rolePlaceholder": "Рол танланг",
+      "searchPlaceholder": "Исм ёки телефон бўйича қидириш"
+    }
+  },
+  "reasons": {
+    "title": "Мукофот ва Жарималар",
+    "addReason": "Сабаб қўшиш",
+    "rewardsTab": "Мукофотлар",
+    "penaltiesTab": "Жарималар",
+    "searchPlaceholder": "Сабаб номи бўйича қидириш",
+    "noData": "Ҳали сабаблар мавжуд эмас!",
+    "deleteConfirm": "\"{{name}}\" сабабини ўчиришни тасдиқлайсизми?"
+  },
+  "controls": {
+    "title": "Бошқарув",
+    "sendMessage": "Хабар юбориш",
+    "messageTextLabel": "Хабар матни:",
+    "send": "Юбориш"
+  },
+  "teachers": {
+    "table": {
+      "full_name": "Исм-фамилия",
+      "phone": "Телефон",
+      "email": "Электрон почта",
+      "created_at": "Яратилган вақти",
+      "updated_at": "Сўнги янгиланиш",
+      "taught_groups": "Гуруҳлари",
+      "actions": "Ҳаракатлар"
+    },
+    "schema": {
+      "fullName_min": "Ф.И.Ш камида 2 та белги бўлиши керак",
+      "fullName_max": "Ф.И.Ш 100 та белгидан ошмаслиги керак",
+      "phone_min": "Телефон рақам камида 9 та рақам бўлиши керак",
+      "phone_max": "Телефон рақам жуда узун",
+      "password_min": "Парол камида 6 та белги бўлиши керак",
+      "email_invalid": "Email нотўғри форматда",
+      "url_invalid": "URL нотўғри форматда",
+      "newPassword_sameAsOld": "Янги парол эскисидан фарқ қилиши керак"
+    },
+    "form": {
+      "createTitle": "Янги ўқитувчи қўшиш",
+      "editTitle": "Ўқитувчини таҳрирлаш"
+    },
+    "roleNotFound": "Ўқитувчи роли топилмади",
+    "passwordChanged": "Парол муваффақиятли ўзгартирилди",
+    "currentPasswordLabel": "Жорий парол (ихтиёрий)",
+    "currentPasswordPlaceholder": "Агар ўзингизники бўлса киритинг",
+    "securityTab": {
+      "changePasswordTitle": "Паролни ўзгартириш"
+    },
+    "filter": {
+      "addTeacher": "Ўқитувчи қўшиш",
+      "activeTeachers": "Фаол ўқитувчилар"
+    },
+    "header": {
+      "password": "Парол",
+      "restore": "Тиклаш"
+    },
+    "groupsSection": {
+      "title": "Гуруҳлар ({{count}})",
+      "empty": "Бириктирилган гуруҳлар мавжуд эмас",
+      "studentsCount": "{{count}} / {{max}} ўқувчи"
+    },
+    "sessionsSection": {
+      "title": "Ўқитувчи сессиялари"
+    },
+    "archiveConfirm": "\"{{name}}\" ни архивлашни тасдиқлайсизми?",
+    "notFound": "Ўқитувчи топилмади!"
+  },
+  "students": {
+    "header": {
+      "profile": "Шахсий профил"
+    },
+    "table": {
+      "full_name": "Ф.И.Ш",
+      "phone": "Телефон",
+      "email": "Email",
+      "email_empty": "Мавжуд эмас",
+      "balance": "Баланс (тангалар сони)",
+      "created_at": "Яратилган сана",
+      "actions": "Амаллар"
+    },
+    "sendMessage": {
+      "title": "Хабар юбориш",
+      "recipientLabel": "Кимга юбориш",
+      "parent": "Ота-она",
+      "channelLabel": "Юбориш канали",
+      "messageLabel": "Хабар матни",
+      "messagePlaceholder": "Хабарингизни киритинг...",
+      "send": "Юбориш"
+    },
+    "form": {
+      "createTitle": "Янги талаба қўшиш",
+      "editTitle": "Талабани таҳрирлаш",
+      "fullNameLabel": "Ф.И.Ш",
+      "fullNamePlaceholder": "Сардор Раҳимов",
+      "phoneLabel": "Телефон рақам",
+      "emailLabel": "Email (ихтиёрий)",
+      "parentPhoneLabel": "Ота-она телефони (ихтиёрий)",
+      "avatarUrlLabel": "Avatar URL (ихтиёрий)",
+      "passwordLabel": "Парол",
+      "passwordPlaceholder": "Парол киритинг"
+    },
+    "schema": {
+      "fullName_min": "Ф.И.Ш камида 2 та белги бўлиши керак",
+      "fullName_max": "Ф.И.Ш 100 та белгидан ошмаслиги керак",
+      "phone_min": "Телефон рақам камида 9 та рақам бўлиши керак",
+      "phone_max": "Телефон рақам жуда узун",
+      "password_min": "Парол камида 6 та белги бўлиши керак",
+      "roleId_required": "Рол ID мажбурий",
+      "email_invalid": "Email нотўғри форматда",
+      "url_invalid": "URL нотўғри форматда"
+    },
+    "detail": {
+      "coinBalance": "Coin баланси",
+      "noLastActivity": "Охирги ҳаракат йўқ",
+      "groupsCount": "Гуруҳлар сони",
+      "purchased": "Сотиб олинган",
+      "attendance": "Давомат",
+      "parentPhonePrefix": "Ота-она:",
+      "memberSince": "{{date}} дан буён",
+      "message": "Хабар",
+      "securitySettings": "Хавфсизлик созламалари",
+      "archive": "Архивлаш",
+      "activate": "Фаоллаштириш",
+      "quickActions": "Тезкор амаллар",
+      "editInfo": "Маълумотни таҳрирлаш",
+      "addToGroup": "Гуруҳга қўшиш",
+      "contact": "Алоқа",
+      "recentActivity": "Сўнгги фаоллик",
+      "infoUpdated": "Маълумот янгиланди",
+      "registered": "Тизимга рўйхатдан ўтди",
+      "notFound": "Талаба маълумотлари топилмади"
+    },
+    "actions": {
+      "archiveTitle": "Талабани архивлаш",
+      "archiveDescription": "\"{{name}}\" ни архивлайсизми? Бу талабанинг фаолияти тўхтатилади, лекин маълумотлари сақланиб қолади. Кейинчалик қайта фаоллаштиришингиз мумкин.",
+      "archiveLabel": "Ҳа, архивлаш",
+      "restoreTitle": "Талабани фаоллаштириш",
+      "restoreDescription": "\"{{name}}\" ни қайта фаоллаштирасизми? Талаба тизимга кириш ҳуқуқини қайтариб олади.",
+      "restoreLabel": "Ҳа, фаоллаштириш",
+      "deleteTitle": "Талабани ўчириш",
+      "deleteDescription": "\"{{name}}\" ни ўчирмоқчимисиз? Бу амал талабани тизимдан бутунлай олиб ташлайди (soft delete). Қайта тиклаш фақат администратор томонидан амалга оширилиши мумкин.",
+      "deleteLabel": "Ҳа, ўчириш"
+    },
+    "status": {
+      "deleted": "Ўчирилган",
+      "archived": "Архивланган"
+    },
+    "tabs": {
+      "info": "Маълумотлар",
+      "groups": "Гуруҳлар",
+      "coins": "Тангалар",
+      "gifts": "Совғалар",
+      "security": "Хавфсизлик"
+    },
+    "filter": {
+      "class": "Синф",
+      "addStudent": "Талаба қўшиш",
+      "bulkGiveCoin": "Бир вақтда танга бериш",
+      "importExcel": "Excel дан маълумот қўшиш",
+      "activeStudents": "Фаол ўқувчилар",
+      "allClasses": "Барча синфлар"
+    },
+    "giftTab": {
+      "title": "Сотиб олинган совғалар ({{count}})",
+      "emptyTitle": "Ҳали ҳеч қандай совға сотиб олинмаган",
+      "emptyText": "{{name}} coinларини совғалар дўконидан бирор нарсага алмаштирмаган.",
+      "status": {
+        "approved": "Тасдиқланган",
+        "delivered": "Топширилган",
+        "rejected": "Рад этилган",
+        "cancelled": "Бекор қилинган",
+        "pending": "Кутилмоқда"
+      }
+    },
+    "groupTab": {
+      "title": "Гуруҳлар рўйхати ({{count}})",
+      "emptyTitle": "Ҳеч қандай гуруҳга аъзо эмас",
+      "emptyText": "{{name}}ни фаол гуруҳлардан бирига қўшиб, дарсларга жалб қилинг.",
+      "joinedSince": "{{date}} дан"
+    },
+    "infoTab": {
+      "personalInfo": "Шахсий маълумотлар",
+      "fullNameLabel": "Тўлиқ исми",
+      "parentPhoneLabel": "Ота-она телефони",
+      "systemInfo": "Тизим маълумотлари",
+      "roleLabel": "Рол",
+      "registeredLabel": "Рўйхатдан ўтган",
+      "editButton": "Маълумотларни таҳрирлаш"
+    },
+    "securityTab": {
+      "changePasswordTitle": "Паролни ўзгартириш",
+      "newPasswordLabel": "Янги парол",
+      "newPasswordPlaceholder": "Янги парол киритинг",
+      "confirmPasswordLabel": "Паролни тасдиқланг",
+      "confirmPasswordPlaceholder": "Паролни қайтадан киритинг",
+      "passwordMismatch": "Пароллар мос эмас",
+      "dangerZone": "Хавфли ҳудуд",
+      "archiveDesc": "Тўлов қилмаган ёки вақтинчалик тўхтатган талабалар учун. Маълумотлар сақланади, кейинчалик қайта фаоллаштирилади.",
+      "activateDesc": "Талаба архивда. Фаоллаштириш орқали тизимга киришини тиклашингиз мумкин.",
+      "deleteDesc": "Ўқишни тўлиқ тугатган ёки нотўғри қўшилган талабалар учун. Soft delete — маълумотлар базада сақланади, тизимда кўринмайди."
+    },
+    "coinTab": {
+      "currentBalance": "Жорий баланс",
+      "addCoin": "Coin қўшиш",
+      "deductCoin": "Coinдан айириш",
+      "reason": "Сабаб",
+      "deduct": "Айириш",
+      "historyTitle": "Транзакция тарихи",
+      "last20": "Сўнгги 20 та",
+      "noTransactions": "Транзакциялар мавжуд эмас",
+      "noTransactionsText": "Coin қўшилгач ёки айирилгач, тарих шу ерда кўринади.",
+      "sourceLabels": {
+        "homework": "Уйга вазифа",
+        "attendance": "Тадбирлар",
+        "bonus": "Тартиб-интизом",
+        "other": "Қўшимча"
+      }
+    },
+    "contactRow": {
+      "copied": "Нусхаланди",
+      "copyFailed": "Нусхалаб бўлмади"
+    }
+  },
+  "courses": {
+    "title": "Курслар",
+    "all": "Барчаси",
+    "btn": {
+      "create": "Курс яратиш",
+      "add": "Курс қўшиш"
+    },
+    "no_data": "Ҳали курслар мавжуд эмас!",
+    "delete_confirm": "Курсни ўчиришни тасдиқлайсизми?",
+    "schema": {
+      "title_min": "Курс номи камида 2 та белгидан иборат бўлиши керак"
+    },
+    "form": {
+      "create_title": "Янги курс яратиш",
+      "edit_title": "Курсни таҳрирлаш",
+      "title_label": "Курс номи",
+      "title_placeholder": "Масалан: Frontend Foundation",
+      "description_label": "Курс ҳақида (Ихтиёрий)",
+      "description_placeholder": "Курс ҳақида қисқача маълумот..."
+    }
+  },
+  "groups": {
+    "no_data": "Ҳали гуруҳлар мавжуд эмас!",
+    "btn": {
+      "create": "Гуруҳ яратиш",
+      "add": "Гуруҳ қўшиш"
+    },
+    "student_count": "Синфдаги ўқувчилар сони:",
+    "list_title": "Гуруҳлар рўйхати",
+    "search_placeholder": "Гуруҳ номи",
+    "tabs": {
+      "active": "Фаол",
+      "archive": "Архив"
+    },
+    "info": {
+      "name_label": "Гуруҳ номи:",
+      "full_badge": "Тўлган",
+      "created_at": "Яратилган вақти:",
+      "course": "Курс",
+      "spots_left": "Гуруҳ тўлишига",
+      "spots_count": "{{count}} та жой бор"
+    },
+    "card": {
+      "active": "Актив",
+      "inactive": "Но актив"
+    },
+    "schema": {
+      "name_required": "Гуруҳ номи мажбурий",
+      "name_min": "Гуруҳ номи камида 2 та белги бўлиши керак",
+      "name_max": "Гуруҳ номи 100 та белгидан ошмаслиги керак",
+      "max_students_number": "Сон киритинг",
+      "max_students_int": "Бутун сон киритинг",
+      "max_students_min": "Камида 1 та студент бўлиши керак",
+      "max_students_max": "30 тадан ошмаслиги керак",
+      "course_required": "Курсни танланг",
+      "teacher_required": "Ўқитувчини танланг"
+    },
+    "form": {
+      "create_title": "Янги гуруҳ яратиш",
+      "edit_title": "Гуруҳни таҳрирлаш",
+      "name_label": "Гуруҳ номи",
+      "name_placeholder": "Масалан: 5-A",
+      "max_students_label": "Максимал студентлар сони",
+      "course_placeholder": "Курсни танланг",
+      "teacher_placeholder": "Ўқитувчини танланг"
+    },
+    "addStudent": {
+      "title": "Студент қўшиш",
+      "subtitle": "{{name}} гуруҳига ўқувчи қўшиш",
+      "tabSingle": "Битта",
+      "tabBulk": "Кўп",
+      "searchPlaceholder": "Исм, телефон ёки email...",
+      "selected": "Танланган:",
+      "countUnit": "{{count}} та",
+      "addSelected": "{{count}} та қўшиш",
+      "noResults": "Ҳеч нарса топилмади",
+      "noStudents": "Қўшиш учун студент йўқ",
+      "noResultsFor": "\"{{search}}\" бўйича натижа топилмади"
+    },
+    "detail": {
+      "notFound": "Гуруҳ маълумотлари топилмади",
+      "back": "Орқага",
+      "breadcrumb": "Гуруҳлар",
+      "sessionsTitle": "Гуруҳ сессиялари",
+      "noSessions": "Ҳали дарслар мавжуд эмас!",
+      "addSession": "Дарс қўшиш"
+    },
+    "students": {
+      "title": "Ўқувчилар",
+      "count": "{{count}} та ўқувчи",
+      "giveCoin": "Танга бериш",
+      "groupFull": "Гуруҳ тўлган",
+      "bulkCoinTitle": "Гуруҳга оммавий танга бериш",
+      "bulkCoinSubtitle": "{{name}} гуруҳи ўқувчиларига бирданига танга беринг"
+    },
+    "table": {
+      "name": "Исм",
+      "joinedAt": "Қўшилган сана",
+      "empty": "Гуруҳда ҳали ўқувчи йўқ",
+      "removeTitle": "Гуруҳдан чиқариш",
+      "removeConfirmSuffix": "ни гуруҳдан чиқарасизми?",
+      "removeConfirmBtn": "Ҳа, чиқариш"
+    },
+    "balance": {
+      "title": "Ўқувчилар статистикаси",
+      "avgTitle": "Ўртача BB-coin баланси",
+      "avgEmpty1": "Ҳали маълумот йўқ. Маълумот йиғилгач, бу ерда гуруҳнинг",
+      "avgEmpty2": "ўртача баланси графиги пайдо бўлади",
+      "activityTitle": "Гуруҳ ҳафталик фаоллиги",
+      "activityEmpty1": "Фаоллик таҳлили кутилмоқда.",
+      "activityEmpty2": "Ҳафталик гуруҳ фаоллиги бу ерда кўринади"
+    }
+  },
+  "sessions": {
+    "type": {
+      "lesson": "Дарс",
+      "exam": "Имтиҳон",
+      "competition": "Мусобақа",
+      "extra": "Қўшимча"
+    },
+    "schema": {
+      "date_required": "Сана киритилиши шарт",
+      "startTime_required": "Бошланиш вақти киритилиши шарт",
+      "endTime_required": "Тугаш вақти киритилиши шарт",
+      "type_required": "Дарс турини танланг",
+      "group_required": "Гуруҳни танланг",
+      "room_required": "Хонани танланг",
+      "teacher_required": "Ўқитувчини танланг"
+    },
+    "infoUpdated": "Дарс маълумотлари янгиланди",
+    "locked": "Қулфланган",
+    "startTimeLabel": "Бошланиш вақти",
+    "endTimeLabel": "Тугаш вақти",
+    "topicLabel": "Мавзу",
+    "topicPlaceholder": "Масалан: OOP асослари",
+    "subjectLabelOptional": "Фан (Ихтиёрий)",
+    "attendanceTaken": "Йўқлама олинди",
+    "pending": "Кутилмоқда",
+    "typeLabel": "Тури",
+    "filter": {
+      "allGroups": "Барча гуруҳлар",
+      "allTeachers": "Барча ўқитувчилар",
+      "allTypes": "Барча турлар",
+      "addSession": "Сессия қўшиш"
+    },
+    "attendance": {
+      "title": "Йўқлама",
+      "groupNotSet": "Гуруҳ аниқланмади",
+      "noStudents": "Гуруҳда ўқувчилар мавжуд эмас",
+      "present": "Келди",
+      "homework": "Уй вазифаси"
+    },
+    "deleteConfirm": "\"{{group}}\" гуруҳининг {{time}} даги дарсини ўчиришни тасдиқлайсизми?",
+    "noSessions": "Ҳали Сессиялар мавжуд эмас!",
+    "backToList": "Сессияларга қайтиш",
+    "notFound": "Дарс топилмади!",
+    "statusPanel": {
+      "lockConfirm": "Дарсни қулфлашни тасдиқлайсизми? Қулфлангач йўқлама ва маълумотларни таҳрирлаш учун аввал қулфни очиш керак бўлади.",
+      "locked": "Дарс қулфланди",
+      "unlockConfirm": "Дарснинг қулфини очишни тасдиқлайсизми?",
+      "unlocked": "Дарс қулфи очилди",
+      "deleteConfirm": "Дарсни бутунлай ўчиришни тасдиқлайсизми?",
+      "deleted": "Дарс ўчирилди",
+      "notLocked": "Дарс ҳали қулфланмаган",
+      "unlockAction": "Қулфни очиш",
+      "lockAction": "Қулфлаш"
+    },
+    "form": {
+      "createTitle": "Янги сессия қўшиш",
+      "dateLabel": "Сессия санаси",
+      "typeLabel": "Сессия тури",
+      "groupPlaceholder": "Гуруҳни танланг",
+      "roomPlaceholder": "Хонани танланг",
+      "teacherPlaceholder": "Ўқитувчи танланг",
+      "subjectPlaceholder": "Фанни танланг",
+      "topicLabelOptional": "Мавзу (Ихтиёрий)"
+    }
+  },
+  "plans": {
+    "weekday": {
+      "monday": "Душанба",
+      "tuesday": "Сешанба",
+      "wednesday": "Чоршанба",
+      "thursday": "Пайшанба",
+      "friday": "Жума",
+      "saturday": "Шанба",
+      "sunday": "Якшанба"
+    },
+    "weekdayShort": {
+      "monday": "Ду",
+      "tuesday": "Се",
+      "wednesday": "Ч",
+      "thursday": "Па",
+      "friday": "Жу",
+      "saturday": "Ш",
+      "sunday": "Я"
+    },
+    "schema": {
+      "group_required": "Гуруҳ танланиши шарт",
+      "room_required": "Хона танланиши шарт",
+      "teacher_required": "Ўқитувчини танланг",
+      "subject_required": "Фан танланиши шарт",
+      "fromDate_required": "Бошланиш санаси киритилиши шарт",
+      "toDate_required": "Тугаш санаси киритилиши шарт"
+    },
+    "deleteTemplateConfirm": "Бу шаблонни ўчирсангиз, келажакдаги сессиялар яратилмайди. Мавжуд сессияларга таъсир этмайди. Давом этасизми?",
+    "weeklyTemplate": "Ҳафталик Шаблон",
+    "selectGroup": "Гуруҳ танланг",
+    "addTemplate": "Шаблон қўшиш",
+    "generateSessions": "Дарслар яратиш",
+    "selectGroupToView": "Календарни кўриш учун гуруҳ танланг",
+    "templateForm": {
+      "editTitle": "Шаблонни таҳрирлаш",
+      "createTitle": "Янги шаблон қўшиш",
+      "weekdayLabel": "Ҳафта куни",
+      "weekdayPlaceholder": "Ҳафта кунини танланг",
+      "groupTeacherOption": "Гуруҳ ўқитувчиси",
+      "groupTeacherOptionWithName": "Гуруҳ ўқитувчиси ({{name}})"
+    },
+    "card": {
+      "timePrefix": "Вақти:"
+    },
+    "exception": {
+      "cancelSession": "Бу дарсни бекор қилиш",
+      "rescheduleTime": "Вақтини ўзгартириш",
+      "goToSessionDetails": "Жорий дарс маълумотларига ўтиш",
+      "noSessionYet": "Бу кун бўйича дарс яратилмаган",
+      "revertConfirm": "Стандарт шаблонга қайтарилсинми?",
+      "cancelReasonPlaceholder": "Масалан: Байрам сабабли",
+      "rescheduleReasonPlaceholder": "Масалан: Техник ишлар сабабли",
+      "revertToTemplate": "Андозага қайтариш",
+      "back": "Орқага"
+    },
+    "generate": {
+      "title": "Жадвал бўйича дарслар яратиш",
+      "from": "Дан",
+      "to": "Гача",
+      "warningLabel": "Эслатма!",
+      "warningText": "Дарсларни \"Белгиланган Жадвал\" бўйича фақат келгуси саналар учун яратиш мумкин, ўтиб кетган саналар учун мумкин эмас!",
+      "action": "Сессиялар яратиш",
+      "resultToast": "{{created}} та сессия яратилди, {{cancelled}} та бекор (истисно), {{skipped}} та ўтказиб юборилди (аввалдан бор эди)"
+    },
+    "legend": {
+      "normal": "Оддий сессия",
+      "rescheduled": "Вақт ўзгарган",
+      "cancelled": "Бекор қилинган",
+      "locked": "Қулфланган (йўқлама киритилган)"
+    },
+    "chip": {
+      "cancelled": "Бекор қилинди",
+      "technicalReason": "Техник сабабга кўра",
+      "newTime": "Янги вақти",
+      "reason": "Сабаб"
+    },
+    "tabs": {
+      "kanban": "Ҳафталик Шаблон (Kanban)",
+      "calendar": "Ойлик Календар"
+    }
+  },
+  "reward_categories": {
+    "title": "Категориялар",
+    "title_singular": "Категория",
+    "all": "Барчаси",
+    "btn": {
+      "create": "Категория яратиш",
+      "add": "Категория қўшиш"
+    },
+    "no_data": "Ҳали категориялар мавжуд эмас!",
+    "delete_confirm": "Категорияни ўчиришни тасдиқлайсизми?"
+  },
+  "market": {
+    "categoryForm": {
+      "editTitle": "Категорияни таҳрирлаш",
+      "createTitle": "Янги категория яратиш",
+      "nameLabel": "Категория номи",
+      "namePlaceholder": "Масалан: Электрон қурилмалар"
+    },
+    "rewardForm": {
+      "editTitle": "Совғани таҳрирлаш",
+      "createTitle": "Янги совға яратиш",
+      "titleLabel": "Совға номи",
+      "titlePlaceholder": "Масалан: Китоб",
+      "descriptionLabel": "Тавсиф (Ихтиёрий)",
+      "descriptionPlaceholder": "Совға ҳақида қисқача маълумот...",
+      "imageUrlLabel": "Расм URL (Ихтиёрий)",
+      "priceLabel": "Нархи (coin)",
+      "stockLabel": "Дона сони",
+      "typeLabel": "Тури",
+      "typePlaceholder": "Совға турини танланг",
+      "categoryPlaceholder": "Категорияни танланг",
+      "type": {
+        "physical": "Жисмоний совға",
+        "digital": "Рақамли совға",
+        "privilege": "Имтиёз"
+      }
+    },
+    "schema": {
+      "title_required": "Совға номи киритилиши шарт",
+      "url_invalid": "Тўғри URL киритинг",
+      "price_min": "Нарх 0 дан катта бўлиши керак",
+      "stock_min": "Дона сони манфий бўлиши мумкин эмас",
+      "category_required": "Категория танланиши шарт",
+      "categoryName_min": "Категория номи камида 2 та белгидан иборат бўлиши керак"
+    },
+    "filter": {
+      "addGift": "Совға қўшиш",
+      "activeGifts": "Фаол совғалар"
+    },
+    "buyConfirm": "\"{{title}}\" ни сотиб олишни тасдиқлайсизми?",
+    "deleteConfirm": "\"{{title}}\" ни ўчиришни тасдиқлайсизми?",
+    "noGifts": "Ҳали совғалар мавжуд эмас!",
+    "createGift": "Совға яратиш",
+    "stockCount": "{{count}} дона",
+    "outOfStock": "Тугаган",
+    "buy": "Сотиб олиш"
+  }
+}

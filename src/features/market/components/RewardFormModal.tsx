@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -21,7 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { rewardFormSchema, type RewardFormValues } from "../schema";
+import { createRewardFormSchema, type RewardFormValues } from "../schema";
 import {
   useCreateReward,
   useRewardCategories,
@@ -53,11 +54,14 @@ export const RewardFormModal = ({
   mode,
   reward,
 }: RewardFormModalProps) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const createReward = useCreateReward();
   const updateReward = useUpdateReward(reward?.id ?? "");
   const isPending = createReward.isPending || updateReward.isPending;
   const { data: categories } = useRewardCategories();
+
+  const rewardFormSchema = useMemo(() => createRewardFormSchema(t), [t]);
 
   const form = useForm<RewardFormValues>({
     resolver: zodResolver(rewardFormSchema),
@@ -87,7 +91,7 @@ export const RewardFormModal = ({
   const onSubmit = (values: RewardFormValues) => {
     const data = { ...values, imageUrl: values.imageUrl || undefined };
     const onError = (error: any) =>
-      toast.error(error?.data?.message || "Xatolik yuz berdi");
+      toast.error(error?.data?.message || t("common.error"));
 
     if (isEdit && reward) {
       updateReward.mutate(data, { onSuccess: () => onClose(), onError });
@@ -101,7 +105,9 @@ export const RewardFormModal = ({
       <DialogContent className="sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Sovg'ani tahrirlash" : "Yangi sovg'a yaratish"}
+            {isEdit
+              ? t("market.rewardForm.editTitle")
+              : t("market.rewardForm.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -112,9 +118,12 @@ export const RewardFormModal = ({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Sovg'a nomi</FormLabel>
+                  <FormLabel>{t("market.rewardForm.titleLabel")}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Masalan: Kitob" {...field} />
+                    <Input
+                      placeholder={t("market.rewardForm.titlePlaceholder")}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -126,10 +135,14 @@ export const RewardFormModal = ({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tavsif (Ixtiyoriy)</FormLabel>
+                  <FormLabel>
+                    {t("market.rewardForm.descriptionLabel")}
+                  </FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Sovg'a haqida qisqacha ma'lumot..."
+                      placeholder={t(
+                        "market.rewardForm.descriptionPlaceholder",
+                      )}
                       className="resize-none h-24"
                       {...field}
                     />
@@ -144,7 +157,9 @@ export const RewardFormModal = ({
               name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rasm URL (Ixtiyoriy)</FormLabel>
+                  <FormLabel>
+                    {t("market.rewardForm.imageUrlLabel")}
+                  </FormLabel>
                   <FormControl>
                     <Input placeholder="https://..." {...field} />
                   </FormControl>
@@ -159,7 +174,9 @@ export const RewardFormModal = ({
                 name="coinPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Narxi (coin)</FormLabel>
+                    <FormLabel>
+                      {t("market.rewardForm.priceLabel")}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -180,7 +197,7 @@ export const RewardFormModal = ({
                 name="stock"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Dona soni</FormLabel>
+                    <FormLabel>{t("market.rewardForm.stockLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -201,19 +218,28 @@ export const RewardFormModal = ({
               <ControlledSelect
                 control={form.control}
                 name="rewardType"
-                label="Turi"
+                label={t("market.rewardForm.typeLabel")}
                 options={[
-                  { label: "Jismoniy sovg'a", value: "physical" },
-                  { label: "Raqamli sovg'a", value: "digital" },
-                  { label: "Imtiyoz", value: "privilege" },
+                  {
+                    label: t("market.rewardForm.type.physical"),
+                    value: "physical",
+                  },
+                  {
+                    label: t("market.rewardForm.type.digital"),
+                    value: "digital",
+                  },
+                  {
+                    label: t("market.rewardForm.type.privilege"),
+                    value: "privilege",
+                  },
                 ]}
-                placeholder="Sovg'a turini tanlang"
+                placeholder={t("market.rewardForm.typePlaceholder")}
               />
 
               <ControlledSelect
                 control={form.control}
                 name="categoryId"
-                label="Kategoriya"
+                label={t("reward_categories.title_singular")}
                 options={
                   categories && categories.length > 0
                     ? categories.map((item) => ({
@@ -222,7 +248,7 @@ export const RewardFormModal = ({
                       }))
                     : []
                 }
-                placeholder="Kategoriyani tanlang"
+                placeholder={t("market.rewardForm.categoryPlaceholder")}
               />
             </div>
 
@@ -233,16 +259,16 @@ export const RewardFormModal = ({
                 onClick={onClose}
                 disabled={isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

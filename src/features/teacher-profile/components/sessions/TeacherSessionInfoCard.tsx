@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Lock } from "lucide-react";
 import {
   Form,
@@ -15,11 +16,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ControlledSelect } from "@/components/controls";
 import { formatDate } from "@/ustils";
-import { sessionTypeLabels } from "@/features/sessions/constants";
+import { getSessionTypeLabels } from "@/features/sessions/constants";
 import { useSessionRoomOptions, useUpdateSession } from "@/features/sessions/hooks";
 import type { SessionItem } from "@/features/sessions/types";
 import {
-  teacherSessionInfoFormSchema,
+  createTeacherSessionInfoFormSchema,
   type TeacherSessionInfoFormValues,
 } from "../../schema";
 
@@ -28,9 +29,16 @@ interface Props {
 }
 
 export const TeacherSessionInfoCard = ({ session }: Props) => {
+  const { t } = useTranslation();
   const isLocked = session.isLocked;
   const updateSession = useUpdateSession(session.id);
   const { data: rooms } = useSessionRoomOptions();
+  const sessionTypeLabels = getSessionTypeLabels(t);
+
+  const teacherSessionInfoFormSchema = useMemo(
+    () => createTeacherSessionInfoFormSchema(t),
+    [t],
+  );
 
   const form = useForm<TeacherSessionInfoFormValues>({
     resolver: zodResolver(teacherSessionInfoFormSchema),
@@ -55,9 +63,9 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
     updateSession.mutate(
       { ...values, topic: values.topic || undefined },
       {
-        onSuccess: () => toast.success("Dars ma'lumotlari yangilandi"),
+        onSuccess: () => toast.success(t("sessions.infoUpdated")),
         onError: (error: any) =>
-          toast.error(error?.data?.message || "Xatolik yuz berdi"),
+          toast.error(error?.data?.message || t("common.error")),
       },
     );
   };
@@ -75,7 +83,7 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
           {isLocked && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-gold/15 text-gold">
               <Lock size={12} />
-              Qulflangan
+              {t("sessions.locked")}
             </span>
           )}
         </div>
@@ -85,7 +93,7 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
       </div>
 
       <div>
-        <p className="text-sm text-ink-soft">Guruh</p>
+        <p className="text-sm text-ink-soft">{t("common.group")}</p>
         <p className="text-sm font-medium text-ink">{session.group.name}</p>
       </div>
 
@@ -97,7 +105,7 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
               name="startTime"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Boshlanish vaqti</FormLabel>
+                  <FormLabel>{t("sessions.startTimeLabel")}</FormLabel>
                   <FormControl>
                     <Input type="time" disabled {...field} />
                   </FormControl>
@@ -110,7 +118,7 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
               name="endTime"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tugash vaqti</FormLabel>
+                  <FormLabel>{t("sessions.endTimeLabel")}</FormLabel>
                   <FormControl>
                     <Input type="time" disabled {...field} />
                   </FormControl>
@@ -123,7 +131,7 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
           <ControlledSelect
             control={form.control}
             name="roomId"
-            label="Xona"
+            label={t("common.room")}
             options={roomOptions}
             disabled={isLocked}
           />
@@ -133,10 +141,10 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
             name="topic"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mavzu</FormLabel>
+                <FormLabel>{t("sessions.topicLabel")}</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Masalan: OOP asoslari"
+                    placeholder={t("sessions.topicPlaceholder")}
                     className="resize-none h-20"
                     disabled={isLocked}
                     {...field}
@@ -154,7 +162,9 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
                 disabled={updateSession.isPending}
                 className="inline-flex items-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
               >
-                {updateSession.isPending ? "Saqlanmoqda..." : "Saqlash"}
+                {updateSession.isPending
+                  ? t("common.saving")
+                  : t("common.save")}
               </button>
             </div>
           )}

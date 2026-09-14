@@ -21,7 +21,7 @@ export default function DashboardPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <DashboardTitle
           title={t("admin.dashboard.title", {
-            name: user?.fullName || "Hurmatli foydalanuvchi",
+            name: user?.fullName || t("admin.dashboard.defaultUser"),
           })}
           description={t("admin.dashboard.description")}
         />
@@ -29,7 +29,9 @@ export default function DashboardPage() {
         {!isLoading && (
           <span className="flex items-center gap-1.5 rounded-full bg-white dark:bg-zinc-900 px-3.5 py-2 text-sm font-medium shadow-sm">
             <CalendarClock size={15} className="text-primary" />
-            Bugun {data?.todaySessionsCount ?? 0} ta dars
+            {t("admin.dashboard.todaySessions", {
+              count: data?.todaySessionsCount ?? 0,
+            })}
           </span>
         )}
       </div>

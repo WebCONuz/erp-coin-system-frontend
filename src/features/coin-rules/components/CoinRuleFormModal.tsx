@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -26,7 +27,7 @@ import {
   ControlledSelect,
   type IOption,
 } from "@/components/controls";
-import { coinRuleFormSchema, type CoinRuleFormValues } from "../schema";
+import { createCoinRuleFormSchema, type CoinRuleFormValues } from "../schema";
 import {
   useActiveGroups,
   useCreateCoinRule,
@@ -34,9 +35,9 @@ import {
 } from "../hooks";
 import {
   ALL_GROUPS_VALUE,
-  directionOptions,
-  sourceTypeOptions,
-  triggerTypeOptions,
+  getDirectionOptions,
+  getSourceTypeOptions,
+  getTriggerTypeOptions,
 } from "../constants";
 import type { CoinRule } from "../types";
 
@@ -58,19 +59,26 @@ const emptyValues: CoinRuleFormValues = {
 };
 
 export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const createCoinRule = useCreateCoinRule();
   const updateCoinRule = useUpdateCoinRule(coinRule?.id ?? "");
   const isPending = createCoinRule.isPending || updateCoinRule.isPending;
 
+  const directionOptions = getDirectionOptions(t);
+  const triggerTypeOptions = getTriggerTypeOptions(t);
+  const sourceTypeOptions = getSourceTypeOptions(t);
+
   const { data: groupsData } = useActiveGroups(open);
   const groupOptions: IOption[] = [
-    { value: ALL_GROUPS_VALUE, label: "Barcha guruhlar" },
+    { value: ALL_GROUPS_VALUE, label: t("coinRules.allGroups") },
     ...(groupsData?.data ?? []).map((group) => ({
       value: group.id,
       label: group.name,
     })),
   ];
+
+  const coinRuleFormSchema = useMemo(() => createCoinRuleFormSchema(t), [t]);
 
   const form = useForm<CoinRuleFormValues>({
     resolver: zodResolver(coinRuleFormSchema),
@@ -106,7 +114,7 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
   }, [triggerType]);
 
   const onError = (error: any) =>
-    toast.error(error?.data?.message || "Xatolik yuz berdi");
+    toast.error(error?.data?.message || t("common.error"));
 
   const onSubmit = (values: CoinRuleFormValues) => {
     const data = {
@@ -131,7 +139,9 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
       <DialogContent className="sm:max-w-110 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Sababni tahrirlash" : "Yangi sabab qo'shish"}
+            {isEdit
+              ? t("coinRules.adminForm.editTitle")
+              : t("coinRules.adminForm.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -140,8 +150,8 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
             <ControlledInput
               name="name"
               control={form.control}
-              placeholder="Masalan: Darsga kelgani uchun"
-              label="Nomi"
+              placeholder={t("coinRules.namePlaceholderAdmin")}
+              label={t("common.name")}
               inputClassName="h-8"
             />
 
@@ -151,7 +161,7 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
                 name="coinAmount"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Tanga miqdori</FormLabel>
+                    <FormLabel>{t("coinRules.amountLabel")}</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
@@ -170,9 +180,9 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
               <ControlledSelect
                 control={form.control}
                 name="direction"
-                label="Yo'nalish"
+                label={t("common.direction")}
                 options={directionOptions}
-                placeholder="Yo'nalishni tanlang"
+                placeholder={t("coinRules.directionPlaceholder")}
               />
             </div>
 
@@ -180,18 +190,18 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
               <ControlledSelect
                 control={form.control}
                 name="triggerType"
-                label="Ishga tushirish turi"
+                label={t("coinRules.triggerTypeLabel")}
                 options={triggerTypeOptions}
-                placeholder="Turini tanlang"
+                placeholder={t("coinRules.triggerTypePlaceholder")}
               />
 
               {triggerType === "auto" && (
                 <ControlledSelect
                   control={form.control}
                   name="sourceType"
-                  label="Manba turi"
+                  label={t("coinRules.sourceTypeLabel")}
                   options={sourceTypeOptions}
-                  placeholder="Manba turini tanlang"
+                  placeholder={t("coinRules.sourceTypePlaceholder")}
                 />
               )}
             </div>
@@ -199,9 +209,9 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
             <ControlledSelect
               control={form.control}
               name="groupId"
-              label="Guruh (Ixtiyoriy)"
+              label={t("coinRules.groupLabelOptional")}
               options={groupOptions}
-              placeholder="Guruhni tanlang"
+              placeholder={t("coinRules.groupPlaceholder")}
             />
 
             <FormField
@@ -209,10 +219,10 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Izoh (Ixtiyoriy)</FormLabel>
+                  <FormLabel>{t("coinRules.descriptionLabel")}</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Qoida haqida qisqacha izoh..."
+                      placeholder={t("coinRules.descriptionPlaceholder")}
                       className="resize-none h-20"
                       {...field}
                     />
@@ -229,16 +239,16 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
                 onClick={onClose}
                 disabled={isPending}
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button type="submit" disabled={isPending}>
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

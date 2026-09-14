@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -21,7 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-  rewardCategoryFormSchema,
+  createRewardCategoryFormSchema,
   type RewardCategoryFormValues,
 } from "../schema";
 import { useCreateRewardCategory, useUpdateRewardCategory } from "../hooks";
@@ -40,11 +41,17 @@ export const CategoryFormModal = ({
   mode,
   category,
 }: CategoryFormModalProps) => {
+  const { t } = useTranslation();
   const createCategory = useCreateRewardCategory();
   const updateCategory = useUpdateRewardCategory(category?.id ?? "");
   const isPending = createCategory.isPending || updateCategory.isPending;
 
   const isEdit = mode === "edit";
+
+  const rewardCategoryFormSchema = useMemo(
+    () => createRewardCategoryFormSchema(t),
+    [t],
+  );
 
   const form = useForm<RewardCategoryFormValues>({
     resolver: zodResolver(rewardCategoryFormSchema),
@@ -67,7 +74,7 @@ export const CategoryFormModal = ({
 
   const onSubmit = (values: RewardCategoryFormValues) => {
     const onError = (error: any) =>
-      toast.error(error?.data?.message || "Xatolik yuz berdi");
+      toast.error(error?.data?.message || t("common.error"));
 
     if (isEdit && category) {
       updateCategory.mutate(values, { onSuccess: () => onClose(), onError });
@@ -81,7 +88,9 @@ export const CategoryFormModal = ({
       <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Kategoriyani tahrirlash" : "Yangi kategoriya yaratish"}
+            {isEdit
+              ? t("market.categoryForm.editTitle")
+              : t("market.categoryForm.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -93,11 +102,11 @@ export const CategoryFormModal = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-zinc-700 dark:text-zinc-300">
-                    Kategoriya nomi
+                    {t("market.categoryForm.nameLabel")}
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Masalan: Elektron qurilmalar"
+                      placeholder={t("market.categoryForm.namePlaceholder")}
                       className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50"
                       {...field}
                     />
@@ -115,7 +124,7 @@ export const CategoryFormModal = ({
                 disabled={isPending}
                 className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -124,11 +133,11 @@ export const CategoryFormModal = ({
               >
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

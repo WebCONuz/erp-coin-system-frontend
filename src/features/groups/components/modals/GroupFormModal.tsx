@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -20,7 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { groupFormSchema, type GroupFormValues } from "../../schema";
+import { createGroupFormSchema, type GroupFormValues } from "../../schema";
 import { useCourses, useCreateGroup, useUpdateGroup } from "../../hooks";
 
 import { useTeachers } from "@/features/teachers/hooks";
@@ -41,6 +42,7 @@ export const GroupFormModal = ({
   group,
 }: GroupFormModalProps) => {
   const isEdit = mode === "edit";
+  const { t } = useTranslation();
 
   const { data: courses, isLoading: isCoursesLoading } = useCourses();
   const { data: teachers, isLoading: isTeachersLoading } = useTeachers({});
@@ -49,6 +51,8 @@ export const GroupFormModal = ({
   const updateGroup = useUpdateGroup(group?.id ?? "");
 
   const isPending = createGroup.isPending || updateGroup.isPending;
+
+  const groupFormSchema = useMemo(() => createGroupFormSchema(t), [t]);
 
   const form = useForm<GroupFormValues>({
     resolver: zodResolver(groupFormSchema),
@@ -96,7 +100,7 @@ export const GroupFormModal = ({
       <DialogContent className="sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Guruhni tahrirlash" : "Yangi guruh yaratish"}
+            {isEdit ? t("groups.form.edit_title") : t("groups.form.create_title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -109,11 +113,11 @@ export const GroupFormModal = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-zinc-700 dark:text-zinc-300">
-                    Guruh nomi
+                    {t("groups.form.name_label")}
                   </FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Masalan: 5-A"
+                      placeholder={t("groups.form.name_placeholder")}
                       className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
                       {...field}
                     />
@@ -130,7 +134,7 @@ export const GroupFormModal = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-zinc-700 dark:text-zinc-300">
-                    Maksimal studentlar soni
+                    {t("groups.form.max_students_label")}
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -153,7 +157,7 @@ export const GroupFormModal = ({
               <div>
                 <ControlledSelect
                   name="courseId"
-                  label="Kurs"
+                  label={t("courses.title")}
                   control={form.control}
                   options={
                     courses && courses.data.length
@@ -164,13 +168,13 @@ export const GroupFormModal = ({
                       : []
                   }
                   isLoading={isCoursesLoading}
-                  placeholder="Kursni tanlang"
+                  placeholder={t("groups.form.course_placeholder")}
                 />
               </div>
               <div>
                 <ControlledSelect
                   name="teacherId"
-                  label="O'qituvchi"
+                  label={t("common.teacher")}
                   control={form.control}
                   options={
                     teachers && teachers.data.length
@@ -181,12 +185,10 @@ export const GroupFormModal = ({
                       : []
                   }
                   isLoading={isTeachersLoading}
-                  placeholder="O'qituvchini tanlang"
+                  placeholder={t("groups.form.teacher_placeholder")}
                 />
               </div>
             </div>
-
-            {/* O'qituvchi */}
 
             <DialogFooter className="pt-2 gap-2">
               <Button
@@ -196,7 +198,7 @@ export const GroupFormModal = ({
                 disabled={isPending}
                 className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               >
-                Bekor qilish
+                {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
@@ -205,11 +207,11 @@ export const GroupFormModal = ({
               >
                 {isPending
                   ? isEdit
-                    ? "Saqlanmoqda..."
-                    : "Yaratilmoqda..."
+                    ? t("common.saving")
+                    : t("common.creating")
                   : isEdit
-                    ? "Saqlash"
-                    : "Yaratish"}
+                    ? t("common.save")
+                    : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

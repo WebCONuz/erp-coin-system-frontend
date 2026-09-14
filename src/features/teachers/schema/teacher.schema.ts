@@ -1,61 +1,70 @@
 import { z } from "zod";
 
-export const createTeacherSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, "F.I.Sh kamida 2 ta belgi bo'lishi kerak")
-    .max(100, "F.I.Sh 100 ta belgidan oshmasligi kerak"),
-  phone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam bo'lishi kerak")
-    .max(13, "Telefon raqam juda uzun"),
-  password: z.string().min(6, "Parol kamida 6 ta belgi bo'lishi kerak"),
-  email: z
-    .string()
-    .email("Email noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-  avatarUrl: z
-    .string()
-    .url("URL noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-});
+type TFn = (key: string) => string;
 
-export const editTeacherSchema = z.object({
-  fullName: z
-    .string()
-    .min(2, "F.I.Sh kamida 2 ta belgi bo'lishi kerak")
-    .max(100, "F.I.Sh 100 ta belgidan oshmasligi kerak"),
-  phone: z
-    .string()
-    .min(9, "Telefon raqam kamida 9 ta raqam bo'lishi kerak")
-    .max(13, "Telefon raqam juda uzun"),
-  email: z
-    .string()
-    .email("Email noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-  avatarUrl: z
-    .string()
-    .url("URL noto'g'ri formatda")
-    .optional()
-    .or(z.literal("")),
-});
-
-export type CreateTeacherFormValues = z.infer<typeof createTeacherSchema>;
-export type EditTeacherFormValues = z.infer<typeof editTeacherSchema>;
-
-export const changeTeacherPasswordSchema = z
-  .object({
-    oldPassword: z.string().optional().or(z.literal("")),
-    newPassword: z.string().min(6, "Parol kamida 6 ta belgi bo'lishi kerak"),
-  })
-  .refine((data) => data.newPassword !== data.oldPassword, {
-    message: "Yangi parol eskisidan farq qilishi kerak",
-    path: ["newPassword"],
+export const createCreateTeacherSchema = (t: TFn) =>
+  z.object({
+    fullName: z
+      .string()
+      .min(2, t("teachers.schema.fullName_min"))
+      .max(100, t("teachers.schema.fullName_max")),
+    phone: z
+      .string()
+      .min(9, t("teachers.schema.phone_min"))
+      .max(13, t("teachers.schema.phone_max")),
+    password: z.string().min(6, t("teachers.schema.password_min")),
+    email: z
+      .string()
+      .email(t("teachers.schema.email_invalid"))
+      .optional()
+      .or(z.literal("")),
+    avatarUrl: z
+      .string()
+      .url(t("teachers.schema.url_invalid"))
+      .optional()
+      .or(z.literal("")),
   });
 
+export const createEditTeacherSchema = (t: TFn) =>
+  z.object({
+    fullName: z
+      .string()
+      .min(2, t("teachers.schema.fullName_min"))
+      .max(100, t("teachers.schema.fullName_max")),
+    phone: z
+      .string()
+      .min(9, t("teachers.schema.phone_min"))
+      .max(13, t("teachers.schema.phone_max")),
+    email: z
+      .string()
+      .email(t("teachers.schema.email_invalid"))
+      .optional()
+      .or(z.literal("")),
+    avatarUrl: z
+      .string()
+      .url(t("teachers.schema.url_invalid"))
+      .optional()
+      .or(z.literal("")),
+  });
+
+export type CreateTeacherFormValues = z.infer<
+  ReturnType<typeof createCreateTeacherSchema>
+>;
+export type EditTeacherFormValues = z.infer<
+  ReturnType<typeof createEditTeacherSchema>
+>;
+
+export const createChangeTeacherPasswordSchema = (t: TFn) =>
+  z
+    .object({
+      oldPassword: z.string().optional().or(z.literal("")),
+      newPassword: z.string().min(6, t("teachers.schema.password_min")),
+    })
+    .refine((data) => data.newPassword !== data.oldPassword, {
+      message: t("teachers.schema.newPassword_sameAsOld"),
+      path: ["newPassword"],
+    });
+
 export type ChangeTeacherPasswordFormValues = z.infer<
-  typeof changeTeacherPasswordSchema
+  ReturnType<typeof createChangeTeacherPasswordSchema>
 >;

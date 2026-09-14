@@ -7,11 +7,13 @@ export const studentKeys = {
   purchases: (params?: Record<string, unknown>) => ["student-purchases", params ?? {}],
 } as const;
 
-export const bulkCoinSourceTypeOptions: IOption[] = [
-  { value: "bonus", label: "Bonus" },
-  { value: "attendance", label: "Davomat" },
-  { value: "homework", label: "Uy vazifasi" },
-  { value: "competition", label: "Musobaqa" },
-  { value: "purchase", label: "Xarid" },
-  { value: "manual", label: "Qo'lda" },
+export const getBulkCoinSourceTypeOptions = (
+  t: (key: string) => string,
+): IOption[] => [
+  { value: "bonus", label: t("sourceTypes.bonus") },
+  { value: "attendance", label: t("sourceTypes.attendance") },
+  { value: "homework", label: t("sourceTypes.homework") },
+  { value: "competition", label: t("sourceTypes.competition") },
+  { value: "purchase", label: t("sourceTypes.purchase") },
+  { value: "manual", label: t("sourceTypes.manual") },
 ];

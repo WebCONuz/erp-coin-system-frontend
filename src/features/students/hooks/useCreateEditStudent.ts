@@ -1,11 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { ROLES } from "@/assets/constants";
 import { useRoles } from "@/features/roles/hooks";
 import {
-  createStudentSchema,
-  editStudentSchema,
+  createCreateStudentSchema,
+  createEditStudentSchema,
   type CreateFormValues,
   type EditFormValues,
 } from "../schema";
@@ -24,6 +25,7 @@ export const useCreateEditStudent = ({
   onClose,
   student,
 }: Props) => {
+  const { t } = useTranslation();
   const createStudent = useCreateStudent();
   const updateStudent = useUpdateStudent(student?.id ?? "");
   const isPending = createStudent.isPending || updateStudent.isPending;
@@ -31,6 +33,12 @@ export const useCreateEditStudent = ({
   const { data: roles } = useRoles();
   const studentRoleId =
     roles?.data.find((r) => r.name === ROLES.STUDENT)?.id ?? "";
+
+  const createStudentSchema = useMemo(
+    () => createCreateStudentSchema(t),
+    [t],
+  );
+  const editStudentSchema = useMemo(() => createEditStudentSchema(t), [t]);
 
   const createForm = useForm<CreateFormValues>({
     resolver: zodResolver(createStudentSchema),

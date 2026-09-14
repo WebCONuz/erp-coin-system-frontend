@@ -1,12 +1,15 @@
 import { z } from "zod";
 
-export const teacherSessionInfoFormSchema = z.object({
-  topic: z.string().optional(),
-  startTime: z.string().min(1, "Boshlanish vaqti kiritilishi shart"),
-  endTime: z.string().min(1, "Tugash vaqti kiritilishi shart"),
-  roomId: z.string().min(1, "Xonani tanlang"),
-});
+export const createTeacherSessionInfoFormSchema = (
+  t: (key: string) => string,
+) =>
+  z.object({
+    topic: z.string().optional(),
+    startTime: z.string().min(1, t("sessions.schema.startTime_required")),
+    endTime: z.string().min(1, t("sessions.schema.endTime_required")),
+    roomId: z.string().min(1, t("sessions.schema.room_required")),
+  });
 
 export type TeacherSessionInfoFormValues = z.infer<
-  typeof teacherSessionInfoFormSchema
+  ReturnType<typeof createTeacherSessionInfoFormSchema>
 >;

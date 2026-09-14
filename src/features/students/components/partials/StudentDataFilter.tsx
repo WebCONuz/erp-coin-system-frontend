@@ -1,4 +1,5 @@
 import { Search, X, ArrowUpDown, Plus, FileSpreadsheet, Coins } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,21 +26,25 @@ export const StudentDataFilter = ({
   onImportExcel,
   onBulkGiveCoin,
 }: StudentFilterProps) => {
+  const { t } = useTranslation();
   const { form, clearFilters } = useStudentFilter();
+  const sortLabels = [t("common.name"), t("students.filter.class"), "Coin"];
 
   return (
     <Form {...form}>
       <div className="w-full space-y-3 py-4">
         {/* 1-QATOR: Sarlavha va Harakat tugmalari */}
         <div className="flex items-center justify-between">
-          <DashboardTitle title="O'quvchilar" />
+          <DashboardTitle title={t("admin.header.students")} />
           <div className="flex items-center gap-2">
             <Button
               onClick={onAddStudent}
               className="bg-linear-to-br from-purple-500 to-purple-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
             >
               <Plus size={18} />
-              <span className="hidden sm:inline">Talaba qo'shish</span>
+              <span className="hidden sm:inline">
+                {t("students.filter.addStudent")}
+              </span>
             </Button>
             {onBulkGiveCoin && (
               <Button
@@ -48,7 +53,7 @@ export const StudentDataFilter = ({
               >
                 <Coins size={18} />
                 <span className="hidden sm:inline">
-                  Bir vaqtda tanga berish
+                  {t("students.filter.bulkGiveCoin")}
                 </span>
               </Button>
             )}
@@ -58,7 +63,7 @@ export const StudentDataFilter = ({
             >
               <FileSpreadsheet size={18} />
               <span className="hidden sm:inline">
-                Exceldan ma'lumot qo'shish
+                {t("students.filter.importExcel")}
               </span>
             </Button>
           </div>
@@ -77,13 +82,13 @@ export const StudentDataFilter = ({
                 value="active"
                 className="rounded-md px-3 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
               >
-                Faol o'quvchilar
+                {t("students.filter.activeStudents")}
               </TabsTrigger>
               <TabsTrigger
                 value="archive"
                 className="rounded-md px-4 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
               >
-                Arxiv
+                {t("groups.tabs.archive")}
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -98,7 +103,7 @@ export const StudentDataFilter = ({
               <ControlledInput
                 control={form.control}
                 name="search"
-                placeholder="Qidirish..."
+                placeholder={t("common.search")}
                 inputClassName="border-none focus-within:ring-0 w-40 h-9 bg-transparent"
               />
               <div className="w-px h-6 bg-border" />
@@ -113,20 +118,22 @@ export const StudentDataFilter = ({
             <div className="shadow-sm rounded-lg">
               <Select>
                 <SelectTrigger className="w-40 py-4.5 rounded-lg bg-background border-border text-foreground hover:bg-accent/50 transition-colors">
-                  <SelectValue placeholder="Barcha sinflar" />
+                  <SelectValue placeholder={t("students.filter.allClasses")} />
                 </SelectTrigger>
                 <SelectContent className="rounded-lg border-border bg-popover text-popover-foreground translate-y-9 -translate-x-0.5">
-                  <SelectItem value="all">Barcha sinflar</SelectItem>
-                  <SelectItem value="7a">7-A sinf</SelectItem>
-                  <SelectItem value="8a">8-A sinf</SelectItem>
-                  <SelectItem value="9a">9-A sinf</SelectItem>
+                  <SelectItem value="all">
+                    {t("students.filter.allClasses")}
+                  </SelectItem>
+                  <SelectItem value="7a">7-A</SelectItem>
+                  <SelectItem value="8a">8-A</SelectItem>
+                  <SelectItem value="9a">9-A</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Saralash (Sort) tugmalari */}
             <div className="flex items-center border border-border rounded-lg bg-background p-1 gap-1 shadow-sm">
-              {["Ism", "Sinf", "Coin"].map((label) => (
+              {sortLabels.map((label) => (
                 <Button
                   key={label}
                   variant="ghost"
@@ -145,7 +152,7 @@ export const StudentDataFilter = ({
               className="h-9 px-3 rounded-lg border-border bg-background text-muted-foreground hover:text-foreground hover:bg-accent transition-all gap-2"
             >
               <X size={16} />
-              <span className="hidden md:inline">Tozalash</span>
+              <span className="hidden md:inline">{t("common.clear")}</span>
             </Button>
           </div>
         </div>

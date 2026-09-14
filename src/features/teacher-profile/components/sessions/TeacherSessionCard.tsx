@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { CalendarDays, Clock, DoorOpen, Lock, LockOpen } from "lucide-react";
 import { formatDate } from "@/ustils";
-import { sessionTypeLabels } from "@/features/sessions/constants";
+import { getSessionTypeLabels } from "@/features/sessions/constants";
 import type { SessionItem } from "@/features/sessions/types";
 
 const TYPE_BADGE_CLASS: Record<string, string> = {
@@ -12,7 +13,9 @@ const TYPE_BADGE_CLASS: Record<string, string> = {
 };
 
 export const TeacherSessionCard = ({ data }: { data: SessionItem }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const sessionTypeLabels = getSessionTypeLabels(t);
 
   return (
     <button
@@ -34,7 +37,7 @@ export const TeacherSessionCard = ({ data }: { data: SessionItem }) => {
           }`}
         >
           {data.isLocked ? <Lock size={10} /> : <LockOpen size={10} />}
-          {data.isLocked ? "Yo'qlama olindi" : "Kutilmoqda"}
+          {data.isLocked ? t("sessions.attendanceTaken") : t("sessions.pending")}
         </span>
         {data.subject && (
           <span className="text-[11px] px-2 py-0.5 rounded-full font-medium bg-bloom/10 text-bloom">
@@ -62,7 +65,7 @@ export const TeacherSessionCard = ({ data }: { data: SessionItem }) => {
 
       {data.topic && (
         <p className="text-xs text-ink-soft mt-2 pt-2 border-t border-ink/8 line-clamp-2">
-          Mavzu: {data.topic}
+          {t("sessions.topicLabel")}: {data.topic}
         </p>
       )}
     </button>

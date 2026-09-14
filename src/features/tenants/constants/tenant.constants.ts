@@ -8,14 +8,18 @@ export const tenantQueryKeys = {
 
 export const TENANT_KEY = "active_tenant_id";
 
-export const TENANT_TYPE_LABELS: Record<TenantOrgType, string> = {
-  learning_center: "O'quv markaz",
-  school: "Maktab",
-  academic_lyceum: "Akademik litsey",
-  college: "Kollej",
-  university: "Universitet",
-};
+export const getTenantTypeLabels = (
+  t: (key: string) => string,
+): Record<TenantOrgType, string> => ({
+  learning_center: t("tenants.type.learning_center"),
+  school: t("tenants.type.school"),
+  academic_lyceum: t("tenants.type.academic_lyceum"),
+  college: t("tenants.type.college"),
+  university: t("tenants.type.university"),
+});
 
-export const TENANT_TYPE_OPTIONS: IOption[] = Object.entries(
-  TENANT_TYPE_LABELS,
-).map(([value, label]) => ({ value, label }));
+export const getTenantTypeOptions = (t: (key: string) => string): IOption[] =>
+  Object.entries(getTenantTypeLabels(t)).map(([value, label]) => ({
+    value,
+    label,
+  }));

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +25,7 @@ export const StudentFormModal = ({
   mode,
   student,
 }: Props) => {
+  const { t } = useTranslation();
   const isEdit = mode === "edit";
   const { isPending, onSubmitCreate, onSubmitEdit, createForm, editForm } =
     useCreateEditStudent({
@@ -38,7 +40,9 @@ export const StudentFormModal = ({
       <DialogContent className="sm:max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? "Talabani tahrirlash" : "Yangi talaba qo'shish"}
+            {isEdit
+              ? t("students.form.editTitle")
+              : t("students.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
@@ -52,13 +56,13 @@ export const StudentFormModal = ({
                 <ControlledInput
                   control={editForm.control}
                   name="fullName"
-                  label="F.I.Sh"
-                  placeholder="Sardor Rahimov"
+                  label={t("students.form.fullNameLabel")}
+                  placeholder={t("students.form.fullNamePlaceholder")}
                 />
                 <ControlledInput
                   control={editForm.control}
                   name="phone"
-                  label="Telefon raqam"
+                  label={t("students.form.phoneLabel")}
                   placeholder="+998901234567"
                 />
               </div>
@@ -67,14 +71,14 @@ export const StudentFormModal = ({
                 <ControlledInput
                   control={editForm.control}
                   name="email"
-                  label="Email (ixtiyoriy)"
+                  label={t("students.form.emailLabel")}
                   placeholder="sardor@example.com"
                   type="email"
                 />
                 <ControlledInput
                   control={editForm.control}
                   name="parentPhone"
-                  label="Ota-ona telefoni (ixtiyoriy)"
+                  label={t("students.form.parentPhoneLabel")}
                   placeholder="+998901234567"
                 />
               </div>
@@ -82,7 +86,7 @@ export const StudentFormModal = ({
               <ControlledInput
                 control={editForm.control}
                 name="avatarUrl"
-                label="Avatar URL (ixtiyoriy)"
+                label={t("students.form.avatarUrlLabel")}
                 placeholder="https://example.com/avatar.jpg"
               />
 
@@ -94,14 +98,14 @@ export const StudentFormModal = ({
                   disabled={isPending}
                   className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                 >
-                  Bekor qilish
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
                   className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  {isPending ? "Saqlanmoqda..." : "Saqlash"}
+                  {isPending ? t("common.saving") : t("common.save")}
                 </Button>
               </DialogFooter>
             </form>
@@ -115,34 +119,34 @@ export const StudentFormModal = ({
               <ControlledInput
                 control={createForm.control}
                 name="fullName"
-                label="F.I.Sh"
-                placeholder="Sardor Rahimov"
+                label={t("students.form.fullNameLabel")}
+                placeholder={t("students.form.fullNamePlaceholder")}
               />
               <ControlledInput
                 control={createForm.control}
                 name="phone"
-                label="Telefon raqam"
+                label={t("students.form.phoneLabel")}
                 placeholder="+998901234567"
               />
               <ControlledInput
                 control={createForm.control}
                 name="password"
-                label="Parol"
-                placeholder="Parol kiriting"
+                label={t("students.form.passwordLabel")}
+                placeholder={t("students.form.passwordPlaceholder")}
                 type="password"
               />
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput
                   control={createForm.control}
                   name="email"
-                  label="Email (ixtiyoriy)"
+                  label={t("students.form.emailLabel")}
                   placeholder="ali@gmail.com"
                   type="email"
                 />
                 <ControlledInput
                   control={createForm.control}
                   name="parentPhone"
-                  label="Ota-ona telefoni (ixtiyoriy)"
+                  label={t("students.form.parentPhoneLabel")}
                   placeholder="+998901234568"
                 />
               </div>
@@ -150,7 +154,7 @@ export const StudentFormModal = ({
               <ControlledInput
                 control={createForm.control}
                 name="avatarUrl"
-                label="Avatar URL (ixtiyoriy)"
+                label={t("students.form.avatarUrlLabel")}
                 placeholder="https://example.com/avatar.jpg"
               />
 
@@ -162,14 +166,14 @@ export const StudentFormModal = ({
                   disabled={isPending}
                   className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
                 >
-                  Bekor qilish
+                  {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
                   className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
-                  {isPending ? "Qo'shilmoqda..." : "Qo'shish"}
+                  {isPending ? t("common.adding") : t("common.add")}
                 </Button>
               </DialogFooter>
             </form>
