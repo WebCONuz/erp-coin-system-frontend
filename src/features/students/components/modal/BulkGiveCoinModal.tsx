@@ -93,7 +93,7 @@ export const BulkGiveCoinModal = ({
         side="right"
         className="w-full sm:w-140 p-0 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 flex flex-col"
       >
-        <SheetHeader className="px-6 pt-6 pb-4 border-b border-zinc-200 dark:border-zinc-800">
+        <SheetHeader className="p-4 border-b border-zinc-200 dark:border-zinc-800">
           <SheetTitle className="text-zinc-900 dark:text-zinc-50">
             {title}
           </SheetTitle>
@@ -112,7 +112,7 @@ export const BulkGiveCoinModal = ({
         ) : (
           <div className="flex-1 overflow-hidden flex flex-col">
             {/* Search */}
-            <div className="px-6 pt-4">
+            <div className="px-4 pt-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                 <Input
@@ -133,7 +133,7 @@ export const BulkGiveCoinModal = ({
             </div>
 
             {/* Select all */}
-            <div className="px-6 py-3 flex items-center justify-between">
+            <div className="px-4 py-3 flex items-center justify-between">
               <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 cursor-pointer select-none">
                 <Checkbox
                   checked={
@@ -156,7 +156,7 @@ export const BulkGiveCoinModal = ({
             </div>
 
             {/* Student list */}
-            <ScrollArea className="px-6 h-52 shrink-0 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+            <ScrollArea className="px-4 h-[calc(100vh-540px)] shrink-0 border-b border-zinc-200 dark:border-zinc-800 pb-3">
               {filteredStudents.length === 0 ? (
                 <EmptyState search={search} />
               ) : (
@@ -164,7 +164,7 @@ export const BulkGiveCoinModal = ({
                   {filteredStudents.map((student) => (
                     <label
                       key={student.id}
-                      className="flex items-center gap-3 p-2.5 rounded-lg border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 cursor-pointer transition-colors"
+                      className="flex items-center gap-3 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 cursor-pointer transition-colors"
                     >
                       <Checkbox
                         checked={selectedIds.includes(student.id)}
@@ -197,7 +197,7 @@ export const BulkGiveCoinModal = ({
                 onSubmit={submit}
                 className="flex-1 overflow-hidden flex flex-col"
               >
-                <ScrollArea className="flex-1 px-6 py-4">
+                <ScrollArea className="flex-1 p-4">
                   <Tabs
                     value={mode}
                     onValueChange={(v) =>
@@ -229,7 +229,9 @@ export const BulkGiveCoinModal = ({
                           label="Qoidani tanlang"
                           isLoading={isRulesLoading}
                           placeholder={
-                            isRulesLoading ? "Yuklanmoqda..." : "Qoidani tanlang"
+                            isRulesLoading
+                              ? "Yuklanmoqda..."
+                              : "Qoidani tanlang"
                           }
                           options={activeRules.map((rule) => ({
                             value: rule.id,
@@ -304,7 +306,7 @@ export const BulkGiveCoinModal = ({
                 </ScrollArea>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
                   <div className="flex gap-2">
                     <Button
                       type="button"
@@ -341,17 +343,27 @@ const ResultsView = ({
   onClose,
   onGiveMore,
 }: {
-  result: { totalRequested: number; successCount: number; failedCount: number; results: { studentId: string; success: boolean; error?: string; newBalance?: number }[] };
+  result: {
+    totalRequested: number;
+    successCount: number;
+    failedCount: number;
+    results: {
+      studentId: string;
+      success: boolean;
+      error?: string;
+      newBalance?: number;
+    }[];
+  };
   studentsById: Map<string, BulkCoinStudent>;
   onClose: () => void;
   onGiveMore: () => void;
 }) => {
   return (
     <div className="flex-1 overflow-hidden flex flex-col">
-      <div className="px-6 py-4 flex items-center gap-4 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="px-4 py-4 flex items-center gap-4 border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400">
           <CheckCircle2 size={15} />
-          {result.successCount} muvaffaqiyatli
+          {result.successCount} ta o'quvchi mukofotlandi
         </div>
         {result.failedCount > 0 && (
           <div className="flex items-center gap-1.5 text-sm text-red-600 dark:text-red-400">
@@ -361,7 +373,7 @@ const ResultsView = ({
         )}
       </div>
 
-      <ScrollArea className="flex-1 px-6 py-3">
+      <ScrollArea className="flex-1 px-4 py-3">
         <div className="space-y-2">
           {result.results.map((r) => {
             const student = studentsById.get(r.studentId);
@@ -407,7 +419,7 @@ const ResultsView = ({
         </div>
       </ScrollArea>
 
-      <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex gap-2">
+      <div className="px-4 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex gap-2">
         <Button
           variant="outline"
           onClick={onGiveMore}

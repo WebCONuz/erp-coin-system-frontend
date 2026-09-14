@@ -23,7 +23,7 @@ const SessionDetailPage = () => {
         className="gap-2 -ml-2"
       >
         <ArrowLeft size={16} />
-        Darslarga qaytish
+        Sessiyalar qaytish
       </Button>
 
       {isLoading ? (
@@ -38,7 +38,7 @@ const SessionDetailPage = () => {
               <h3 className="text-lg font-semibold">Yo'qlama</h3>
               <AttendanceTable
                 sessionId={session.id}
-                groupId={session.groupId ?? session.group.id}
+                groupId={session.group.id}
                 isLocked={session.isLocked}
               />
             </div>

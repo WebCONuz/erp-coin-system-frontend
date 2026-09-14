@@ -1,6 +1,5 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
 import { Form } from "@/components/ui/form";
 import { DashboardTitle } from "@/components/shared/title";
 import {
@@ -50,13 +49,13 @@ export const SessionsFilterBar = ({
       <div className={`${hasAction && "w-full"} space-y-3`}>
         {hasAction && (
           <div className="flex items-center justify-between">
-            <DashboardTitle title="Darslar" />
+            <DashboardTitle title="Sessiyalar" />
             <Button
               onClick={onAdd}
               className="bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg px-4 h-9 gap-2 shadow-sm duration-200"
             >
               <Plus size={18} />
-              <span className="hidden sm:inline">Dars qo'shish</span>
+              <span className="hidden sm:inline">Sessiya qo'shish</span>
             </Button>
           </div>
         )}

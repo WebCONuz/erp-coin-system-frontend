@@ -68,9 +68,9 @@ const AdminStudentDetail = lazy(
 const AdminControlLayput = lazy(
   () => import("@/pages/control/admin/AdminControlLayout"),
 );
-const AdminSessions = lazy(() => import("@/pages/sessions/SessionsPage"));
+const AdminSessions = lazy(() => import("@/pages/sessions/admin/SessionsPage"));
 const AdminSessionDetail = lazy(
-  () => import("@/pages/sessions/SessionDetailPage"),
+  () => import("@/pages/sessions/admin/SessionDetailPage"),
 );
 const PlansPage = lazy(() => import("@/pages/plans/admin/PlansPage"));
 const EmployeesPage = lazy(() => import("@/pages/control/admin/EmployeesPage"));

@@ -105,11 +105,16 @@ export const SessionListCard = ({
         </div>
         <div className="flex items-center gap-1.5">
           <DoorOpen size={14} />
-          <span>{data.room.name}</span>
+          <span>
+            <b>Xona:</b> "{data.room.name}"
+          </span>
         </div>
         <div className="flex items-center gap-1.5">
           <UsersRound size={14} />
-          <span>{data.teacher.fullName}</span>
+          <span>
+            <b>O'qituvchi: </b>
+            {data.teacher.fullName}
+          </span>
         </div>
       </div>
 

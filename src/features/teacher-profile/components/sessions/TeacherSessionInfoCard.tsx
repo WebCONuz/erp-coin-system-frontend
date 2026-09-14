@@ -38,7 +38,7 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
       topic: session.topic ?? "",
       startTime: session.startTime,
       endTime: session.endTime,
-      roomId: session.roomId ?? session.room.id ?? "",
+      roomId: session.room.id ?? "",
     },
   });
 
@@ -47,7 +47,7 @@ export const TeacherSessionInfoCard = ({ session }: Props) => {
       topic: session.topic ?? "",
       startTime: session.startTime,
       endTime: session.endTime,
-      roomId: session.roomId ?? session.room.id ?? "",
+      roomId: session.room.id ?? "",
     });
   }, [session, form]);
 

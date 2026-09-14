@@ -47,8 +47,8 @@ const SessionsPage = () => {
         <>
           {sessions.data.length === 0 ? (
             <NoDataBox
-              title="Hali darslar mavjud emas!"
-              btnText="Dars qo'shish"
+              title="Hali Sessiyalar mavjud emas!"
+              btnText="Sessiya qo'shish"
               btnFn={() => setIsModalOpen(true)}
               hasAction={false}
             />

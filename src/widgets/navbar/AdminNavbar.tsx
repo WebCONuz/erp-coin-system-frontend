@@ -41,9 +41,9 @@ const LANGUAGES = [
 ];
 
 const QUICK_ACTIONS = [
-  { key: "student", label: "Talaba qo'shish", icon: UserPlus },
-  { key: "group", label: "Sinf qo'shish", icon: BookOpen },
-  { key: "payment", label: "To'lov qo'shish", icon: CreditCard },
+  { key: "student", label: "Yangi talaba", icon: UserPlus },
+  { key: "group", label: "Yangi guruh", icon: BookOpen },
+  { key: "session", label: "Yangi sessiya", icon: CreditCard },
 ];
 
 // Props
@@ -137,7 +137,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
               variant="outline"
               className="h-9 gap-1 px-2.5 text-sm font-medium focus-visible:ring-0"
             >
-              <Plus size={15} />
+              <Plus size={15} /> Tezkor qo'shish
               <ChevronDown size={13} className="text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>

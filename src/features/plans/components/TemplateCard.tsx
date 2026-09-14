@@ -1,10 +1,9 @@
-import { Pencil, Trash } from "lucide-react";
+import { Clock3, DoorOpen, GraduationCap, Pencil, Trash } from "lucide-react";
 import type { ScheduleTemplate } from "../types";
 
 interface Props {
   template: ScheduleTemplate;
   groupName: string;
-  roomName: string;
   colorClass: string;
   onEdit: () => void;
   onDelete: () => void;
@@ -13,7 +12,6 @@ interface Props {
 export const TemplateCard = ({
   template,
   groupName,
-  roomName,
   colorClass,
   onEdit,
   onDelete,
@@ -21,7 +19,7 @@ export const TemplateCard = ({
   return (
     <div
       onClick={onEdit}
-      className={`group relative cursor-pointer rounded-lg border-l-4 p-3 shadow-sm transition-all hover:shadow-md ${colorClass}`}
+      className={`group relative cursor-pointer rounded-lg border-l-4 p-2 shadow-sm transition-all hover:shadow-md ${colorClass}`}
     >
       <div className="absolute top-2 right-2 flex gap-x-1.5 opacity-0 transition-opacity group-hover:opacity-100">
         <button
@@ -43,18 +41,23 @@ export const TemplateCard = ({
           <Trash size={13} />
         </button>
       </div>
-      <p className="pr-10 text-sm font-semibold text-foreground">{groupName}</p>
-      <p className="text-xs text-muted-foreground mt-1">
-        <b>Xona:</b> {roomName}
+      <p className="pr-10 text-sm font-semibold text-foreground">
+        {template.subject ? template.subject.name : groupName}
       </p>
-      <p className="text-xs text-muted-foreground">
-        <b>Vaqti:</b> {template.startTime} – {template.endTime}
-      </p>
+
       {template.teacher && (
-        <p className="text-xs text-muted-foreground">
-          <b>O'qituvchi:</b> {template.teacher.fullName}
+        <p className="text-xs text-muted-foreground flex items-center gap-x-1 mt-1">
+          <GraduationCap size={12} /> <b>O'qituvchi:</b>{" "}
+          {template.teacher.fullName}
         </p>
       )}
+      <p className="text-xs text-muted-foreground flex items-center gap-x-1">
+        <DoorOpen size={12} /> <b>Xona:</b> "{template.room.name}"
+      </p>
+      <p className="text-xs text-muted-foreground flex items-center gap-x-1">
+        <Clock3 size={12} /> <b>Vaqti:</b>
+        {template.startTime} – {template.endTime}
+      </p>
     </div>
   );
 };

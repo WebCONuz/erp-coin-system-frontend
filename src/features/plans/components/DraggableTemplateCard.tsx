@@ -33,7 +33,6 @@ export const DraggableTemplateCard = ({
       <TemplateCard
         template={template}
         groupName={template.group.name}
-        roomName={template.room.name}
         colorClass={colorClass}
         onEdit={onEdit}
         onDelete={onDelete}

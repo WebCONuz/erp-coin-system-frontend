@@ -23,4 +23,5 @@ export const ENDPOINTS = {
   SUBJECTS: "/api/subjects",
   SCHEDULE_TEMPLATES: "/api/schedule-templates",
   SCHEDULE_EXCEPTIONS: "/api/schedule-exceptions",
+  DASHBOARD: "/api/dashboard",
 };

@@ -165,7 +165,7 @@ export const WeeklyKanban = ({
   };
 
   return (
-    <div className="rounded-2xl bg-background p-6 shadow-sm">
+    <div className="rounded-2xl bg-background p-4 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h3 className="text-lg font-semibold">Haftalik Shablon</h3>
         <div className="flex items-center gap-2">
@@ -213,14 +213,14 @@ export const WeeklyKanban = ({
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-7">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-7">
             {WEEKDAYS.map((weekday) => {
               const dayTemplates =
                 templates?.data.filter((t) => t.weekday === weekday) ?? [];
 
               return (
                 <DroppableColumn key={weekday} weekday={weekday}>
-                  <div className="flex items-center justify-between px-1">
+                  <div className="flex items-center gap-x-2 px-1">
                     <span className="text-sm font-semibold">
                       {WEEKDAY_LABELS[weekday]}
                     </span>
@@ -257,7 +257,6 @@ export const WeeklyKanban = ({
               <TemplateCard
                 template={activeTemplate}
                 groupName={activeTemplate.group.name}
-                roomName={activeTemplate.room.name}
                 colorClass="border-l-primary shadow-lg"
                 onEdit={() => {}}
                 onDelete={() => {}}

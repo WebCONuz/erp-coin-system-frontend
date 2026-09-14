@@ -31,7 +31,7 @@ const SessionDetailPage = () => {
               </h3>
               <TeacherAttendanceTable
                 sessionId={session.id}
-                groupId={session.groupId ?? session.group.id}
+                groupId={session.group.id}
                 isLocked={session.isLocked}
               />
             </div>

@@ -44,9 +44,9 @@ export const SessionInfoCard = ({ session }: Props) => {
       topic: session.topic ?? "",
       startTime: session.startTime,
       endTime: session.endTime,
-      roomId: session.roomId ?? session.room.id ?? "",
-      teacherId: session.teacherId ?? session.teacher.id ?? "",
-      subjectId: session.subjectId ?? session.subject?.id ?? "",
+      roomId: session.room.id ?? "",
+      teacherId: session.teacher.id ?? "",
+      subjectId: session.subject?.id ?? "",
     },
   });
 
@@ -55,9 +55,9 @@ export const SessionInfoCard = ({ session }: Props) => {
       topic: session.topic ?? "",
       startTime: session.startTime,
       endTime: session.endTime,
-      roomId: session.roomId ?? session.room.id ?? "",
-      teacherId: session.teacherId ?? session.teacher.id ?? "",
-      subjectId: session.subjectId ?? session.subject?.id ?? "",
+      roomId: session.room.id ?? "",
+      teacherId: session.teacher.id ?? "",
+      subjectId: session.subject?.id ?? "",
     });
   }, [session, form]);
 

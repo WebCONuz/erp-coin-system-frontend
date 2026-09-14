@@ -1,4 +1,11 @@
-import { Check, Pencil } from "lucide-react";
+import {
+  BookOpen,
+  Check,
+  Clock3,
+  DoorOpen,
+  GraduationCap,
+  Pencil,
+} from "lucide-react";
 import type { CalendarDayEntry } from "../types";
 
 interface Props {
@@ -18,6 +25,7 @@ export const SessionChip = ({
   const isLocked = session?.isLocked ?? false;
   const topic = session?.topic;
   const subjectName = session?.subject?.name ?? template?.subject?.name;
+  const teacherName = template?.teacher?.fullName;
 
   if (exception?.isCancelled) {
     return (
@@ -71,27 +79,39 @@ export const SessionChip = ({
   return (
     <button
       onClick={hasAction ? onClick : () => {}}
-      className={`w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium ${colorClass}`}
+      className={`w-full space-y-0.5 rounded px-1.5 py-1 text-left text-[11px] font-medium ${colorClass}`}
     >
-      {subjectName ? (
-        <>
-          <b>Fan:</b> {subjectName}
-          <br />
-        </>
-      ) : (
-        ""
+      {(subjectName || teacherName) && (
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+          {subjectName && (
+            <span className="inline-flex min-w-0 items-center gap-1">
+              <BookOpen size={11} className="shrink-0" />
+              <span className="truncate">{subjectName}</span>
+            </span>
+          )}
+          {teacherName && (
+            <span className="inline-flex min-w-0 items-center gap-1">
+              <GraduationCap size={11} className="shrink-0" />
+              <span className="truncate">{teacherName}</span>
+            </span>
+          )}
+        </div>
       )}
-      <b>Xona:</b> {template?.room?.name ?? "-"}
-      <br />
-      <b>Vaqti:</b> {`${template.startTime} : ${template.endTime}`}
-      <br />
-      {topic ? (
-        <>
-          <b>Vaqti:</b> <span>{topic}</span>
-        </>
-      ) : (
-        ""
-      )}
+
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+        <span className="inline-flex min-w-0 items-center gap-1">
+          <DoorOpen size={11} className="shrink-0" />
+          <span className="truncate">{template?.room?.name ?? "-"}</span>
+        </span>
+        <span className="inline-flex min-w-0 items-center gap-1">
+          <Clock3 size={11} className="shrink-0" />
+          <span className="truncate">
+            {template.startTime} - {template.endTime}
+          </span>
+        </span>
+      </div>
+
+      {topic && <div className="truncate">{topic}</div>}
     </button>
   );
 };

@@ -27,7 +27,11 @@ export interface ScheduleTemplate {
   teacherId: string | null;
   subjectId: string | null;
   createdById: string;
-  group: { id: string; name: string };
+  group: {
+    id: string;
+    name: string;
+    teacher: { id: string; fullName: string };
+  };
   room: { id: string; name: string };
   teacher: { id: string; fullName: string } | null;
   subject: { id: string; name: string } | null;
@@ -92,6 +96,7 @@ export interface CalendarDayEntry {
     endTime: string;
     room: { id: string; name: string };
     subject?: { id: string; name: string } | null;
+    teacher?: { id: string; fullName: string } | null;
   };
   exception: ScheduleException | null;
   session: CalendarSession;

@@ -133,7 +133,7 @@ export const MonthlyCalendar = ({
     setExceptionState((s) => ({ ...s, open: false }));
 
   return (
-    <div className="rounded-2xl bg-background p-6 shadow-sm">
+    <div className="rounded-2xl bg-background p-4 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Button

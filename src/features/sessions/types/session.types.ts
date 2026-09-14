@@ -33,10 +33,6 @@ export interface SessionItem {
   room: SessionRoomRef;
   teacher: SessionTeacherRef;
   subject?: SessionSubjectRef | null;
-  groupId?: string;
-  roomId?: string;
-  teacherId?: string;
-  subjectId?: string | null;
 }
 
 export interface SessionsResponse {
