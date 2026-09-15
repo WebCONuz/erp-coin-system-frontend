@@ -1,9 +1,7 @@
 import { Coins, Gift, Users } from "lucide-react";
 import { formatDate } from "@/ustils";
+import { RadialProgress } from "@/components/shared/charts";
 import type { StudentDetailFull } from "@/features/students/types";
-
-const R = 18;
-const CIRCUMFERENCE = 2 * Math.PI * R;
 
 const AttendanceRingTile = ({
   present,
@@ -13,33 +11,16 @@ const AttendanceRingTile = ({
   total: number;
 }) => {
   const percent = total ? Math.round((present / total) * 100) : 0;
-  const filled = CIRCUMFERENCE * (Math.min(percent, 100) / 100);
 
   return (
     <div className="rounded-2xl border border-ink/10 bg-white p-5 flex items-center gap-4">
-      <div className="relative w-14 h-14 shrink-0">
-        <svg width="56" height="56" viewBox="0 0 48 48">
-          <circle
-            cx="24"
-            cy="24"
-            r={R}
-            fill="none"
-            stroke="var(--color-paper-soft)"
-            strokeWidth="5"
-          />
-          <circle
-            cx="24"
-            cy="24"
-            r={R}
-            fill="none"
-            stroke="var(--color-forest)"
-            strokeWidth="5"
-            strokeLinecap="round"
-            strokeDasharray={`${filled} ${CIRCUMFERENCE}`}
-            transform="rotate(-90 24 24)"
-          />
-        </svg>
-      </div>
+      <RadialProgress
+        percent={percent}
+        size={56}
+        strokeWidth={5}
+        color="var(--color-forest)"
+        trackColor="var(--color-paper-soft)"
+      />
       <div className="min-w-0">
         <p className="font-display text-xl font-bold text-ink">
           {present}/{total}
@@ -50,7 +31,11 @@ const AttendanceRingTile = ({
   );
 };
 
-export const ProfileStatsRow = ({ student }: { student: StudentDetailFull }) => {
+export const ProfileStatsRow = ({
+  student,
+}: {
+  student: StudentDetailFull;
+}) => {
   const lastTx = student.coinTransactionsReceived?.[0];
   const lastCoinActivity = lastTx
     ? `${lastTx.direction === "earn" ? "+" : "-"}${lastTx.amount} · ${formatDate(lastTx.createdAt, "dd.MM.yyyy")}`

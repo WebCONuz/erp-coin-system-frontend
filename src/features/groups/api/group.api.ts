@@ -8,6 +8,7 @@ import type {
   GroupDetail,
   GroupItem,
   GroupResponse,
+  GroupStats,
   UpdateGroupDto,
   UpdateResponse,
 } from "../types";
@@ -40,6 +41,13 @@ export const updateGroup = async (
 export const getGroupById = async (groupId: string): Promise<GroupDetail> => {
   const response = await request.get<GroupDetail>(
     `${ENDPOINTS.GROUPS}/${groupId}`,
+  );
+  return response.data;
+};
+
+export const getGroupStats = async (groupId: string): Promise<GroupStats> => {
+  const response = await request.get<GroupStats>(
+    `${ENDPOINTS.GROUPS}/${groupId}/stats`,
   );
   return response.data;
 };

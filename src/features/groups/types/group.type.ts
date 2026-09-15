@@ -129,3 +129,27 @@ export interface BulkAddStudentsResponse {
     skippedAlreadyActive: number;
   };
 }
+
+// --- Stats ---
+
+export interface GroupAvgBalanceTrendPoint {
+  date: string;
+  avgBalance: number;
+}
+
+export interface GroupWeeklyActivityTrendPoint {
+  date: string;
+  earned: number;
+  deducted: number;
+}
+
+export interface GroupStats {
+  avgBalance: {
+    current: number;
+    trend: GroupAvgBalanceTrendPoint[];
+  };
+  weeklyActivity: {
+    totalTransactions: number;
+    trend: GroupWeeklyActivityTrendPoint[];
+  };
+}

@@ -64,7 +64,7 @@ const GroupDetail = () => {
       {/* Guruh ma'lumotlari */}
       <div className="grid grid-cols-2 items-start gap-6">
         <div>
-          <StudentBalance />
+          <StudentBalance groupId={group.id} />
           <GroupInfo group={group} onEdit={() => setIsEditModalOpen(true)} />
         </div>
         <StudentsSection

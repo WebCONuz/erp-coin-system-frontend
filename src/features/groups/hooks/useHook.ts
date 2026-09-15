@@ -7,6 +7,7 @@ import {
   getAllGroups,
   updateGroup,
   getGroupById,
+  getGroupStats,
   addStudent,
   bulkAddStudents,
   removeStudent,
@@ -119,6 +120,14 @@ export const useGroup = (groupId: string) => {
   return useQuery({
     queryKey: groupKeys.oneGroupById(groupId),
     queryFn: () => getGroupById(groupId),
+    enabled: !!groupId,
+  });
+};
+
+export const useGroupStats = (groupId: string) => {
+  return useQuery({
+    queryKey: groupKeys.groupStats(groupId),
+    queryFn: () => getGroupStats(groupId),
     enabled: !!groupId,
   });
 };
