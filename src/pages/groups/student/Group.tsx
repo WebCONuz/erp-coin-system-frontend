@@ -17,8 +17,8 @@ const Group = () => {
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div>
+        <div className="mb-3">
           <h1 className="font-display text-2xl font-semibold text-ink">
             Guruhlar
           </h1>

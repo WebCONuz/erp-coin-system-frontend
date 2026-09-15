@@ -21,16 +21,19 @@ export const CoinEconomySection = ({ coinEconomy, isLoading }: Props) => {
           title={t("admin.dashboard.coinEconomy.inCirculation")}
           value={isLoading ? undefined : coinEconomy?.totalInCirculation}
           icon={<Coins size={18} />}
+          bgColor="bg-blue-50 dark:bg-blue-500/20"
         />
         <StatsCard
           title={t("admin.dashboard.coinEconomy.earnedThisMonth")}
           value={isLoading ? undefined : coinEconomy?.earnedThisMonth}
           icon={<TrendingUp size={18} className="text-emerald-500" />}
+          bgColor="bg-green-50 dark:bg-green-500/10"
         />
         <StatsCard
           title={t("admin.dashboard.coinEconomy.deductedThisMonth")}
           value={isLoading ? undefined : coinEconomy?.deductedThisMonth}
           icon={<TrendingDown size={18} className="text-red-500" />}
+          bgColor="bg-red-50 dark:bg-red-500/10"
         />
       </div>
 

@@ -15,8 +15,8 @@ const Group = () => {
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div>
+        <div className="mb-3">
           <h1 className="font-display text-2xl font-semibold text-ink">
             Guruhlarim
           </h1>
@@ -24,7 +24,6 @@ const Group = () => {
             Dars beradigan guruhlaringiz va dars jadvali
           </p>
         </div>
-
         <TabsList className="bg-white border border-ink/10 p-1 rounded-full h-auto flex-wrap gap-1">
           {TAB_OPTIONS.map((tab) => (
             <TabsTrigger

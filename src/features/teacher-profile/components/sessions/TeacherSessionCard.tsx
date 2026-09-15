@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CalendarDays, Clock, DoorOpen, Lock, LockOpen } from "lucide-react";
+import { CalendarDays, CheckCircle2, Clock, DoorOpen, Timer } from "lucide-react";
 import { formatDate } from "@/ustils";
 import { getSessionTypeLabels } from "@/features/sessions/constants";
 import type { SessionItem } from "@/features/sessions/types";
@@ -33,11 +33,11 @@ export const TeacherSessionCard = ({ data }: { data: SessionItem }) => {
         </span>
         <span
           className={`flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium ${
-            data.isLocked ? "bg-forest/10 text-forest" : "bg-gold/15 text-gold"
+            data.isChecked ? "bg-forest/10 text-forest" : "bg-gold/15 text-gold"
           }`}
         >
-          {data.isLocked ? <Lock size={10} /> : <LockOpen size={10} />}
-          {data.isLocked ? t("sessions.attendanceTaken") : t("sessions.pending")}
+          {data.isChecked ? <CheckCircle2 size={10} /> : <Timer size={10} />}
+          {data.isChecked ? t("sessions.attendanceTaken") : t("sessions.pending")}
         </span>
         {data.subject && (
           <span className="text-[11px] px-2 py-0.5 rounded-full font-medium bg-bloom/10 text-bloom">

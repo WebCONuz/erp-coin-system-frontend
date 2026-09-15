@@ -45,6 +45,25 @@ export const TeacherAttendanceTable = ({ sessionId, groupId, isLocked }: Props) 
     }));
   };
 
+  const toggleAll = (field: keyof LocalRecord, value: boolean) => {
+    if (isLocked) return;
+    setRecords((prev) => {
+      const next: Record<string, LocalRecord> = {};
+      for (const [studentId, record] of Object.entries(prev)) {
+        next[studentId] = { ...record, [field]: value };
+      }
+      return next;
+    });
+  };
+
+  const recordValues = Object.values(records);
+  const allPresent =
+    recordValues.length > 0 && recordValues.every((r) => r.isPresent);
+  const somePresent = recordValues.some((r) => r.isPresent);
+  const allHomeworkDone =
+    recordValues.length > 0 && recordValues.every((r) => r.homeworkDone);
+  const someHomeworkDone = recordValues.some((r) => r.homeworkDone);
+
   const handleSave = () => {
     const payload: AttendanceRecordInput[] = Object.entries(records).map(
       ([studentId, r]) => ({ studentId, ...r }),
@@ -53,7 +72,19 @@ export const TeacherAttendanceTable = ({ sessionId, groupId, isLocked }: Props) 
     saveAttendance.mutate(
       { records: payload },
       {
-        onSuccess: (res) => toast.success(res.message),
+        onSuccess: (res) => {
+          toast.success(res.message);
+
+          if (res.coinsSkippedFor?.length) {
+            const nameById = new Map(
+              group?.students.map(({ student }) => [student.id, student.fullName]) ?? [],
+            );
+
+            res.coinsSkippedFor.forEach((skip) => {
+              toast.warning(`${nameById.get(skip.studentId) ?? skip.studentId}: ${skip.reason}`);
+            });
+          }
+        },
         onError: (error: any) =>
           toast.error(error?.data?.message || "Xatolik yuz berdi"),
       },
@@ -87,10 +118,28 @@ export const TeacherAttendanceTable = ({ sessionId, groupId, isLocked }: Props) 
                 Telefon
               </th>
               <th className="px-4 py-2.5 text-center font-medium text-ink">
-                Keldi
+                <div className="flex items-center justify-center gap-2">
+                  <Checkbox
+                    isMinusIcon={somePresent && !allPresent}
+                    checked={allPresent}
+                    disabled={isLocked}
+                    onCheckedChange={() => toggleAll("isPresent", !allPresent)}
+                  />
+                  Keldi
+                </div>
               </th>
               <th className="px-4 py-2.5 text-center font-medium text-ink">
-                Uy vazifasi
+                <div className="flex items-center justify-center gap-2">
+                  <Checkbox
+                    isMinusIcon={someHomeworkDone && !allHomeworkDone}
+                    checked={allHomeworkDone}
+                    disabled={isLocked}
+                    onCheckedChange={() =>
+                      toggleAll("homeworkDone", !allHomeworkDone)
+                    }
+                  />
+                  Uy vazifasi
+                </div>
               </th>
             </tr>
           </thead>

@@ -34,17 +34,17 @@ export const TeacherGroupsPreview = ({
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {groups.map((group) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
+        {groups.map((group, index) => (
           <Link
             key={group.id}
             to={`/teacher/groups/${group.id}`}
-            className="flex items-center gap-3 rounded-xl border border-ink/8 px-3 py-2.5 hover:border-gold/40 transition-colors"
+            className="flex items-center gap-3 rounded-xl bg-paper border border-ink/8 px-3 py-2.5 hover:border-gold/40 transition-colors"
           >
             <div
-              className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-xs font-semibold ${accentFor(group.id)}`}
+              className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xs font-semibold ${accentFor(group.id)}`}
             >
-              {group.name.slice(0, 2).toUpperCase()}
+              No{index + 1}
             </div>
             <div className="min-w-0">
               <p className="text-sm font-medium text-ink truncate">
@@ -54,9 +54,9 @@ export const TeacherGroupsPreview = ({
                 {group.course.title}
               </p>
             </div>
-            <span className="ml-auto flex items-center gap-1 text-xs text-ink-soft shrink-0">
-              <Users size={12} />
-              {group._count.students}
+            <span className="ml-auto flex items-center gap-1.5 text-ink-soft shrink-0">
+              <Users size={14} />
+              <b>{group._count.students}</b>
             </span>
           </Link>
         ))}

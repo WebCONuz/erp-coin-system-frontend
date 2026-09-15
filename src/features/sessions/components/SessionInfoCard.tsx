@@ -73,25 +73,27 @@ export const SessionInfoCard = ({ session }: Props) => {
   }, [session, form]);
 
   const onSubmit = (values: SessionInfoFormValues) => {
-    updateSession.mutate(
-      {
-        ...values,
-        topic: values.topic || undefined,
-        subjectId: values.subjectId || null,
-      },
-      {
-        onSuccess: () => toast.success(t("sessions.infoUpdated")),
-        onError: (error: any) =>
-          toast.error(error?.data?.message || t("common.error")),
-      },
-    );
+    const metadata = {
+      topic: values.topic || undefined,
+      subjectId: values.subjectId || null,
+    };
+
+    // Qulflangan sessionda backend faqat metama'lumot (topic/subjectId)ni
+    // qabul qiladi — struktura maydonlari (vaqt/xona/o'qituvchi) shu paytda
+    // so'rovga qo'shilsa, 403 qaytadi.
+    const payload = isLocked ? metadata : { ...values, ...metadata };
+
+    updateSession.mutate(payload, {
+      onSuccess: () => toast.success(t("sessions.infoUpdated")),
+      onError: (error: any) =>
+        toast.error(error?.data?.message || t("common.error")),
+    });
   };
 
   const roomOptions =
     rooms?.data.map((r) => ({ value: r.id, label: r.name })) ?? [];
   const teacherOptions =
-    teachers?.data.map((tch) => ({ value: tch.id, label: tch.fullName })) ??
-    [];
+    teachers?.data.map((tch) => ({ value: tch.id, label: tch.fullName })) ?? [];
   const subjectOptions =
     subjects?.data.map((s) => ({ value: s.id, label: s.name })) ?? [];
 
@@ -102,6 +104,11 @@ export const SessionInfoCard = ({ session }: Props) => {
           <span className="inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400">
             {sessionTypeLabels[session.sessionType] ?? session.sessionType}
           </span>
+          {session?.subject && (
+            <span className="inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-purple-100 text-purple-700 dark:bg-blue-950/50 dark:text-blue-400">
+              {session.subject.name}
+            </span>
+          )}
           {isLocked && (
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-4xl text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
               <Lock size={12} />
@@ -167,6 +174,12 @@ export const SessionInfoCard = ({ session }: Props) => {
             />
           </div>
 
+          {isLocked && (
+            <p className="text-xs text-muted-foreground">
+              {t("sessions.lockedFieldsHint")}
+            </p>
+          )}
+
           <ControlledSelect
             control={form.control}
             name="subjectId"
@@ -185,8 +198,8 @@ export const SessionInfoCard = ({ session }: Props) => {
                   <Textarea
                     placeholder={t("sessions.topicPlaceholder")}
                     className="resize-none h-20"
-                    disabled={isLocked}
                     {...field}
+                    disabled={isLocked}
                   />
                 </FormControl>
                 <FormMessage />

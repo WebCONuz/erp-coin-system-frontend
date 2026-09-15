@@ -15,7 +15,7 @@ const LOGO = "/logo.png";
 
 const NAV_ITEMS = [
   { to: "/teacher", label: "Asosiy", icon: Home, end: true },
-  { to: "/teacher/groups", label: "Guruhlarim", icon: UsersRound },
+  { to: "/teacher/groups", label: "Guruhlar (Dars jadvali)", icon: UsersRound },
   { to: "/teacher/sessions", label: "Darslarim", icon: BookOpenCheck },
   { to: "/teacher/students", label: "O'quvchilarim", icon: GraduationCap },
   { to: "/teacher/coin-rules", label: "Tanga qoidalari", icon: Coins },

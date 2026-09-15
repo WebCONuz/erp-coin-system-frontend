@@ -83,6 +83,7 @@ export interface CalendarSession {
   startTime: string;
   endTime: string;
   isLocked: boolean;
+  isChecked: boolean;
   sessionType: "lesson" | "exam" | "competition" | "extra";
   topic?: string | null;
   subject?: { id: string; name: string } | null;

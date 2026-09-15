@@ -2,11 +2,19 @@ type Props = {
   title: string;
   value?: number;
   icon?: React.ReactNode;
+  bgColor?: string;
 };
 
-export const StatsCard = ({ title, value, icon }: Props) => {
+export const StatsCard = ({
+  title,
+  value,
+  icon,
+  bgColor = "bg-white dark:bg-zinc-900",
+}: Props) => {
   return (
-    <div className="rounded-2xl bg-white dark:bg-zinc-900 p-5 shadow-sm flex items-center justify-between">
+    <div
+      className={`rounded-2xl p-5 shadow-sm flex items-center justify-between ${bgColor}`}
+    >
       <div>
         <p className="text-sm text-muted-foreground">{title}</p>
         {value === undefined ? (

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CalendarDays, Lock, LockOpen } from "lucide-react";
+import { CalendarDays, CheckCircle2, Timer } from "lucide-react";
 import { relativeUzDayLabel } from "@/ustils";
 import type { TeacherDashboardSession } from "../../types";
 
@@ -74,17 +74,17 @@ export const TeacherSessionsCard = ({
                     </div>
                     <span
                       className={`shrink-0 flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full ${
-                        session.isLocked
+                        session.isChecked
                           ? "bg-forest/10 text-forest"
                           : "bg-gold/15 text-gold"
                       }`}
                     >
-                      {session.isLocked ? (
-                        <Lock size={10} />
+                      {session.isChecked ? (
+                        <CheckCircle2 size={10} />
                       ) : (
-                        <LockOpen size={10} />
+                        <Timer size={10} />
                       )}
-                      {session.isLocked ? "Yo'qlama olindi" : "Kutilmoqda"}
+                      {session.isChecked ? "Yo'qlama olindi" : "Kutilmoqda"}
                     </span>
                     <span className="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-paper-soft text-ink-soft border border-ink/10">
                       {SESSION_TYPE_LABELS[session.sessionType] ??

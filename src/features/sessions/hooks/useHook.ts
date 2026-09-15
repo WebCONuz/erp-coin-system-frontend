@@ -4,6 +4,9 @@ import { getAllGroups } from "@/features/groups/api";
 import { getAllRooms } from "@/features/rooms/api";
 import { getAllSubjects } from "@/features/subjects/api";
 import { getAllTeachers } from "@/features/teachers/api/teachers.api";
+import { dashboardKeys } from "@/features/dashboard/constants";
+import { studentSelfKeys } from "@/features/student-profile/constants";
+import { teacherSelfKeys } from "@/features/teacher-profile/constants";
 import { sessionKeys } from "../constants";
 import {
   createSession,
@@ -103,6 +106,12 @@ export const useSaveAttendance = (id: string) => {
       queryClient.invalidateQueries({
         queryKey: sessionKeys.oneSessionById(id),
       });
+      queryClient.invalidateQueries({ queryKey: sessionKeys.allSessions() });
+      // Yo'qlama guruh a'zolarining balansi/statistikasiga ta'sir qilishi mumkin,
+      // shu sababli barcha rollarning dashboardlarini ham yangilaymiz.
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.admin() });
+      queryClient.invalidateQueries({ queryKey: teacherSelfKeys.dashboard() });
+      queryClient.invalidateQueries({ queryKey: studentSelfKeys.dashboard() });
     },
   });
 };
@@ -166,7 +175,7 @@ export const useSessionTeacherOptions = (enabled: boolean = true) => {
 export const useSessionSubjectOptions = (enabled: boolean = true) => {
   return useQuery({
     queryKey: ["session-form-subjects"],
-    queryFn: () => getAllSubjects({ isActive: "true" }),
+    queryFn: () => getAllSubjects({ isActive: "true", limit: "100" }),
     enabled,
   });
 };

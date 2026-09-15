@@ -738,6 +738,8 @@
     "subjectLabelOptional": "Fan (Ixtiyoriy)",
     "attendanceTaken": "Yo'qlama olindi",
     "pending": "Kutilmoqda",
+    "notChecked": "Tekshirilmagan",
+    "lockedFieldsHint": "Dars qulflangan: asosiy ma'lumotlarni (vaqt, xona, o'qituvchi) o'zgartirish uchun avval qulfni oching.",
     "typeLabel": "Turi",
     "filter": {
       "allGroups": "Barcha guruhlar",

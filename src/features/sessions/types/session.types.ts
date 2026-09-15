@@ -29,6 +29,8 @@ export interface SessionItem {
   topic?: string | null;
   isLocked: boolean;
   lockedAt?: string | null;
+  /** Shu sessionda yo'qlama kiritilganmi (isLocked'dan farqli — tahrirlanish mumkinligiga aloqasi yo'q). */
+  isChecked: boolean;
   group: SessionGroupRef;
   room: SessionRoomRef;
   teacher: SessionTeacherRef;
@@ -77,10 +79,16 @@ export interface SaveAttendanceDto {
   records: AttendanceRecordInput[];
 }
 
+export interface CoinSkippedInfo {
+  studentId: string;
+  reason: string;
+}
+
 export interface SaveAttendanceResponse {
   success: boolean;
   message: string;
   processedRecordsCount: number;
+  coinsSkippedFor: CoinSkippedInfo[];
 }
 
 export interface AttendanceRecord {

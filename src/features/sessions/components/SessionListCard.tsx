@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
+  AlertCircle,
   CalendarDays,
   Clock,
   DoorOpen,
@@ -15,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/ustils";
 import { getSessionTypeLabels } from "../constants";
 import type { SessionItem } from "../types";
@@ -31,6 +33,16 @@ const TYPE_BADGE_CLASS: Record<string, string> = {
   trial: "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
 };
 
+const isSessionPastDue = (data: SessionItem) => {
+  const end = new Date(data.sessionDate);
+  if (Number.isNaN(end.getTime())) return false;
+
+  const [hours, minutes] = data.endTime.split(":").map(Number);
+  end.setHours(hours, minutes, 0, 0);
+
+  return end.getTime() < Date.now();
+};
+
 export const SessionListCard = ({
   data,
   onDelete,
@@ -40,10 +52,21 @@ export const SessionListCard = ({
   const navigate = useNavigate();
   const sessionTypeLabels = getSessionTypeLabels(t);
 
+  const isPastDue = isSessionPastDue(data);
+  const isUnchecked = isPastDue && !data.isChecked;
+  const isCheckedPast = isPastDue && data.isChecked;
+
   return (
     <div
       onClick={() => navigate(`/admin/sessions/${data.id}`)}
-      className="border rounded-xl p-3 relative bg-white dark:bg-card cursor-pointer hover:shadow-sm transition-shadow"
+      className={cn(
+        "border rounded-xl p-3 relative cursor-pointer hover:shadow-sm transition-shadow",
+        isUnchecked &&
+          "border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-950/20",
+        isCheckedPast &&
+          "border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900/40",
+        !isUnchecked && !isCheckedPast && "bg-white dark:bg-card",
+      )}
     >
       {hasAction && (
         <div className="absolute top-3 right-2">
@@ -72,7 +95,7 @@ export const SessionListCard = ({
         </div>
       )}
 
-      <div className="flex items-center gap-2 pr-8 mb-2">
+      <div className="flex flex-wrap items-center gap-2 pr-8 mb-2">
         <span
           className={`inline-block px-2 py-0.5 rounded-4xl text-xs font-medium ${
             TYPE_BADGE_CLASS[data.sessionType] ?? TYPE_BADGE_CLASS.lesson
@@ -80,15 +103,21 @@ export const SessionListCard = ({
         >
           {sessionTypeLabels[data.sessionType] ?? data.sessionType}
         </span>
+        {data.subject && (
+          <span className="inline-block px-2 py-0.5 rounded-4xl text-xs font-medium bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-400">
+            {data.subject.name}
+          </span>
+        )}
         {data.isLocked && (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-4xl text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
             <Lock size={11} />
             {t("sessions.locked")}
           </span>
         )}
-        {data.subject && (
-          <span className="inline-block px-2 py-0.5 rounded-4xl text-xs font-medium bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-400">
-            {data.subject.name}
+        {isUnchecked && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-4xl text-xs bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
+            <AlertCircle size={11} />
+            {t("sessions.notChecked")}
           </span>
         )}
       </div>

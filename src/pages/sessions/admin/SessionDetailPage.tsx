@@ -18,9 +18,9 @@ const SessionDetailPage = () => {
   const { data: session, isLoading } = useSession(id ?? "");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <Button
-        variant="ghost"
+        variant="outline"
         onClick={() => navigate(-1)}
         className="gap-2 -ml-2"
       >

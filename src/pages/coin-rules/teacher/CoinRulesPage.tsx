@@ -58,12 +58,14 @@ const CoinRulesPage = () => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             {rules.data.map((rule) => (
               <TeacherCoinRuleCard
                 key={rule.id}
                 data={rule}
-                groupName={rule.groupId ? groupNameById.get(rule.groupId) : undefined}
+                groupName={
+                  rule.groupId ? groupNameById.get(rule.groupId) : undefined
+                }
               />
             ))}
           </div>
@@ -80,7 +82,10 @@ const CoinRulesPage = () => {
         </>
       )}
 
-      <CreateCoinRuleModal open={createOpen} onClose={() => setCreateOpen(false)} />
+      <CreateCoinRuleModal
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+      />
     </div>
   );
 };
