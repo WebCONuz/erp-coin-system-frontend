@@ -22,4 +22,9 @@ export const getSessionTypeLabels = (
   extra: t("sessions.type.extra"),
 });
 
+export const getIsCheckedOptions = (t: (key: string) => string): IOption[] => [
+  { value: "true", label: t("sessions.filter.checked") },
+  { value: "false", label: t("sessions.filter.unchecked") },
+];
+
 export const ALL_VALUE = "all";

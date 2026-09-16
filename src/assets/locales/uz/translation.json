@@ -745,7 +745,11 @@
       "allGroups": "Barcha guruhlar",
       "allTeachers": "Barcha o'qituvchilar",
       "allTypes": "Barcha turlar",
-      "addSession": "Sessiya qo'shish"
+      "addSession": "Sessiya qo'shish",
+      "isCheckedLabel": "Tekshiruv holati",
+      "allCheckStatuses": "Barchasi",
+      "checked": "Tekshirilgan",
+      "unchecked": "Tekshirilmagan"
     },
     "attendance": {
       "title": "Yo'qlama",

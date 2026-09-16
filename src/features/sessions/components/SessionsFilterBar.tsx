@@ -13,7 +13,7 @@ import {
   useSessionGroupOptions,
   useSessionTeacherOptions,
 } from "../hooks";
-import { ALL_VALUE, getSessionTypeOptions } from "../constants";
+import { ALL_VALUE, getIsCheckedOptions, getSessionTypeOptions } from "../constants";
 
 interface Props {
   onAdd?: () => void;
@@ -30,6 +30,7 @@ export const SessionsFilterBar = ({
   const { form } = useFilter();
   const { data: groups } = useSessionGroupOptions();
   const { data: teachers } = useSessionTeacherOptions();
+  const sessionType = form.watch("sessionType");
 
   const groupOptions: IOption[] = [
     { value: ALL_VALUE, label: t("sessions.filter.allGroups") },
@@ -47,6 +48,11 @@ export const SessionsFilterBar = ({
   const typeOptions: IOption[] = [
     { value: ALL_VALUE, label: t("sessions.filter.allTypes") },
     ...getSessionTypeOptions(t),
+  ];
+
+  const isCheckedOptions: IOption[] = [
+    { value: ALL_VALUE, label: t("sessions.filter.allCheckStatuses") },
+    ...getIsCheckedOptions(t),
   ];
 
   return (
@@ -103,6 +109,16 @@ export const SessionsFilterBar = ({
             className="min-w-42"
             buttonClassName="h-8"
           />
+          {sessionType === "lesson" && (
+            <div className="w-44">
+              <ControlledSelect
+                control={form.control}
+                name="isChecked"
+                options={isCheckedOptions}
+                placeholder={t("sessions.filter.isCheckedLabel")}
+              />
+            </div>
+          )}
         </div>
       </div>
     </Form>

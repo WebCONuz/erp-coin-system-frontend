@@ -745,7 +745,11 @@
       "allGroups": "Все группы",
       "allTeachers": "Все учителя",
       "allTypes": "Все типы",
-      "addSession": "Добавить занятие"
+      "addSession": "Добавить занятие",
+      "isCheckedLabel": "Статус проверки",
+      "allCheckStatuses": "Все",
+      "checked": "Проверено",
+      "unchecked": "Не проверено"
     },
     "attendance": {
       "title": "Посещаемость",

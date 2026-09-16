@@ -27,11 +27,17 @@ import type {
 
 export const useSessions = () => {
   const [searchParams] = useSearchParams();
+  const sessionType = searchParams.get("sessionType") || undefined;
   const params = {
     groupId: searchParams.get("groupId") || undefined,
     teacherId: searchParams.get("teacherId") || undefined,
-    sessionType: searchParams.get("sessionType") || undefined,
+    sessionType,
     date: searchParams.get("date") || undefined,
+    // isChecked filter only applies to "lesson" type sessions.
+    isChecked:
+      sessionType === "lesson"
+        ? searchParams.get("isChecked") || undefined
+        : undefined,
     page: searchParams.get("page") || undefined,
     limit: "20",
   };

@@ -105,6 +105,8 @@ export interface AttendanceRecord {
   session: {
     id: string;
     sessionDate: string;
+    startTime: string;
+    endTime: string;
     sessionType: string;
     topic: string | null;
     group: {

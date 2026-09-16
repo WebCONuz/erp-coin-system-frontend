@@ -745,7 +745,11 @@
       "allGroups": "Барча гуруҳлар",
       "allTeachers": "Барча ўқитувчилар",
       "allTypes": "Барча турлар",
-      "addSession": "Сессия қўшиш"
+      "addSession": "Сессия қўшиш",
+      "isCheckedLabel": "Текшириш ҳолати",
+      "allCheckStatuses": "Барчаси",
+      "checked": "Текширилган",
+      "unchecked": "Текширилмаган"
     },
     "attendance": {
       "title": "Йўқлама",

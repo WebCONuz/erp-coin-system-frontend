@@ -3,7 +3,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import {
-  AttendanceHistoryTab,
+  // AttendanceHistoryTab, // old design — kept for comparison, see AttendanceHistoryTabV2
+  AttendanceHistoryTabV2,
   CoinHistoryTab,
   PurchaseHistoryTab,
   ProfileStatsRow,
@@ -33,9 +34,7 @@ const StudentProfilePage = () => {
   return (
     <div className="space-y-4">
       <StudentProfileHeader student={student} />
-
       <ProfileStatsRow student={student} />
-
       <GardenMapCard progress={progress} />
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -51,7 +50,8 @@ const StudentProfilePage = () => {
           ))}
         </TabsList>
 
-        <AttendanceHistoryTab student={student} />
+        {/* <AttendanceHistoryTab student={student} /> old design — kept for comparison */}
+        <AttendanceHistoryTabV2 student={student} />
         <CoinHistoryTab student={student} />
         <PurchaseHistoryTab student={student} />
       </Tabs>

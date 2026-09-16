@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { formatDate } from "@/ustils";
 import { getSessionTypeLabels } from "../constants";
 import type { SessionItem } from "../types";
+import { isSessionPastDue } from "../utils";
 
 interface Props {
   data: SessionItem;
@@ -31,16 +32,6 @@ const TYPE_BADGE_CLASS: Record<string, string> = {
   lesson: "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400",
   exam: "bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-400",
   trial: "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-};
-
-const isSessionPastDue = (data: SessionItem) => {
-  const end = new Date(data.sessionDate);
-  if (Number.isNaN(end.getTime())) return false;
-
-  const [hours, minutes] = data.endTime.split(":").map(Number);
-  end.setHours(hours, minutes, 0, 0);
-
-  return end.getTime() < Date.now();
 };
 
 export const SessionListCard = ({
