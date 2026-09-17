@@ -73,7 +73,7 @@ export const PurchaseHistoryTab = () => {
           name="status"
           placeholder="Barcha holatlar"
           options={STATUS_OPTIONS}
-          className="w-56"
+          className="w-full sm:w-56"
         />
       </Form>
 

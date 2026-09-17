@@ -45,7 +45,7 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
         <p className="text-sm text-ink-soft">
           {filtered.length} ta sovg'a topildi
         </p>
-        <div className="relative">
+        <div className="relative w-full sm:w-64">
           <SearchIcon
             size={15}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-soft/50"
@@ -54,7 +54,7 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
             defaultValue={search}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Sovg'a qidirish..."
-            className="w-64 rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"
+            className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"
           />
         </div>
       </div>

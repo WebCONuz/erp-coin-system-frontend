@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { Bell, ChevronDown, Coins, LogOut, User } from "lucide-react";
+import { Bell, ChevronDown, Coins, Languages, LogOut, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,16 +37,18 @@ export function StudentNavbar() {
 
   return (
     <header className="w-full border-b border-ink/10 bg-paper">
-      <div className="flex h-16 items-center gap-3 px-4 sm:px-8">
-        <div className="ml-auto flex items-center gap-3">
-          <div className="flex items-center gap-1.5 rounded-full bg-gold/15 border border-gold/30 pl-2 pr-3 py-1.5">
+      <div className="flex h-16 items-center gap-3 px-3 sm:px-8">
+        <div className="ml-auto flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-1.5 rounded-full bg-gold/15 border border-gold/30 pl-2 pr-2.5 sm:pr-3 py-1.5">
             <span className="w-5 h-5 rounded-full bg-gold flex items-center justify-center shrink-0">
               <Coins size={12} className="text-forest-deep" />
             </span>
             <span className="font-display text-sm font-semibold text-forest">
               {user?.wallet?.balance ?? 0}
             </span>
-            <span className="text-xs text-ink-soft">{t("common.coinLabel")}</span>
+            <span className="hidden sm:inline text-xs text-ink-soft">
+              {t("common.coinLabel")}
+            </span>
           </div>
 
           {/* Language selector */}
@@ -54,10 +56,14 @@ export function StudentNavbar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="h-9 gap-1.5 px-3 text-sm font-medium border-ink/15 text-ink-soft hover:text-ink hover:bg-paper-soft focus-visible:ring-0"
+                className="h-9 gap-1.5 px-2.5 sm:px-3 text-sm font-medium border-ink/15 text-ink-soft hover:text-ink hover:bg-paper-soft focus-visible:ring-0"
               >
-                {currentLang.label}
-                <ChevronDown size={13} className="text-muted-foreground" />
+                <Languages size={16} className="sm:hidden" />
+                <span className="hidden sm:inline">{currentLang.label}</span>
+                <ChevronDown
+                  size={13}
+                  className="hidden sm:inline text-muted-foreground"
+                />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-36">

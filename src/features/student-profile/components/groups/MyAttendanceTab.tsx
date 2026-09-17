@@ -73,19 +73,19 @@ export const MyAttendanceTab = () => {
             name="groupId"
             placeholder="Barcha guruhlar"
             options={(groups ?? []).map((g) => ({ value: g.id, label: g.name }))}
-            className="w-48"
+            className="w-full sm:w-48"
           />
           <ControlledDatePicker
             control={form.control}
             name="from"
             placeholder="Sanadan"
-            className="min-w-40"
+            className="w-full sm:w-auto sm:min-w-40"
           />
           <ControlledDatePicker
             control={form.control}
             name="to"
             placeholder="Sanagacha"
-            className="min-w-40"
+            className="w-full sm:w-auto sm:min-w-40"
           />
         </div>
       </Form>

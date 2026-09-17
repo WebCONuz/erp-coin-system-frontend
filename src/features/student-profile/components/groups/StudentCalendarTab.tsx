@@ -45,13 +45,14 @@ export const StudentCalendarTab = () => {
   const gridEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
   const days = eachDayOfInterval({ start: gridStart, end: gridEnd });
 
-  const groupColors = useMemo(() => {
+  const subjectColors = useMemo(() => {
     const colors: Record<string, string> = {};
 
     Object.values(calendarData ?? {}).forEach((entries) => {
       entries.forEach((entry) => {
-        if (!colors[entry.group.id]) {
-          colors[entry.group.id] = getGroupAccent(entry.group.id).chip;
+        const seed = entry.template.subject?.id ?? entry.group.id;
+        if (!colors[seed]) {
+          colors[seed] = getGroupAccent(seed).chip;
         }
       });
     });
@@ -84,50 +85,54 @@ export const StudentCalendarTab = () => {
       {isLoading ? (
         <PageLoading />
       ) : (
-        <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10">
-          {WEEK_HEADER.map((day) => (
-            <div
-              key={day.label}
-              className={`bg-paper-soft px-2 py-1.5 text-center text-xs font-semibold text-ink-soft ${day.className}`}
-            >
-              {day.label}
-            </div>
-          ))}
-
-          {days.map((day) => {
-            const dateKey = format(day, "yyyy-MM-dd");
-            const entries = calendarData?.[dateKey] ?? [];
-            const inMonth = isSameMonth(day, monthStart);
-
-            return (
+        <div className="overflow-auto max-h-[65vh] sm:max-h-none sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10 min-w-245 sm:min-w-0">
+            {WEEK_HEADER.map((day) => (
               <div
-                key={dateKey}
-                className={`min-h-24 space-y-1 bg-white p-1.5 ${
-                  inMonth ? "" : "opacity-40"
-                }`}
+                key={day.label}
+                className={`bg-paper-soft px-2 py-1.5 text-center text-xs font-semibold text-ink-soft ${day.className}`}
               >
-                <span
-                  className={`text-xs font-medium ${
-                    isToday(day)
-                      ? "flex h-5 w-5 items-center justify-center rounded-full bg-gold text-forest-deep"
-                      : "text-ink-soft"
+                {day.label}
+              </div>
+            ))}
+
+            {days.map((day) => {
+              const dateKey = format(day, "yyyy-MM-dd");
+              const entries = calendarData?.[dateKey] ?? [];
+              const inMonth = isSameMonth(day, monthStart);
+
+              return (
+                <div
+                  key={dateKey}
+                  className={`min-h-24 space-y-1 bg-white p-1.5 ${
+                    inMonth ? "" : "opacity-40"
                   }`}
                 >
-                  {format(day, "d")}
-                </span>
-                {entries.map((entry, idx) => (
-                  <StudentSessionChip
-                    key={`${entry.template.id}-${idx}`}
-                    entry={entry}
-                    colorClass={
-                      groupColors[entry.group.id] ??
-                      getGroupAccent(entry.group.id).chip
-                    }
-                  />
-                ))}
-              </div>
-            );
-          })}
+                  <span
+                    className={`text-xs font-medium ${
+                      isToday(day)
+                        ? "flex h-5 w-5 items-center justify-center rounded-full bg-gold text-forest-deep"
+                        : "text-ink-soft"
+                    }`}
+                  >
+                    {format(day, "d")}
+                  </span>
+                  {entries.map((entry, idx) => {
+                    const seed = entry.template.subject?.id ?? entry.group.id;
+                    return (
+                      <StudentSessionChip
+                        key={`${entry.template.id}-${idx}`}
+                        entry={entry}
+                        colorClass={
+                          subjectColors[seed] ?? getGroupAccent(seed).chip
+                        }
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

@@ -27,13 +27,24 @@ export const GardenPath = ({ progress, tone = "dark" }: Props) => {
           const isCurrent = lvl.daraja === level.daraja;
           const isDone = lvl.daraja < level.daraja;
 
+          const isFirst = i === 0;
+          const isLast = i === STUDENT_LEVELS.length - 1;
+
           return (
             <div
               key={lvl.daraja}
               className="relative flex flex-col items-center gap-2 w-12"
             >
               {isCurrent && (
-                <span className="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold text-gold">
+                <span
+                  className={`absolute -top-7 whitespace-nowrap rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold text-gold ${
+                    isFirst
+                      ? "left-0"
+                      : isLast
+                        ? "right-0"
+                        : "left-1/2 -translate-x-1/2"
+                  }`}
+                >
                   SIZ SHU YERDA
                 </span>
               )}
