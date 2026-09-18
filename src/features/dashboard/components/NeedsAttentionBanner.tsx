@@ -17,12 +17,14 @@ export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
 
   return (
     <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/30">
-      <div className="flex items-start gap-2.5">
-        <AlertTriangle
-          size={18}
-          className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400"
-        />
-        <div className="flex-1 space-y-2">
+      <div className="flex items-start gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/40">
+          <AlertTriangle
+            size={18}
+            className="text-amber-600 dark:text-amber-400"
+          />
+        </div>
+        <div className="flex-1 space-y-2 pt-1">
           <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
             {t("admin.dashboard.needsAttention")}
           </p>
@@ -31,7 +33,7 @@ export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
             {!!pendingPurchases && (
               <Link
                 to="/admin/market"
-                className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
+                className="flex items-center gap-1.5 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
               >
                 <Gift size={13} />
                 {t("admin.dashboard.pendingPurchases", {
@@ -43,7 +45,7 @@ export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
             {!!pendingAttendanceSessions && (
               <Link
                 to="/admin/sessions"
-                className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
+                className="flex items-center gap-1.5 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
               >
                 <CalendarClock size={13} />
                 {t("admin.dashboard.pendingAttendance", {

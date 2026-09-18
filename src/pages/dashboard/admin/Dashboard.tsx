@@ -27,8 +27,10 @@ export default function DashboardPage() {
         />
 
         {!isLoading && (
-          <span className="flex items-center gap-1.5 rounded-full bg-white dark:bg-zinc-900 px-3.5 py-2 text-sm font-medium shadow-sm">
-            <CalendarClock size={15} className="text-primary" />
+          <span className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 py-2 text-sm font-medium shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <CalendarClock size={13} />
+            </span>
             {t("admin.dashboard.todaySessions", {
               count: data?.todaySessionsCount ?? 0,
             })}

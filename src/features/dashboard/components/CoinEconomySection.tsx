@@ -1,5 +1,11 @@
 import { Coins, TrendingDown, TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { StatsCard, WeeklyTrendChart } from "./ui";
 import type { AdminDashboardCoinEconomy } from "../types";
 
@@ -12,38 +18,45 @@ export const CoinEconomySection = ({ coinEconomy, isLoading }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-zinc-900 p-5 shadow-sm">
-      <h3 className="mb-4 text-base font-semibold">
-        {t("admin.dashboard.coinEconomy.title")}
-      </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <StatsCard
-          title={t("admin.dashboard.coinEconomy.inCirculation")}
-          value={isLoading ? undefined : coinEconomy?.totalInCirculation}
-          icon={<Coins size={18} />}
-          bgColor="bg-blue-50 dark:bg-blue-500/20"
-        />
-        <StatsCard
-          title={t("admin.dashboard.coinEconomy.earnedThisMonth")}
-          value={isLoading ? undefined : coinEconomy?.earnedThisMonth}
-          icon={<TrendingUp size={18} className="text-emerald-500" />}
-          bgColor="bg-green-50 dark:bg-green-500/10"
-        />
-        <StatsCard
-          title={t("admin.dashboard.coinEconomy.deductedThisMonth")}
-          value={isLoading ? undefined : coinEconomy?.deductedThisMonth}
-          icon={<TrendingDown size={18} className="text-red-500" />}
-          bgColor="bg-red-50 dark:bg-red-500/10"
-        />
-      </div>
+    <Card className="h-full border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+      <CardHeader className="flex-row items-center gap-2.5 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <Coins size={16} />
+        </div>
+        <CardTitle>{t("admin.dashboard.coinEconomy.title")}</CardTitle>
+      </CardHeader>
 
-      <div className="mt-5">
+      <CardContent className="space-y-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <StatsCard
+            title={t("admin.dashboard.coinEconomy.inCirculation")}
+            value={isLoading ? undefined : coinEconomy?.totalInCirculation}
+            icon={<Coins size={18} />}
+            iconBg="bg-blue-50 dark:bg-blue-500/10"
+            iconColor="text-blue-600 dark:text-blue-400"
+          />
+          <StatsCard
+            title={t("admin.dashboard.coinEconomy.earnedThisMonth")}
+            value={isLoading ? undefined : coinEconomy?.earnedThisMonth}
+            icon={<TrendingUp size={18} />}
+            iconBg="bg-emerald-50 dark:bg-emerald-500/10"
+            iconColor="text-emerald-600 dark:text-emerald-400"
+          />
+          <StatsCard
+            title={t("admin.dashboard.coinEconomy.deductedThisMonth")}
+            value={isLoading ? undefined : coinEconomy?.deductedThisMonth}
+            icon={<TrendingDown size={18} />}
+            iconBg="bg-red-50 dark:bg-red-500/10"
+            iconColor="text-red-600 dark:text-red-400"
+          />
+        </div>
+
         {isLoading ? (
-          <div className="h-40 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800" />
+          <div className="h-48 animate-pulse rounded-xl bg-zinc-100 dark:bg-zinc-800" />
         ) : (
           <WeeklyTrendChart data={coinEconomy?.weeklyTrend ?? []} />
         )}
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
