@@ -1,5 +1,12 @@
 import { NavLink } from "react-router-dom";
-import { Bell, ChevronDown, Coins, Languages, LogOut, User } from "lucide-react";
+import {
+  Bell,
+  ChevronDown,
+  Coins,
+  Languages,
+  LogOut,
+  User,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,6 +20,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { getFileUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+
+const LOGO = "/logo.png";
 
 const LANGUAGES = [
   { code: "uz", label: "O'zbekcha" },
@@ -38,6 +47,23 @@ export function StudentNavbar() {
   return (
     <header className="w-full border-b border-ink/10 bg-paper">
       <div className="flex h-16 items-center gap-3 px-3 sm:px-8">
+        {/* logo */}
+        <div className="flex gap-x-2 items-center lg:hidden">
+          <img
+            src={LOGO}
+            alt="bb-coin"
+            className="transition-all duration-300 w-7 h-7 rounded-lg"
+          />
+
+          <div className="leading-tight overflow-hidden">
+            <p className="font-display text-forest font-semibold text-lg truncate">
+              BB-Coin
+            </p>
+            <p className="text-[11px] text-forest/50 truncate">Bilim bog'i</p>
+          </div>
+        </div>
+
+        {/* details */}
         <div className="ml-auto flex items-center gap-2 sm:gap-3">
           <div className="flex items-center gap-1.5 rounded-full bg-gold/15 border border-gold/30 pl-2 pr-2.5 sm:pr-3 py-1.5">
             <span className="w-5 h-5 rounded-full bg-gold flex items-center justify-center shrink-0">

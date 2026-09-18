@@ -7,7 +7,11 @@ interface Props {
   onGiveCoin: () => void;
 }
 
-export const TeacherStudentHeader = ({ student, myGroupIds, onGiveCoin }: Props) => {
+export const TeacherStudentHeader = ({
+  student,
+  myGroupIds,
+  onGiveCoin,
+}: Props) => {
   const myMemberships = (student.groupMemberships ?? []).filter((gm) =>
     myGroupIds.has(gm.group.id),
   );
@@ -58,7 +62,7 @@ export const TeacherStudentHeader = ({ student, myGroupIds, onGiveCoin }: Props)
             className="inline-flex items-center gap-2 rounded-xl bg-gold/15 border border-gold/30 text-gold px-4 py-2.5 text-sm font-medium hover:bg-gold/20 transition-colors"
           >
             <Coins size={15} />
-            Coin berish
+            Coin &nbsp;+/-
           </button>
         </div>
       </div>

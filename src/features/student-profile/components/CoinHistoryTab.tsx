@@ -59,8 +59,8 @@ export const CoinHistoryTab = ({ student }: Props) => {
                     <Minus size={13} />
                   )}
                 </div>
-                <div className="min-w-0">
-                  <p className="text-sm text-ink truncate">
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm text-ink">
                     <b>{SOURCE_TYPE_LABELS[tx.sourceType] ?? "Qo'shimcha"}</b>
                     {tx.note ? ` — ${tx.note}` : ""}
                   </p>

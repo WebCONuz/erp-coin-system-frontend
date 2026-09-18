@@ -127,7 +127,7 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                   return (
                     <div
                       key={record.id}
-                      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-paper-soft/60"
+                      className="flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:gap-y-0 px-4 py-3 transition-colors hover:bg-paper-soft/60"
                     >
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold shrink-0 ${avatarStyle(
@@ -137,14 +137,14 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                         {initials(title)}
                       </div>
 
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm text-ink truncate">
+                      <div className="min-w-40 flex-1">
+                        <p className="text-sm text-ink">
                           <b>{title}</b>
                           {record.session.subject
                             ? ` · ${record.session.group.name}`
                             : ""}
                         </p>
-                        <p className="text-xs text-ink-soft truncate">
+                        <p className="text-xs text-ink-soft">
                           {record.session.startTime}–{record.session.endTime}
                           {" · "}
                           {record.session.topic ??
@@ -153,7 +153,7 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
+                      <div className="flex items-center gap-1.5 flex-wrap shrink-0 pl-12 sm:pl-0">
                         <span
                           className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
                             record.isPresent
@@ -166,10 +166,12 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                           ) : (
                             <X size={11} />
                           )}
-                          {record.isPresent ? "Keldi" : "Kelmadi"}
+                          <span className="text-xs">
+                            {record.isPresent ? "Keldi" : "Kelmadi"}
+                          </span>
                         </span>
                         <span
-                          className={`flex items-center justify-center gap-x-1 px-2 py-1 rounded-full shrink-0 ${
+                          className={`flex items-center justify-center gap-1 px-2 py-1 rounded-full shrink-0 ${
                             record.homeworkDone
                               ? "bg-green-100 text-green-600 "
                               : "bg-gold/15 text-gold"

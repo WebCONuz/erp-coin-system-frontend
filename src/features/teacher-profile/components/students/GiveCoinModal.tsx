@@ -15,7 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useManualCoinTransaction, useStudentById } from "@/features/students/hooks";
+import {
+  useManualCoinTransaction,
+  useStudentById,
+} from "@/features/students/hooks";
 import { useMyTaughtGroups } from "../../hooks";
 
 interface Props {
@@ -86,7 +89,7 @@ export const GiveCoinModal = ({
       },
       {
         onSuccess: () => {
-          toast.success("Tanga muvaffaqiyatli berildi");
+          toast.success("Operatsiya bajarildi");
           handleClose();
         },
         onError: (error: any) =>
@@ -160,7 +163,10 @@ export const GiveCoinModal = ({
               <label className="text-xs font-medium text-ink-soft mb-1.5 block">
                 Guruh
               </label>
-              <Select value={effectiveGroupId} onValueChange={setSelectedGroupId}>
+              <Select
+                value={effectiveGroupId}
+                onValueChange={setSelectedGroupId}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Guruhni tanlang" />
                 </SelectTrigger>
