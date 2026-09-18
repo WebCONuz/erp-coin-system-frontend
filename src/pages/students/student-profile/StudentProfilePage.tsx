@@ -3,7 +3,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import {
-  // AttendanceHistoryTab, // old design
   AttendanceHistoryTabV2,
   CoinHistoryTab,
   PurchaseHistoryTab,
@@ -50,7 +49,6 @@ const StudentProfilePage = () => {
           ))}
         </TabsList>
 
-        {/* <AttendanceHistoryTab student={student} /> old design — kept for comparison */}
         <AttendanceHistoryTabV2 student={student} />
         <CoinHistoryTab student={student} />
         <PurchaseHistoryTab student={student} />

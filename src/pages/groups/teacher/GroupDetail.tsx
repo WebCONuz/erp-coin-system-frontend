@@ -109,7 +109,7 @@ const GroupDetail = () => {
                 <div className="w-8 h-8 rounded-full bg-forest text-gold-soft flex items-center justify-center text-xs font-semibold shrink-0">
                   {member.student.fullName.charAt(0).toUpperCase()}
                 </div>
-                <span className="text-sm text-ink flex-1 min-w-0 truncate">
+                <span className="text-sm text-ink flex-1 min-w-24">
                   {member.student.fullName}
                 </span>
                 <span className="flex items-center gap-1.5 text-xs text-ink-soft shrink-0">

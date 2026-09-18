@@ -4,6 +4,8 @@ export interface TeacherScheduleTemplate {
   startTime: string;
   endTime: string;
   room?: { id: string; name: string };
+  subject?: { id: string; name: string };
+  teacher?: { id: string; fullName: string };
 }
 
 export interface TeacherScheduleException {

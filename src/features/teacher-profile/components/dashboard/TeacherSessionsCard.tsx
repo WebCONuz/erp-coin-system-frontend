@@ -57,10 +57,10 @@ export const TeacherSessionsCard = ({
                   <Link
                     key={session.id}
                     to={`/teacher/sessions/${session.id}`}
-                    className="flex items-center gap-3 rounded-xl border border-ink/8 px-3 py-2.5 hover:border-gold/40 transition-colors"
+                    className="flex flex-wrap items-center gap-3 rounded-xl border border-ink/8 px-3 py-2.5 hover:border-gold/40 transition-colors"
                   >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm text-ink truncate">
+                    <div className="min-w-40 flex-1">
+                      <p className="text-sm text-ink">
                         <b>
                           {session.subject?.name ?? session.group.name}
                         </b>

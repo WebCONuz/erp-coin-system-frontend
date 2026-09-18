@@ -27,7 +27,7 @@ export const TeacherSidebar = () => {
 
   return (
     <aside
-      className={`relative border-r border-forest-light/60 bg-forest flex flex-col transition-all duration-300 ${
+      className={`relative hidden lg:flex border-r border-forest-light/60 bg-forest flex-col transition-all duration-300 ${
         collapsed ? "w-16" : "w-60"
       } min-h-screen`}
     >

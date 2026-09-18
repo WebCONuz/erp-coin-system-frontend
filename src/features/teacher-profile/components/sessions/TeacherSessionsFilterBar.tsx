@@ -30,7 +30,7 @@ export const TeacherSessionsFilterBar = () => {
   return (
     <Form {...form}>
       <div className="flex flex-wrap items-center gap-3">
-        <div className="w-48">
+        <div className="w-full sm:w-48">
           <ControlledSelect
             control={form.control}
             name="groupId"
@@ -38,7 +38,7 @@ export const TeacherSessionsFilterBar = () => {
             placeholder={t("common.group")}
           />
         </div>
-        <div className="w-40">
+        <div className="w-full sm:w-40">
           <ControlledSelect
             control={form.control}
             name="sessionType"
@@ -50,10 +50,10 @@ export const TeacherSessionsFilterBar = () => {
           control={form.control}
           name="date"
           placeholder={t("common.date")}
-          className="min-w-42"
+          className="w-full sm:w-auto sm:min-w-42"
         />
         {sessionType === "lesson" && (
-          <div className="w-44">
+          <div className="w-full sm:w-44">
             <ControlledSelect
               control={form.control}
               name="isChecked"

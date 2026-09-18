@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PageLoading } from "@/components/loading";
+import { useAuth } from "@/features/auth/hooks/useLogin";
 import { useMyTaughtGroups, useTeacherCalendar } from "../../hooks";
 import { TeacherSessionChip } from "./TeacherSessionChip";
 
@@ -38,6 +39,7 @@ const WEEK_HEADER = [
 ];
 
 export const TeacherCalendarTab = () => {
+  const { user } = useAuth();
   const { data: groups } = useMyTaughtGroups();
   const [selectedGroupId, setSelectedGroupId] = useState<string>("");
   const [viewDate, setViewDate] = useState(() => new Date());
@@ -72,9 +74,9 @@ export const TeacherCalendarTab = () => {
 
   return (
     <div className="rounded-2xl border border-ink/10 bg-white p-4">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <Select value={groupId} onValueChange={setSelectedGroupId}>
-          <SelectTrigger className="w-56">
+          <SelectTrigger className="w-full sm:w-56">
             <SelectValue placeholder="Guruhni tanlang" />
           </SelectTrigger>
           <SelectContent>
@@ -86,7 +88,7 @@ export const TeacherCalendarTab = () => {
           </SelectContent>
         </Select>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           <Button
             variant="ghost"
             size="icon"
@@ -110,47 +112,50 @@ export const TeacherCalendarTab = () => {
       {isLoading ? (
         <PageLoading />
       ) : (
-        <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10">
-          {WEEK_HEADER.map((day) => (
-            <div
-              key={day.label}
-              className={`bg-paper-soft px-2 py-1.5 text-center text-xs font-semibold text-ink-soft ${day.className}`}
-            >
-              {day.label}
-            </div>
-          ))}
-
-          {days.map((day) => {
-            const dateKey = format(day, "yyyy-MM-dd");
-            const entries = calendarData?.[dateKey] ?? [];
-            const inMonth = isSameMonth(day, monthStart);
-
-            return (
+        <div className="overflow-auto max-h-[65vh] sm:max-h-none sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10 min-w-245 sm:min-w-0">
+            {WEEK_HEADER.map((day) => (
               <div
-                key={dateKey}
-                className={`min-h-24 space-y-1 bg-white p-1.5 ${
-                  inMonth ? "" : "opacity-40"
-                }`}
+                key={day.label}
+                className={`bg-paper-soft px-2 py-1.5 text-center text-xs font-semibold text-ink-soft ${day.className}`}
               >
-                <span
-                  className={`text-xs font-medium ${
-                    isToday(day)
-                      ? "flex h-5 w-5 items-center justify-center rounded-full bg-gold text-forest-deep"
-                      : "text-ink-soft"
+                {day.label}
+              </div>
+            ))}
+
+            {days.map((day) => {
+              const dateKey = format(day, "yyyy-MM-dd");
+              const entries = calendarData?.[dateKey] ?? [];
+              const inMonth = isSameMonth(day, monthStart);
+
+              return (
+                <div
+                  key={dateKey}
+                  className={`min-h-24 space-y-1 bg-white p-1.5 ${
+                    inMonth ? "" : "opacity-40"
                   }`}
                 >
-                  {format(day, "d")}
-                </span>
-                {entries.map((entry, idx) => (
-                  <TeacherSessionChip
-                    key={`${entry.template.id}-${idx}`}
-                    entry={entry}
-                    groupName={groupName}
-                  />
-                ))}
-              </div>
-            );
-          })}
+                  <span
+                    className={`text-xs font-medium ${
+                      isToday(day)
+                        ? "flex h-5 w-5 items-center justify-center rounded-full bg-gold text-forest-deep"
+                        : "text-ink-soft"
+                    }`}
+                  >
+                    {format(day, "d")}
+                  </span>
+                  {entries.map((entry, idx) => (
+                    <TeacherSessionChip
+                      key={`${entry.template.id}-${idx}`}
+                      entry={entry}
+                      groupName={groupName}
+                      currentTeacherId={user?.id}
+                    />
+                  ))}
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

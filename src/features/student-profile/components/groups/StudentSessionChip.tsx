@@ -1,4 +1,4 @@
-import { BookOpen, Clock3, GraduationCap } from "lucide-react";
+import { BookOpen, Clock3, DoorOpen, GraduationCap } from "lucide-react";
 import type { MyCalendarEntry } from "../../types";
 
 const SESSION_TYPE_LABELS: Record<string, string> = {
@@ -53,28 +53,36 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
       className={`w-full space-y-0.5 rounded px-1.5 py-1 text-left text-[11px] font-medium ${colorClass}`}
     >
       {(subjectName || teacherName) && (
-        <div className="space-y-0.5">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
           {subjectName && (
-            <span className="flex min-w-0 items-center gap-1">
+            <span className="inline-flex min-w-0 items-center gap-1">
               <BookOpen size={11} className="shrink-0" />
               <span className="truncate">{subjectName}</span>
             </span>
           )}
           {teacherName && (
-            <span className="flex min-w-0 items-center gap-1">
+            <span className="inline-flex min-w-0 items-center gap-1">
               <GraduationCap size={11} className="shrink-0" />
               <span className="truncate">{teacherName}</span>
             </span>
           )}
         </div>
       )}
-      <span className="flex min-w-0 items-center gap-1">
-        <Clock3 size={11} className="shrink-0" />
-        <span className="truncate">
-          {startTime}–{endTime}
-          {session?.isLocked ? " · qulflangan" : ""}
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+        {template.room && (
+          <span className="inline-flex min-w-0 items-center gap-1">
+            <DoorOpen size={11} className="shrink-0" />
+            <span className="truncate">{template.room.name}</span>
+          </span>
+        )}
+        <span className="inline-flex min-w-0 items-center gap-1">
+          <Clock3 size={11} className="shrink-0" />
+          <span className="truncate">
+            {startTime} - {endTime}
+            {session?.isLocked ? " · qulflangan" : ""}
+          </span>
         </span>
-      </span>
+      </div>
     </div>
   );
 };

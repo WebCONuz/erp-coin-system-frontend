@@ -11,7 +11,7 @@ import {
   GiveCoinModal,
 } from "@/features/teacher-profile/components/students";
 import {
-  AttendanceHistoryTab,
+  AttendanceHistoryTabV2,
   CoinHistoryTab,
   PurchaseHistoryTab,
   ProfileStatsRow,
@@ -63,7 +63,7 @@ const StudentDetail = () => {
               ))}
             </TabsList>
 
-            <AttendanceHistoryTab student={student} />
+            <AttendanceHistoryTabV2 student={student} />
             <CoinHistoryTab student={student} />
             <PurchaseHistoryTab student={student} />
           </Tabs>

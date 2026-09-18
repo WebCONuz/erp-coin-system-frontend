@@ -35,7 +35,7 @@ export const TeacherStudentsFilterBar = () => {
   return (
     <div className="flex flex-wrap items-center gap-3">
       <Select value={groupId} onValueChange={setGroupId}>
-        <SelectTrigger className="w-52 bg-white">
+        <SelectTrigger className="w-full sm:w-52 bg-white">
           <SelectValue placeholder="Guruhni tanlang" />
         </SelectTrigger>
         <SelectContent className="bg-white">
@@ -48,7 +48,7 @@ export const TeacherStudentsFilterBar = () => {
         </SelectContent>
       </Select>
 
-      <div className="relative">
+      <div className="relative w-full sm:w-64">
         <SearchIcon
           size={15}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-soft/50"
@@ -57,7 +57,7 @@ export const TeacherStudentsFilterBar = () => {
           defaultValue={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="O'quvchi qidirish..."
-          className="w-64 rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"
+          className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"
         />
       </div>
     </div>
