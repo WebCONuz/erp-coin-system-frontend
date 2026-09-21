@@ -51,7 +51,7 @@ export const useAuth = () => {
     mutationFn: logout,
     onSuccess: () => {
       clearLocalStoragaData();
-      queryClient.setQueryData(authQueryKeys.getMe(), null); // Keshni tozalash
+      queryClient.removeQueries({ queryKey: authQueryKeys.getMe() }); // Keshni butunlay o'chirish
       navigate("/login");
       toast.success(t("logout"));
     },
