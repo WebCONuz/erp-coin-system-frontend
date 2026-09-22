@@ -11,8 +11,8 @@ import {
 import {
   StudentFormModal,
   SendMessageModal,
-  ConfirmModal,
 } from "@/features/students/components/modal";
+import { ConfirmModal } from "@/components/shared/modal";
 import {
   StatisticSection,
   StudentDetailHeader,

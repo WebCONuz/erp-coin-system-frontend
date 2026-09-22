@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import {
-  AttendanceTable,
-  SessionInfoCard,
+  SessionForm,
   SessionStatusPanel,
 } from "@/features/sessions/components";
 import { useSession } from "@/features/sessions/hooks";
@@ -34,20 +33,7 @@ const SessionDetailPage = () => {
         <NoData text={t("sessions.notFound")} />
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-6">
-            <SessionInfoCard session={session} />
-            <div className="rounded-2xl bg-background p-6 shadow-sm space-y-4">
-              <h3 className="text-lg font-semibold">
-                {t("sessions.attendance.title")}
-              </h3>
-              <AttendanceTable
-                sessionId={session.id}
-                groupId={session.group.id}
-                isLocked={session.isLocked}
-              />
-            </div>
-          </div>
-
+          <SessionForm session={session} />
           <SessionStatusPanel session={session} />
         </>
       )}
