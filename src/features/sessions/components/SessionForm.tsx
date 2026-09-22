@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Lock } from "lucide-react";
@@ -21,6 +22,8 @@ import { ControlledSelect } from "@/components/controls";
 import { PageLoading } from "@/components/loading";
 import { formatDate } from "@/ustils";
 import { useGroup } from "@/features/groups/hooks";
+import { groupKeys } from "@/features/groups/constants";
+import { studentKeys } from "@/features/students/constants";
 import {
   createSessionInfoFormSchema,
   type SessionInfoFormValues,
@@ -44,6 +47,7 @@ type LocalRecord = { isPresent: boolean; homeworkDone: boolean };
 
 export const SessionForm = ({ session }: Props) => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const isLocked = session.isLocked;
   const updateSession = useUpdateSession(session.id);
   const saveAttendance = useSaveAttendance(session.id);
@@ -165,6 +169,22 @@ export const SessionForm = ({ session }: Props) => {
               );
             });
           }
+
+          // Yo'qlama guruh a'zolarining coin balansi/statistikasiga ta'sir
+          // qiladi — shu sababli guruh, talabalar ro'yxati va har bir
+          // talabaning shaxsiy sahifasi keshini "eskirgan" deb belgilaymiz,
+          // shunda ularga keyingi safar o'tilganda ma'lumot qayta so'raladi.
+          queryClient.invalidateQueries({
+            queryKey: groupKeys.oneGroupById(session.group.id ?? ""),
+          });
+          queryClient.invalidateQueries({
+            queryKey: studentKeys.allStudents(),
+          });
+          group?.students.forEach(({ student }) => {
+            queryClient.invalidateQueries({
+              queryKey: studentKeys.oneStudentById(student.id),
+            });
+          });
         },
         onError: (error: any) =>
           toast.error(error?.data?.message || t("common.error")),
