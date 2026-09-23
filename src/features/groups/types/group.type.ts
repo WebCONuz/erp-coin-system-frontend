@@ -38,6 +38,9 @@ export interface GroupStudent {
     id: string;
     fullName: string;
     phone: string;
+    wallet?: {
+      balance: number;
+    };
   };
 }
 export interface GroupDetail {

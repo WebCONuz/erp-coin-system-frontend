@@ -701,6 +701,7 @@
     },
     "table": {
       "name": "Ism",
+      "coin": "Tanga",
       "joinedAt": "Qo'shilgan sana",
       "empty": "Guruhda hali o'quvchi yo'q",
       "removeTitle": "Guruhdan chiqarish",

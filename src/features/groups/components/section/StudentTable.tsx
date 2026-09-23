@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Trash2, ChevronUp, ChevronDown, UserMinus, Eye } from "lucide-react";
+import {
+  Trash2,
+  ChevronUp,
+  ChevronDown,
+  UserMinus,
+  Eye,
+  Coins,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -18,7 +25,7 @@ interface StudentTableProps {
   search?: string;
 }
 
-type SortKey = "name" | "joinedAt";
+type SortKey = "name" | "joinedAt" | "coin";
 type SortDir = "asc" | "desc";
 
 export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
@@ -51,6 +58,9 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
       let cmp = 0;
       if (sortKey === "name") {
         cmp = a.student.fullName.localeCompare(b.student.fullName);
+      } else if (sortKey === "coin") {
+        cmp =
+          (a.student.wallet?.balance ?? 0) - (b.student.wallet?.balance ?? 0);
       } else {
         cmp = new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime();
       }
@@ -97,6 +107,15 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
               <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hidden sm:table-cell">
                 {t("common.phone")}
               </th>
+              <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hidden sm:table-cell">
+                <button
+                  onClick={() => handleSort("coin")}
+                  className="flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
+                >
+                  {t("groups.table.coin")}
+                  <SortIcon col="coin" />
+                </button>
+              </th>
               <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hidden md:table-cell">
                 <button
                   onClick={() => handleSort("joinedAt")}
@@ -113,7 +132,7 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
             {sorted.length === 0 ? (
               <tr>
                 <td
-                  colSpan={5}
+                  colSpan={6}
                   className="text-center py-12 text-zinc-400 dark:text-zinc-500"
                 >
                   {query
@@ -179,9 +198,19 @@ const StudentRow = ({
         <p className="text-zinc-500 dark:text-zinc-400 sm:hidden mt-0.5">
           {student.phone}
         </p>
+        <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium sm:hidden">
+          <Coins size={13} />
+          {student.wallet?.balance ?? 0}
+        </span>
       </td>
       <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400 hidden sm:table-cell">
         {student.phone}
+      </td>
+      <td className="px-4 py-3 hidden sm:table-cell">
+        <span className="inline-flex items-center gap-1.5">
+          <Coins size={16} className="text-amber-600 dark:text-amber-400" />
+          {student.wallet?.balance ?? 0}
+        </span>
       </td>
       <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400 hidden md:table-cell">
         {formatDate(joinedAt, "dd.MM.yyyy, hh:mm")}

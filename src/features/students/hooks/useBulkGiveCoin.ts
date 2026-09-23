@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useActiveCoinRulesList } from "@/features/coin-rules/hooks";
+import { groupKeys } from "@/features/groups/constants";
 import { useBulkManualCoinTransaction, useApplyCoinRule } from "./useHook";
 import {
   createBulkGiveCoinSchema,
@@ -30,6 +32,7 @@ export const useBulkGiveCoinForm = ({
   onSuccess,
 }: UseBulkGiveCoinFormOptions = {}) => {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [result, setResult] = useState<
     BulkCoinResponse | ApplyCoinRuleResponse | null
@@ -71,6 +74,15 @@ export const useBulkGiveCoinForm = ({
   const onError = (error: any) =>
     toast.error(error?.data?.message || t("common.error"));
 
+  // `groupId` faqat shu forma qaysi ekrandan ochilganini bilgani uchun mavjud
+  // (masalan, guruh detali sahifasi) — coin qoidasi DTO'sida bu maydon yo'q,
+  // shu sababli guruh statistikasini shu yerda, mutatsiyaning o'zidan tashqarida
+  // eskirgan deb belgilaymiz.
+  const invalidateGroupStats = () => {
+    if (!groupId) return;
+    queryClient.invalidateQueries({ queryKey: groupKeys.groupStats(groupId) });
+  };
+
   const onValid = (values: BulkGiveCoinFormValues) => {
     if (selectedIds.length === 0) {
       toast.error(t("bulkCoin.minOneStudent"));
@@ -87,6 +99,7 @@ export const useBulkGiveCoinForm = ({
         {
           onSuccess: (res) => {
             setResult(res);
+            invalidateGroupStats();
             onSuccess?.();
           },
           onError,
@@ -107,6 +120,7 @@ export const useBulkGiveCoinForm = ({
       {
         onSuccess: (res) => {
           setResult(res);
+          invalidateGroupStats();
           onSuccess?.();
         },
         onError,

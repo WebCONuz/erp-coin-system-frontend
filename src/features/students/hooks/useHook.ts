@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllGroups } from "@/features/groups/api";
+import { dashboardKeys } from "@/features/dashboard/constants";
 import {
   createStudent,
   updateStudent,
@@ -182,9 +183,15 @@ export const useBulkManualCoinTransaction = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: BulkManualCoinDto) => bulkManualCoinTransaction(data),
-    onSuccess: () => {
+    onSuccess: (_res, variables) => {
       queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
       queryClient.invalidateQueries({ queryKey: studentKeys.coinTransactions() });
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.admin() });
+      variables.studentIds.forEach((studentId) => {
+        queryClient.invalidateQueries({
+          queryKey: studentKeys.oneStudentById(studentId),
+        });
+      });
     },
   });
 };
@@ -193,9 +200,15 @@ export const useApplyCoinRule = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: ApplyCoinRuleDto) => applyCoinRule(data),
-    onSuccess: () => {
+    onSuccess: (_res, variables) => {
       queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
       queryClient.invalidateQueries({ queryKey: studentKeys.coinTransactions() });
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.admin() });
+      variables.studentIds.forEach((studentId) => {
+        queryClient.invalidateQueries({
+          queryKey: studentKeys.oneStudentById(studentId),
+        });
+      });
     },
   });
 };
