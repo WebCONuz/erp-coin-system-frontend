@@ -76,10 +76,13 @@ export const useBulkGiveCoinForm = ({
 
   // `groupId` faqat shu forma qaysi ekrandan ochilganini bilgani uchun mavjud
   // (masalan, guruh detali sahifasi) — coin qoidasi DTO'sida bu maydon yo'q,
-  // shu sababli guruh statistikasini shu yerda, mutatsiyaning o'zidan tashqarida
-  // eskirgan deb belgilaymiz.
-  const invalidateGroupStats = () => {
+  // shu sababli guruhga bog'liq keshlarni shu yerda, mutatsiyaning o'zidan
+  // tashqarida eskirgan deb belgilaymiz: guruh detali sahifasi (`useGroup`)
+  // aynan shu talabalar ro'yxati/balansini `groupKeys.oneGroupById` orqali
+  // o'qiydi, shuning uchun faqat statistikani emas, shuni ham tozalash kerak.
+  const invalidateGroupCaches = () => {
     if (!groupId) return;
+    queryClient.invalidateQueries({ queryKey: groupKeys.oneGroupById(groupId) });
     queryClient.invalidateQueries({ queryKey: groupKeys.groupStats(groupId) });
   };
 
@@ -99,7 +102,7 @@ export const useBulkGiveCoinForm = ({
         {
           onSuccess: (res) => {
             setResult(res);
-            invalidateGroupStats();
+            invalidateGroupCaches();
             onSuccess?.();
           },
           onError,
@@ -120,7 +123,7 @@ export const useBulkGiveCoinForm = ({
       {
         onSuccess: (res) => {
           setResult(res);
-          invalidateGroupStats();
+          invalidateGroupCaches();
           onSuccess?.();
         },
         onError,

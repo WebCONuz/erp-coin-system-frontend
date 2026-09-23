@@ -212,6 +212,7 @@ export interface BulkCoinResult {
   transactionId?: string;
   newBalance?: number;
   error?: string;
+  direction: "earn" | "deduct";
 }
 
 export interface BulkCoinResponse {

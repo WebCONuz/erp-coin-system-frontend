@@ -256,13 +256,13 @@ export const BulkGiveCoinModal = ({
                                 <Input
                                   type="number"
                                   min={1}
-                                  placeholder={t("bulkCoin.custom.amountPlaceholder")}
+                                  placeholder={t(
+                                    "bulkCoin.custom.amountPlaceholder",
+                                  )}
                                   {...field}
                                   value={field.value ?? ""}
                                   onChange={(e) =>
-                                    field.onChange(
-                                      e.target.valueAsNumber || 0,
-                                    )
+                                    field.onChange(e.target.valueAsNumber || 0)
                                   }
                                 />
                               </FormControl>
@@ -329,6 +329,7 @@ const ResultsView = ({
     results: {
       studentId: string;
       success: boolean;
+      direction: "earn" | "deduct";
       error?: string;
       newBalance?: number;
     }[];
@@ -361,7 +362,7 @@ const ResultsView = ({
             <div
               key={r.studentId}
               className={`flex items-start gap-3 p-3 rounded-xl border ${
-                r.success
+                r.direction === "earn"
                   ? "border-forest/20 bg-forest/5"
                   : "border-bloom/20 bg-bloom/5"
               }`}
