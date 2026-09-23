@@ -1,19 +1,21 @@
-import { Search, X, ArrowUpDown, Plus, FileSpreadsheet, Coins } from "lucide-react";
-import { useTranslation } from "react-i18next";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Search,
+  X,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+  Plus,
+  FileSpreadsheet,
+  Coins,
+} from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardTitle } from "@/components/shared/title";
 import { Form } from "@/components/ui/form";
-import { ControlledInput } from "@/components/controls";
-import { useStudentFilter } from "../../hooks";
+import { ControlledInput, ControlledSelect } from "@/components/controls";
+import { useStudentFilter, useStudentGroupOptions } from "../../hooks";
+import type { StudentSortField } from "../../hooks/useFilter";
 
 interface StudentFilterProps {
   onAddStudent: () => void;
@@ -27,8 +29,15 @@ export const StudentDataFilter = ({
   onBulkGiveCoin,
 }: StudentFilterProps) => {
   const { t } = useTranslation();
-  const { form, clearFilters } = useStudentFilter();
-  const sortLabels = [t("common.name"), t("students.filter.class"), "Coin"];
+  const { form, clearFilters, sortBy, sortOrder, toggleSort } =
+    useStudentFilter();
+  const { data: groups } = useStudentGroupOptions();
+  const groupOptions =
+    groups?.data.map((g) => ({ value: g.id, label: g.name })) ?? [];
+  const sortOptions: { field: StudentSortField; label: string }[] = [
+    { field: "fullName", label: t("common.name") },
+    { field: "coin", label: "Coin" },
+  ];
 
   return (
     <Form {...form}>
@@ -59,6 +68,7 @@ export const StudentDataFilter = ({
             )}
             <Button
               onClick={onImportExcel}
+              disabled
               className="bg-linear-to-br from-emerald-500 to-emerald-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
             >
               <FileSpreadsheet size={18} />
@@ -95,7 +105,7 @@ export const StudentDataFilter = ({
 
           {/* O'ng tomondagi filtrlar guruhi */}
           <div className="flex flex-wrap items-center gap-2">
-            {/* Qidiruv + URL param integratsiyasi */}
+            {/* Qidiruv (ism yoki telefon) + URL param integratsiyasi */}
             <div className="flex items-center bg-background border border-border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-500/20 transition-all shadow-sm">
               <div className="pl-3 text-muted-foreground/60">
                 <Search size={18} />
@@ -103,46 +113,52 @@ export const StudentDataFilter = ({
               <ControlledInput
                 control={form.control}
                 name="search"
-                placeholder={t("common.search")}
-                inputClassName="border-none focus-within:ring-0 w-40 h-9 bg-transparent"
-              />
-              <div className="w-px h-6 bg-border" />
-              <Input
-                placeholder="+998 90..."
-                className="border-none focus-visible:ring-0 w-40 h-9 placeholder:text-muted-foreground/50 bg-transparent dark:bg-[#0A0A0A]"
-                readOnly
+                placeholder={t("students.filter.searchPlaceholder")}
+                inputClassName="border-none focus-within:ring-0 w-64 h-9 bg-transparent"
               />
             </div>
 
-            {/* Sinf tanlash */}
+            {/* Guruh (Sinf) tanlash */}
             <div className="shadow-sm rounded-lg">
-              <Select>
-                <SelectTrigger className="w-40 py-4.5 rounded-lg bg-background border-border text-foreground hover:bg-accent/50 transition-colors">
-                  <SelectValue placeholder={t("students.filter.allClasses")} />
-                </SelectTrigger>
-                <SelectContent className="rounded-lg border-border bg-popover text-popover-foreground translate-y-9 -translate-x-0.5">
-                  <SelectItem value="all">
-                    {t("students.filter.allClasses")}
-                  </SelectItem>
-                  <SelectItem value="7a">7-A</SelectItem>
-                  <SelectItem value="8a">8-A</SelectItem>
-                  <SelectItem value="9a">9-A</SelectItem>
-                </SelectContent>
-              </Select>
+              <ControlledSelect
+                control={form.control}
+                name="groupId"
+                options={groupOptions}
+                placeholder={t("students.filter.allClasses")}
+                className="w-40 py-4.5 rounded-lg bg-background border-border text-foreground hover:bg-accent/50 transition-colors"
+              />
             </div>
 
             {/* Saralash (Sort) tugmalari */}
             <div className="flex items-center border border-border rounded-lg bg-background p-1 gap-1 shadow-sm">
-              {sortLabels.map((label) => (
-                <Button
-                  key={label}
-                  variant="ghost"
-                  size="sm"
-                  className="h-7 px-2 gap-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                >
-                  {label} <ArrowUpDown size={12} className="opacity-50" />
-                </Button>
-              ))}
+              {sortOptions.map(({ field, label }) => {
+                const isActive = sortBy === field;
+                return (
+                  <Button
+                    key={field}
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleSort(field)}
+                    className={`h-7 px-2 gap-1.5 text-xs transition-colors ${
+                      isActive
+                        ? "bg-accent text-foreground"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    }`}
+                  >
+                    {label}
+                    {isActive ? (
+                      sortOrder === "asc" ? (
+                        <ArrowUp size={12} />
+                      ) : (
+                        <ArrowDown size={12} />
+                      )
+                    ) : (
+                      <ArrowUpDown size={12} className="opacity-50" />
+                    )}
+                  </Button>
+                );
+              })}
             </div>
 
             {/* Tozalash */}

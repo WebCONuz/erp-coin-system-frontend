@@ -219,6 +219,10 @@
     "tenants": {
       "no_data": "Tizimda hali ijarachilar mavjud emas!",
       "create": "Ijarachi yaratish"
+    },
+    "students": {
+      "no_data": "Hali o'quvchilar mavjud emas!",
+      "create_btn": "Student yaratish"
     }
   },
   "tenants": {
@@ -532,12 +536,12 @@
       "security": "Xavfsizlik"
     },
     "filter": {
-      "class": "Sinf",
       "addStudent": "Talaba qo'shish",
       "bulkGiveCoin": "Bir vaqtda tanga berish",
       "importExcel": "Exceldan ma'lumot qo'shish",
       "activeStudents": "Faol o'quvchilar",
-      "allClasses": "Barcha sinflar"
+      "allClasses": "Barcha sinflar",
+      "searchPlaceholder": "Ism yoki telefon raqami"
     },
     "giftTab": {
       "title": "Sotib olingan sovg'alar ({{count}})",

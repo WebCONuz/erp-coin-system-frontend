@@ -51,7 +51,6 @@ const Students = () => {
       <StudentList
         data={students}
         isLoading={isLoading}
-        handleCreate={handleCreate}
         handleEdit={handleEdit}
       />
 

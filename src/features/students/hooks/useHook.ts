@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAllGroups } from "@/features/groups/api";
 import {
   createStudent,
   updateStudent,
@@ -38,15 +39,27 @@ export const useStudents = (limit?: number) => {
 
   const params = {
     search: searchParams.get("search") || undefined,
-    groupId: searchParams.get("group_id") || undefined,
+    groupId: searchParams.get("groupId") || undefined,
     isActive:
       status === "archive" ? "false" : status === "active" ? "true" : undefined,
+    sortBy: searchParams.get("sortBy") || undefined,
+    sortOrder: searchParams.get("sortOrder") || undefined,
     page: searchParams.get("page") || undefined,
     limit: limit?.toString() || "20",
   };
   return useQuery({
     queryKey: studentKeys.allStudents(params),
     queryFn: () => getAllStudents(params),
+  });
+};
+
+// Guruhlar dropdown'i uchun — URL search paramlaridan mustaqil holda
+// to'liq faol guruhlar ro'yxatini oladi (useGroups() sahifaning o'z
+// filtr paramlarini o'qiydi, shu sababli bu yerda ishlatib bo'lmaydi).
+export const useStudentGroupOptions = () => {
+  return useQuery({
+    queryKey: ["student-filter-groups"],
+    queryFn: () => getAllGroups({ isActive: "true" }),
   });
 };
 

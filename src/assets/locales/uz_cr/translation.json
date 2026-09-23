@@ -532,12 +532,12 @@
       "security": "Хавфсизлик"
     },
     "filter": {
-      "class": "Синф",
       "addStudent": "Талаба қўшиш",
       "bulkGiveCoin": "Бир вақтда танга бериш",
       "importExcel": "Excel дан маълумот қўшиш",
       "activeStudents": "Фаол ўқувчилар",
-      "allClasses": "Барча синфлар"
+      "allClasses": "Барча синфлар",
+      "searchPlaceholder": "Исм ёки телефон рақами"
     },
     "giftTab": {
       "title": "Сотиб олинган совғалар ({{count}})",

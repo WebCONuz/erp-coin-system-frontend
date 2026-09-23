@@ -532,12 +532,12 @@
       "security": "Безопасность"
     },
     "filter": {
-      "class": "Класс",
       "addStudent": "Добавить студента",
       "bulkGiveCoin": "Массовая выдача монет",
       "importExcel": "Импорт данных из Excel",
       "activeStudents": "Активные ученики",
-      "allClasses": "Все классы"
+      "allClasses": "Все классы",
+      "searchPlaceholder": "Имя или номер телефона"
     },
     "giftTab": {
       "title": "Купленные подарки ({{count}})",

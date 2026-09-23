@@ -52,8 +52,8 @@ export const TrendBarChart = <T extends object>({
             dataKey={s.key as keyof ChartRow}
             name={s.label}
             fill={s.color}
-            radius={[3, 3, 0, 0]}
-            maxBarSize={12}
+            radius={[6, 6, 0, 0]}
+            maxBarSize={28}
           />
         ))}
       </BarChart>

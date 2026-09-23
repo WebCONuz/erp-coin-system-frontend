@@ -10,16 +10,10 @@ import type { StudentDetail, StudentsResponse } from "../../types";
 interface Props {
   data?: StudentsResponse;
   isLoading: boolean;
-  handleCreate: () => void;
   handleEdit: (student: StudentDetail) => void;
 }
 
-export const StudentList = ({
-  data,
-  isLoading,
-  handleCreate,
-  handleEdit,
-}: Props) => {
+export const StudentList = ({ data, isLoading, handleEdit }: Props) => {
   const { t } = useTranslation();
   const { columns } = useStudentTable({ handleEdit });
   const pagination = usePagination({
@@ -34,9 +28,9 @@ export const StudentList = ({
   if (data.data.length === 0) {
     return (
       <NoDataBox
-        title={t("groups.no_data")}
-        btnText={t("groups.btn.create")}
-        btnFn={handleCreate}
+        title={t("admin.students.no_data")}
+        btnText={t("admin.students.create_btn")}
+        hasAction={false}
       />
     );
   }
