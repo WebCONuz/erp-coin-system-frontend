@@ -304,25 +304,6 @@
   },
   "roles": {
     "title": "Роллар",
-    "addRole": "Рол қўшиш",
-    "deleteConfirm": "\"{{name}}\" ролини ўчиришни тасдиқлайсизми?",
-    "schema": {
-      "name_min": "Рол номи камида 2 та белгидан иборат бўлиши керак",
-      "displayName_min": "Кўрсатиладиган ном камида 2 та белгидан иборат бўлиши керак",
-      "level_min": "Даража манфий бўлиши мумкин эмас",
-      "scope_required": "Scope киритилиши шарт"
-    },
-    "form": {
-      "editTitle": "Ролни таҳрирлаш",
-      "createTitle": "Янги рол яратиш",
-      "nameLabel": "Рол номи (код)",
-      "namePlaceholder": "Масалан: teacher",
-      "displayNameLabel": "Кўрсатиладиган ном",
-      "displayNamePlaceholder": "Масалан: Ўқитувчи",
-      "levelLabel": "Даража",
-      "scopeLabel": "Scope",
-      "canDeleteLabel": "Бу ролни кейинчалик ўчириш мумкин бўлсин"
-    },
     "table": {
       "displayName": "Рол номи",
       "code": "Код",

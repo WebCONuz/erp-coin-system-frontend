@@ -51,7 +51,9 @@ const EmployeesPage = () => {
 
   const handleArchive = (employee: Employee) => {
     if (
-      !window.confirm(t("employees.archiveConfirm", { name: employee.fullName }))
+      !window.confirm(
+        t("employees.archiveConfirm", { name: employee.fullName }),
+      )
     )
       return;
 

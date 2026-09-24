@@ -1,23 +1,11 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
-import { Pencil, Trash } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
 import { formatDate } from "@/ustils";
-import { useAuth } from "@/features/auth/hooks/useLogin";
-import { ROLES } from "@/assets/constants";
 import type { Role } from "../types";
 
-interface Props {
-  handleEdit: (role: Role) => void;
-  handleDelete: (role: Role) => void;
-}
-
-export const useRoleTable = ({ handleEdit, handleDelete }: Props) => {
+export const useRoleTable = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const canDeleteRoles =
-    user?.role.name === ROLES.SUPER_ADMIN || user?.role.name === ROLES.CREATOR;
 
   const columns = useMemo<ColumnDef<Role>[]>(
     () => [
@@ -48,35 +36,8 @@ export const useRoleTable = ({ handleEdit, handleDelete }: Props) => {
         header: t("roles.table.createdAt"),
         cell: ({ getValue }) => formatDate(getValue<string>(), "dd.MM.yyyy"),
       },
-      {
-        accessorKey: "actions",
-        header: t("common.actions"),
-        cell: ({ row }) => (
-          <div className="flex gap-x-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-8 w-8 text-green-600"
-              onClick={() => handleEdit(row.original)}
-            >
-              <Pencil size={16} />
-            </Button>
-            {canDeleteRoles && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-red-500"
-                disabled={!row.original.canDelete}
-                onClick={() => handleDelete(row.original)}
-              >
-                <Trash size={16} />
-              </Button>
-            )}
-          </div>
-        ),
-      },
     ],
-    [handleEdit, handleDelete, canDeleteRoles, t],
+    [t],
   );
 
   return {

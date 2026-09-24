@@ -308,25 +308,6 @@
   },
   "roles": {
     "title": "Rollar",
-    "addRole": "Rol qo'shish",
-    "deleteConfirm": "\"{{name}}\" rolini o'chirishni tasdiqlaysizmi?",
-    "schema": {
-      "name_min": "Rol nomi kamida 2 ta belgidan iborat bo'lishi kerak",
-      "displayName_min": "Ko'rsatiladigan nom kamida 2 ta belgidan iborat bo'lishi kerak",
-      "level_min": "Daraja manfiy bo'lishi mumkin emas",
-      "scope_required": "Scope kiritilishi shart"
-    },
-    "form": {
-      "editTitle": "Rolni tahrirlash",
-      "createTitle": "Yangi rol yaratish",
-      "nameLabel": "Rol nomi (kod)",
-      "namePlaceholder": "Masalan: teacher",
-      "displayNameLabel": "Ko'rsatiladigan nom",
-      "displayNamePlaceholder": "Masalan: O'qituvchi",
-      "levelLabel": "Daraja",
-      "scopeLabel": "Scope",
-      "canDeleteLabel": "Bu rolni keyinchalik o'chirish mumkin bo'lsin"
-    },
     "table": {
       "displayName": "Rol nomi",
       "code": "Kod",

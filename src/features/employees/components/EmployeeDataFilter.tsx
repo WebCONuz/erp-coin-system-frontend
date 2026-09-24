@@ -10,6 +10,7 @@ import {
 } from "@/components/controls";
 import { Form } from "@/components/ui/form";
 import { useRoles } from "@/features/roles/hooks";
+import { ROLES } from "@/assets/constants";
 import { useFilter } from "../hooks";
 import { ALL_VALUE } from "../constants";
 
@@ -26,7 +27,7 @@ export const EmployeeDataFilter = ({ onAdd }: Props) => {
   const roleOptions: IOption[] = [
     { value: ALL_VALUE, label: t("employees.filter.allRoles") },
     ...(roles?.data
-      ?.filter((item) => item.name !== "student")
+      ?.filter((item) => item.name !== ROLES.STUDENT)
       ?.map((r) => ({ value: r.id, label: r.displayName })) ?? []),
   ];
 

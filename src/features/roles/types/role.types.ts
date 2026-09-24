@@ -1,23 +1,23 @@
 // ─── List item (GET /api/roles) ──────────────────────────────────────────────
+// Har bir tenantda faqat 3 ta rol bo'ladi: admin (60), teacher (40), student (20).
+// Mantiq uchun `name` ga, UI uchun `displayName` ga tayaning.
+export type RoleTypes =
+  | "student"
+  | "teacher"
+  | "admin"
+  | "super_admin"
+  | "creator";
+
 export interface Role {
   id: string;
-  name: string;
+  name: RoleTypes;
   displayName: string;
   level: number;
   scope: string;
-  canDelete: boolean;
-  canManageAdmins: boolean;
-  canManageUsers: boolean;
-  isSystem: boolean;
   isActive: boolean;
-  isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
-  deletedAt: string | null;
   tenantId: string;
-  _count: {
-    users: number;
-  };
 }
 
 export interface RolesResponse {
@@ -28,20 +28,4 @@ export interface RolesResponse {
     limit: number;
     totalPages: number;
   };
-}
-
-export interface CreateRoleDto {
-  name: string;
-  displayName: string;
-  level: number;
-  scope: string;
-  canDelete?: boolean;
-}
-
-export interface UpdateRoleDto {
-  name?: string;
-  displayName?: string;
-  level?: number;
-  scope?: string;
-  canDelete?: boolean;
 }

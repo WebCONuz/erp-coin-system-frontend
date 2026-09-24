@@ -304,25 +304,6 @@
   },
   "roles": {
     "title": "Роли",
-    "addRole": "Добавить роль",
-    "deleteConfirm": "Вы уверены, что хотите удалить роль \"{{name}}\"?",
-    "schema": {
-      "name_min": "Название роли должно содержать не менее 2 символов",
-      "displayName_min": "Отображаемое имя должно содержать не менее 2 символов",
-      "level_min": "Уровень не может быть отрицательным",
-      "scope_required": "Scope обязателен для заполнения"
-    },
-    "form": {
-      "editTitle": "Редактировать роль",
-      "createTitle": "Создать новую роль",
-      "nameLabel": "Название роли (код)",
-      "namePlaceholder": "Например: teacher",
-      "displayNameLabel": "Отображаемое имя",
-      "displayNamePlaceholder": "Например: Учитель",
-      "levelLabel": "Уровень",
-      "scopeLabel": "Scope",
-      "canDeleteLabel": "Разрешить удаление этой роли в дальнейшем"
-    },
     "table": {
       "displayName": "Название роли",
       "code": "Код",

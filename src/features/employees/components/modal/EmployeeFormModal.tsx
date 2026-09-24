@@ -28,17 +28,23 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
 
   const { data: roles, isLoading: isRolesLoading } = useRoles();
   const roleOptions =
-    roles?.data.map((role) => ({
-      value: role.id,
-      label: role.displayName,
-    })) ?? [];
+    roles?.data?.length && roles.data.length > 0
+      ? roles.data
+          .filter((item) => item.name !== "student")
+          .map((role) => ({
+            value: role.id,
+            label: role.displayName,
+          }))
+      : [];
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
-            {isEdit ? t("employees.form.editTitle") : t("employees.form.createTitle")}
+            {isEdit
+              ? t("employees.form.editTitle")
+              : t("employees.form.createTitle")}
           </DialogTitle>
         </DialogHeader>
 
