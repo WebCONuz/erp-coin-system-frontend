@@ -101,6 +101,11 @@
     "card": {
       "inactive": "Nofaol"
     },
+    "builtIn": {
+      "badge": "Asosiy",
+      "editHint": "Bu asosiy qoida: faqat nomi, tanga miqdori va izohini o'zgartirish mumkin. Uni o'chirib bo'lmaydi.",
+      "groupRequiredHint": "Bu tur uchun umumiy qoida allaqachon mavjud — faqat guruh uchun maxsus qoida yaratish mumkin."
+    },
     "schema": {
       "name_required": "Nomi kiritilishi shart",
       "amount_min": "Tanga miqdori kamida 1 bo'lishi kerak",

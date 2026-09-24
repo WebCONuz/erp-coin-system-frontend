@@ -39,3 +39,16 @@ export const getSourceTypeLabels = (
 });
 
 export const ALL_GROUPS_VALUE = "all";
+
+// Har bir tenantda bu turdagi umumiy (groupId siz) auto "earn" qoida asosiy
+// qoida sifatida allaqachon mavjud — yangisi faqat guruhga bog'lanib yaratiladi.
+export const BUILT_IN_SOURCE_TYPES = ["attendance", "homework"] as const;
+
+export const requiresGroupForAutoRule = (values: {
+  triggerType?: string;
+  direction?: string;
+  sourceType?: string;
+}) =>
+  values.triggerType === "auto" &&
+  values.direction === "earn" &&
+  BUILT_IN_SOURCE_TYPES.some((s) => s === values.sourceType);

@@ -1,4 +1,12 @@
-import { MoreVertical, Pencil, Trash, Zap, Hand, Users } from "lucide-react";
+import {
+  MoreVertical,
+  Pencil,
+  Trash,
+  Zap,
+  Hand,
+  Users,
+  Lock,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
@@ -39,13 +47,15 @@ export const CoinRuleCard = ({ data, groupName, onEdit, onDelete }: Props) => {
               <Pencil className="text-blue-500" />
               {t("common.edit")}
             </DropdownMenuItem>
-            <DropdownMenuItem
-              variant="destructive"
-              onClick={() => onDelete(data)}
-            >
-              <Trash />
-              {t("common.delete")}
-            </DropdownMenuItem>
+            {!data.isBuiltIn && (
+              <DropdownMenuItem
+                variant="destructive"
+                onClick={() => onDelete(data)}
+              >
+                <Trash />
+                {t("common.delete")}
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -70,6 +80,13 @@ export const CoinRuleCard = ({ data, groupName, onEdit, onDelete }: Props) => {
       )}
 
       <div className="flex flex-wrap items-center gap-1.5">
+        {data.isBuiltIn && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-4xl text-xs bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300">
+            <Lock size={12} />
+            {t("coinRules.builtIn.badge")}
+          </span>
+        )}
+
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-4xl text-xs bg-background/70">
           {data.triggerType === "auto" ? (
             <Zap size={12} className="text-amber-500" />

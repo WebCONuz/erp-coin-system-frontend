@@ -38,6 +38,7 @@ import {
   getDirectionOptions,
   getSourceTypeOptions,
   getTriggerTypeOptions,
+  requiresGroupForAutoRule,
 } from "../constants";
 import type { CoinRule } from "../types";
 
@@ -61,6 +62,8 @@ const emptyValues: CoinRuleFormValues = {
 export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
   const { t } = useTranslation();
   const isEdit = mode === "edit";
+  // Asosiy qoidada direction/triggerType/sourceType/groupId qulflangan (backend 409).
+  const isBuiltIn = isEdit && !!coinRule?.isBuiltIn;
   const createCoinRule = useCreateCoinRule();
   const updateCoinRule = useUpdateCoinRule(coinRule?.id ?? "");
   const isPending = createCoinRule.isPending || updateCoinRule.isPending;
@@ -86,6 +89,11 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
   });
 
   const triggerType = form.watch("triggerType");
+  const direction = form.watch("direction");
+  const sourceType = form.watch("sourceType");
+  const groupRequired =
+    !isBuiltIn &&
+    requiresGroupForAutoRule({ triggerType, direction, sourceType });
 
   useEffect(() => {
     if (!open) return;
@@ -117,6 +125,26 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
     toast.error(error?.data?.message || t("common.error"));
 
   const onSubmit = (values: CoinRuleFormValues) => {
+    if (isBuiltIn && coinRule) {
+      updateCoinRule.mutate(
+        {
+          name: values.name,
+          coinAmount: values.coinAmount,
+          description: values.description || undefined,
+        },
+        { onSuccess: () => onClose(), onError },
+      );
+      return;
+    }
+
+    const hasGroup = !!values.groupId && values.groupId !== ALL_GROUPS_VALUE;
+    if (groupRequired && !hasGroup) {
+      form.setError("groupId", {
+        message: t("coinRules.teacherForm.groupRequiredError"),
+      });
+      return;
+    }
+
     const data = {
       ...values,
       description: values.description || undefined,
@@ -183,6 +211,8 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
                 label={t("common.direction")}
                 options={directionOptions}
                 placeholder={t("coinRules.directionPlaceholder")}
+                disabled={isBuiltIn}
+                clearable={!isBuiltIn}
               />
             </div>
 
@@ -193,6 +223,8 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
                 label={t("coinRules.triggerTypeLabel")}
                 options={triggerTypeOptions}
                 placeholder={t("coinRules.triggerTypePlaceholder")}
+                disabled={isBuiltIn}
+                clearable={!isBuiltIn}
               />
 
               {triggerType === "auto" && (
@@ -202,17 +234,43 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
                   label={t("coinRules.sourceTypeLabel")}
                   options={sourceTypeOptions}
                   placeholder={t("coinRules.sourceTypePlaceholder")}
+                  disabled={isBuiltIn}
+                  clearable={!isBuiltIn}
                 />
               )}
             </div>
 
-            <ControlledSelect
-              control={form.control}
-              name="groupId"
-              label={t("coinRules.groupLabelOptional")}
-              options={groupOptions}
-              placeholder={t("coinRules.groupPlaceholder")}
-            />
+            <div className="space-y-1.5">
+              <ControlledSelect
+                control={form.control}
+                name="groupId"
+                label={
+                  groupRequired
+                    ? t("common.group")
+                    : t("coinRules.groupLabelOptional")
+                }
+                required={groupRequired}
+                options={
+                  groupRequired
+                    ? groupOptions.filter((o) => o.value !== ALL_GROUPS_VALUE)
+                    : groupOptions
+                }
+                placeholder={t("coinRules.groupPlaceholder")}
+                disabled={isBuiltIn}
+                clearable={!isBuiltIn}
+              />
+              {groupRequired && (
+                <p className="text-xs text-muted-foreground">
+                  {t("coinRules.builtIn.groupRequiredHint")}
+                </p>
+              )}
+            </div>
+
+            {isBuiltIn && (
+              <p className="rounded-lg bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+                {t("coinRules.builtIn.editHint")}
+              </p>
+            )}
 
             <FormField
               control={form.control}

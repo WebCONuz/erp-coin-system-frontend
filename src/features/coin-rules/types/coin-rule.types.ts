@@ -17,6 +17,9 @@ export interface CoinRule {
   sourceType: CoinRuleSourceType | null;
   groupId: string | null;
   isActive: boolean;
+  // Tenant bilan avtomatik yaratilgan asosiy qoida ("Davomat", "Uyga vazifa").
+  // Faqat backend belgilaydi — POST/PATCH body'da yuborilsa 400 qaytadi.
+  isBuiltIn: boolean;
   createdAt: string;
 }
 

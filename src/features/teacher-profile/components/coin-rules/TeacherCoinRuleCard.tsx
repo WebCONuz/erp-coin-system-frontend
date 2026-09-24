@@ -1,4 +1,4 @@
-import { Hand, Users, Zap } from "lucide-react";
+import { Hand, Lock, Users, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getSourceTypeLabels } from "@/features/coin-rules/constants";
 import type { CoinRule } from "@/features/coin-rules/types";
@@ -45,6 +45,13 @@ export const TeacherCoinRuleCard = ({
       )}
 
       <div className="flex flex-wrap items-center gap-1.5 mt-3">
+        {data.isBuiltIn && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-white text-ink-soft border border-ink/10">
+            <Lock size={11} className="text-gold" />
+            {t("coinRules.builtIn.badge")}
+          </span>
+        )}
+
         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-white text-ink-soft border border-ink/10">
           {data.triggerType === "auto" ? (
             <Zap size={11} className="text-gold" />
