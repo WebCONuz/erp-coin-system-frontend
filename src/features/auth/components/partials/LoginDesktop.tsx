@@ -1,16 +1,19 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginSchema, type LoginFormValues } from "../../schema";
+import { createLoginSchema, type LoginFormValues } from "../../schema";
 import { useAuth } from "../../hooks/useLogin";
 
 export const LoginDesktop = () => {
+  const { t } = useTranslation();
   const { login, isLoginLoading } = useAuth();
+  const loginSchema = useMemo(() => createLoginSchema(t), [t]);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -56,27 +59,33 @@ export const LoginDesktop = () => {
       <div className="flex items-center justify-center bg-background px-6 py-12">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
-            <h2 className="text-2xl font-semibold">Tizimga kirish</h2>
+            <h2 className="text-2xl font-semibold">{t("login.title")}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Davom etish uchun hisobingizga kiring
+              {t("login.subtitle")}
             </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            {/* PHONE */}
+            {/* USERNAME */}
             <div className="space-y-1.5">
               <Label className="text-sm text-muted-foreground">
-                Telefon raqami
+                {t("username.label")}
               </Label>
               <Input
-                type="tel"
-                placeholder="+998(00) 000-00-00"
-                {...register("phone")}
+                type="text"
+                autoComplete="username"
+                autoCapitalize="none"
+                placeholder={t("username.placeholder")}
+                {...register("username")}
                 className="h-10 border-border/50 bg-muted/40 focus-visible:ring-1"
               />
-              {errors.phone && (
+              {errors.username ? (
                 <p className="text-xs text-destructive">
-                  {errors.phone.message}
+                  {errors.username.message}
+                </p>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  {t("login.legacyHint")}
                 </p>
               )}
             </div>
@@ -84,12 +93,14 @@ export const LoginDesktop = () => {
             {/* PASSWORD */}
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label className="text-sm text-muted-foreground">Parol</Label>
+                <Label className="text-sm text-muted-foreground">
+                  {t("login.password")}
+                </Label>
                 <a
                   href="/forgot-password"
                   className="text-xs text-primary hover:underline"
                 >
-                  Parolni unutdingizmi?
+                  {t("login.forgotPassword")}
                 </a>
               </div>
               <div className="relative">
@@ -120,7 +131,7 @@ export const LoginDesktop = () => {
               className="mt-2 h-10 w-full"
               disabled={isLoginLoading}
             >
-              {isLoginLoading ? "Yuklanmoqda..." : "Kirish"}
+              {isLoginLoading ? t("login.loading") : t("login.submit")}
             </Button>
           </form>
         </div>

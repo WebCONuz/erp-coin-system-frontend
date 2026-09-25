@@ -6,11 +6,11 @@ import {
   School,
   GraduationCap,
   Gift,
-  LayoutDashboard,
   Building2,
   BookOpen,
   BookText,
   CalendarDays,
+  Settings,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
@@ -56,14 +56,14 @@ export function AdminSidebar() {
         ]),
     { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
     {
-      to: "/admin/control",
-      label: t("admin.header.control"),
-      icon: LayoutDashboard,
-    },
-    {
       to: "/admin/sessions",
       label: t("admin.header.sessions"),
       icon: BookOpen,
+    },
+    {
+      to: "/admin/control",
+      label: t("admin.header.control"),
+      icon: Settings,
     },
   ];
 

@@ -31,6 +31,8 @@ Data flow: `ENDPOINTS` → `api/*` (shared `request` axios instance, `src/servic
 
 ## Auth & tenants
 
+- Login is `username + password` (not phone). `username` is globally unique (`^[a-z0-9_.]{3,30}$`, lowercased); `phone` is unique only within a tenant. Shared helpers in `src/ustils/username.ts` (schema, `suggestUsername`, `getUserConflictField` for 409 → field error) and `src/hooks/useUsernameSuggestion.ts`.
+- Self-profile for every role is `GET/PATCH /api/users/me` via `src/features/profile` (`MyProfileModal` in AdminNavbar, `EditMyProfileModal` on student profile; students can't change their own password).
 - Cookie JWT (HTTP-only, never touched in JS). `is_authenticated` in localStorage gates the `/auth/me` query. `useAuth()` is in `src/features/auth/hooks/useLogin.ts`.
 - Axios interceptor adds `Accept-Language` and `tenantId` (from `localStorage[TENANT_KEY]` = `active_tenant_id`) to every request; on 401 it queues requests, refreshes once, replays, or calls `handleAutoLogout()`.
 - `super_admin`/`creator` switch tenants via `AdminNavbar` (writes `TENANT_KEY` + `?tenantId=`, then `invalidateQueries()`). Admins are bound to `user.tenantId`. See `useCurrentTenant`.

@@ -1,6 +1,7 @@
 // ─── List item (GET /api/students) ──────────────────────────────────────────
 export interface StudentDetail {
   id: string;
+  username: string;
   phone: string;
   fullName: string;
   email: string | null;
@@ -142,6 +143,7 @@ export interface StudentsResponse {
 
 // ─── DTOs ─────────────────────────────────────────────────────────────────────
 export interface CreateStudentDto {
+  username: string;
   phone: string;
   fullName: string;
   password: string;
@@ -152,6 +154,7 @@ export interface CreateStudentDto {
 }
 
 export interface UpdateStudentDto {
+  username?: string;
   phone?: string;
   fullName?: string;
   email?: string;

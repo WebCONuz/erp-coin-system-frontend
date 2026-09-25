@@ -13,6 +13,7 @@ interface Role {
 // ─── List item (GET /api/users/teachers) ─────────────────────────────────────
 export interface Teacher {
   id: string;
+  username: string;
   phone: string;
   fullName: string;
   email: string | null;
@@ -53,6 +54,7 @@ export interface TeacherGroupDetail {
 
 export interface TeacherDetail {
   id: string;
+  username: string;
   fullName: string;
   phone: string;
   email: string | null;
@@ -68,11 +70,12 @@ export interface TeacherDetail {
 // create/edit form, so it works with data from either endpoint.
 export type TeacherEditable = Pick<
   Teacher,
-  "id" | "fullName" | "phone" | "email" | "avatarUrl"
+  "id" | "username" | "fullName" | "phone" | "email" | "avatarUrl"
 >;
 
 // ─── DTOs ─────────────────────────────────────────────────────────────────────
 export interface CreateTeacherDto {
+  username: string;
   fullName: string;
   phone: string;
   password: string;
@@ -82,6 +85,7 @@ export interface CreateTeacherDto {
 }
 
 export interface UpdateTeacherDto {
+  username?: string;
   fullName?: string;
   phone?: string;
   email?: string;

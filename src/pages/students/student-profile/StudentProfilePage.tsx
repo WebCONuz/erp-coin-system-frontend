@@ -10,6 +10,7 @@ import {
   StudentProfileHeader,
   GardenMapCard,
 } from "@/features/student-profile/components";
+import { EditMyProfileModal } from "@/features/profile/components";
 import {
   useMyProfile,
   useStudentLevel,
@@ -24,6 +25,7 @@ const TAB_OPTIONS = [
 const StudentProfilePage = () => {
   const { data: student, isLoading, isError } = useMyProfile();
   const [activeTab, setActiveTab] = useState("attendance");
+  const [editOpen, setEditOpen] = useState(false);
   const { progress } = useStudentLevel(student?.wallet?.balance ?? 0);
 
   if (isLoading) return <PageLoading />;
@@ -33,7 +35,10 @@ const StudentProfilePage = () => {
 
   return (
     <div className="space-y-4">
-      <StudentProfileHeader student={student} />
+      <StudentProfileHeader
+        student={student}
+        onEdit={() => setEditOpen(true)}
+      />
       <ProfileStatsRow student={student} />
       <GardenMapCard progress={progress} />
 
@@ -54,6 +59,8 @@ const StudentProfilePage = () => {
         <CoinHistoryTab student={student} />
         <PurchaseHistoryTab student={student} />
       </Tabs>
+
+      <EditMyProfileModal open={editOpen} onClose={() => setEditOpen(false)} />
     </div>
   );
 };

@@ -1,15 +1,10 @@
 import * as z from "zod";
+import { createUsernameSchema } from "@/ustils/username";
 
-export const loginSchema = z.object({
-  phone: z
-    .string()
-    .min(9, {
-      message: "Telefon raqam kamida 9 ta raqamdan iborat bo'lishi kerak",
-    })
-    .max(13, { message: "Telefon raqam juda uzun" }),
-  password: z
-    .string()
-    .min(4, { message: "Parol kamida 4 ta belgi bo'lishi kerak" }),
-});
+export const createLoginSchema = (t: (key: string) => string) =>
+  z.object({
+    username: createUsernameSchema(t),
+    password: z.string().min(6, t("login.schema.password_min")),
+  });
 
-export type LoginFormValues = z.infer<typeof loginSchema>;
+export type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;

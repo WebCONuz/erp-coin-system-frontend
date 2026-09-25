@@ -1,7 +1,13 @@
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { useUsernameSuggestion } from "@/hooks";
+import {
+  getApiErrorMessage,
+  getUserConflictField,
+} from "@/ustils/username";
 import { ROLES } from "@/assets/constants";
 import { useRoles } from "@/features/roles/hooks";
 import {
@@ -43,6 +49,7 @@ export const useCreateEditStudent = ({
   const createForm = useForm<CreateFormValues>({
     resolver: zodResolver(createStudentSchema),
     defaultValues: {
+      username: "",
       fullName: "",
       phone: "",
       password: "",
@@ -56,6 +63,7 @@ export const useCreateEditStudent = ({
   const editForm = useForm<EditFormValues>({
     resolver: zodResolver(editStudentSchema),
     defaultValues: {
+      username: "",
       fullName: "",
       phone: "",
       email: "",
@@ -72,6 +80,7 @@ export const useCreateEditStudent = ({
     }
     if (isEdit && student) {
       editForm.reset({
+        username: student.username ?? "",
         fullName: student.fullName,
         phone: student.phone,
         email: student.email ?? "",
@@ -80,6 +89,7 @@ export const useCreateEditStudent = ({
       });
     } else {
       createForm.reset({
+        username: "",
         fullName: "",
         phone: "",
         password: "",
@@ -88,8 +98,28 @@ export const useCreateEditStudent = ({
     }
   }, [open, isEdit, student, studentRoleId, createForm, editForm]);
 
+  useUsernameSuggestion(createForm, open && !isEdit);
+
+  // 409 (username/telefon band) — xatoni input ostida ko'rsatamiz
+  const handleError =
+    (setError: (field: "username" | "phone", message: string) => void) =>
+    (error: unknown) => {
+      const field = getUserConflictField(error);
+      if (field) {
+        setError(
+          field,
+          field === "username"
+            ? t("username.taken")
+            : (getApiErrorMessage(error) ?? ""),
+        );
+        return;
+      }
+      toast.error(getApiErrorMessage(error) || t("common.error"));
+    };
+
   const onSubmitCreate = (values: CreateFormValues) => {
     const payload: CreateFormValues = {
+      username: values.username,
       fullName: values.fullName,
       phone: values.phone,
       password: values.password,
@@ -99,18 +129,29 @@ export const useCreateEditStudent = ({
     if (values.email) payload.email = values.email;
     if (values.parentPhone) payload.parentPhone = values.parentPhone;
     if (values.avatarUrl) payload.avatarUrl = values.avatarUrl;
-    createStudent.mutate(payload, { onSuccess: onClose });
+    createStudent.mutate(payload, {
+      onSuccess: onClose,
+      onError: handleError((field, message) =>
+        createForm.setError(field, { message }),
+      ),
+    });
   };
 
   const onSubmitEdit = (values: EditFormValues) => {
     const payload: Record<string, string> = {
+      username: values.username,
       fullName: values.fullName,
       phone: values.phone,
     };
     if (values.email) payload.email = values.email;
     if (values.avatarUrl) payload.avatarUrl = values.avatarUrl;
     if (values.parentPhone) payload.parentPhone = values.parentPhone;
-    updateStudent.mutate(payload, { onSuccess: onClose });
+    updateStudent.mutate(payload, {
+      onSuccess: onClose,
+      onError: handleError((field, message) =>
+        editForm.setError(field, { message }),
+      ),
+    });
   };
 
   return {

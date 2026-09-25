@@ -42,6 +42,15 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
               onSubmit={editForm.handleSubmit(onSubmitEdit)}
               className="space-y-4"
             >
+              <ControlledInput
+                control={editForm.control}
+                name="username"
+                label={t("username.label")}
+                placeholder={t("username.placeholder")}
+                autoCapitalize="none"
+                required
+              />
+
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput
                   control={editForm.control}
@@ -103,6 +112,14 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
                 name="fullName"
                 label={t("students.form.fullNameLabel")}
                 placeholder="Alisher Karimov"
+              />
+              <ControlledInput
+                control={createForm.control}
+                name="username"
+                label={t("username.label")}
+                placeholder={t("username.placeholder")}
+                autoCapitalize="none"
+                required
               />
 
               <div className="grid grid-cols-2 gap-3">

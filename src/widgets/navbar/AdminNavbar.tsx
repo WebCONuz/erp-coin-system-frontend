@@ -9,7 +9,6 @@ import {
   CreditCard,
   User,
   Settings,
-  Receipt,
   LogOut,
   type LucideIcon,
 } from "lucide-react";
@@ -33,6 +32,7 @@ import { TENANT_KEY } from "@/features/tenants/constants";
 import { useEffect, useState } from "react";
 import type { TenentType } from "@/features/tenants/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { MyProfileModal } from "@/features/profile/components";
 
 // Constants
 const LANGUAGES = [
@@ -64,6 +64,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
   );
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentTenat, setCurrentTenant] = useState<string>();
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -242,11 +243,21 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
           {/* User avatar dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="h-8 w-8 cursor-pointer select-none">
-                <AvatarFallback className="bg-linear-to-br from-purple-500 to-purple-700 text-white text-xs font-medium">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
+              {user?.avatarUrl ? (
+                <div className="h-8 w-8 rounded-full border-2 border-purple-600/50 overflow-hidden">
+                  <img
+                    src={user?.avatarUrl}
+                    alt="profile-image"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <Avatar className="h-8 w-8 cursor-pointer select-none">
+                  <AvatarFallback className="bg-linear-to-br from-purple-500 to-purple-700 text-white text-xs font-medium">
+                    {initials}
+                  </AvatarFallback>
+                </Avatar>
+              )}
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52">
               {/* User info */}
@@ -254,25 +265,29 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
                 <p className="text-sm font-medium leading-none">
                   {user?.fullName ? user.fullName : t("admin.navbar.noName")}
                 </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {user?.email ? user.email : ""}
-                </p>
+                {user?.username && (
+                  <p className="text-xs text-muted-foreground mt-1 truncate">
+                    @{user.username}
+                  </p>
+                )}
                 <p className="text-xs mt-1 text-[10px] font-medium uppercase text-purple-600 dark:text-yellow-500">
                   {user?.role?.name ? user?.role?.name : "student"}
                 </p>
               </div>
 
-              <DropdownMenuItem className="gap-2.5 mt-1 text-sm cursor-pointer">
+              <DropdownMenuItem
+                className="gap-2.5 mt-1 text-sm cursor-pointer"
+                onClick={() => setIsProfileOpen(true)}
+              >
                 <User size={14} className="text-muted-foreground" />
                 {t("admin.navbar.profile")}
               </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2.5 text-sm cursor-pointer">
+              <DropdownMenuItem
+                className="gap-2.5 text-sm cursor-pointer"
+                onClick={() => navigate("/admin/control/reasons?direction=all")}
+              >
                 <Settings size={14} className="text-muted-foreground" />
                 {t("admin.navbar.settings")}
-              </DropdownMenuItem>
-              <DropdownMenuItem className="gap-2.5 text-sm cursor-pointer">
-                <Receipt size={14} className="text-muted-foreground" />
-                {t("admin.navbar.paymentPlan")}
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
@@ -288,6 +303,11 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
           </DropdownMenu>
         </div>
       </div>
+
+      <MyProfileModal
+        open={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+      />
     </header>
   );
 }

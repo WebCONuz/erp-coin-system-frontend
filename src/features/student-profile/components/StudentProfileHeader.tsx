@@ -1,11 +1,14 @@
-import { Coins, Phone, PhoneCall } from "lucide-react";
+import { AtSign, Coins, Pencil, Phone, PhoneCall } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { StudentDetailFull } from "@/features/students/types";
 
 interface Props {
   student: StudentDetailFull;
+  onEdit: () => void;
 }
 
-export const StudentProfileHeader = ({ student }: Props) => {
+export const StudentProfileHeader = ({ student, onEdit }: Props) => {
+  const { t } = useTranslation();
   const avatarLetter = student.fullName.charAt(0).toUpperCase();
   const activeGroups =
     student.groupMemberships?.filter((g) => g.isActive) ?? [];
@@ -36,6 +39,12 @@ export const StudentProfileHeader = ({ student }: Props) => {
               {student.fullName}
             </h1>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-paper/60 mt-1.5">
+              {student.username && (
+                <span className="flex items-center gap-1.5 min-w-0">
+                  <AtSign size={13} className="shrink-0" />
+                  <span className="truncate">{student.username}</span>
+                </span>
+              )}
               <span className="flex items-center gap-1.5">
                 <Phone size={13} />
                 {student.phone}
@@ -43,7 +52,7 @@ export const StudentProfileHeader = ({ student }: Props) => {
               {student.parentPhone && (
                 <span className="flex items-center gap-1.5">
                   <PhoneCall size={13} />
-                  Ota-ona: {student.parentPhone}
+                  {t("profile.parentLabel")}: {student.parentPhone}
                 </span>
               )}
             </div>
@@ -60,18 +69,29 @@ export const StudentProfileHeader = ({ student }: Props) => {
               </div>
             )}
             <p className="text-xs text-paper/40 mt-3 max-w-md">
-              Ma'lumotlaringiz noto'g'ri bo'lsa, o'quv markazi administratoriga
-              murojaat qiling.
+              {t("profile.passwordByAdmin")}
             </p>
           </div>
         </div>
 
-        <div className="text-left sm:text-right shrink-0">
-          <p className="text-xs text-paper/50">Coin balansi</p>
-          <p className="font-display text-3xl font-bold text-gold flex items-center gap-1.5 sm:justify-end">
-            <Coins size={22} />
-            {student.wallet?.balance ?? 0}
-          </p>
+        <div className="flex sm:flex-col items-center sm:items-end justify-between gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={onEdit}
+            className="order-last sm:order-first inline-flex items-center gap-1.5 rounded-xl border border-gold/30 bg-gold/10 px-3 py-2 text-xs font-medium text-gold-soft transition-colors hover:bg-gold/20"
+          >
+            <Pencil size={13} />
+            {t("profile.editButton")}
+          </button>
+          <div className="text-left sm:text-right">
+            <p className="text-xs text-paper/50">
+              {t("garden.hero.balance")}
+            </p>
+            <p className="font-display text-3xl font-bold text-gold flex items-center gap-1.5 sm:justify-end">
+              <Coins size={22} />
+              {student.wallet?.balance ?? 0}
+            </p>
+          </div>
         </div>
       </div>
     </div>

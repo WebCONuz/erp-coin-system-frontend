@@ -1,9 +1,11 @@
 import { z } from "zod";
+import { createUsernameSchema } from "@/ustils/username";
 
 type TFn = (key: string) => string;
 
 export const createCreateTeacherSchema = (t: TFn) =>
   z.object({
+    username: createUsernameSchema(t),
     fullName: z
       .string()
       .min(2, t("teachers.schema.fullName_min"))
@@ -27,6 +29,7 @@ export const createCreateTeacherSchema = (t: TFn) =>
 
 export const createEditTeacherSchema = (t: TFn) =>
   z.object({
+    username: createUsernameSchema(t),
     fullName: z
       .string()
       .min(2, t("teachers.schema.fullName_min"))

@@ -114,6 +114,60 @@
       "sourceType_required": "Автоматик қоида учун манба тури танланиши шарт"
     }
   },
+  "username": {
+    "label": "Username",
+    "placeholder": "масалан: ali.valiyev",
+    "invalid": "Username 3–30 белги бўлиши ва фақат лотин ҳарфлари, рақамлар, '_' ва '.' дан иборат бўлиши керак",
+    "taken": "Бу username банд"
+  },
+  "login": {
+    "title": "Тизимга кириш",
+    "subtitle": "Давом этиш учун ҳисобингизга киринг",
+    "password": "Парол",
+    "forgotPassword": "Паролни унутдингизми?",
+    "resetPassword": "Паролни тиклаш",
+    "legacyHint": "Аввал телефон рақам билан кирган бўлсангиз, рақамингизни + белгисиз киритинг (масалан 998901234567)",
+    "loading": "Юкланмоқда...",
+    "submit": "Кириш",
+    "schema": {
+      "password_min": "Парол камида 6 та белгидан иборат бўлиши керак"
+    }
+  },
+  "profile": {
+    "title": "Менинг профилим",
+    "editTitle": "Профилни таҳрирлаш",
+    "editButton": "Таҳрирлаш",
+    "tabs": {
+      "info": "Маълумотлар",
+      "password": "Парол"
+    },
+    "passwordByAdmin": "Паролни ўзгартириш учун ўқув маркази администраторига мурожаат қилинг.",
+    "parentLabel": "Ота-она",
+    "updated": "Профил янгиланди",
+    "usernameChanged": "Username ўзгарди. Кейинги сафар \"{{username}}\" билан киринг",
+    "passwordChanged": "Парол муваффақиятли ўзгартирилди",
+    "form": {
+      "fullName": "Исм-фамилия",
+      "fullNamePlaceholder": "Али Валиев",
+      "phone": "Телефон рақами",
+      "parentPhone": "Ота-она телефони",
+      "email": "Email",
+      "avatarUrl": "Профил расми (URL)",
+      "oldPassword": "Жорий парол",
+      "newPassword": "Янги парол",
+      "confirmPassword": "Янги паролни тасдиқланг"
+    },
+    "schema": {
+      "fullName_required": "Исм-фамилия киритилиши шарт",
+      "fullName_max": "Исм-фамилия 150 белгидан ошмаслиги керак",
+      "phone_invalid": "Телефон рақам +998XXXXXXXXX форматида бўлиши керак",
+      "email_invalid": "Email формати нотўғри",
+      "oldPassword_required": "Жорий паролни киритинг",
+      "password_min": "Парол камида 6 та белгидан иборат бўлиши керак",
+      "newPassword_same": "Янги парол жорий паролдан фарқ қилиши керак",
+      "confirmPassword_mismatch": "Пароллар мос келмади"
+    }
+  },
   "garden": {
     "levels": {
       "seed": "Уруғ босқичи",

@@ -54,6 +54,15 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
               onSubmit={editForm.handleSubmit(onSubmitEdit)}
               className="space-y-4"
             >
+              <ControlledInput
+                control={editForm.control}
+                name="username"
+                label={t("username.label")}
+                placeholder={t("username.placeholder")}
+                autoCapitalize="none"
+                required
+              />
+
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput
                   control={editForm.control}
@@ -124,6 +133,14 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
                 name="fullName"
                 label={t("employees.form.fullNameLabel")}
                 placeholder={t("employees.form.fullNamePlaceholder")}
+              />
+              <ControlledInput
+                control={createForm.control}
+                name="username"
+                label={t("username.label")}
+                placeholder={t("username.placeholder")}
+                autoCapitalize="none"
+                required
               />
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput

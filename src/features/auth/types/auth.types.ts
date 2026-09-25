@@ -1,10 +1,11 @@
 export interface LoginDto {
-  phone: string;
+  username: string;
   password: string;
 }
 
 export interface UserMe {
   id: string;
+  username: string;
   phone: string;
   fullName: string;
   email: string | null;
@@ -35,6 +36,7 @@ export interface ResponseLogin {
   message: string;
   user: {
     id: string;
+    username: string;
     phone: string;
     fullName: string;
     role: string;

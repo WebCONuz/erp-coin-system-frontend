@@ -1,6 +1,7 @@
 // ─── List item (GET /api/users/staff) ────────────────────────────────────────
 export interface Employee {
   id: string;
+  username: string;
   fullName: string;
   phone: string;
   email: string | null;
@@ -33,6 +34,7 @@ export interface EmployeesResponse {
 // ─── Detail (GET /api/users/:id) ─────────────────────────────────────────────
 export interface EmployeeDetail {
   id: string;
+  username: string;
   fullName: string;
   phone: string;
   email: string | null;
@@ -52,6 +54,7 @@ export interface EmployeeDetail {
 
 // ─── DTOs ─────────────────────────────────────────────────────────────────────
 export interface CreateEmployeeDto {
+  username: string;
   fullName: string;
   phone: string;
   password: string;
@@ -62,6 +65,7 @@ export interface CreateEmployeeDto {
 }
 
 export interface UpdateEmployeeDto {
+  username?: string;
   fullName?: string;
   phone?: string;
   email?: string;

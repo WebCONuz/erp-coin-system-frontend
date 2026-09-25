@@ -114,6 +114,60 @@
       "sourceType_required": "Avtomatik qoida uchun manba turi tanlanishi shart"
     }
   },
+  "username": {
+    "label": "Username",
+    "placeholder": "masalan: ali.valiyev",
+    "invalid": "Username 3–30 belgi bo'lishi va faqat lotin harflari, raqamlar, '_' va '.' dan iborat bo'lishi kerak",
+    "taken": "Bu username band"
+  },
+  "login": {
+    "title": "Tizimga kirish",
+    "subtitle": "Davom etish uchun hisobingizga kiring",
+    "password": "Parol",
+    "forgotPassword": "Parolni unutdingizmi?",
+    "resetPassword": "Parolni tiklash",
+    "legacyHint": "Avval telefon raqam bilan kirgan bo'lsangiz, raqamingizni + belgisiz kiriting (masalan 998901234567)",
+    "loading": "Yuklanmoqda...",
+    "submit": "Kirish",
+    "schema": {
+      "password_min": "Parol kamida 6 ta belgidan iborat bo'lishi kerak"
+    }
+  },
+  "profile": {
+    "title": "Mening profilim",
+    "editTitle": "Profilni tahrirlash",
+    "editButton": "Tahrirlash",
+    "tabs": {
+      "info": "Ma'lumotlar",
+      "password": "Parol"
+    },
+    "passwordByAdmin": "Parolni o'zgartirish uchun o'quv markazi administratoriga murojaat qiling.",
+    "parentLabel": "Ota-ona",
+    "updated": "Profil yangilandi",
+    "usernameChanged": "Username o'zgardi. Keyingi safar \"{{username}}\" bilan kiring",
+    "passwordChanged": "Parol muvaffaqiyatli o'zgartirildi",
+    "form": {
+      "fullName": "Ism-familiya",
+      "fullNamePlaceholder": "Ali Valiyev",
+      "phone": "Telefon raqami",
+      "parentPhone": "Ota-ona telefoni",
+      "email": "Email",
+      "avatarUrl": "Profil rasmi (URL)",
+      "oldPassword": "Joriy parol",
+      "newPassword": "Yangi parol",
+      "confirmPassword": "Yangi parolni tasdiqlang"
+    },
+    "schema": {
+      "fullName_required": "Ism-familiya kiritilishi shart",
+      "fullName_max": "Ism-familiya 150 belgidan oshmasligi kerak",
+      "phone_invalid": "Telefon raqam +998XXXXXXXXX formatida bo'lishi kerak",
+      "email_invalid": "Email formati noto'g'ri",
+      "oldPassword_required": "Joriy parolni kiriting",
+      "password_min": "Parol kamida 6 ta belgidan iborat bo'lishi kerak",
+      "newPassword_same": "Yangi parol joriy paroldan farq qilishi kerak",
+      "confirmPassword_mismatch": "Parollar mos kelmadi"
+    }
+  },
   "garden": {
     "levels": {
       "seed": "Urug' bosqichi",
@@ -192,7 +246,7 @@
       "employees": "Xodimlar",
       "plans": "Dars jadvali",
       "subjects": "Fanlar",
-      "control": "Boshqarish",
+      "control": "Sozlamalar",
       "tenants": "O'quv markazlar"
     },
     "navbar": {
@@ -201,7 +255,7 @@
       "newGroup": "Yangi guruh",
       "newSession": "Yangi sessiya",
       "selectCenter": "Markazni tanlang",
-      "profile": "Profil",
+      "profile": "Shaxsiy ma'lumotlar",
       "settings": "Sozlamalar",
       "paymentPlan": "To'lov rejasi",
       "logout": "Chiqish",

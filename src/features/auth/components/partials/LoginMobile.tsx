@@ -1,16 +1,19 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { loginSchema, type LoginFormValues } from "../../schema";
+import { createLoginSchema, type LoginFormValues } from "../../schema";
 import { useAuth } from "../../hooks/useLogin";
 
 export const LoginMobile = () => {
+  const { t } = useTranslation();
   const { login, isLoginLoading } = useAuth();
+  const loginSchema = useMemo(() => createLoginSchema(t), [t]);
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -41,7 +44,7 @@ export const LoginMobile = () => {
           BB-Coin
         </h1>
         <p className="font-display text-lg font-medium text-gold-soft">
-          Tizimga kirish
+          {t("login.title")}
         </p>
       </div>
 
@@ -55,23 +58,29 @@ export const LoginMobile = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="relative mt-6 space-y-4"
       >
-        {/* PHONE */}
+        {/* USERNAME */}
         <div className="space-y-1.5">
-          <Label className="text-xs text-paper/70">Telefon raqami</Label>
+          <Label className="text-xs text-paper/70">{t("username.label")}</Label>
           <Input
-            type="tel"
-            placeholder="+998(00) 000-00-00"
-            {...register("phone")}
+            type="text"
+            autoComplete="username"
+            autoCapitalize="none"
+            placeholder={t("username.placeholder")}
+            {...register("username")}
             className="h-12 rounded-2xl border-none bg-paper px-4 text-ink placeholder:text-ink-soft/60 focus-visible:ring-2 focus-visible:ring-gold/60"
           />
-          {errors.phone && (
-            <p className="text-xs text-bloom">{errors.phone.message}</p>
+          {errors.username ? (
+            <p className="text-xs text-bloom">{errors.username.message}</p>
+          ) : (
+            <p className="text-[11px] leading-snug text-paper/50">
+              {t("login.legacyHint")}
+            </p>
           )}
         </div>
 
         {/* PASSWORD */}
         <div className="space-y-1.5">
-          <Label className="text-xs text-paper/70">Parol</Label>
+          <Label className="text-xs text-paper/70">{t("login.password")}</Label>
           <div className="relative">
             <Input
               type={showPassword ? "text" : "password"}
@@ -98,7 +107,7 @@ export const LoginMobile = () => {
           disabled={isLoginLoading}
           className="mt-2 h-12 w-full rounded-2xl bg-gold text-base font-semibold text-forest-deep hover:bg-gold/90"
         >
-          {isLoginLoading ? "Yuklanmoqda..." : "Kirish"}
+          {isLoginLoading ? t("login.loading") : t("login.submit")}
         </Button>
 
         <div className="pt-1 text-center">
@@ -106,7 +115,7 @@ export const LoginMobile = () => {
             // href="/forgot-password"
             className="text-sm text-paper/70 transition-colors hover:text-gold-soft"
           >
-            Parolni tiklash
+            {t("login.resetPassword")}
           </a>
         </div>
       </form>

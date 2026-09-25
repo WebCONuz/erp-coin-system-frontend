@@ -52,6 +52,15 @@ export const StudentFormModal = ({
               onSubmit={editForm.handleSubmit(onSubmitEdit)}
               className="space-y-4"
             >
+              <ControlledInput
+                control={editForm.control}
+                name="username"
+                label={t("username.label")}
+                placeholder={t("username.placeholder")}
+                autoCapitalize="none"
+                required
+              />
+
               <div className="grid grid-cols-2 gap-3">
                 <ControlledInput
                   control={editForm.control}
@@ -121,6 +130,14 @@ export const StudentFormModal = ({
                 name="fullName"
                 label={t("students.form.fullNameLabel")}
                 placeholder={t("students.form.fullNamePlaceholder")}
+              />
+              <ControlledInput
+                control={createForm.control}
+                name="username"
+                label={t("username.label")}
+                placeholder={t("username.placeholder")}
+                autoCapitalize="none"
+                required
               />
               <ControlledInput
                 control={createForm.control}
