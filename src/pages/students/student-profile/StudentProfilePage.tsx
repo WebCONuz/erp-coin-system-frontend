@@ -10,8 +10,10 @@ import {
   StudentProfileHeader,
   GardenMapCard,
 } from "@/features/student-profile/components";
-import { useMyProfile } from "@/features/student-profile/hooks";
-import { getLevelProgress } from "@/features/student-profile/lib/level";
+import {
+  useMyProfile,
+  useStudentLevel,
+} from "@/features/student-profile/hooks";
 
 const TAB_OPTIONS = [
   { value: "attendance", label: "Davomat tarixi" },
@@ -22,13 +24,12 @@ const TAB_OPTIONS = [
 const StudentProfilePage = () => {
   const { data: student, isLoading, isError } = useMyProfile();
   const [activeTab, setActiveTab] = useState("attendance");
+  const { progress } = useStudentLevel(student?.wallet?.balance ?? 0);
 
   if (isLoading) return <PageLoading />;
   if (isError || !student) {
     return <NoData text="Profil ma'lumotlari topilmadi" />;
   }
-
-  const progress = getLevelProgress(student.wallet?.balance ?? 0);
 
   return (
     <div className="space-y-4">

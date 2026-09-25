@@ -1,4 +1,5 @@
 import { Coins, Flame } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { LevelProgress } from "../../lib/level";
 import { GardenPath } from "../GardenPath";
 
@@ -6,7 +7,8 @@ interface Props {
   fullName: string;
   balance: number;
   streak: number;
-  progress: LevelProgress;
+  /** `null` — do'konda faol sovg'a yo'q */
+  progress: LevelProgress | null;
 }
 
 export const HeroProgressCard = ({
@@ -15,7 +17,7 @@ export const HeroProgressCard = ({
   streak,
   progress,
 }: Props) => {
-  const { level, nextLevel, coinsToNext } = progress;
+  const { t } = useTranslation();
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-forest text-paper p-6 sm:p-8">
@@ -25,11 +27,10 @@ export const HeroProgressCard = ({
       <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
         <div className="min-w-0">
           <h1 className="font-display text-2xl sm:text-3xl font-semibold">
-            Salom, {fullName.split(" ")[0]}! 👋
+            {t("garden.hero.greeting", { name: fullName.split(" ")[0] })}
           </h1>
           <p className="text-paper/60 text-sm mt-2 max-w-md">
-            Bugun ham darslarga qatnashib va uy vazifalarini bajarib, bilim
-            bog'ingizni yashillikka to'ldiring.
+            {t("garden.hero.subtitle")}
           </p>
         </div>
 
@@ -37,11 +38,11 @@ export const HeroProgressCard = ({
           {streak > 0 && (
             <div className="flex items-center gap-1.5 rounded-full bg-bloom/15 border border-bloom/30 px-3 py-1 text-xs font-medium text-bloom">
               <Flame size={13} className="fill-bloom text-bloom" />
-              {streak} kun ketma-ket faollik
+              {t("garden.hero.streak", { days: streak })}
             </div>
           )}
           <div className="text-left sm:text-right">
-            <p className="text-xs text-paper/50">Coin balansi</p>
+            <p className="text-xs text-paper/50">{t("garden.hero.balance")}</p>
             <p className="font-display text-3xl font-bold text-gold flex items-center gap-1.5">
               <Coins size={22} />
               {balance}
@@ -51,17 +52,26 @@ export const HeroProgressCard = ({
       </div>
 
       <div className="relative mt-10">
-        <p className="text-xs uppercase tracking-wide text-paper/50 mb-8">
-          {level.daraja}-daraja — {level.name}
-        </p>
+        {progress ? (
+          <>
+            <p className="text-xs uppercase tracking-wide text-paper/50 mb-8">
+              {t("garden.levelWithName", {
+                level: progress.level.daraja,
+                name: t(`garden.levels.${progress.level.nameKey}`),
+              })}
+            </p>
 
-        <GardenPath progress={progress} tone="dark" />
+            <GardenPath progress={progress} tone="dark" />
 
-        <p className="text-right text-xs text-paper/50 mt-4">
-          {nextLevel
-            ? `Keyingi darajagacha ${coinsToNext} coin qoldi`
-            : "Siz eng yuqori darajadasiz!"}
-        </p>
+            <p className="text-right text-xs text-paper/50 mt-4">
+              {progress.nextLevel
+                ? t("garden.coinsToNext", { amount: progress.coinsToNext })
+                : t("garden.maxLevel")}
+            </p>
+          </>
+        ) : (
+          <GardenPath progress={null} tone="dark" />
+        )}
       </div>
     </div>
   );

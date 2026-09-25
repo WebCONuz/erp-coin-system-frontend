@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { useTranslation } from "react-i18next";
 import { ROLES } from "@/assets/constants";
-import { getLevelProgress } from "@/features/student-profile/lib/level";
+import { useStudentLevel } from "@/features/student-profile/hooks";
 import { Tooltip } from "./AdminSidebar";
 
 const LOGO = "/logo.png";
@@ -22,9 +22,7 @@ export const StudentSidebar = () => {
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
-  const { level, nextLevel, bandProgress, coinsToNext } = getLevelProgress(
-    user?.wallet?.balance ?? 0,
-  );
+  const { progress } = useStudentLevel(user?.wallet?.balance ?? 0);
 
   const navItems = [
     { to: "/student", label: t("admin.header.main"), icon: Home, end: true },
@@ -54,13 +52,17 @@ export const StudentSidebar = () => {
       >
         <ChevronRight
           size={16}
-          className={`transition-transform duration-300 ${collapsed ? "" : "rotate-180"}`}
+          className={`transition-transform duration-300 ${
+            collapsed ? "" : "rotate-180"
+          }`}
         />
       </div>
 
       {/* Logo */}
       <div
-        className={`flex gap-x-2 h-14.25 items-center px-3 overflow-hidden relative border-b border-forest-light/60 z-20 ${collapsed ? "justify-center" : "justify-start"}`}
+        className={`flex gap-x-2 h-14.25 items-center px-3 overflow-hidden relative border-b border-forest-light/60 z-20 ${
+          collapsed ? "justify-center" : "justify-start"
+        }`}
       >
         <img
           src={LOGO}
@@ -97,7 +99,9 @@ export const StudentSidebar = () => {
                   <Icon
                     size={18}
                     className="shrink-0"
-                    style={{ color: isActive ? "var(--color-gold)" : undefined }}
+                    style={{
+                      color: isActive ? "var(--color-gold)" : undefined,
+                    }}
                   />
                   {!collapsed && <span>{label}</span>}
                 </>
@@ -132,43 +136,54 @@ export const StudentSidebar = () => {
         )}
       </nav>
 
-      {/* Level footer */}
-      <div className={`relative z-20 p-2 ${collapsed ? "px-2" : ""}`}>
-        <Tooltip
-          label={`${level.daraja}-daraja — ${level.name}`}
-          show={collapsed}
-        >
-          <div
-            className={`rounded-2xl border border-gold/25 bg-forest-light p-3 ${collapsed ? "flex justify-center" : ""}`}
+      {/* Level footer — do'konda faol sovg'a bo'lmasa daraja ko'rsatilmaydi */}
+      {progress && (
+        <div className={`relative z-20 p-2 ${collapsed ? "px-2" : ""}`}>
+          <Tooltip
+            label={t("garden.levelWithName", {
+              level: progress.level.daraja,
+              name: t(`garden.levels.${progress.level.nameKey}`),
+            })}
+            show={collapsed}
           >
-            <div className={`flex items-center gap-2 ${collapsed ? "" : "mb-2"}`}>
-              <div className="w-7 h-7 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
-                <Sprout size={15} className="text-gold" />
+            <div
+              className={`rounded-2xl border border-gold/25 bg-forest-light p-3 ${
+                collapsed ? "flex justify-center" : ""
+              }`}
+            >
+              <div
+                className={`flex items-center gap-2 ${collapsed ? "" : "mb-2"}`}
+              >
+                <div className="w-7 h-7 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
+                  <Sprout size={15} className="text-gold" />
+                </div>
+                {!collapsed && (
+                  <p className="font-display text-sm text-paper font-semibold truncate">
+                    {t("garden.levelLabel", { level: progress.level.daraja })}
+                  </p>
+                )}
               </div>
               {!collapsed && (
-                <p className="font-display text-sm text-paper font-semibold truncate">
-                  {level.daraja}-daraja
-                </p>
+                <>
+                  <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gold transition-all duration-500"
+                      style={{ width: `${progress.bandProgress}%` }}
+                    />
+                  </div>
+                  <p className="text-[11px] text-paper/50 mt-1.5">
+                    {progress.nextLevel
+                      ? t("garden.coinsToNextShort", {
+                          amount: progress.coinsToNext,
+                        })
+                      : t("garden.maxLevelShort")}
+                  </p>
+                </>
               )}
             </div>
-            {!collapsed && (
-              <>
-                <div className="h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gold transition-all duration-500"
-                    style={{ width: `${bandProgress}%` }}
-                  />
-                </div>
-                <p className="text-[11px] text-paper/50 mt-1.5">
-                  {nextLevel
-                    ? `Keyingi darajagacha ${coinsToNext} coin`
-                    : "Eng yuqori daraja"}
-                </p>
-              </>
-            )}
-          </div>
-        </Tooltip>
-      </div>
+          </Tooltip>
+        </div>
+      )}
     </aside>
   );
 };

@@ -1,5 +1,4 @@
 import { Coins, Phone, PhoneCall } from "lucide-react";
-import { getFileUrl } from "@/lib/utils";
 import type { StudentDetailFull } from "@/features/students/types";
 
 interface Props {
@@ -8,7 +7,8 @@ interface Props {
 
 export const StudentProfileHeader = ({ student }: Props) => {
   const avatarLetter = student.fullName.charAt(0).toUpperCase();
-  const activeGroups = student.groupMemberships?.filter((g) => g.isActive) ?? [];
+  const activeGroups =
+    student.groupMemberships?.filter((g) => g.isActive) ?? [];
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-forest text-paper p-6 sm:p-8">
@@ -19,7 +19,8 @@ export const StudentProfileHeader = ({ student }: Props) => {
           <div className="shrink-0">
             {student.avatarUrl ? (
               <img
-                src={getFileUrl(student.avatarUrl)}
+                // src={getFileUrl(student.avatarUrl)}
+                src={student.avatarUrl}
                 alt="avatar"
                 className="w-16 h-16 rounded-2xl object-cover ring-2 ring-gold/40"
               />
@@ -59,8 +60,8 @@ export const StudentProfileHeader = ({ student }: Props) => {
               </div>
             )}
             <p className="text-xs text-paper/40 mt-3 max-w-md">
-              Ma'lumotlaringiz noto'g'ri bo'lsa, o'quv markazi
-              administratoriga murojaat qiling.
+              Ma'lumotlaringiz noto'g'ri bo'lsa, o'quv markazi administratoriga
+              murojaat qiling.
             </p>
           </div>
         </div>

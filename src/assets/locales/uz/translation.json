@@ -114,6 +114,34 @@
       "sourceType_required": "Avtomatik qoida uchun manba turi tanlanishi shart"
     }
   },
+  "garden": {
+    "levels": {
+      "seed": "Urug' bosqichi",
+      "sprout": "Nihol bosqichi",
+      "bush": "Buta bosqichi",
+      "tree": "Daraxt bosqichi"
+    },
+    "levelLabel": "{{level}}-daraja",
+    "levelWithName": "{{level}}-daraja — {{name}}",
+    "youAreHere": "SIZ SHU YERDA",
+    "coinsToNext": "Keyingi darajagacha {{amount}} coin qoldi",
+    "coinsToNextShort": "Keyingi darajagacha {{amount}} coin",
+    "maxLevel": "Siz eng yuqori darajadasiz!",
+    "maxLevelShort": "Eng yuqori daraja",
+    "noRewards": "Do'konda hali sovg'a yo'q",
+    "noRewardsHint": "Sovg'alar qo'shilgach, bog'ingiz darajalari shu yerda ko'rinadi",
+    "hero": {
+      "greeting": "Salom, {{name}}! 👋",
+      "subtitle": "Bugun ham darslarga qatnashib va uy vazifalarini bajarib, bilim bog'ingizni yashillikka to'ldiring.",
+      "streak": "{{days}} kun ketma-ket faollik",
+      "balance": "Coin balansi"
+    },
+    "map": {
+      "title": "Bilim bog'i xaritasi",
+      "reached": "Erishilgan",
+      "locked": "Qulflangan"
+    }
+  },
   "bulkCoin": {
     "defaultTitle": "Ommaviy tanga berish",
     "defaultSubtitle": "Bir nechta o'quvchini tanlab, birdaniga tanga bering",

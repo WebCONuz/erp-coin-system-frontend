@@ -110,13 +110,11 @@ export const UpcomingLessonsCard = ({
                     <div
                       className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold shrink-0 ${avatarStyle(session.group.id)}`}
                     >
-                      {initials(session.group.name)}
+                      {initials(session.subject?.name ?? session.group.name)}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-sm text-ink truncate">
-                        <b>
-                          {session.subject?.name ?? session.group.name}
-                        </b>
+                        <b>{session.subject?.name ?? session.group.name}</b>
                         {session.subject ? ` · ${session.group.name}` : ""}
                         {session.topic ? ` · ${session.topic}` : ""}
                       </p>

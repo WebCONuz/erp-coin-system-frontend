@@ -52,9 +52,18 @@ export const StudentDetailHeader = ({
       className={`flex flex-col sm:flex-row items-start sm:items-center gap-5 p-6 rounded-xl border bg-white dark:bg-zinc-900 ${isDeleted ? "border-red-200 dark:border-red-900/60" : "border-zinc-200 dark:border-zinc-800"}`}
     >
       <div className="relative shrink-0">
-        <div className="w-16 h-16 rounded-xl bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-2xl font-bold text-white shadow-md">
-          {avatarLetter}
-        </div>
+        {student?.avatarUrl ? (
+          <img
+            // src={getFileUrl(student.avatarUrl)}
+            src={student.avatarUrl}
+            alt="avatar"
+            className="w-16 h-16 rounded-2xl object-cover ring-2 ring-green-600/30"
+          />
+        ) : (
+          <div className="w-16 h-16 rounded-xl bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-2xl font-bold text-white shadow-md">
+            {avatarLetter}
+          </div>
+        )}
         {isActive && !isDeleted && (
           <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-green-500 border-2 border-white dark:border-zinc-900" />
         )}

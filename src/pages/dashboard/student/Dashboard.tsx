@@ -1,8 +1,10 @@
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { useAuth } from "@/features/auth/hooks/useLogin";
-import { useDashboard } from "@/features/student-profile/hooks";
-import { getLevelProgress } from "@/features/student-profile/lib/level";
+import {
+  useDashboard,
+  useStudentLevel,
+} from "@/features/student-profile/hooks";
 import { computeAttendanceStreak } from "@/features/student-profile/lib/streak";
 import {
   HeroProgressCard,
@@ -16,14 +18,14 @@ import {
 const Dashboard = () => {
   const { user } = useAuth();
   const { data, isLoading, isError } = useDashboard();
+  const balance = user?.wallet?.balance ?? data?.wallet.balance ?? 0;
+  const { progress } = useStudentLevel(balance);
 
   if (isLoading) return <PageLoading />;
   if (isError || !data) {
     return <NoData text="Dashboard ma'lumotlari topilmadi" />;
   }
 
-  const balance = user?.wallet?.balance ?? data.wallet.balance;
-  const progress = getLevelProgress(balance);
   const streak = computeAttendanceStreak(data.recentTransactions);
 
   return (

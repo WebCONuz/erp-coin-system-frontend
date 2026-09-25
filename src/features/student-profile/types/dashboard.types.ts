@@ -27,6 +27,14 @@ export interface DashboardPendingPurchase {
   reward: { id: string; title: string; imageUrl: string | null };
 }
 
+// Do'kondagi faol sovg'alar narxi oralig'i — GardenPath darajalari shundan hisoblanadi.
+// Faol sovg'a bo'lmasa: minPrice/maxPrice = null, activeCount = 0.
+export interface DashboardRewards {
+  minPrice: number | null;
+  maxPrice: number | null;
+  activeCount: number;
+}
+
 export interface DashboardResponse {
   student: { id: string; fullName: string; avatarUrl: string | null };
   wallet: { balance: number; weekDelta: number; monthDelta: number };
@@ -47,4 +55,5 @@ export interface DashboardResponse {
     pendingCount: number;
     recent: DashboardPendingPurchase[];
   };
+  rewards: DashboardRewards;
 }
