@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Gift, SearchIcon } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { usePurchaseReward } from "../../hooks";
 import { StudentProductCard } from "./StudentProductCard";
+import { StudentPurchaseModal } from "./StudentPurchaseModal";
 import type { Reward } from "../../types";
 
 export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
@@ -28,12 +30,24 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
     setSearchParams(next, { replace: true });
   };
 
-  const handleBuy = (reward: Reward) => {
-    if (!window.confirm(`"${reward.title}" ni sotib olishni tasdiqlaysizmi?`))
-      return;
+  // Modal ochilgan paytdagi balansni saqlab qolamiz — xariddan so'ng
+  // `auth/me` qayta yuklanib balans o'zgarsa ham modal hisob-kitobi sakramaydi.
+  const [selected, setSelected] = useState<{
+    reward: Reward;
+    balance: number;
+  } | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    purchaseReward.mutate(reward.id, {
-      onSuccess: (res) => toast.success(res.message),
+  const handleBuy = (reward: Reward) => {
+    purchaseReward.reset();
+    setSelected({ reward, balance });
+    setIsModalOpen(true);
+  };
+
+  const handleConfirm = () => {
+    if (!selected) return;
+
+    purchaseReward.mutate(selected.reward.id, {
       onError: (error: any) =>
         toast.error(error?.data?.message || "Xatolik yuz berdi"),
     });
@@ -75,11 +89,24 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
               product={reward}
               balance={balance}
               onBuy={handleBuy}
-              isBuying={purchaseReward.isPending}
+              isBuying={
+                purchaseReward.isPending && selected?.reward.id === reward.id
+              }
             />
           ))}
         </div>
       )}
+
+      <StudentPurchaseModal
+        reward={selected?.reward ?? null}
+        balance={selected?.balance ?? balance}
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onConfirm={handleConfirm}
+        isPending={purchaseReward.isPending}
+        isSuccess={purchaseReward.isSuccess}
+        remainingCoins={purchaseReward.data?.remainingCoins}
+      />
     </div>
   );
 };

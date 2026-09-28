@@ -105,7 +105,7 @@ export const LoginMobile = () => {
         <Button
           type="submit"
           disabled={isLoginLoading}
-          className="mt-2 h-12 w-full rounded-2xl bg-gold text-base font-semibold text-forest-deep hover:bg-gold/90"
+          className="mt-2 h-12 w-full rounded-2xl from-gold to-gold text-base font-semibold text-forest-deep hover:bg-gold/90"
         >
           {isLoginLoading ? t("login.loading") : t("login.submit")}
         </Button>

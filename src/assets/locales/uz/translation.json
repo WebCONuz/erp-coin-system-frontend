@@ -7,6 +7,7 @@
   "common": {
     "cancel": "Bekor qilish",
     "save": "Saqlash",
+    "resave": "Qayta saqlash",
     "saving": "Saqlanmoqda...",
     "create": "Yaratish",
     "creating": "Yaratilmoqda...",
@@ -813,6 +814,8 @@
     "pending": "Kutilmoqda",
     "notChecked": "Tekshirilmagan",
     "lockedFieldsHint": "Dars qulflangan: asosiy ma'lumotlarni (vaqt, xona, o'qituvchi) o'zgartirish uchun avval qulfni oching.",
+    "confirmResave": "Qayta saqlash",
+    "confirmResaveHint": "Ma'lumotlar oldin saqlangan. Qayta saqlash uchun belgilang.",
     "typeLabel": "Turi",
     "filter": {
       "allGroups": "Barcha guruhlar",
@@ -854,7 +857,8 @@
       "roomPlaceholder": "Xonani tanlang",
       "teacherPlaceholder": "O'qituvchi tanlang",
       "subjectPlaceholder": "Fanni tanlang",
-      "topicLabelOptional": "Mavzu (Ixtiyoriy)"
+      "is_checked_session": "Oldin yo'qlama qilingan",
+      "is_not_checked_session": "Yo'qlama qilinmagan"
     }
   },
   "plans": {

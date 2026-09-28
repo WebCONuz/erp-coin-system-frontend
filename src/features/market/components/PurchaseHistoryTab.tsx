@@ -126,7 +126,9 @@ export const PurchaseHistoryTab = () => {
                   <div className="flex items-center gap-2 text-xs text-ink-soft mt-0.5">
                     <span>{purchase.coinSpent} coin</span>
                     <span>·</span>
-                    <span>{formatDate(purchase.purchasedAt, "dd.MM.yyyy")}</span>
+                    <span>
+                      {formatDate(purchase.purchasedAt, "dd.MM.yyyy")}
+                    </span>
                   </div>
                   <span
                     className={`inline-block mt-1.5 text-[10px] font-medium px-2 py-0.5 rounded-full ${STATUS_BADGE_CLASS[purchase.status]}`}

@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  GiftCategory,
-  ProductDataFilter,
-  ProductGrid,
   PurchaseHistoryTab,
-  RewardFormModal,
   StudentMarketHero,
   StudentEarnTips,
   StudentCategorySidebar,
@@ -14,72 +10,18 @@ import {
 import { useRewardsCatalog } from "@/features/market/hooks";
 import { PageLoading } from "@/components/loading";
 import { useAuth } from "@/features/auth/hooks/useLogin";
-import { ROLES } from "@/assets/constants";
-import type { Reward } from "@/features/market/types";
 
-const Market = () => {
-  const { user } = useAuth();
-  const isStudent = user?.role.name === ROLES.STUDENT;
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingReward, setEditingReward] = useState<Reward | null>(null);
-  const [activeTab, setActiveTab] = useState("shop");
-
-  const handleCreate = () => {
-    setEditingReward(null);
-    setIsModalOpen(true);
-  };
-
-  const handleEdit = (reward: Reward) => {
-    setEditingReward(reward);
-    setIsModalOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsModalOpen(false);
-    setEditingReward(null);
-  };
-
-  if (!isStudent) {
-    return (
-      <>
-        <ProductDataFilter onAddGift={handleCreate} />
-        <div className="grid grid-cols-5 gap-6">
-          <div className="col-span-1">
-            <GiftCategory />
-          </div>
-          <div className="col-span-4">
-            <ProductGrid onAddGift={handleCreate} onEdit={handleEdit} />
-          </div>
-        </div>
-
-        <RewardFormModal
-          open={isModalOpen}
-          onClose={handleClose}
-          mode={editingReward ? "edit" : "create"}
-          reward={editingReward ?? undefined}
-        />
-      </>
-    );
-  }
-
-  return <StudentMarket activeTab={activeTab} setActiveTab={setActiveTab} />;
-};
-
-const StudentMarket = ({
-  activeTab,
-  setActiveTab,
-}: {
-  activeTab: string;
-  setActiveTab: (v: string) => void;
-}) => {
+const StudentMarketPage = () => {
   const { user } = useAuth();
   const { data: catalog, isLoading } = useRewardsCatalog();
+  const [activeTab, setActiveTab] = useState("shop");
+
   const rewards = catalog?.data ?? [];
   const balance = user?.wallet?.balance ?? 0;
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-col gap-3">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">
             Sovg'alar do'koni
@@ -132,4 +74,4 @@ const StudentMarket = ({
   );
 };
 
-export default Market;
+export default StudentMarketPage;

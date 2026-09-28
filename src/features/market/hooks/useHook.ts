@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { authQueryKeys } from "@/features/auth/constants/query.constants";
 import { purchaseKeys, rewardCategoryKeys, rewardKeys } from "../constants";
 import {
   createReward,
@@ -111,6 +112,8 @@ export const usePurchaseReward = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rewardKeys.allRewards() });
       queryClient.invalidateQueries({ queryKey: purchaseKeys.allPurchases() });
+      // Coin xarid paytida yechiladi — wallet balansi `auth/me` ichida keladi.
+      queryClient.invalidateQueries({ queryKey: authQueryKeys.getMe() });
     },
   });
 };

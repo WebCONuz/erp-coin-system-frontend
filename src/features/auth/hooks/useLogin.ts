@@ -50,10 +50,10 @@ export const useAuth = () => {
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      clearLocalStoragaData();
-      queryClient.removeQueries({ queryKey: authQueryKeys.getMe() }); // Keshni butunlay o'chirish
-      navigate("/login");
       toast.success(t("logout"));
+      clearLocalStoragaData();
+      queryClient.clear();
+      window.location.href = "/login";
     },
   });
 

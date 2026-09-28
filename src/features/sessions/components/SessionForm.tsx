@@ -5,7 +5,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Lock } from "lucide-react";
-
 import {
   Form,
   FormControl,
@@ -21,6 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ControlledSelect } from "@/components/controls";
 import { PageLoading } from "@/components/loading";
 import { formatDate } from "@/ustils";
+import { cn } from "@/lib/utils";
 import { useGroup } from "@/features/groups/hooks";
 import { groupKeys } from "@/features/groups/constants";
 import { studentKeys } from "@/features/students/constants";
@@ -63,6 +63,7 @@ export const SessionForm = ({ session }: Props) => {
   const sessionTypeLabels = getSessionTypeLabels(t);
 
   const [records, setRecords] = useState<Record<string, LocalRecord>>({});
+  const [confirmResave, setConfirmResave] = useState(false);
 
   useEffect(() => {
     if (!group) return;
@@ -154,6 +155,7 @@ export const SessionForm = ({ session }: Props) => {
       {
         onSuccess: (res) => {
           toast.success(res.message);
+          setConfirmResave(false);
 
           if (res.coinsSkippedFor?.length) {
             const nameById = new Map(
@@ -224,6 +226,15 @@ export const SessionForm = ({ session }: Props) => {
                 {session?.subject && (
                   <span className="inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-purple-100 text-purple-700 dark:bg-blue-950/50 dark:text-blue-400">
                     {session.subject.name}
+                  </span>
+                )}
+                {session?.isChecked ? (
+                  <span className="text-green-600 inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-green-100">
+                    {t("sessions.form.is_checked_session")}
+                  </span>
+                ) : (
+                  <span className="text-red-600 inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-red-100">
+                    {t("sessions.form.is_not_checked_session")}
                   </span>
                 )}
                 {isLocked && (
@@ -327,9 +338,21 @@ export const SessionForm = ({ session }: Props) => {
 
           {/* Attendance panel */}
           <div className="rounded-2xl bg-background p-6 shadow-sm space-y-4">
-            <h3 className="text-lg font-semibold">
-              {t("sessions.attendance.title")}
-            </h3>
+            <div className="flex items-center flex-wrap gap-2">
+              <h3 className="text-lg font-semibold">
+                {t("sessions.attendance.title")}
+              </h3>
+
+              {session?.isChecked ? (
+                <span className="text-green-600 inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-green-100">
+                  {t("sessions.form.is_checked_session")}
+                </span>
+              ) : (
+                <span className="text-red-600 inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-red-100">
+                  {t("sessions.form.is_not_checked_session")}
+                </span>
+              )}
+            </div>
 
             {!session.group.id ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
@@ -425,9 +448,37 @@ export const SessionForm = ({ session }: Props) => {
         </div>
 
         {!isLocked && (
-          <div className="flex justify-end">
-            <Button type="submit" disabled={isSaving} className="h-10 px-5">
-              {isSaving ? t("common.saving") : t("common.save")}
+          <div className="flex flex-wrap items-center justify-end gap-4">
+            {session.isChecked && (
+              <label
+                htmlFor="confirm-resave"
+                title={t("sessions.confirmResaveHint")}
+                className="flex cursor-pointer items-center gap-2 select-none text-sm font-medium text-orange-600 dark:text-orange-400"
+              >
+                <Checkbox
+                  id="confirm-resave"
+                  checked={confirmResave}
+                  disabled={isSaving}
+                  onCheckedChange={(v) => setConfirmResave(v === true)}
+                />
+                {t("sessions.confirmResave")}
+              </label>
+            )}
+            <Button
+              type="submit"
+              disabled={isSaving || (session.isChecked && !confirmResave)}
+              className={cn(
+                "h-10 px-5",
+                session.isChecked &&
+                  "from-orange-400 to-orange-600 sm:from-orange-400 sm:to-orange-600",
+              )}
+              variant="default"
+            >
+              {isSaving
+                ? t("common.saving")
+                : session?.isChecked
+                  ? t("common.resave")
+                  : t("common.save")}
             </Button>
           </div>
         )}

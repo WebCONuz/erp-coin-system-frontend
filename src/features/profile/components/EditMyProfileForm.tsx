@@ -103,7 +103,7 @@ export const EditMyProfileForm = ({
           >
             {t("common.cancel")}
           </Button>
-          <Button type="submit" disabled={isPending}>
+          <Button type="submit" disabled={isPending} variant="default">
             {isPending ? t("common.saving") : t("common.save")}
           </Button>
         </div>
