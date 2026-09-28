@@ -1,5 +1,11 @@
 import { Link } from "react-router-dom";
-import { AlertTriangle, ArrowRight, CalendarClock, Gift } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  CalendarClock,
+  Gift,
+  PackageCheck,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { AdminDashboardNeedsAttention } from "../types";
 
@@ -12,8 +18,10 @@ export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
 
   if (!needsAttention) return null;
 
-  const { pendingPurchases, pendingAttendanceSessions } = needsAttention;
-  if (!pendingPurchases && !pendingAttendanceSessions) return null;
+  const { pendingPurchases, approvedPurchases, pendingAttendanceSessions } =
+    needsAttention;
+  if (!pendingPurchases && !approvedPurchases && !pendingAttendanceSessions)
+    return null;
 
   return (
     <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/30">
@@ -32,12 +40,24 @@ export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
           <div className="flex flex-wrap gap-2">
             {!!pendingPurchases && (
               <Link
-                to="/admin/market"
+                to="/admin/purchases?status=pending"
                 className="flex items-center gap-1.5 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
               >
                 <Gift size={13} />
                 {t("admin.dashboard.pendingPurchases", {
                   count: pendingPurchases,
+                })}
+                <ArrowRight size={12} />
+              </Link>
+            )}
+            {!!approvedPurchases && (
+              <Link
+                to="/admin/purchases?status=approved"
+                className="flex items-center gap-1.5 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
+              >
+                <PackageCheck size={13} />
+                {t("admin.dashboard.approvedPurchases", {
+                  count: approvedPurchases,
                 })}
                 <ArrowRight size={12} />
               </Link>

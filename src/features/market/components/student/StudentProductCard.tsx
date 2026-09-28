@@ -1,4 +1,5 @@
 import { Coins, Gift } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getFileUrl } from "@/lib/utils";
 import type { Reward } from "../../types";
 
@@ -22,6 +23,7 @@ export const StudentProductCard = ({
   onBuy,
   isBuying,
 }: Props) => {
+  const { t } = useTranslation();
   const inStock = product.stock > 0;
   const canAfford = balance >= product.coinPrice && inStock;
   const progress = Math.min(100, (balance / product.coinPrice) * 100);
@@ -30,7 +32,9 @@ export const StudentProductCard = ({
   return (
     <div className="rounded-2xl border border-ink/10 bg-white overflow-hidden flex flex-col">
       <div
-        className={`aspect-square w-full flex items-center justify-center ${tintFor(product.id)}`}
+        className={`aspect-square w-full flex items-center justify-center ${tintFor(
+          product.id,
+        )}`}
       >
         <div className="relative aspect-3/3 w-full bg-muted">
           {product.imageUrl ? (
@@ -61,7 +65,9 @@ export const StudentProductCard = ({
             {product.coinPrice}
           </span>
           <span className="text-xs text-ink-soft">
-            {inStock ? `${product.stock} dona` : "Tugagan"}
+            {inStock
+              ? t("market.stockCount", { count: product.stock })
+              : t("market.outOfStock")}
           </span>
         </div>
 
@@ -73,7 +79,9 @@ export const StudentProductCard = ({
         </div>
         <p className="text-[11px] text-ink-soft mt-1.5">
           {balance}/{product.coinPrice} coin
-          {remaining > 0 ? ` · yana ${remaining} coin kerak` : ""}
+          {remaining > 0
+            ? ` · ${t("market.student.moreNeeded", { count: remaining })}`
+            : ""}
         </p>
 
         <button
@@ -87,12 +95,12 @@ export const StudentProductCard = ({
           }`}
         >
           {!inStock
-            ? "Tugagan"
+            ? t("market.outOfStock")
             : isBuying
-              ? "Yuborilmoqda..."
-              : canAfford
-                ? "Sotib olish"
-                : `Yana ${remaining} coin kerak`}
+            ? t("market.purchaseModal.sending")
+            : canAfford
+            ? t("market.buy")
+            : t("market.student.moreNeededButton", { count: remaining })}
         </button>
       </div>
     </div>

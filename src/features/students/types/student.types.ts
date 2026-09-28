@@ -45,8 +45,9 @@ export interface CoinTransaction {
 export interface StudentPurchase {
   id: string;
   coinSpent: number;
-  status: "pending" | "approved" | "delivered" | "cancelled" | "rejected";
-  adminNote?: string | null;
+  status: "pending" | "approved" | "delivered" | "cancelled";
+  deliveryNote?: string | null;
+  deliveredAt?: string | null;
   purchasedAt: string;
   reward: {
     id: string;
@@ -239,11 +240,6 @@ export interface SendMessageDto {
   recipientEmail?: string;
   message: string;
   channels: ("sms" | "email")[];
-}
-
-export interface UpdatePurchaseStatusDto {
-  status: "approved" | "rejected";
-  adminNote?: string;
 }
 
 export type ConfirmAction = "archive" | "delete" | "restore" | null;

@@ -67,31 +67,7 @@ export interface UpdateRewardCategoryDto {
   name: string;
 }
 
-// ─── Purchases (student "buy") ───────────────────────────────────────────────
-export type PurchaseStatus =
-  | "pending"
-  | "approved"
-  | "delivered"
-  | "cancelled"
-  | "rejected";
-
-export interface Purchase {
-  id: string;
-  coinSpent: number;
-  status: PurchaseStatus;
-  purchasedAt: string;
-  student?: { id: string; fullName: string; phone: string };
-  reward: Pick<Reward, "id" | "title" | "coinPrice" | "imageUrl">;
-}
-
-export interface PurchasesResponse {
-  data: Purchase[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
+// ─── Purchase (student "buy") — xaridlar ro'yxati `features/purchases` da ─────
 export interface PurchaseRewardResponse {
   message: string;
   purchaseId: string;

@@ -1,3 +1,5 @@
+import type { PurchaseStatus } from "@/features/purchases/types";
+
 export interface DashboardSession {
   id: string;
   sessionDate: string;
@@ -22,8 +24,10 @@ export interface DashboardTransaction {
 export interface DashboardPendingPurchase {
   id: string;
   coinSpent: number;
-  status: string;
+  status: PurchaseStatus;
   purchasedAt: string;
+  // null — hali topshirilmagan.
+  deliveredAt: string | null;
   reward: { id: string; title: string; imageUrl: string | null };
 }
 

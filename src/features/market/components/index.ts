@@ -3,7 +3,6 @@ export * from "./ProductDataFilter";
 export * from "./GiftCategory";
 export * from "./RewardFormModal";
 export * from "./CategoryFormModal";
-export * from "./PurchaseHistoryTab";
 export * from "./student/StudentMarketHero";
 export * from "./student/StudentEarnTips";
 export * from "./student/StudentCategorySidebar";

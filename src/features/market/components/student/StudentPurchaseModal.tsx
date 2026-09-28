@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Dialog as DialogPrimitive } from "radix-ui";
-import { Check, Coins, Gift, Loader2, Sparkles, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import {
+  ArrowRight,
+  Check,
+  Coins,
+  Gift,
+  Loader2,
+  Sparkles,
+  X,
+} from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { cn, getFileUrl } from "@/lib/utils";
 import type { Reward } from "../../types";
@@ -18,6 +27,8 @@ interface Props {
   isPending: boolean;
   isSuccess: boolean;
   remainingCoins?: number;
+  successMessage?: string;
+  onGoToPurchases: () => void;
 }
 
 export const StudentPurchaseModal = ({
@@ -29,6 +40,8 @@ export const StudentPurchaseModal = ({
   isPending,
   isSuccess,
   remainingCoins,
+  successMessage,
+  onGoToPurchases,
 }: Props) => {
   const handleOpenChange = (next: boolean) => {
     // So'rov ketayotganda modal yopilib qolmasin.
@@ -47,6 +60,8 @@ export const StudentPurchaseModal = ({
             <SuccessView
               reward={reward}
               remainingCoins={remainingCoins ?? balance - reward.coinPrice}
+              message={successMessage}
+              onGoToPurchases={onGoToPurchases}
             />
           ) : (
             <ConfirmView
@@ -99,6 +114,7 @@ const ConfirmView = ({
   isPending: boolean;
   onConfirm: () => void;
 }) => {
+  const { t } = useTranslation();
   const after = balance - reward.coinPrice;
   const spendPercent =
     balance > 0 ? Math.min(100, (reward.coinPrice / balance) * 100) : 100;
@@ -115,11 +131,11 @@ const ConfirmView = ({
           className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-paper/80 transition-colors hover:bg-white/20 disabled:opacity-40"
         >
           <X size={16} />
-          <span className="sr-only">Yopish</span>
+          <span className="sr-only">{t("common.close")}</span>
         </DialogPrimitive.Close>
 
         <p className="relative mb-5 text-center text-xs font-semibold uppercase tracking-wide text-gold">
-          Sovg'ani tanladingiz
+          {t("market.purchaseModal.chosen")}
         </p>
         <RewardImage reward={reward} />
       </div>
@@ -129,7 +145,7 @@ const ConfirmView = ({
           {reward.title}
         </DialogPrimitive.Title>
         <DialogPrimitive.Description className="mt-1 text-center text-xs text-ink-soft line-clamp-2">
-          {reward.description || "Ushbu sovg'ani coinlaringizga almashtirasiz."}
+          {reward.description || t("market.purchaseModal.defaultDescription")}
         </DialogPrimitive.Description>
 
         {/* Balance breakdown */}
@@ -144,24 +160,24 @@ const ConfirmView = ({
           <div className="mt-1.5 flex justify-between text-[11px] text-ink-soft">
             <span className="flex items-center gap-1">
               <span className="h-2 w-2 rounded-full bg-gold" />
-              Sarflanadi
+              {t("market.purchaseModal.spent")}
             </span>
             <span className="flex items-center gap-1">
-              Qoladi
+              {t("market.purchaseModal.left")}
               <span className="h-2 w-2 rounded-full bg-forest/70" />
             </span>
           </div>
 
           <dl className="mt-3 space-y-2 text-sm">
-            <Row label="Balansingiz" value={balance} />
+            <Row label={t("market.purchaseModal.balance")} value={balance} />
             <Row
-              label="Sovg'a narxi"
+              label={t("market.purchaseModal.price")}
               value={`−${reward.coinPrice}`}
               valueClassName="text-bloom"
             />
             <div className="border-t border-dashed border-ink/15" />
             <Row
-              label="Xariddan keyin"
+              label={t("market.purchaseModal.after")}
               value={after}
               valueClassName="text-forest text-base font-bold"
             />
@@ -178,7 +194,7 @@ const ConfirmView = ({
           disabled={isPending}
           className="mt-2 w-full rounded-xl py-2.5 text-sm font-medium text-ink-soft transition-colors hover:bg-paper-soft hover:text-ink disabled:opacity-40"
         >
-          Bekor qilish
+          {t("common.cancel")}
         </DialogPrimitive.Close>
       </div>
     </>
@@ -217,6 +233,7 @@ const HoldToConfirmButton = ({
   isPending: boolean;
   onConfirm: () => void;
 }) => {
+  const { t } = useTranslation();
   const [holding, setHolding] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -280,14 +297,14 @@ const HoldToConfirmButton = ({
         {isPending ? (
           <>
             <Loader2 size={16} className="animate-spin" />
-            Yuborilmoqda...
+            {t("market.purchaseModal.sending")}
           </>
         ) : holding ? (
-          "Qo'yib yubormang..."
+          t("market.purchaseModal.keepHolding")
         ) : (
           <>
             <Coins size={16} className="text-gold" />
-            Sotib olish uchun bosib turing · {price}
+            {t("market.purchaseModal.holdToBuy", { price })}
           </>
         )}
       </span>
@@ -298,38 +315,55 @@ const HoldToConfirmButton = ({
 const SuccessView = ({
   reward,
   remainingCoins,
+  message,
+  onGoToPurchases,
 }: {
   reward: Reward;
   remainingCoins: number;
-}) => (
-  <div className="relative px-6 pt-10 pb-6 text-center">
-    <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-gold/15 to-transparent" />
+  message?: string;
+  onGoToPurchases: () => void;
+}) => {
+  const { t } = useTranslation();
 
-    <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
-      <span className="absolute inset-0 rounded-full bg-forest/20 animate-ping" />
-      <span className="relative flex h-20 w-20 items-center justify-center rounded-full bg-forest text-paper shadow-lg animate-in zoom-in-50 duration-500">
-        <Check size={36} strokeWidth={3} />
-      </span>
+  return (
+    <div className="relative px-6 pt-10 pb-6 text-center">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-gold/15 to-transparent" />
+
+      <div className="relative mx-auto flex h-20 w-20 items-center justify-center">
+        <span className="absolute inset-0 rounded-full bg-forest/20 animate-ping" />
+        <span className="relative flex h-20 w-20 items-center justify-center rounded-full bg-forest text-paper shadow-lg animate-in zoom-in-50 duration-500">
+          <Check size={36} strokeWidth={3} />
+        </span>
+      </div>
+
+      <DialogPrimitive.Title className="relative mt-5 font-display text-2xl font-semibold text-ink animate-in fade-in slide-in-from-bottom-2 duration-500">
+        {t("market.purchaseModal.successTitle")}
+      </DialogPrimitive.Title>
+      <DialogPrimitive.Description className="relative mt-1.5 text-sm text-ink-soft">
+        <span className="font-semibold text-ink">{reward.title}</span>
+        {" — "}
+        {message || t("market.purchaseModal.successText")}
+      </DialogPrimitive.Description>
+
+      <div className="relative mt-5 inline-flex items-center gap-2 rounded-full bg-paper-soft px-4 py-2 text-sm text-ink-soft">
+        {t("market.purchaseModal.remaining")}
+        <span className="flex items-center gap-1 font-display font-bold text-forest">
+          <Coins size={14} className="text-gold" />
+          {remainingCoins}
+        </span>
+      </div>
+
+      <button
+        type="button"
+        onClick={onGoToPurchases}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-forest py-3 text-sm font-semibold text-paper transition-colors hover:bg-forest-light"
+      >
+        {t("market.purchaseModal.goToPurchases")}
+        <ArrowRight size={16} />
+      </button>
+      <DialogPrimitive.Close className="mt-2 w-full rounded-xl py-2.5 text-sm font-medium text-ink-soft transition-colors hover:bg-paper-soft hover:text-ink">
+        {t("market.purchaseModal.continueShopping")}
+      </DialogPrimitive.Close>
     </div>
-
-    <DialogPrimitive.Title className="relative mt-5 font-display text-2xl font-semibold text-ink animate-in fade-in slide-in-from-bottom-2 duration-500">
-      Tabriklaymiz!
-    </DialogPrimitive.Title>
-    <DialogPrimitive.Description className="relative mt-1.5 text-sm text-ink-soft">
-      <span className="font-semibold text-ink">{reward.title}</span> uchun
-      so'rovingiz yuborildi. Tasdiqlangach sovg'angizni olasiz.
-    </DialogPrimitive.Description>
-
-    <div className="relative mt-5 inline-flex items-center gap-2 rounded-full bg-paper-soft px-4 py-2 text-sm text-ink-soft">
-      Qolgan balans:
-      <span className="flex items-center gap-1 font-display font-bold text-forest">
-        <Coins size={14} className="text-gold" />
-        {remainingCoins}
-      </span>
-    </div>
-
-    <DialogPrimitive.Close className="mt-6 w-full rounded-xl bg-forest py-3 text-sm font-semibold text-paper transition-colors hover:bg-forest-light">
-      Ajoyib!
-    </DialogPrimitive.Close>
-  </div>
-);
+  );
+};

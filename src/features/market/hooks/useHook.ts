@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authQueryKeys } from "@/features/auth/constants/query.constants";
-import { purchaseKeys, rewardCategoryKeys, rewardKeys } from "../constants";
+import { purchaseKeys } from "@/features/purchases/constants";
+import { studentSelfKeys } from "@/features/student-profile/constants";
+import { rewardCategoryKeys, rewardKeys } from "../constants";
 import {
   createReward,
   createRewardCategory,
@@ -8,7 +10,6 @@ import {
   deleteRewardCategory,
   getAllRewardCategories,
   getAllRewards,
-  getMyPurchases,
   purchaseReward,
   updateReward,
   updateRewardCategory,
@@ -96,14 +97,7 @@ export const useDeleteReward = () => {
   });
 };
 
-// PURCHASES
-export const useMyPurchases = (params?: Record<string, string | undefined>) => {
-  return useQuery({
-    queryKey: purchaseKeys.allPurchases(params),
-    queryFn: () => getMyPurchases(params),
-  });
-};
-
+// PURCHASES (xaridlar ro'yxati — `features/purchases`)
 export const usePurchaseReward = () => {
   const queryClient = useQueryClient();
 
@@ -114,6 +108,12 @@ export const usePurchaseReward = () => {
       queryClient.invalidateQueries({ queryKey: purchaseKeys.allPurchases() });
       // Coin xarid paytida yechiladi — wallet balansi `auth/me` ichida keladi.
       queryClient.invalidateQueries({ queryKey: authQueryKeys.getMe() });
+      // Dashboard'dagi balans va "kutilayotgan xaridlar" banneri.
+      queryClient.invalidateQueries({ queryKey: studentSelfKeys.dashboard() });
+      queryClient.invalidateQueries({ queryKey: studentSelfKeys.myWallet() });
+      queryClient.invalidateQueries({
+        queryKey: studentSelfKeys.myCoinHistory(),
+      });
     },
   });
 };

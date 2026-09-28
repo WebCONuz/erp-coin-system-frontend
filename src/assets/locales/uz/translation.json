@@ -243,6 +243,7 @@
       "groups": "Guruhlar",
       "students": "Talabalar",
       "market": "Sovg'alar",
+      "purchases": "Buyurtmalar",
       "sessions": "Sessiyalar",
       "employees": "Xodimlar",
       "plans": "Dars jadvali",
@@ -269,6 +270,7 @@
       "todaySessions": "Bugun {{count}} ta dars",
       "needsAttention": "E'tibor talab qiladi",
       "pendingPurchases": "{{count}} ta xarid tasdiqlashni kutmoqda",
+      "approvedPurchases": "{{count}} ta sovg'a topshirilishi kerak",
       "pendingAttendance": "{{count}} ta darsda yo'qlama kiritilmagan",
       "stats": {
         "groups": "Guruhlar",
@@ -616,13 +618,7 @@
       "title": "Sotib olingan sovg'alar ({{count}})",
       "emptyTitle": "Hali hech qanday sovg'a sotib olinmagan",
       "emptyText": "{{name}} coinlarini sovg'alar do'konidan biror narsaga almashtirmagan.",
-      "status": {
-        "approved": "Tasdiqlangan",
-        "delivered": "Topshirilgan",
-        "rejected": "Rad etilgan",
-        "cancelled": "Bekor qilingan",
-        "pending": "Kutilmoqda"
-      }
+      "deliveredAt": "{{date}} kuni topshirildi · {{name}}"
     },
     "groupTab": {
       "title": "Guruhlar ro'yxati ({{count}})",
@@ -997,6 +993,139 @@
     "createGift": "Sovg'a yaratish",
     "stockCount": "{{count}} dona",
     "outOfStock": "Tugagan",
-    "buy": "Sotib olish"
+    "buy": "Sotib olish",
+    "student": {
+      "title": "Sovg'alar do'koni",
+      "subtitle": "Tanga to'plang, o'zingizga yoqqan sovg'ani tanlang",
+      "shopTab": "Do'kon",
+      "purchasesTab": "Xaridlarim",
+      "foundCount": "{{count}} ta sovg'a topildi",
+      "searchPlaceholder": "Sovg'a qidirish...",
+      "notFound": "Sovg'alar topilmadi",
+      "notFoundHint": "Boshqa kategoriya yoki qidiruvni tanlab ko'ring.",
+      "moreNeeded": "yana {{count}} coin kerak",
+      "moreNeededButton": "Yana {{count}} coin kerak",
+      "categories": "Kategoriyalar",
+      "allCategories": "Barchasi",
+      "hero": {
+        "eyebrow": "Bog'ingiz hosili",
+        "title": "Har bir coin — mehnatingizning mevasi",
+        "text": "Darslarga qatnashib va uy vazifalarini bajarib to'plagan tangalaringizni sovg'alarga almashtiring.",
+        "goalText": "Eng yaqin maqsadingiz — atigi {{price}} coin uzoqlikda!",
+        "nearestGoal": "Eng yaqin maqsadingiz",
+        "moreCoins": "Yana {{count}} coin",
+        "enough": "Yetarli!"
+      },
+      "tips": {
+        "attend": {
+          "title": "Darsga qatnashing",
+          "desc": "Har bir dars uchun coin ishlab oling"
+        },
+        "homework": {
+          "title": "Uy vazifasini bajaring",
+          "desc": "Har bir topshiriq uchun qo'shimcha coin"
+        },
+        "streak": {
+          "title": "Ketma-ket faol bo'ling",
+          "desc": "Streak uzun bo'lgani sayin bonuslar ko'proq"
+        }
+      }
+    },
+    "purchaseModal": {
+      "chosen": "Sovg'ani tanladingiz",
+      "defaultDescription": "Ushbu sovg'ani coinlaringizga almashtirasiz.",
+      "spent": "Sarflanadi",
+      "left": "Qoladi",
+      "balance": "Balansingiz",
+      "price": "Sovg'a narxi",
+      "after": "Xariddan keyin",
+      "sending": "Yuborilmoqda...",
+      "keepHolding": "Qo'yib yubormang...",
+      "holdToBuy": "Sotib olish uchun bosib turing · {{price}}",
+      "successTitle": "Tabriklaymiz!",
+      "successText": "so'rovingiz yuborildi. Tasdiqlangach sovg'angizni olasiz.",
+      "remaining": "Qolgan balans:",
+      "goToPurchases": "Xaridlarimga o'tish",
+      "continueShopping": "Xaridni davom ettirish"
+    }
+  },
+  "purchases": {
+    "description": "O'quvchilar sotib olgan sovg'alarni tasdiqlang, topshiring yoki bekor qiling",
+    "status": {
+      "pending": "Kutilmoqda",
+      "approved": "Tasdiqlangan",
+      "delivered": "Topshirilgan",
+      "cancelled": "Bekor qilingan"
+    },
+    "studentStatus": {
+      "pending": "Ko'rib chiqilmoqda",
+      "approved": "Tayyor",
+      "delivered": "Topshirildi",
+      "cancelled": "Bekor qilindi"
+    },
+    "tabs": {
+      "all": "Hammasi",
+      "pending": "Yangi",
+      "approved": "Topshirilishi kerak",
+      "delivered": "Topshirilgan",
+      "cancelled": "Bekor qilingan"
+    },
+    "table": {
+      "reward": "Sovg'a",
+      "student": "O'quvchi",
+      "coinSpent": "Narxi",
+      "purchasedAt": "Sotib olingan",
+      "note": "Izoh",
+      "handledBy": "Kim / qachon",
+      "approvedBy": "Tasdiqladi",
+      "deliveredBy": "Topshirdi",
+      "actions": "Amallar"
+    },
+    "actions": {
+      "approve": "Tasdiqlash",
+      "deliver": "Topshirildi",
+      "cancel": "Bekor qilish"
+    },
+    "approveModal": {
+      "title": "Xaridni tasdiqlash",
+      "description": "Tasdiqlangach, o'quvchi sovg'asi tayyorligini ko'radi.",
+      "noteLabel": "Izoh (ixtiyoriy)",
+      "notePlaceholder": "Masalan: Ertaga 14:00 da ofisdan olib keting",
+      "submit": "Tasdiqlash"
+    },
+    "cancelModal": {
+      "title": "Xaridni bekor qilish",
+      "description": "Bekor qilingan xaridni qayta tiklab bo'lmaydi.",
+      "noteLabel": "Bekor qilish sababi",
+      "notePlaceholder": "Sabab o'quvchiga va coin tarixiga yoziladi",
+      "submit": "Bekor qilish",
+      "refundHint": "{{coins}} coin o'quvchining hamyoniga qaytariladi, sovg'a zaxirasi tiklanadi."
+    },
+    "deliverModal": {
+      "title": "Sovg'a topshirildimi?",
+      "description": "\"{{reward}}\" sovg'asi {{student}}ga qo'lma-qo'l berilganini tasdiqlang. Bu amalni ortga qaytarib bo'lmaydi."
+    },
+    "refundToast": "{{coins}} coin qaytarildi. Joriy balans: {{balance}}",
+    "conflict": "Buyurtma holati o'zgargan. Ro'yxat yangilandi, qayta urinib ko'ring.",
+    "schema": {
+      "reason_required": "Bekor qilish sababini kiriting",
+      "note_max": "Izoh 500 ta belgidan oshmasligi kerak"
+    },
+    "student": {
+      "readyTitle": "Sovg'angiz tayyor!",
+      "reason": "Sabab",
+      "deliveredOn": "{{date}} kuni topshirildi",
+      "refunded": "{{coins}} coin hamyoningizga qaytarildi",
+      "cancelHint": "Bekor qilish uchun adminga murojaat qiling",
+      "empty": "Hozircha hech qanday sovg'a sotib olinmagan",
+      "emptyFiltered": "Bu holatda xaridlar yo'q",
+      "emptyHint": "Coinlaringizni sovg'alar do'konidan biror narsaga almashtirishingiz mumkin.",
+      "emptyGoal": "{{title}}'gacha bor-yo'g'i {{coins}} coin qoldi — yana bir necha dars va uy vazifasi bilan yetib olasiz!",
+      "goToShop": "Do'konga o'tish",
+      "profileTitle": "Sotib olingan sovg'alar ({{count}})",
+      "viewAll": "Barchasi",
+      "readyBanner": "{{count}} ta sovg'angiz tayyor — olib keting!",
+      "pendingBanner": "{{count}} ta xaridingiz tasdiqlanishini kutmoqda"
+    }
   }
 }

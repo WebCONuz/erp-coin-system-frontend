@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Gift, SearchIcon } from "lucide-react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { usePurchaseReward } from "../../hooks";
@@ -8,7 +9,13 @@ import { StudentProductCard } from "./StudentProductCard";
 import { StudentPurchaseModal } from "./StudentPurchaseModal";
 import type { Reward } from "../../types";
 
-export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
+interface Props {
+  rewards: Reward[];
+  onGoToPurchases: () => void;
+}
+
+export const StudentProductGrid = ({ rewards, onGoToPurchases }: Props) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const purchaseReward = usePurchaseReward();
@@ -49,7 +56,7 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
 
     purchaseReward.mutate(selected.reward.id, {
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -57,7 +64,7 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-ink-soft">
-          {filtered.length} ta sovg'a topildi
+          {t("market.student.foundCount", { count: filtered.length })}
         </p>
         <div className="relative w-full sm:w-64">
           <SearchIcon
@@ -67,7 +74,7 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
           <input
             defaultValue={search}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Sovg'a qidirish..."
+            placeholder={t("market.student.searchPlaceholder")}
             className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"
           />
         </div>
@@ -76,9 +83,11 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
       {!filtered.length ? (
         <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-ink/10 bg-white">
           <Gift size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">Sovg'alar topilmadi</p>
+          <p className="text-sm font-medium text-ink">
+            {t("market.student.notFound")}
+          </p>
           <p className="text-xs text-ink-soft mt-1 max-w-xs">
-            Boshqa kategoriya yoki qidiruvni tanlab ko'ring.
+            {t("market.student.notFoundHint")}
           </p>
         </div>
       ) : (
@@ -106,6 +115,11 @@ export const StudentProductGrid = ({ rewards }: { rewards: Reward[] }) => {
         isPending={purchaseReward.isPending}
         isSuccess={purchaseReward.isSuccess}
         remainingCoins={purchaseReward.data?.remainingCoins}
+        successMessage={purchaseReward.data?.message}
+        onGoToPurchases={() => {
+          setIsModalOpen(false);
+          onGoToPurchases();
+        }}
       />
     </div>
   );

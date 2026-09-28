@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useRewardCategories } from "../../hooks";
 
 export const StudentCategorySidebar = ({
@@ -6,6 +7,7 @@ export const StudentCategorySidebar = ({
 }: {
   totalCount: number;
 }) => {
+  const { t } = useTranslation();
   const { data: categories } = useRewardCategories();
   const [searchParams, setSearchParams] = useSearchParams();
   const active = searchParams.get("category") ?? "all";
@@ -20,7 +22,7 @@ export const StudentCategorySidebar = ({
   return (
     <div className="rounded-2xl border border-ink/10 bg-white p-3">
       <h3 className="font-display text-sm font-semibold text-ink px-2 pt-1 pb-2">
-        Kategoriyalar
+        {t("market.student.categories")}
       </h3>
 
       <button
@@ -32,7 +34,7 @@ export const StudentCategorySidebar = ({
             : "text-ink-soft hover:bg-paper-soft"
         }`}
       >
-        Barchasi
+        {t("market.student.allCategories")}
         <span
           className={active === "all" ? "text-paper/70" : "text-ink-soft/60"}
         >
@@ -53,7 +55,9 @@ export const StudentCategorySidebar = ({
         >
           <span className="truncate">{cat.name}</span>
           <span
-            className={`shrink-0 ${active === cat.id ? "text-paper/70" : "text-ink-soft/60"}`}
+            className={`shrink-0 ${
+              active === cat.id ? "text-paper/70" : "text-ink-soft/60"
+            }`}
           >
             {cat._count?.rewards ?? 0}
           </span>

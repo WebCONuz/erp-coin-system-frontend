@@ -13,14 +13,12 @@ import {
 import {
   AttendanceHistoryTabV2,
   CoinHistoryTab,
-  PurchaseHistoryTab,
   ProfileStatsRow,
 } from "@/features/student-profile/components";
 
 const TAB_OPTIONS = [
   { value: "attendance", label: "Davomat tarixi" },
   { value: "coins", label: "Tanga tarixi" },
-  { value: "gifts", label: "Xaridlar" },
 ];
 
 const StudentDetail = () => {
@@ -65,7 +63,6 @@ const StudentDetail = () => {
 
             <AttendanceHistoryTabV2 student={student} />
             <CoinHistoryTab student={student} />
-            <PurchaseHistoryTab student={student} />
           </Tabs>
 
           <GiveCoinModal

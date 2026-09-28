@@ -11,10 +11,12 @@ import {
   BookText,
   CalendarDays,
   Settings,
+  ShoppingBag,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { useCurrentTenant } from "@/features/tenants/hooks";
+import { useAdminDashboard } from "@/features/dashboard/hooks";
 import { useTranslation } from "react-i18next";
 import { ROLES } from "@/assets/constants";
 
@@ -25,6 +27,12 @@ export function AdminSidebar() {
   const { isLearningCenter } = useCurrentTenant();
   const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
+  const { data: dashboard } = useAdminDashboard();
+
+  // Admin harakatini kutayotgan xaridlar: tasdiqlash + topshirish.
+  const purchasesToHandle =
+    (dashboard?.needsAttention?.pendingPurchases ?? 0) +
+    (dashboard?.needsAttention?.approvedPurchases ?? 0);
 
   const navItems = [
     { to: "/admin", label: t("admin.header.main"), icon: Home, end: true },
@@ -55,6 +63,12 @@ export function AdminSidebar() {
           },
         ]),
     { to: "/admin/market", label: t("admin.header.market"), icon: Gift },
+    {
+      to: "/admin/purchases",
+      label: t("admin.header.purchases"),
+      icon: ShoppingBag,
+      badge: purchasesToHandle,
+    },
     {
       to: "/admin/sessions",
       label: t("admin.header.sessions"),
@@ -102,7 +116,7 @@ export function AdminSidebar() {
 
       {/* Nav links */}
       <nav className="flex flex-1 flex-col gap-1 px-2 pt-4 pb-2 relative z-20">
-        {navItems.map(({ to, label, icon: Icon, end }) => (
+        {navItems.map(({ to, label, icon: Icon, end, badge }) => (
           <Tooltip key={to} label={label} show={collapsed}>
             <NavLink
               to={to}
@@ -117,12 +131,21 @@ export function AdminSidebar() {
             >
               {({ isActive }) => (
                 <>
-                  <Icon
-                    size={18}
-                    className="shrink-0"
-                    style={{ color: isActive ? "#fff" : undefined }}
-                  />
-                  {!collapsed && <span>{label}</span>}
+                  <span className="relative shrink-0">
+                    <Icon
+                      size={18}
+                      style={{ color: isActive ? "#fff" : undefined }}
+                    />
+                    {!!badge && collapsed && (
+                      <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-red-500" />
+                    )}
+                  </span>
+                  {!collapsed && <span className="flex-1">{label}</span>}
+                  {!!badge && !collapsed && (
+                    <span className="min-w-5 rounded-full bg-red-500 px-1.5 text-center text-[11px] leading-5 text-white">
+                      {badge}
+                    </span>
+                  )}
                 </>
               )}
             </NavLink>

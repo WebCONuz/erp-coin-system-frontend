@@ -15,8 +15,6 @@ import {
   applyCoinRule,
   cancelCoinTransaction,
   getCoinTransactionHistory,
-  getStudentPurchases,
-  updatePurchaseStatus,
   sendMessage,
 } from "../api/student.api";
 import { studentKeys } from "../constants";
@@ -29,7 +27,6 @@ import type {
   BulkManualCoinDto,
   ApplyCoinRuleDto,
   SendMessageDto,
-  UpdatePurchaseStatusDto,
 } from "../types";
 import { useSearchParams } from "react-router-dom";
 
@@ -78,15 +75,6 @@ export const useCoinTransactionHistory = (
   return useQuery({
     queryKey: studentKeys.coinTransactions(params),
     queryFn: () => getCoinTransactionHistory(params),
-  });
-};
-
-export const useStudentPurchases = (
-  params?: Record<string, string | undefined>,
-) => {
-  return useQuery({
-    queryKey: studentKeys.purchases(params),
-    queryFn: () => getStudentPurchases(params),
   });
 };
 
@@ -224,17 +212,6 @@ export const useCancelCoinTransaction = (studentId: string) => {
       queryClient.invalidateQueries({
         queryKey: studentKeys.coinTransactions(),
       });
-    },
-  });
-};
-
-export const useUpdatePurchaseStatus = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdatePurchaseStatusDto }) =>
-      updatePurchaseStatus(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: studentKeys.purchases() });
     },
   });
 };

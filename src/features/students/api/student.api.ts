@@ -11,12 +11,10 @@ import type {
   BulkCoinResponse,
   ApplyCoinRuleResponse,
   SendMessageDto,
-  UpdatePurchaseStatusDto,
   StudentDetail,
   StudentDetailFull,
   StudentsResponse,
   CoinTransaction,
-  StudentPurchase,
 } from "../types";
 
 // ─── List ─────────────────────────────────────────────────────────────────────
@@ -99,22 +97,6 @@ export const getCoinTransactionHistory = async (
   params?: Record<string, string | undefined>,
 ): Promise<{ data: CoinTransaction[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
   const res = await request.get(`${ENDPOINTS.COIN_TRANSACTIONS}/history`, { params });
-  return res.data;
-};
-
-// ─── Purchases ───────────────────────────────────────────────────────────────
-export const getStudentPurchases = async (
-  params?: Record<string, string | undefined>,
-): Promise<{ data: StudentPurchase[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
-  const res = await request.get(ENDPOINTS.PURCHASES, { params });
-  return res.data;
-};
-
-export const updatePurchaseStatus = async (
-  id: string,
-  data: UpdatePurchaseStatusDto,
-): Promise<StudentPurchase> => {
-  const res = await request.patch<StudentPurchase>(`${ENDPOINTS.PURCHASES}/${id}/status`, data);
   return res.data;
 };
 

@@ -21,6 +21,8 @@ export interface AdminDashboardCoinEconomy {
 
 export interface AdminDashboardNeedsAttention {
   pendingPurchases: number;
+  // Tasdiqlangan, lekin hali o'quvchiga topshirilmagan xaridlar.
+  approvedPurchases: number;
   pendingAttendanceSessions: number;
 }
 

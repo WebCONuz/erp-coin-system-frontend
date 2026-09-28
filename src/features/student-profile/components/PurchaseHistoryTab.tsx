@@ -1,79 +1,52 @@
+import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { ChevronRight, Gift } from "lucide-react";
 import { TabsContent } from "@/components/ui/tabs";
-import { Coins, Gift } from "lucide-react";
-import type { StudentDetailFull } from "@/features/students/types";
-import { formatDate } from "@/ustils";
+import { PageLoading } from "@/components/loading";
+import { StudentPurchaseCard } from "@/features/purchases/components";
+import { usePurchases } from "@/features/purchases/hooks";
 
-const STATUS_LABELS: Record<string, string> = {
-  approved: "Tasdiqlangan",
-  delivered: "Topshirilgan",
-  rejected: "Rad etilgan",
-  cancelled: "Bekor qilingan",
-  pending: "Kutilmoqda",
-};
+const RECENT_LIMIT = 6;
 
-const STATUS_STYLES: Record<string, string> = {
-  approved: "bg-forest/10 text-forest",
-  delivered: "bg-forest/10 text-forest",
-  rejected: "bg-bloom/10 text-bloom",
-  cancelled: "bg-bloom/10 text-bloom",
-  pending: "bg-gold/15 text-gold",
-};
-
-interface Props {
-  student?: StudentDetailFull;
-}
-
-export const PurchaseHistoryTab = ({ student }: Props) => {
-  const purchases = student?.purchases ?? [];
+// Profilda faqat oxirgi xaridlar; to'liq ro'yxat — do'kondagi "Xaridlarim" tabi.
+export const PurchaseHistoryTab = () => {
+  const { t } = useTranslation();
+  const { data, isLoading } = usePurchases({ limit: String(RECENT_LIMIT) });
+  const purchases = data?.data ?? [];
 
   return (
     <TabsContent value="gifts" className="mt-4 space-y-4">
-      <h3 className="font-display text-sm font-semibold text-ink">
-        Sotib olingan sovg'alar ({purchases.length})
-      </h3>
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="font-display text-sm font-semibold text-ink">
+          {t("purchases.student.profileTitle", { count: data?.total ?? 0 })}
+        </h3>
+        {!!data && data.total > RECENT_LIMIT && (
+          <Link
+            to="/student/market?tab=purchases"
+            className="flex items-center gap-0.5 text-xs font-medium text-forest hover:underline"
+          >
+            {t("purchases.student.viewAll")}
+            <ChevronRight size={14} />
+          </Link>
+        )}
+      </div>
 
-      {!purchases.length ? (
+      {isLoading ? (
+        <PageLoading />
+      ) : !purchases.length ? (
         <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-ink/10 bg-white">
           <Gift size={22} className="text-ink-soft/50 mb-2" />
           <p className="text-sm font-medium text-ink">
-            Hali hech qanday sovg'a sotib olinmagan
+            {t("purchases.student.empty")}
           </p>
           <p className="text-xs text-ink-soft mt-1 max-w-xs">
-            Coinlaringizni sovg'alar do'konidan biror narsaga almashtirishingiz
-            mumkin.
+            {t("purchases.student.emptyHint")}
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {purchases.map((purchase) => (
-            <div
-              key={purchase.id}
-              className="flex items-center gap-3 p-4 rounded-2xl border border-ink/10 bg-white"
-            >
-              <div className="w-10 h-10 rounded-lg bg-bloom/10 flex items-center justify-center shrink-0">
-                <Gift size={18} className="text-bloom" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-medium text-ink truncate">
-                  {purchase.reward?.title}
-                </p>
-                <div className="flex items-center gap-2 text-xs text-ink-soft mt-0.5">
-                  <span className="flex items-center gap-1">
-                    <Coins size={11} />
-                    {purchase.coinSpent} coin
-                  </span>
-                  <span>·</span>
-                  <span>{formatDate(purchase.purchasedAt, "dd.MM.yyyy")}</span>
-                </div>
-                <span
-                  className={`inline-block mt-1.5 text-[10px] font-medium px-2 py-0.5 rounded-full ${
-                    STATUS_STYLES[purchase.status] ?? "bg-paper-soft text-ink-soft"
-                  }`}
-                >
-                  {STATUS_LABELS[purchase.status] ?? purchase.status}
-                </span>
-              </div>
-            </div>
+            <StudentPurchaseCard key={purchase.id} purchase={purchase} />
           ))}
         </div>
       )}

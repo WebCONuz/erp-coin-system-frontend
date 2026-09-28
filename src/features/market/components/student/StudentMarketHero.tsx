@@ -1,4 +1,5 @@
 import { Coins, Gift } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { getFileUrl } from "@/lib/utils";
 import { getNearestGoal } from "../../lib/nearestGoal";
 import type { Reward } from "../../types";
@@ -9,10 +10,9 @@ interface Props {
 }
 
 export const StudentMarketHero = ({ rewards, balance }: Props) => {
+  const { t } = useTranslation();
   const goal = getNearestGoal(rewards, balance);
-  const progress = goal
-    ? Math.min(100, (balance / goal.coinPrice) * 100)
-    : 100;
+  const progress = goal ? Math.min(100, (balance / goal.coinPrice) * 100) : 100;
   const remaining = goal ? Math.max(0, goal.coinPrice - balance) : 0;
 
   return (
@@ -22,16 +22,17 @@ export const StudentMarketHero = ({ rewards, balance }: Props) => {
       <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="min-w-0 max-w-xl">
           <p className="text-xs font-semibold uppercase tracking-wide text-gold">
-            Bog'ingiz hosili
+            {t("market.student.hero.eyebrow")}
           </p>
           <h1 className="font-display text-2xl sm:text-3xl font-semibold mt-1.5">
-            Har bir coin — mehnatingizning mevasi
+            {t("market.student.hero.title")}
           </h1>
           <p className="text-paper/60 text-sm mt-2">
-            Darslarga qatnashib va uy vazifalarini bajarib to'plagan
-            tangalaringizni sovg'alarga almashtiring.
+            {t("market.student.hero.text")}
             {goal &&
-              ` Eng yaqin maqsadingiz — atigi ${goal.coinPrice} coin uzoqlikda!`}
+              ` ${t("market.student.hero.goalText", {
+                price: goal.coinPrice,
+              })}`}
           </p>
         </div>
 
@@ -52,7 +53,7 @@ export const StudentMarketHero = ({ rewards, balance }: Props) => {
               <div className="min-w-0">
                 <p className="text-sm font-medium truncate">{goal.title}</p>
                 <p className="text-[11px] text-paper/50">
-                  Eng yaqin maqsadingiz
+                  {t("market.student.hero.nearestGoal")}
                 </p>
               </div>
             </div>
@@ -69,7 +70,9 @@ export const StudentMarketHero = ({ rewards, balance }: Props) => {
                 {balance}/{goal.coinPrice} coin
               </span>
               <span className="text-gold font-medium">
-                {remaining > 0 ? `Yana ${remaining} coin` : "Yetarli!"}
+                {remaining > 0
+                  ? t("market.student.hero.moreCoins", { count: remaining })
+                  : t("market.student.hero.enough")}
               </span>
             </div>
           </div>

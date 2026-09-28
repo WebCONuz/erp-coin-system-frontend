@@ -4,7 +4,6 @@ import type {
   CreateRewardCategoryDto,
   CreateRewardDto,
   PurchaseRewardResponse,
-  PurchasesResponse,
   Reward,
   RewardCategory,
   RewardsResponse,
@@ -47,15 +46,6 @@ export const purchaseReward = async (
   const res = await request.post<PurchaseRewardResponse>(
     `${ENDPOINTS.REWARDS}/${rewardId}/purchase`,
   );
-  return res.data;
-};
-
-export const getMyPurchases = async (
-  params?: Record<string, string | undefined>,
-): Promise<PurchasesResponse> => {
-  const res = await request.get<PurchasesResponse>(ENDPOINTS.PURCHASES, {
-    params,
-  });
   return res.data;
 };
 

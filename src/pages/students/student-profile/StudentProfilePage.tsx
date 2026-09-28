@@ -57,7 +57,7 @@ const StudentProfilePage = () => {
 
         <AttendanceHistoryTabV2 student={student} />
         <CoinHistoryTab student={student} />
-        <PurchaseHistoryTab student={student} />
+        <PurchaseHistoryTab />
       </Tabs>
 
       <EditMyProfileModal open={editOpen} onClose={() => setEditOpen(false)} />
