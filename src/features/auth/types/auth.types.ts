@@ -1,3 +1,5 @@
+import type { TenantOrgType } from "@/features/tenants/types";
+
 export interface LoginDto {
   username: string;
   password: string;
@@ -23,6 +25,13 @@ export interface UserMe {
   wallet: {
     balance: number;
   };
+  // O'z tenanti; super_admin/creator uchun — system tenant (odatda type: null).
+  tenant: {
+    id: string;
+    name: string;
+    slug: string;
+    type: TenantOrgType | null;
+  } | null;
 }
 
 export interface ResponseUserMe {

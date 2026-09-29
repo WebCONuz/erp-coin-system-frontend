@@ -16,11 +16,13 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/shared/modal";
@@ -61,6 +63,11 @@ export const PurchaseStatusModal = ({ purchase, status, onClose }: Props) => {
                   balance: res.refund.currentBalance,
                 })
               : res.message,
+            res.refund && {
+              description: res.refund.stockRestored
+                ? t("purchases.stockRestored")
+                : t("purchases.stockNotRestored"),
+            },
           );
           onClose();
         },
@@ -102,8 +109,16 @@ export const PurchaseStatusModal = ({ purchase, status, onClose }: Props) => {
       isCancel={status === "cancelled"}
       isPending={updateStatus.isPending}
       onClose={onClose}
-      onSubmit={(adminNote) =>
-        status && submit({ status, adminNote: adminNote || undefined })
+      onSubmit={({ adminNote, restock }) =>
+        status &&
+        submit({
+          status,
+          adminNote: adminNote || undefined,
+          // Cheksiz sovg'ada (stockReserved: false) zaxira baribir o'zgarmaydi.
+          ...(status === "cancelled" && purchase?.stockReserved
+            ? { restock }
+            : {}),
+        })
       }
     />
   );
@@ -115,7 +130,7 @@ interface NoteFormModalProps {
   isCancel: boolean;
   isPending: boolean;
   onClose: () => void;
-  onSubmit: (adminNote: string) => void;
+  onSubmit: (values: PurchaseStatusFormValues) => void;
 }
 
 const NoteFormModal = ({
@@ -136,11 +151,11 @@ const NoteFormModal = ({
 
   const form = useForm<PurchaseStatusFormValues>({
     resolver: zodResolver(purchaseStatusSchema),
-    defaultValues: { adminNote: "" },
+    defaultValues: { adminNote: "", restock: true },
   });
 
   useEffect(() => {
-    if (!open) form.reset({ adminNote: "" });
+    if (!open) form.reset({ adminNote: "", restock: true });
   }, [open, form]);
 
   return (
@@ -183,7 +198,7 @@ const NoteFormModal = ({
 
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((values) => onSubmit(values.adminNote))}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4"
           >
             <FormField
@@ -206,6 +221,34 @@ const NoteFormModal = ({
                 </FormItem>
               )}
             />
+
+            {isCancel && purchase?.stockReserved && (
+              <FormField
+                control={form.control}
+                name="restock"
+                render={({ field }) => (
+                  <FormItem className="flex gap-2.5 rounded-xl border border-zinc-200 p-3 dark:border-zinc-800">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={(checked) =>
+                          field.onChange(checked === true)
+                        }
+                        className="mt-0.5"
+                      />
+                    </FormControl>
+                    <div className="space-y-1">
+                      <FormLabel className="cursor-pointer font-medium">
+                        {t("purchases.cancelModal.restockLabel")}
+                      </FormLabel>
+                      <FormDescription className="text-xs">
+                        {t("purchases.cancelModal.restockHint")}
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            )}
 
             {isCancel && purchase && (
               <p className="text-xs text-muted-foreground">

@@ -6,7 +6,11 @@ export interface Reward {
   title: string;
   description?: string | null;
   coinPrice: number;
+  // Yana nechta sotish mumkin (omborda jismonan turgan son emas); -1 — cheksiz.
   stock: number;
+  // Sotilgan, lekin hali topshirilmagan (pending + approved) donalar.
+  // Omborda jismonan: stock + reservedCount.
+  reservedCount: number;
   rewardType: RewardType;
   imageUrl: string | null;
   isActive?: boolean;
@@ -29,17 +33,22 @@ export interface CreateRewardDto {
   description?: string;
   imageUrl?: string;
   coinPrice: number;
+  // Doim yuboriladi (yuborilmasa backend 0 qo'yadi); -1 — cheksiz.
   stock: number;
   rewardType: RewardType;
   categoryId: string;
 }
 
+// `stock` va `stockDelta` birga yuborilmaydi (400). Faqat o'zgargan maydonlar
+// yuboriladi — eski `stock` ni qayta yuborish shu orada sotilgan donani o'chiradi.
 export interface UpdateRewardDto {
   title?: string;
   description?: string;
   imageUrl?: string;
   coinPrice?: number;
   stock?: number;
+  // Nisbiy o'zgarish (+5 / −2), ≠ 0; cheksiz sovg'aga yuborilmaydi.
+  stockDelta?: number;
   rewardType?: RewardType;
   categoryId?: string;
 }

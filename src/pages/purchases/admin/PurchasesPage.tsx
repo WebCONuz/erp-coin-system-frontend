@@ -33,7 +33,7 @@ const PurchasesPage = () => {
 
   return (
     <>
-      <PurchasesDataFilter />
+      <PurchasesDataFilter rewardTitle={purchases?.data[0]?.reward.title} />
 
       <div className="w-full overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-900">
         <CustomTable

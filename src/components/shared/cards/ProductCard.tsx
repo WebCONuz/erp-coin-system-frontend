@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { MoreVertical, Pencil, Trash } from "lucide-react";
 import type { Reward } from "@/features/market/types";
+import { isInStock, isUnlimitedStock } from "@/features/market/lib/stock";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,6 +18,8 @@ interface ProductCardProps {
   isBuying?: boolean;
   onEdit?: (reward: Reward) => void;
   onDelete?: (reward: Reward) => void;
+  // Karta pastidagi qo'shimcha blok (masalan, admin uchun zaxira tafsiloti).
+  footer?: React.ReactNode;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -25,8 +28,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   isBuying,
   onEdit,
   onDelete,
+  footer,
 }) => {
   const { t } = useTranslation();
+  const inStock = isInStock(product);
   return (
     <div className="group w-full bg-card text-card-foreground rounded-xl shadow-sm border border-border/50 overflow-hidden transition-all hover:shadow-xl">
       {/* Rasm qismi */}
@@ -97,17 +102,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           {/* Dona soni */}
           <span className="text-lg text-slate-500 dark:text-slate-400 font-normal">
-            {t("market.stockCount", { count: product.stock })}
+            {isUnlimitedStock(product)
+              ? t("market.unlimited")
+              : inStock
+                ? t("market.stockCount", { count: product.stock })
+                : t("market.outOfStock")}
           </span>
         </div>
+
+        {footer}
 
         {onBuy && (
           <Button
             className="w-full bg-linear-to-br from-purple-500 to-purple-700 text-white"
-            disabled={product.stock < 1 || isBuying}
+            disabled={!inStock || isBuying}
             onClick={() => onBuy(product)}
           >
-            {product.stock < 1
+            {!inStock
               ? t("market.outOfStock")
               : isBuying
                 ? t("common.sending")

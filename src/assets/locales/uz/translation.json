@@ -965,7 +965,7 @@
       "descriptionPlaceholder": "Sovg'a haqida qisqacha ma'lumot...",
       "imageUrlLabel": "Rasm URL (Ixtiyoriy)",
       "priceLabel": "Narxi (coin)",
-      "stockLabel": "Dona soni",
+      "stockLabel": "Zaxira",
       "typeLabel": "Turi",
       "typePlaceholder": "Sovg'a turini tanlang",
       "categoryPlaceholder": "Kategoriyani tanlang",
@@ -973,7 +973,18 @@
         "physical": "Jismoniy sovg'a",
         "digital": "Raqamli sovg'a",
         "privilege": "Imtiyoz"
-      }
+      },
+      "onSaleLabel": "Sotuvdagi dona soni",
+      "unlimitedLabel": "Cheksiz",
+      "unlimitedHint": "Zaxira hisoblanmaydi — sovg'a hech qachon tugamaydi",
+      "stockMode": {
+        "delta": "Zaxirani o'zgartirish",
+        "exact": "Aniq qiymat"
+      },
+      "deltaLabel": "Qo'shish (+) yoki ayirish (−)",
+      "deltaHint": "Masalan: +5 ta keldi, −2 ta yaroqsiz. Shu orada sotilgan donalar hisobdan tushmaydi.",
+      "deltaPreview": "Sotuvda: {{from}} → {{to}}",
+      "exactWarning": "Bu yerga faqat SOTUVGA qo'yiladigan son kiritiladi. Hali topshirilmagan {{count}} ta xarid bu songa kirmaydi."
     },
     "schema": {
       "title_required": "Sovg'a nomi kiritilishi shart",
@@ -981,7 +992,8 @@
       "price_min": "Narx 0 dan katta bo'lishi kerak",
       "stock_min": "Dona soni manfiy bo'lishi mumkin emas",
       "category_required": "Kategoriya tanlanishi shart",
-      "categoryName_min": "Kategoriya nomi kamida 2 ta belgidan iborat bo'lishi kerak"
+      "categoryName_min": "Kategoriya nomi kamida 2 ta belgidan iborat bo'lishi kerak",
+      "stockDelta_min": "Ayiriladigan son sotuvdagi zaxiradan oshmasligi kerak"
     },
     "filter": {
       "addGift": "Sovg'a qo'shish",
@@ -1047,6 +1059,13 @@
       "remaining": "Qolgan balans:",
       "goToPurchases": "Xaridlarimga o'tish",
       "continueShopping": "Xaridni davom ettirish"
+    },
+    "unlimited": "Cheksiz",
+    "inventory": {
+      "onSale": "Sotuvda: {{count}}",
+      "reserved": "Band: {{count}}",
+      "warehouse": "Omborda: {{count}}",
+      "reservedLinkHint": "Hali topshirilmagan xaridlarni ko'rish"
     }
   },
   "purchases": {
@@ -1099,7 +1118,9 @@
       "noteLabel": "Bekor qilish sababi",
       "notePlaceholder": "Sabab o'quvchiga va coin tarixiga yoziladi",
       "submit": "Bekor qilish",
-      "refundHint": "{{coins}} coin o'quvchining hamyoniga qaytariladi, sovg'a zaxirasi tiklanadi."
+      "refundHint": "{{coins}} coin o'quvchining hamyoniga qaytariladi.",
+      "restockLabel": "Sovg'ani zaxiraga qaytarish",
+      "restockHint": "Belgini olib tashlang, agar sovg'a sotuvdan olingan, yo'qolgan yoki yaroqsiz bo'lsa. Coin baribir qaytariladi."
     },
     "deliverModal": {
       "title": "Sovg'a topshirildimi?",
@@ -1126,6 +1147,10 @@
       "viewAll": "Barchasi",
       "readyBanner": "{{count}} ta sovg'angiz tayyor — olib keting!",
       "pendingBanner": "{{count}} ta xaridingiz tasdiqlanishini kutmoqda"
-    }
+    },
+    "stockRestored": "Sovg'a zaxiraga qaytarildi",
+    "stockNotRestored": "Zaxira o'zgarmadi",
+    "rewardFilter": "Sovg'a: {{title}}",
+    "rewardFilterFallback": "tanlangan sovg'a"
   }
 }

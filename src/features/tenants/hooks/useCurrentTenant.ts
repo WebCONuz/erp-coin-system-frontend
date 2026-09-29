@@ -6,8 +6,12 @@ import { useTenant } from "./useHook";
 
 // Admin o'z tenantiga biriktirilgan (user.tenantId), super_admin/creator esa
 // AdminNavbar orqali tenantni almashtiradi (?tenantId= / localStorage[TENANT_KEY]).
+//
+// GET /tenants/:id faqat super_admin va undan yuqori uchun ochiq (adminga 403) —
+// shuning uchun bitta tenantga bog'langan rollar o'z tenantini GET /auth/me
+// dagi `tenant` maydonidan oladi (qo'shimcha so'rovsiz).
 export const useCurrentTenant = () => {
-  const { user } = useAuth();
+  const { user, isLoading: isUserLoading } = useAuth();
   const [searchParams] = useSearchParams();
 
   const isMultiTenant =
@@ -17,13 +21,17 @@ export const useCurrentTenant = () => {
     ? (searchParams.get("tenantId") ??
       localStorage.getItem(TENANT_KEY) ??
       undefined)
-    : user?.tenantId;
+    : undefined;
 
-  const { data: tenant, isLoading } = useTenant(tenantId);
+  const selectedTenant = useTenant(tenantId);
+
+  const tenantType = isMultiTenant
+    ? selectedTenant.data?.type
+    : user?.tenant?.type;
 
   return {
-    tenant,
-    isLoading,
-    isLearningCenter: tenant?.type === "learning_center",
+    tenantType,
+    isLoading: isMultiTenant ? selectedTenant.isLoading : isUserLoading,
+    isLearningCenter: tenantType === "learning_center",
   };
 };

@@ -1,4 +1,6 @@
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Gift, X } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardTitle } from "@/components/shared/title";
 import { useAdminDashboard } from "@/features/dashboard/hooks";
@@ -6,8 +8,15 @@ import { ALL_PURCHASES, useFilter } from "../hooks";
 import { PURCHASE_STATUSES } from "../constants";
 import type { PurchaseStatus } from "../types";
 
-export const PurchasesDataFilter = () => {
+interface Props {
+  // ?rewardId= bilan kelinganda chip'da ko'rsatiladigan sovg'a nomi.
+  rewardTitle?: string;
+}
+
+export const PurchasesDataFilter = ({ rewardTitle }: Props) => {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const rewardId = searchParams.get("rewardId");
   const { form } = useFilter();
   const currentTab = form.watch("status");
   const { data: dashboard } = useAdminDashboard();
@@ -25,6 +34,13 @@ export const PurchasesDataFilter = () => {
       count: counts[status],
     })),
   ];
+
+  const clearRewardFilter = () => {
+    const next = new URLSearchParams(searchParams);
+    next.delete("rewardId");
+    next.delete("page");
+    setSearchParams(next);
+  };
 
   return (
     <div className="w-full space-y-3 py-4">
@@ -57,6 +73,25 @@ export const PurchasesDataFilter = () => {
           </TabsList>
         </div>
       </Tabs>
+
+      {rewardId && (
+        <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-border bg-muted/50 py-1 pl-3 pr-1 text-sm">
+          <Gift size={14} className="shrink-0 text-pink-600 dark:text-pink-400" />
+          <span className="truncate">
+            {t("purchases.rewardFilter", {
+              title: rewardTitle ?? t("purchases.rewardFilterFallback"),
+            })}
+          </span>
+          <button
+            type="button"
+            onClick={clearRewardFilter}
+            aria-label={t("common.clear")}
+            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
+          >
+            <X size={14} />
+          </button>
+        </span>
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { Coins, Gift } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getFileUrl } from "@/lib/utils";
+import { isInStock, isUnlimitedStock } from "../../lib/stock";
 import type { Reward } from "../../types";
 
 const CARD_TINTS = ["bg-forest/8", "bg-gold/12", "bg-bloom/8", "bg-emerald-50"];
@@ -24,7 +25,7 @@ export const StudentProductCard = ({
   isBuying,
 }: Props) => {
   const { t } = useTranslation();
-  const inStock = product.stock > 0;
+  const inStock = isInStock(product);
   const canAfford = balance >= product.coinPrice && inStock;
   const progress = Math.min(100, (balance / product.coinPrice) * 100);
   const remaining = Math.max(0, product.coinPrice - balance);
@@ -65,9 +66,11 @@ export const StudentProductCard = ({
             {product.coinPrice}
           </span>
           <span className="text-xs text-ink-soft">
-            {inStock
-              ? t("market.stockCount", { count: product.stock })
-              : t("market.outOfStock")}
+            {isUnlimitedStock(product)
+              ? t("market.unlimited")
+              : inStock
+                ? t("market.stockCount", { count: product.stock })
+                : t("market.outOfStock")}
           </span>
         </div>
 

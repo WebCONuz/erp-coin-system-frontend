@@ -8,6 +8,8 @@ const SOURCE_TYPE_LABELS: Record<string, string> = {
   attendance: "Davomat",
   bonus: "Bonus",
   manual: "Qo'lda berilgan",
+  // Bekor qilingan xarid uchun qaytarilgan coin ham `purchase` (earn) bilan keladi.
+  purchase: "Xarid",
 };
 
 interface Props {

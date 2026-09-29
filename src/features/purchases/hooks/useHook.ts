@@ -17,6 +17,8 @@ export const usePurchases = (
   const [searchParams] = useSearchParams();
   const params = explicitParams ?? {
     status: searchParams.get("status") || undefined,
+    // Sovg'alar ro'yxatidagi "Band" sonidan kelinganda.
+    rewardId: searchParams.get("rewardId") || undefined,
     page: searchParams.get("page") || undefined,
     limit: "10",
   };

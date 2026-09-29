@@ -15,6 +15,8 @@ export interface Purchase {
   status: PurchaseStatus;
   // Adminning oxirgi izohi (tasdiqlashda — qayerdan olish, bekor qilishda — sabab).
   deliveryNote: string | null;
+  // Xarid paytida zaxiradan dona ayirilganmi (cheksiz sovg'ada — false).
+  stockReserved: boolean;
   purchasedAt: string;
   deliveredAt: string | null;
   updatedAt: string;
@@ -44,10 +46,13 @@ export interface PurchasesResponse {
 export interface UpdatePurchaseStatusDto {
   status: PurchaseActionStatus;
   adminNote?: string;
+  // Faqat `cancelled` uchun; default true — dona sovg'a zaxirasiga qaytadi.
+  restock?: boolean;
 }
 
 export interface UpdatePurchaseStatusResponse {
   message: string;
   data: Purchase;
-  refund?: { coins: number; currentBalance: number };
+  // Faqat `cancelled` da.
+  refund?: { coins: number; currentBalance: number; stockRestored: boolean };
 }

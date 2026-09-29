@@ -1,4 +1,5 @@
 import type { Reward } from "../types";
+import { isInStock } from "./stock";
 
 /**
  * The cheapest reward the student can't yet afford — used to give the
@@ -10,7 +11,7 @@ export function getNearestGoal(
   rewards: Reward[],
   balance: number,
 ): Reward | null {
-  const active = rewards.filter((r) => r.isActive !== false && r.stock > 0);
+  const active = rewards.filter((r) => r.isActive !== false && isInStock(r));
   if (!active.length) return null;
 
   const sorted = [...active].sort((a, b) => a.coinPrice - b.coinPrice);

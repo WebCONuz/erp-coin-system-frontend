@@ -9,6 +9,7 @@ import { useAuth } from "@/features/auth/hooks/useLogin";
 import { ROLES } from "@/assets/constants";
 import { useRewards, usePurchaseReward, useDeleteReward } from "../hooks";
 import type { Reward } from "../types";
+import { RewardInventory } from "./RewardInventory";
 
 interface Props {
   onAddGift?: () => void;
@@ -71,6 +72,11 @@ export const ProductGrid = ({ onAddGift, onEdit }: Props) => {
           isBuying={purchaseReward.isPending}
           onEdit={isStudent ? undefined : onEdit}
           onDelete={isStudent ? undefined : handleDelete}
+          footer={
+            isStudent ? undefined : (
+              <RewardInventory reward={item} linkReserved />
+            )
+          }
         />
       ))}
     </div>

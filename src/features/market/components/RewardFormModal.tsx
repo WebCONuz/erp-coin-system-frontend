@@ -28,8 +28,11 @@ import {
   useRewardCategories,
   useUpdateReward,
 } from "../hooks";
-import type { Reward } from "../types";
+import { UNLIMITED_STOCK } from "../constants";
+import { isUnlimitedStock } from "../lib/stock";
+import type { Reward, UpdateRewardDto } from "../types";
 import { ControlledSelect } from "@/components/controls";
+import { RewardStockFields } from "./RewardStockFields";
 
 interface RewardFormModalProps {
   open: boolean;
@@ -43,7 +46,10 @@ const emptyValues: RewardFormValues = {
   description: "",
   imageUrl: "",
   coinPrice: 0,
+  stockMode: "exact",
+  isUnlimited: false,
   stock: 0,
+  stockDelta: 0,
   rewardType: "physical",
   categoryId: "",
 };
@@ -61,12 +67,17 @@ export const RewardFormModal = ({
   const isPending = createReward.isPending || updateReward.isPending;
   const { data: categories } = useRewardCategories();
 
-  const rewardFormSchema = useMemo(() => createRewardFormSchema(t), [t]);
+  const rewardFormSchema = useMemo(
+    () => createRewardFormSchema(t, isEdit ? reward?.stock : undefined),
+    [t, isEdit, reward?.stock],
+  );
 
   const form = useForm<RewardFormValues>({
     resolver: zodResolver(rewardFormSchema),
     defaultValues: emptyValues,
   });
+  // Render paytida o'qiladi — RHF proxy'si dirtyFields'ni kuzatishi uchun.
+  const { dirtyFields } = form.formState;
 
   useEffect(() => {
     if (isEdit && reward) {
@@ -75,7 +86,11 @@ export const RewardFormModal = ({
         description: reward.description ?? "",
         imageUrl: reward.imageUrl ?? "",
         coinPrice: reward.coinPrice,
-        stock: reward.stock,
+        // Cheksiz sovg'ada `stockDelta` ishlamaydi — faqat aniq qiymat rejimi.
+        stockMode: isUnlimitedStock(reward) ? "exact" : "delta",
+        isUnlimited: isUnlimitedStock(reward),
+        stock: isUnlimitedStock(reward) ? 0 : reward.stock,
+        stockDelta: 0,
         rewardType: reward.rewardType,
         categoryId: reward.categoryId,
       });
@@ -89,20 +104,56 @@ export const RewardFormModal = ({
   }, [open, form]);
 
   const onSubmit = (values: RewardFormValues) => {
-    const data = { ...values, imageUrl: values.imageUrl || undefined };
+    const {
+      stockMode,
+      isUnlimited,
+      stock,
+      stockDelta,
+      imageUrl,
+      ...fields
+    } = values;
+    const exactStock = isUnlimited ? UNLIMITED_STOCK : stock;
     const onError = (error: any) =>
       toast.error(error?.data?.message || t("common.error"));
 
-    if (isEdit && reward) {
-      updateReward.mutate(data, { onSuccess: () => onClose(), onError });
-    } else {
-      createReward.mutate(data, { onSuccess: () => onClose(), onError });
+    if (!isEdit || !reward) {
+      // `stock` doim yuboriladi — aks holda backend 0 qo'yadi.
+      createReward.mutate(
+        { ...fields, imageUrl: imageUrl || undefined, stock: exactStock },
+        { onSuccess: () => onClose(), onError },
+      );
+      return;
     }
+
+    // Faqat o'zgargan maydonlar: eski `stock` ni qayta yuborish shu orada
+    // sotilgan donalarni hisobdan o'chirib yuboradi.
+    const dirty = dirtyFields;
+    const data: UpdateRewardDto = {};
+    if (dirty.title) data.title = fields.title;
+    if (dirty.description) data.description = fields.description;
+    if (dirty.imageUrl) data.imageUrl = imageUrl || undefined;
+    if (dirty.coinPrice) data.coinPrice = fields.coinPrice;
+    if (dirty.rewardType) data.rewardType = fields.rewardType;
+    if (dirty.categoryId) data.categoryId = fields.categoryId;
+
+    // `stock` va `stockDelta` birga yuborilmaydi.
+    if (stockMode === "delta") {
+      if (stockDelta !== 0) data.stockDelta = stockDelta;
+    } else if (exactStock !== reward.stock) {
+      data.stock = exactStock;
+    }
+
+    if (!Object.keys(data).length) {
+      onClose();
+      return;
+    }
+
+    updateReward.mutate(data, { onSuccess: () => onClose(), onError });
   };
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
             {isEdit
@@ -168,51 +219,28 @@ export const RewardFormModal = ({
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="coinPrice"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t("market.rewardForm.priceLabel")}
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={1}
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(e.target.valueAsNumber || 0)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="coinPrice"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("market.rewardForm.priceLabel")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min={1}
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.valueAsNumber || 0)
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="stock"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("market.rewardForm.stockLabel")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min={0}
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(e.target.valueAsNumber || 0)
-                        }
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            <RewardStockFields form={form} reward={isEdit ? reward : undefined} />
 
             <div className="grid grid-cols-2 gap-4">
               <ControlledSelect
