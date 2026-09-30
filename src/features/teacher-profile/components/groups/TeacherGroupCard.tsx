@@ -1,14 +1,19 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ChevronRight, Users } from "lucide-react";
 import { getGroupAccent } from "@/lib/group-accent";
+import { useIsAssignedGroup } from "../../hooks";
 import type { TeacherGroupItem } from "../../types";
+import { AssignedGroupBadge } from "./AssignedGroupBadge";
 
 function initials(name: string) {
   return name.slice(0, 2).toUpperCase();
 }
 
 export const TeacherGroupCard = ({ data }: { data: TeacherGroupItem }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const isAssignedGroup = useIsAssignedGroup();
   const accent = getGroupAccent(data.id);
 
   return (
@@ -36,20 +41,26 @@ export const TeacherGroupCard = ({ data }: { data: TeacherGroupItem }) => {
               </p>
             </div>
           </div>
-          {!data.isActive && (
-            <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-bloom/10 text-bloom">
-              Nofaol
-            </span>
-          )}
+          <div className="flex flex-col items-end gap-1 shrink-0">
+            {!data.isActive && (
+              <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-bloom/10 text-bloom">
+                {t("common.inactive")}
+              </span>
+            )}
+            {isAssignedGroup(data.teacher?.id) && <AssignedGroupBadge />}
+          </div>
         </div>
 
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-ink/8">
           <span className="flex items-center gap-1.5 text-sm text-ink-soft">
             <Users size={14} />
-            {data._count.students}/{data.maxStudents} o'quvchi
+            {t("teacherProfile.groups.studentsCount", {
+              total: data._count.students,
+              max: data.maxStudents,
+            })}
           </span>
           <span className="flex items-center gap-0.5 text-xs font-medium text-forest">
-            Guruh sahifasi
+            {t("teacherProfile.groups.openGroup")}
             <ChevronRight size={13} />
           </span>
         </div>

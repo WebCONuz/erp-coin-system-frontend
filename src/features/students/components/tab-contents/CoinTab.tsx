@@ -171,7 +171,10 @@ export const CoinTab = ({
                             ? t("students.coinTab.sourceLabels.attendance")
                             : tx?.sourceType === "bonus"
                               ? t("students.coinTab.sourceLabels.bonus")
-                              : t("students.coinTab.sourceLabels.other")}
+                              : tx?.sourceType === "exam" ||
+                                  tx?.sourceType === "competition"
+                                ? t(`sourceTypes.${tx.sourceType}`)
+                                : t("students.coinTab.sourceLabels.other")}
                       </b>
                       {": "}
                       {tx?.note ?? "-"}

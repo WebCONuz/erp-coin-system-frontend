@@ -1,4 +1,23 @@
-export type SessionType = "lesson" | "exam" | "trial";
+/**
+ * Backend yangi tur qo'shishi mumkin (GET /sessions/types) — shuning uchun
+ * ma'lum turlar bilan birga ixtiyoriy string ham qabul qilinadi.
+ */
+export type SessionType =
+  | "lesson"
+  | "exam"
+  | "competition"
+  | "extra"
+  | (string & {});
+
+/** Tekshirish ekrani `sessionType` emas, shu rejim bo'yicha tanlanadi. */
+export type EvaluationMode = "attendance" | "scored";
+
+export interface SessionTypeConfig {
+  type: SessionType;
+  defaultMode: EvaluationMode;
+  allowedModes: EvaluationMode[];
+  scoredSourceType: string;
+}
 
 export interface SessionGroupRef {
   id?: string;
@@ -26,6 +45,9 @@ export interface SessionItem {
   startTime: string;
   endTime: string;
   sessionType: SessionType;
+  evaluationMode: EvaluationMode;
+  /** Faqat `scored` rejimda; `null` — ball yuqoridan cheklanmagan. */
+  maxScore?: number | null;
   topic?: string | null;
   isLocked: boolean;
   lockedAt?: string | null;
@@ -52,6 +74,8 @@ export interface CreateSessionDto {
   startTime: string;
   endTime: string;
   sessionType: SessionType;
+  evaluationMode?: EvaluationMode;
+  maxScore?: number;
   groupId: string;
   roomId: string;
   teacherId: string;
@@ -66,6 +90,20 @@ export interface UpdateSessionDto {
   roomId?: string;
   teacherId?: string;
   subjectId?: string | null;
+  evaluationMode?: EvaluationMode;
+  /** `null` — chegara olib tashlanadi. */
+  maxScore?: number | null;
+}
+
+export interface DeleteSessionParams {
+  id: string;
+  /** `true` — sessiya coinlari qaytarilmaydi, faqat sessiya o'chiriladi. */
+  keepCoins?: boolean;
+}
+
+export interface DeleteSessionResponse {
+  message: string;
+  reversedTransactions?: number;
 }
 
 // ─── Attendance ───────────────────────────────────────────────────────────────
@@ -79,9 +117,19 @@ export interface SaveAttendanceDto {
   records: AttendanceRecordInput[];
 }
 
+export type CoinSkippedCode =
+  | "COINS_ALREADY_SPENT"
+  | "INSUFFICIENT_BALANCE_FOR_PENALTY"
+  | (string & {});
+
 export interface CoinSkippedInfo {
   studentId: string;
+  code?: CoinSkippedCode;
+  /** O'zbekcha tayyor matn — `code` tarjimasi topilmasa zaxira sifatida. */
   reason: string;
+  sourceType?: string;
+  direction?: "earn" | "deduct";
+  amount?: number;
 }
 
 export interface SaveAttendanceResponse {
@@ -91,10 +139,30 @@ export interface SaveAttendanceResponse {
   coinsSkippedFor: CoinSkippedInfo[];
 }
 
+// ─── Results (scored) ─────────────────────────────────────────────────────────
+export interface ResultRecordInput {
+  studentId: string;
+  isPresent: boolean;
+  score?: number | null;
+  coinAmount: number;
+  note?: string;
+}
+
+export interface SaveResultsDto {
+  records: ResultRecordInput[];
+}
+
+export type SaveResultsResponse = SaveAttendanceResponse;
+
 export interface AttendanceRecord {
   id: string;
   isPresent: boolean;
   homeworkDone: boolean;
+  /** Faqat `scored` rejimda; `attendance` da doim `null`. */
+  score?: number | null;
+  note?: string | null;
+  /** Shu sessiya tekshiruvi orqali berilgan sof coin (berilgan − jarima). */
+  coinAwarded?: number;
   student: {
     id: string;
     fullName: string;

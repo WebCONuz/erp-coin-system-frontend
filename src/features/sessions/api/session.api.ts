@@ -3,11 +3,16 @@ import { ENDPOINTS } from "@/services/endpoints";
 import type {
   AttendanceRecord,
   CreateSessionDto,
+  DeleteSessionParams,
+  DeleteSessionResponse,
   LockSessionResponse,
   SaveAttendanceDto,
   SaveAttendanceResponse,
+  SaveResultsDto,
+  SaveResultsResponse,
   SessionItem,
   SessionsResponse,
+  SessionTypeConfig,
   UnlockSessionResponse,
   UpdateSessionDto,
 } from "../types";
@@ -44,11 +49,20 @@ export const updateSession = async (
   return res.data;
 };
 
-export const deleteSession = async (
-  id: string,
-): Promise<{ message: string }> => {
-  const res = await request.delete<{ message: string }>(
+export const deleteSession = async ({
+  id,
+  keepCoins,
+}: DeleteSessionParams): Promise<DeleteSessionResponse> => {
+  const res = await request.delete<DeleteSessionResponse>(
     `${ENDPOINTS.SESSIONS}/${id}`,
+    { params: keepCoins ? { keepCoins: true } : undefined },
+  );
+  return res.data;
+};
+
+export const getSessionTypes = async (): Promise<SessionTypeConfig[]> => {
+  const res = await request.get<SessionTypeConfig[]>(
+    `${ENDPOINTS.SESSIONS}/types`,
   );
   return res.data;
 };
@@ -68,6 +82,17 @@ export const saveAttendance = async (
 ): Promise<SaveAttendanceResponse> => {
   const res = await request.post<SaveAttendanceResponse>(
     `${ENDPOINTS.SESSIONS}/${id}/attendance`,
+    data,
+  );
+  return res.data;
+};
+
+export const saveResults = async (
+  id: string,
+  data: SaveResultsDto,
+): Promise<SaveResultsResponse> => {
+  const res = await request.post<SaveResultsResponse>(
+    `${ENDPOINTS.SESSIONS}/${id}/results`,
     data,
   );
   return res.data;

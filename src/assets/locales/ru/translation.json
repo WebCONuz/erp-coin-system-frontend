@@ -58,7 +58,20 @@
     "homework": "Домашнее задание",
     "competition": "Соревнование",
     "purchase": "Покупка",
-    "manual": "Вручную"
+    "manual": "Вручную",
+    "exam": "Экзамен"
+  },
+  "apiErrors": {
+    "INVALID_EVALUATION_MODE": "Выбранный способ проверки недоступен для этого типа занятия. Доступные: {{allowedModes}}",
+    "WRONG_EVALUATION_MODE": "Это занятие проверяется способом \"{{evaluationMode}}\". Обновите страницу и попробуйте снова",
+    "SESSION_LOCKED": "Занятие заблокировано. Чтобы внести изменения, сначала снимите блокировку",
+    "SESSION_NOT_LOCKED": "Занятие не заблокировано",
+    "SESSION_ALREADY_CHECKED": "Занятие уже проверено, способ проверки изменить нельзя",
+    "DUPLICATE_STUDENTS": "В списке есть повторяющиеся ученики",
+    "STUDENTS_NOT_IN_GROUP": "Некоторые ученики не состоят в группе занятия",
+    "SCORE_EXCEEDS_MAX": "Балл не должен превышать максимальный ({{maxScore}})",
+    "MAX_SCORE_BELOW_EXISTING": "Максимальный балл не может быть меньше уже выставленного наивысшего балла ({{highestScore}})",
+    "SESSION_COINS_SPENT": "Некоторые ученики уже потратили монеты, полученные за это занятие"
   },
   "coinRules": {
     "direction": {
@@ -298,7 +311,8 @@
           "competition": "Соревнование",
           "manual": "Вручную",
           "bonus": "Бонус",
-          "purchase": "Покупка"
+          "purchase": "Покупка",
+          "exam": "Экзамен"
         }
       },
       "leaderboard": {
@@ -779,12 +793,52 @@
       "activityEmpty2": "Недельная активность группы будет отображена здесь"
     }
   },
+  "teacherProfile": {
+    "groups": {
+      "title": "Мои группы",
+      "subtitle": "Группы, в которых вы преподаёте, и расписание",
+      "tabs": {
+        "groups": "Мои группы",
+        "calendar": "Расписание"
+      },
+      "emptyTitle": "Групп нет",
+      "emptyDescription": "Вам пока не назначено ни одной группы.",
+      "assigned": "Назначена",
+      "assignedHint": "Вы не основной учитель этой группы — вы назначены через занятие или расписание",
+      "studentsCount": "{{total}}/{{max}} учеников",
+      "openGroup": "Страница группы",
+      "detail": {
+        "forbidden": "У вас нет доступа к этой группе",
+        "notFound": "Данные группы не найдены",
+        "groupSessions": "Занятия группы",
+        "mainTeacher": "Основной учитель: {{name}}",
+        "studentsTitle": "Ученики ({{total}})",
+        "giveCoins": "Выдать монеты",
+        "noStudents": "В группе пока нет учеников",
+        "bulkCoinTitle": "Массовая выдача монет группе",
+        "bulkCoinSubtitle": "Выдайте монеты сразу всем ученикам группы {{name}}"
+      }
+    },
+    "students": {
+      "backToList": "Мои ученики",
+      "forbidden": "У вас нет доступа к этому ученику",
+      "notFound": "Данные ученика не найдены",
+      "tabs": {
+        "attendance": "История посещаемости",
+        "coins": "История монет"
+      }
+    }
+  },
   "sessions": {
     "type": {
       "lesson": "Урок",
       "exam": "Экзамен",
       "competition": "Соревнование",
       "extra": "Дополнительное"
+    },
+    "evaluationMode": {
+      "attendance": "Посещаемость",
+      "scored": "С баллами"
     },
     "schema": {
       "date_required": "Дата обязательна для заполнения",
@@ -793,7 +847,43 @@
       "type_required": "Выберите тип занятия",
       "group_required": "Выберите группу",
       "room_required": "Выберите кабинет",
-      "teacher_required": "Выберите учителя"
+      "teacher_required": "Выберите учителя",
+      "maxScore_invalid": "Максимальный балл должен быть целым числом от 1 до {{max}}"
+    },
+    "results": {
+      "title": "Результаты",
+      "score": "Балл",
+      "coin": "Coin",
+      "note": "Комментарий",
+      "notePlaceholder": "Комментарий (необязательно)",
+      "coinForAll": "Coin всем:",
+      "applyToAll": "Применить",
+      "scoreInvalid": "Балл должен быть неотрицательным числом (не более 2 знаков после запятой)",
+      "scoreExceedsMax": "Балл не должен превышать {{maxScore}}",
+      "fixErrors": "Исправьте ошибки в таблице",
+      "maxScoreShort": "макс. {{maxScore}}"
+    },
+    "evaluation": {
+      "coinsSkipped": "Монеты не обновлены у {{total}} учеников",
+      "modeChangedHint": "Способ проверки изменён. Заполните таблицу и сохраните снова"
+    },
+    "coinsSkippedCode": {
+      "COINS_ALREADY_SPENT": "Уже потратил полученные ранее монеты — монеты не изменены",
+      "INSUFFICIENT_BALANCE_FOR_PENALTY": "Штраф не начислен из-за недостаточного баланса"
+    },
+    "delete": {
+      "title": "Удаление занятия",
+      "coinsReversedHint": "Все монеты, выданные при проверке занятия, будут списаны обратно.",
+      "coinsSpentTitle": "Монеты вернуть нельзя",
+      "coinsSpentDescription": "{{total}} учеников уже потратили монеты, полученные за это занятие. Удалить занятие без возврата монет?",
+      "keepCoinsAction": "Удалить без возврата монет"
+    },
+    "teacherForm": {
+      "checkedReadOnlyHint": "Проверка этого занятия сохранена. Если нужно что-то изменить, обратитесь к администратору.",
+      "saveAction": "Сохранить данные",
+      "confirmTitle": "Сохранить данные?",
+      "confirmDescription": "После подтверждения вы не сможете изменить данные занятия и проверки. В случае ошибки обратитесь к администратору.",
+      "confirmAction": "Да, сохранить"
     },
     "infoUpdated": "Информация о занятии обновлена",
     "locked": "Заблокировано",
@@ -823,6 +913,8 @@
       "title": "Посещаемость",
       "groupNotSet": "Группа не определена",
       "noStudents": "В группе нет учеников",
+      "groupForbidden": "У вас нет доступа к этой группе",
+      "groupLoadError": "Не удалось загрузить учеников группы",
       "present": "Присутствовал",
       "homework": "Домашнее задание"
     },
@@ -849,7 +941,12 @@
       "roomPlaceholder": "Выберите кабинет",
       "teacherPlaceholder": "Выберите учителя",
       "subjectPlaceholder": "Выберите предмет",
-      "topicLabelOptional": "Тема (необязательно)"
+      "topicLabelOptional": "Тема (необязательно)",
+      "is_checked_session": "Уже проверено",
+      "is_not_checked_session": "Не проверено",
+      "evaluationModeLabel": "Способ проверки",
+      "maxScoreLabel": "Максимальный балл (необязательно)",
+      "maxScorePlaceholder": "Например: 100"
     }
   },
   "plans": {

@@ -1,21 +1,17 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
-import { CalendarCheck, Check, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Award, CalendarCheck, Check, X } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import { ControlledSelect, ControlledDatePicker } from "@/components/controls";
 import { PageLoading } from "@/components/loading";
 import { TablePagination } from "@/components/shared/table";
 import { formatDate } from "@/ustils";
 import { usePagination } from "@/hooks/usePagination";
+import { getSessionTypeLabel } from "@/features/sessions/constants";
+import { formatSessionScore } from "@/features/sessions/utils";
 import { useMyAttendance, useMyGroups } from "../../hooks";
-
-const SESSION_TYPE_LABELS: Record<string, string> = {
-  lesson: "Dars",
-  exam: "Imtihon",
-  trial: "Sinov",
-  competition: "Musobaqa",
-};
 
 interface FilterValues {
   groupId: string;
@@ -24,6 +20,7 @@ interface FilterValues {
 }
 
 export const MyAttendanceTab = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: groups } = useMyGroups();
 
@@ -125,9 +122,13 @@ export const MyAttendanceTab = () => {
                   </p>
                   <p className="text-xs text-ink-soft">
                     {formatDate(record.session.sessionDate, "dd.MM.yyyy")} ·{" "}
-                    {SESSION_TYPE_LABELS[record.session.sessionType] ??
-                      record.session.sessionType}
+                    {getSessionTypeLabel(t, record.session.sessionType)}
                   </p>
+                  {record.note && (
+                    <p className="text-xs text-ink-soft italic truncate">
+                      {record.note}
+                    </p>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <span
@@ -140,16 +141,35 @@ export const MyAttendanceTab = () => {
                     {record.isPresent ? <Check size={11} /> : <X size={11} />}
                     {record.isPresent ? "Keldi" : "Kelmadi"}
                   </span>
-                  <span
-                    className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
-                      record.homeworkDone
-                        ? "bg-gold/15 text-gold"
-                        : "bg-paper-soft text-ink-soft"
-                    }`}
-                  >
-                    {record.homeworkDone ? <Check size={11} /> : <X size={11} />}
-                    HW
-                  </span>
+                  {record.session.evaluationMode === "scored" ? (
+                    record.isPresent && (
+                      <span
+                        title={t("sessions.results.score")}
+                        className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gold/15 text-gold"
+                      >
+                        <Award size={11} />
+                        {formatSessionScore(
+                          record.score,
+                          record.session.maxScore,
+                        )}
+                      </span>
+                    )
+                  ) : (
+                    <span
+                      className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
+                        record.homeworkDone
+                          ? "bg-gold/15 text-gold"
+                          : "bg-paper-soft text-ink-soft"
+                      }`}
+                    >
+                      {record.homeworkDone ? (
+                        <Check size={11} />
+                      ) : (
+                        <X size={11} />
+                      )}
+                      HW
+                    </span>
+                  )}
                 </div>
               </div>
             ))}

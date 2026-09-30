@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import {
   SessionsFilterBar,
   SessionListCard,
   SessionFormModal,
+  SessionDeleteModal,
 } from "@/features/sessions/components";
-import { useSessions, useDeleteSession } from "@/features/sessions/hooks";
+import { useSessions } from "@/features/sessions/hooks";
 import type { SessionItem } from "@/features/sessions/types";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
@@ -21,26 +21,10 @@ const SessionsPage = () => {
     totalItems: sessions?.meta?.total || 0,
     initialPageSize: 20,
   });
-  const deleteSession = useDeleteSession();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleDelete = (session: SessionItem) => {
-    if (
-      !window.confirm(
-        t("sessions.deleteConfirm", {
-          group: session.group.name,
-          time: session.startTime,
-        }),
-      )
-    )
-      return;
-
-    deleteSession.mutate(session.id, {
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
-    });
-  };
+  const [deletingSession, setDeletingSession] = useState<SessionItem | null>(
+    null,
+  );
 
   return (
     <div className="space-y-4">
@@ -63,7 +47,7 @@ const SessionsPage = () => {
                 <SessionListCard
                   data={item}
                   key={item.id}
-                  onDelete={handleDelete}
+                  onDelete={setDeletingSession}
                 />
               ))}
             </div>
@@ -86,6 +70,11 @@ const SessionsPage = () => {
       <SessionFormModal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+
+      <SessionDeleteModal
+        session={deletingSession}
+        onClose={() => setDeletingSession(null)}
       />
     </div>
   );

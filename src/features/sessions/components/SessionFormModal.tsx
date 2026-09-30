@@ -23,7 +23,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ControlledDatePicker, ControlledSelect } from "@/components/controls";
+import {
+  ControlledDatePicker,
+  ControlledInput,
+  ControlledSelect,
+} from "@/components/controls";
+import { translateApiError } from "@/ustils";
 import { createSessionFormSchema, type SessionFormValues } from "../schema";
 import {
   useCreateSession,
@@ -31,8 +36,9 @@ import {
   useSessionRoomOptions,
   useSessionSubjectOptions,
   useSessionTeacherOptions,
+  useSessionTypes,
 } from "../hooks";
-import { getSessionTypeOptions } from "../constants";
+import { getEvaluationModeOptions, getSessionTypeOptions } from "../constants";
 
 interface Props {
   open: boolean;
@@ -44,6 +50,8 @@ const emptyValues: SessionFormValues = {
   startTime: "",
   endTime: "",
   sessionType: "lesson",
+  evaluationMode: undefined,
+  maxScore: "",
   groupId: "",
   roomId: "",
   teacherId: "",
@@ -60,26 +68,44 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
   const { data: rooms } = useSessionRoomOptions(open);
   const { data: teachers } = useSessionTeacherOptions(open);
   const { data: subjects } = useSessionSubjectOptions(open);
+  const { data: sessionTypes } = useSessionTypes();
 
   const sessionFormSchema = useMemo(() => createSessionFormSchema(t), [t]);
-  const sessionTypeOptions = getSessionTypeOptions(t);
+  const sessionTypeOptions = getSessionTypeOptions(t, sessionTypes);
 
   const form = useForm<SessionFormValues>({
     resolver: zodResolver(sessionFormSchema),
     defaultValues: emptyValues,
   });
 
+  const sessionType = form.watch("sessionType");
+  const evaluationMode = form.watch("evaluationMode");
+  const typeConfig = sessionTypes?.find((item) => item.type === sessionType);
+  const effectiveMode = evaluationMode ?? typeConfig?.defaultMode;
+  const canChooseMode = (typeConfig?.allowedModes.length ?? 0) > 1;
+
   useEffect(() => {
     if (!open) return;
     form.reset(emptyValues);
   }, [open, form]);
 
-  const onError = (error: any) =>
-    toast.error(error?.data?.message || t("common.error"));
+  // Tur o'zgarganda (yoki modal qayta ochilib forma tozalanganda) turning
+  // default rejimi olinadi. Reset effektidan keyin turishi shart.
+  useEffect(() => {
+    if (!open) return;
+    form.setValue("evaluationMode", typeConfig?.defaultMode);
+  }, [open, typeConfig, form]);
+
+  const onError = (error: unknown) => toast.error(translateApiError(error, t));
 
   const onSubmit = (values: SessionFormValues) => {
+    const isScored = effectiveMode === "scored";
     const data = {
       ...values,
+      evaluationMode: values.evaluationMode || undefined,
+      // maxScore faqat scored rejimda saqlanadi.
+      maxScore:
+        isScored && values.maxScore ? Number(values.maxScore) : undefined,
       topic: values.topic || undefined,
       subjectId: values.subjectId || undefined,
     };
@@ -120,6 +146,33 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
                 options={sessionTypeOptions}
               />
             </div>
+
+            {(canChooseMode || effectiveMode === "scored") && (
+              <div className="grid grid-cols-2 gap-3">
+                {canChooseMode && (
+                  <ControlledSelect
+                    control={form.control}
+                    name="evaluationMode"
+                    label={t("sessions.form.evaluationModeLabel")}
+                    options={getEvaluationModeOptions(
+                      t,
+                      typeConfig?.allowedModes ?? [],
+                    )}
+                  />
+                )}
+                {effectiveMode === "scored" && (
+                  <ControlledInput
+                    control={form.control}
+                    name="maxScore"
+                    label={t("sessions.form.maxScoreLabel")}
+                    placeholder={t("sessions.form.maxScorePlaceholder")}
+                    inputClassName="h-9"
+                    isNumber
+                    maxLength={6}
+                  />
+                )}
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-3">
               <FormField

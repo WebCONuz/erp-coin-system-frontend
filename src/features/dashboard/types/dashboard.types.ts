@@ -30,6 +30,7 @@ export type DashboardActivitySourceType =
   | "attendance"
   | "homework"
   | "competition"
+  | "exam"
   | "manual"
   | "bonus"
   | "purchase";

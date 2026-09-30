@@ -6,6 +6,8 @@ import { formatDate } from "@/ustils";
 const SOURCE_TYPE_LABELS: Record<string, string> = {
   homework: "Uyga vazifa",
   attendance: "Davomat",
+  competition: "Musobaqa",
+  exam: "Imtihon",
   bonus: "Bonus",
   manual: "Qo'lda berilgan",
   // Bekor qilingan xarid uchun qaytarilgan coin ham `purchase` (earn) bilan keladi.

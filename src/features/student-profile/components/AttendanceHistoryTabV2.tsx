@@ -1,16 +1,13 @@
+import { useTranslation } from "react-i18next";
 import { TabsContent } from "@/components/ui/tabs";
-import { BookOpenCheck, CalendarCheck, Check, X } from "lucide-react";
+import { Award, BookOpenCheck, CalendarCheck, Check, X } from "lucide-react";
 import type {
   AttendanceRecord,
   StudentDetailFull,
 } from "@/features/students/types";
+import { getSessionTypeLabel } from "@/features/sessions/constants";
+import { formatSessionScore } from "@/features/sessions/utils";
 import { formatDate } from "@/ustils";
-
-const SESSION_TYPE_LABELS: Record<string, string> = {
-  lesson: "Dars",
-  exam: "Imtihon",
-  trial: "Sinov",
-};
 
 const AVATAR_STYLES = [
   "bg-forest/10 text-forest",
@@ -64,16 +61,21 @@ interface Props {
 }
 
 export const AttendanceHistoryTabV2 = ({ student }: Props) => {
+  const { t } = useTranslation();
   const records = student?.attendanceAsStudent ?? [];
   const groups = groupByDate(records);
 
   const presentCount = records.filter((r) => r.isPresent).length;
-  const homeworkCount = records.filter((r) => r.homeworkDone).length;
+  // Imtihon/musobaqa (scored) sessiyalarida uy vazifasi tekshirilmaydi.
+  const homeworkRecords = records.filter(
+    (r) => r.session.evaluationMode !== "scored",
+  );
+  const homeworkCount = homeworkRecords.filter((r) => r.homeworkDone).length;
   const attendanceRate = records.length
     ? Math.round((presentCount / records.length) * 100)
     : 0;
-  const homeworkRate = records.length
-    ? Math.round((homeworkCount / records.length) * 100)
+  const homeworkRate = homeworkRecords.length
+    ? Math.round((homeworkCount / homeworkRecords.length) * 100)
     : 0;
 
   return (
@@ -148,9 +150,13 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                           {record.session.startTime}–{record.session.endTime}
                           {" · "}
                           {record.session.topic ??
-                            SESSION_TYPE_LABELS[record.session.sessionType] ??
-                            record.session.sessionType}
+                            getSessionTypeLabel(t, record.session.sessionType)}
                         </p>
+                        {record.note && (
+                          <p className="text-xs text-ink-soft italic">
+                            {record.note}
+                          </p>
+                        )}
                       </div>
 
                       <div className="flex items-center gap-1.5 flex-wrap shrink-0 pl-12 sm:pl-0">
@@ -170,20 +176,35 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                             {record.isPresent ? "Keldi" : "Kelmadi"}
                           </span>
                         </span>
-                        <span
-                          className={`flex items-center justify-center gap-1 px-2 py-1 rounded-full shrink-0 ${
-                            record.homeworkDone
-                              ? "bg-green-100 text-green-600 "
-                              : "bg-gold/15 text-gold"
-                          }`}
-                        >
-                          <BookOpenCheck size={13} />
-                          <span className="text-xs">
-                            {record.homeworkDone
-                              ? "Uy vazifasi bajarilgan"
-                              : "Uy vazifasi bajarilmagan"}
+                        {record.session.evaluationMode === "scored" ? (
+                          record.isPresent && (
+                            <span className="flex items-center justify-center gap-1 px-2 py-1 rounded-full shrink-0 bg-gold/15 text-gold">
+                              <Award size={13} />
+                              <span className="text-xs">
+                                {t("sessions.results.score")}:{" "}
+                                {formatSessionScore(
+                                  record.score,
+                                  record.session.maxScore,
+                                )}
+                              </span>
+                            </span>
+                          )
+                        ) : (
+                          <span
+                            className={`flex items-center justify-center gap-1 px-2 py-1 rounded-full shrink-0 ${
+                              record.homeworkDone
+                                ? "bg-green-100 text-green-600 "
+                                : "bg-gold/15 text-gold"
+                            }`}
+                          >
+                            <BookOpenCheck size={13} />
+                            <span className="text-xs">
+                              {record.homeworkDone
+                                ? "Uy vazifasi bajarilgan"
+                                : "Uy vazifasi bajarilmagan"}
+                            </span>
                           </span>
-                        </span>
+                        )}
                       </div>
                     </div>
                   );

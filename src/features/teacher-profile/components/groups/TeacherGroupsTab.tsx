@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import { Users } from "lucide-react";
 import { PageLoading } from "@/components/loading";
 import { useMyTaughtGroups } from "../../hooks";
 import { TeacherGroupCard } from "./TeacherGroupCard";
 
 export const TeacherGroupsTab = () => {
+  const { t } = useTranslation();
   const { data: groups, isLoading } = useMyTaughtGroups();
 
   if (isLoading) return <PageLoading />;
@@ -12,9 +14,11 @@ export const TeacherGroupsTab = () => {
     return (
       <div className="flex flex-col items-center justify-center py-14 text-center rounded-2xl border border-ink/10 bg-white">
         <Users size={22} className="text-ink-soft/50 mb-2" />
-        <p className="text-sm font-medium text-ink">Guruhlar mavjud emas</p>
+        <p className="text-sm font-medium text-ink">
+          {t("teacherProfile.groups.emptyTitle")}
+        </p>
         <p className="text-xs text-ink-soft mt-1 max-w-xs">
-          Sizga hozircha hech qanday guruh biriktirilmagan.
+          {t("teacherProfile.groups.emptyDescription")}
         </p>
       </div>
     );

@@ -1,31 +1,33 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   TeacherGroupsTab,
   TeacherCalendarTab,
 } from "@/features/teacher-profile/components/groups";
 
-const TAB_OPTIONS = [
-  { value: "groups", label: "Guruhlarim" },
-  { value: "calendar", label: "Dars jadvali" },
-];
-
 const Group = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("groups");
+
+  const tabOptions = [
+    { value: "groups", label: t("teacherProfile.groups.tabs.groups") },
+    { value: "calendar", label: t("teacherProfile.groups.tabs.calendar") },
+  ];
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
       <div>
         <div className="mb-3">
           <h1 className="font-display text-2xl font-semibold text-ink">
-            Guruhlarim
+            {t("teacherProfile.groups.title")}
           </h1>
           <p className="text-sm text-ink-soft mt-1">
-            Dars beradigan guruhlaringiz va dars jadvali
+            {t("teacherProfile.groups.subtitle")}
           </p>
         </div>
         <TabsList className="bg-white border border-ink/10 p-1 rounded-full h-auto flex-wrap gap-1">
-          {TAB_OPTIONS.map((tab) => (
+          {tabOptions.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}

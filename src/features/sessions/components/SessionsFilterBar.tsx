@@ -12,6 +12,7 @@ import {
   useFilter,
   useSessionGroupOptions,
   useSessionTeacherOptions,
+  useSessionTypes,
 } from "../hooks";
 import { ALL_VALUE, getIsCheckedOptions, getSessionTypeOptions } from "../constants";
 
@@ -30,6 +31,7 @@ export const SessionsFilterBar = ({
   const { form } = useFilter();
   const { data: groups } = useSessionGroupOptions();
   const { data: teachers } = useSessionTeacherOptions();
+  const { data: sessionTypes } = useSessionTypes();
   const sessionType = form.watch("sessionType");
 
   const groupOptions: IOption[] = [
@@ -47,7 +49,7 @@ export const SessionsFilterBar = ({
 
   const typeOptions: IOption[] = [
     { value: ALL_VALUE, label: t("sessions.filter.allTypes") },
-    ...getSessionTypeOptions(t),
+    ...getSessionTypeOptions(t, sessionTypes),
   ];
 
   const isCheckedOptions: IOption[] = [

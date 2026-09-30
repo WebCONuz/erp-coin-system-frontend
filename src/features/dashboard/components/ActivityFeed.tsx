@@ -20,6 +20,7 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
     attendance: t("admin.dashboard.activity.sourceTypes.attendance"),
     homework: t("admin.dashboard.activity.sourceTypes.homework"),
     competition: t("admin.dashboard.activity.sourceTypes.competition"),
+    exam: t("admin.dashboard.activity.sourceTypes.exam"),
     manual: t("admin.dashboard.activity.sourceTypes.manual"),
     bonus: t("admin.dashboard.activity.sourceTypes.bonus"),
     purchase: t("admin.dashboard.activity.sourceTypes.purchase"),

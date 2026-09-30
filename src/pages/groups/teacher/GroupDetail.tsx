@@ -1,16 +1,29 @@
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { BookOpen, CalendarClock, Coins, Phone, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import {
+  BookOpen,
+  CalendarClock,
+  Coins,
+  Phone,
+  UserRound,
+  Users,
+} from "lucide-react";
 import { BackListButton } from "@/components/shared/back";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
+import { isForbiddenError } from "@/ustils";
 import { useGroup } from "@/features/groups/hooks";
 import { getGroupAccent } from "@/lib/group-accent";
+import { useIsAssignedGroup } from "@/features/teacher-profile/hooks";
 import { BulkGiveCoinModal } from "@/features/teacher-profile/components/students";
+import { AssignedGroupBadge } from "@/features/teacher-profile/components/groups";
 
 const GroupDetail = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const { data: group, isLoading, isError } = useGroup(id ?? "");
+  const { data: group, isLoading, isError, error } = useGroup(id ?? "");
+  const isAssignedGroup = useIsAssignedGroup();
   const [bulkCoinOpen, setBulkCoinOpen] = useState(false);
 
   const bulkCoinStudents = useMemo(
@@ -25,14 +38,23 @@ const GroupDetail = () => {
 
   if (isLoading) return <PageLoading />;
   if (isError || !group) {
-    return <NoData text="Guruh ma'lumotlari topilmadi" />;
+    return (
+      <NoData
+        text={
+          isForbiddenError(error)
+            ? t("teacherProfile.groups.detail.forbidden")
+            : t("teacherProfile.groups.detail.notFound")
+        }
+      />
+    );
   }
 
   const accent = getGroupAccent(group.id);
+  const isAssigned = isAssignedGroup(group.teacher?.id);
 
   return (
     <div className="space-y-4">
-      <BackListButton title="Guruhlarim" />
+      <BackListButton title={t("teacherProfile.groups.title")} />
 
       <div className="relative overflow-hidden rounded-3xl bg-forest text-paper p-6 sm:p-8">
         <div className="pointer-events-none absolute -top-20 -right-16 h-56 w-56 rounded-full bg-gold/10 blur-3xl" />
@@ -45,9 +67,12 @@ const GroupDetail = () => {
               {group.name.slice(0, 2).toUpperCase()}
             </div>
             <div className="min-w-0">
-              <h1 className="font-display text-xl font-semibold truncate">
-                {group.name}
-              </h1>
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="font-display text-xl font-semibold truncate">
+                  {group.name}
+                </h1>
+                {isAssigned && <AssignedGroupBadge />}
+              </div>
               <p className="text-sm text-paper/60 flex items-center gap-1.5 mt-1">
                 <BookOpen size={13} />
                 {group.course.title}
@@ -60,7 +85,7 @@ const GroupDetail = () => {
             className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gold/15 border border-gold/30 text-gold px-4 py-2.5 text-sm font-medium hover:bg-gold/20 transition-colors"
           >
             <CalendarClock size={15} />
-            Guruh darslari
+            {t("teacherProfile.groups.detail.groupSessions")}
           </Link>
         </div>
 
@@ -73,15 +98,29 @@ const GroupDetail = () => {
         <div className="relative flex flex-wrap gap-x-6 gap-y-1 text-sm text-paper/70 mt-4 pt-4 border-t border-white/10">
           <span className="flex items-center gap-1.5">
             <Users size={13} />
-            {group.students.length}/{group.maxStudents} o'quvchi
+            {t("teacherProfile.groups.studentsCount", {
+              total: group.students.length,
+              max: group.maxStudents,
+            })}
           </span>
+          {/* Biriktirilgan guruhda asosiy o'qituvchi boshqa odam — kimligini ko'rsatamiz. */}
+          {isAssigned && group.teacher?.fullName && (
+            <span className="flex items-center gap-1.5">
+              <UserRound size={13} />
+              {t("teacherProfile.groups.detail.mainTeacher", {
+                name: group.teacher.fullName,
+              })}
+            </span>
+          )}
         </div>
       </div>
 
       <div className="rounded-2xl border border-ink/10 bg-white p-5">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-display text-sm font-semibold text-ink">
-            O'quvchilar ({group.students.length})
+            {t("teacherProfile.groups.detail.studentsTitle", {
+              total: group.students.length,
+            })}
           </h3>
           {!!group.students.length && (
             <button
@@ -90,14 +129,14 @@ const GroupDetail = () => {
               className="inline-flex items-center gap-2 rounded-xl bg-forest text-paper px-3.5 py-2 text-xs font-medium hover:bg-forest-light transition-colors"
             >
               <Coins size={14} />
-              Tanga berish
+              {t("teacherProfile.groups.detail.giveCoins")}
             </button>
           )}
         </div>
 
         {!group.students.length ? (
           <p className="text-sm text-ink-soft py-6 text-center">
-            Guruhda hali o'quvchi yo'q
+            {t("teacherProfile.groups.detail.noStudents")}
           </p>
         ) : (
           <div className="space-y-1">
@@ -127,8 +166,10 @@ const GroupDetail = () => {
         onClose={() => setBulkCoinOpen(false)}
         students={bulkCoinStudents}
         groupId={group.id}
-        title="Guruhga ommaviy tanga berish"
-        subtitle={`${group.name} guruhi o'quvchilariga birdaniga tanga bering`}
+        title={t("teacherProfile.groups.detail.bulkCoinTitle")}
+        subtitle={t("teacherProfile.groups.detail.bulkCoinSubtitle", {
+          name: group.name,
+        })}
       />
     </div>
   );

@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { getAllGroups } from "@/features/groups/api";
 import { getAllRooms } from "@/features/rooms/api";
@@ -14,14 +19,18 @@ import {
   getAllSessions,
   getAttendance,
   getSessionById,
+  getSessionTypes,
   lockSession,
   saveAttendance,
+  saveResults,
   unlockSession,
   updateSession,
 } from "../api";
 import type {
   CreateSessionDto,
+  DeleteSessionParams,
   SaveAttendanceDto,
+  SaveResultsDto,
   UpdateSessionDto,
 } from "../types";
 
@@ -81,14 +90,43 @@ export const useUpdateSession = (id: string) => {
   });
 };
 
+// Sessiya tekshiruvi (yo'qlama/natija) yoki o'chirilishi guruh a'zolarining
+// coin balansi/statistikasiga ta'sir qiladi — shu sababli barcha rollarning
+// dashboardlarini ham yangilaymiz.
+const invalidateCoinDashboards = (queryClient: QueryClient) => {
+  queryClient.invalidateQueries({ queryKey: dashboardKeys.admin() });
+  queryClient.invalidateQueries({ queryKey: teacherSelfKeys.dashboard() });
+  queryClient.invalidateQueries({ queryKey: studentSelfKeys.dashboard() });
+};
+
+const invalidateAfterEvaluation = (queryClient: QueryClient, id: string) => {
+  queryClient.invalidateQueries({
+    queryKey: sessionKeys.attendanceBySessionId(id),
+  });
+  queryClient.invalidateQueries({ queryKey: sessionKeys.oneSessionById(id) });
+  queryClient.invalidateQueries({ queryKey: sessionKeys.allSessions() });
+  invalidateCoinDashboards(queryClient);
+};
+
 export const useDeleteSession = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteSession(id),
+    mutationFn: (params: DeleteSessionParams) => deleteSession(params),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: sessionKeys.allSessions() });
+      // O'chirilganda sessiya orqali berilgan coinlar qaytariladi.
+      invalidateCoinDashboards(queryClient);
     },
+  });
+};
+
+/** Tur → rejim konfiguratsiyasi deyarli o'zgarmaydi, shuning uchun bir marta olinadi. */
+export const useSessionTypes = () => {
+  return useQuery({
+    queryKey: sessionKeys.sessionTypes(),
+    queryFn: getSessionTypes,
+    staleTime: Infinity,
   });
 };
 
@@ -105,20 +143,16 @@ export const useSaveAttendance = (id: string) => {
 
   return useMutation({
     mutationFn: (data: SaveAttendanceDto) => saveAttendance(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: sessionKeys.attendanceBySessionId(id),
-      });
-      queryClient.invalidateQueries({
-        queryKey: sessionKeys.oneSessionById(id),
-      });
-      queryClient.invalidateQueries({ queryKey: sessionKeys.allSessions() });
-      // Yo'qlama guruh a'zolarining balansi/statistikasiga ta'sir qilishi mumkin,
-      // shu sababli barcha rollarning dashboardlarini ham yangilaymiz.
-      queryClient.invalidateQueries({ queryKey: dashboardKeys.admin() });
-      queryClient.invalidateQueries({ queryKey: teacherSelfKeys.dashboard() });
-      queryClient.invalidateQueries({ queryKey: studentSelfKeys.dashboard() });
-    },
+    onSuccess: () => invalidateAfterEvaluation(queryClient, id),
+  });
+};
+
+export const useSaveResults = (id: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: SaveResultsDto) => saveResults(id, data),
+    onSuccess: () => invalidateAfterEvaluation(queryClient, id),
   });
 };
 

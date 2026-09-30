@@ -5,3 +5,4 @@ export * from "./query-params";
 export * from "./uz-date";
 export * from "./latin-alphabet";
 export * from "./username";
+export * from "./api-error";

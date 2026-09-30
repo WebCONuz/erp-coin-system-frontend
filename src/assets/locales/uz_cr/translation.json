@@ -58,7 +58,20 @@
     "homework": "Уй вазифаси",
     "competition": "Мусобақа",
     "purchase": "Харид",
-    "manual": "Қўлда"
+    "manual": "Қўлда",
+    "exam": "Имтиҳон"
+  },
+  "apiErrors": {
+    "INVALID_EVALUATION_MODE": "Бу сессия тури учун танланган текшириш усули рухсат этилмаган. Рухсат этилганлар: {{allowedModes}}",
+    "WRONG_EVALUATION_MODE": "Бу сессия \"{{evaluationMode}}\" усулида текширилади. Саҳифани янгилаб, қайта уриниб кўринг",
+    "SESSION_LOCKED": "Сессия қулфланган. Ўзгартириш учун аввал қулфни очинг",
+    "SESSION_NOT_LOCKED": "Сессия қулфланмаган",
+    "SESSION_ALREADY_CHECKED": "Сессия текширилган, унинг текшириш усулини ўзгартириб бўлмайди",
+    "DUPLICATE_STUDENTS": "Рўйхатда такрорланган ўқувчилар бор",
+    "STUDENTS_NOT_IN_GROUP": "Айрим ўқувчилар сессия гуруҳида эмас",
+    "SCORE_EXCEEDS_MAX": "Балл максимал баллдан ({{maxScore}}) ошмаслиги керак",
+    "MAX_SCORE_BELOW_EXISTING": "Максимал балл киритилган энг юқори баллдан ({{highestScore}}) кичик бўлмаслиги керак",
+    "SESSION_COINS_SPENT": "Айрим ўқувчилар бу сессиядан олган coinларини сарфлаб бўлган"
   },
   "coinRules": {
     "direction": {
@@ -298,7 +311,8 @@
           "competition": "Мусобақа",
           "manual": "Қўлда",
           "bonus": "Бонус",
-          "purchase": "Харид"
+          "purchase": "Харид",
+          "exam": "Имтиҳон"
         }
       },
       "leaderboard": {
@@ -779,12 +793,52 @@
       "activityEmpty2": "Ҳафталик гуруҳ фаоллиги бу ерда кўринади"
     }
   },
+  "teacherProfile": {
+    "groups": {
+      "title": "Гуруҳларим",
+      "subtitle": "Дарс берадиган гуруҳларингиз ва дарс жадвали",
+      "tabs": {
+        "groups": "Гуруҳларим",
+        "calendar": "Дарс жадвали"
+      },
+      "emptyTitle": "Гуруҳлар мавжуд эмас",
+      "emptyDescription": "Сизга ҳозирча ҳеч қандай гуруҳ бириктирилмаган.",
+      "assigned": "Бириктирилган",
+      "assignedHint": "Сиз бу гуруҳнинг асосий ўқитувчиси эмассиз — гуруҳга сессия ёки дарс жадвали орқали бириктирилгансиз",
+      "studentsCount": "{{total}}/{{max}} ўқувчи",
+      "openGroup": "Гуруҳ саҳифаси",
+      "detail": {
+        "forbidden": "Бу гуруҳни кўриш ҳуқуқингиз йўқ",
+        "notFound": "Гуруҳ маълумотлари топилмади",
+        "groupSessions": "Гуруҳ дарслари",
+        "mainTeacher": "Асосий ўқитувчи: {{name}}",
+        "studentsTitle": "Ўқувчилар ({{total}})",
+        "giveCoins": "Танга бериш",
+        "noStudents": "Гуруҳда ҳали ўқувчи йўқ",
+        "bulkCoinTitle": "Гуруҳга оммавий танга бериш",
+        "bulkCoinSubtitle": "{{name}} гуруҳи ўқувчиларига бирданига танга беринг"
+      }
+    },
+    "students": {
+      "backToList": "Ўқувчиларим",
+      "forbidden": "Бу ўқувчини кўриш ҳуқуқингиз йўқ",
+      "notFound": "Ўқувчи маълумотлари топилмади",
+      "tabs": {
+        "attendance": "Давомат тарихи",
+        "coins": "Танга тарихи"
+      }
+    }
+  },
   "sessions": {
     "type": {
       "lesson": "Дарс",
       "exam": "Имтиҳон",
       "competition": "Мусобақа",
       "extra": "Қўшимча"
+    },
+    "evaluationMode": {
+      "attendance": "Йўқлама",
+      "scored": "Балл билан"
     },
     "schema": {
       "date_required": "Сана киритилиши шарт",
@@ -793,7 +847,43 @@
       "type_required": "Дарс турини танланг",
       "group_required": "Гуруҳни танланг",
       "room_required": "Хонани танланг",
-      "teacher_required": "Ўқитувчини танланг"
+      "teacher_required": "Ўқитувчини танланг",
+      "maxScore_invalid": "Максимал балл 1 дан {{max}} гача бутун сон бўлиши керак"
+    },
+    "results": {
+      "title": "Натижалар",
+      "score": "Балл",
+      "coin": "Coin",
+      "note": "Изоҳ",
+      "notePlaceholder": "Изоҳ (ихтиёрий)",
+      "coinForAll": "Ҳаммага coin:",
+      "applyToAll": "Қўллаш",
+      "scoreInvalid": "Балл мусбат сон бўлсин (кўпи билан 2 каср хонаси)",
+      "scoreExceedsMax": "Балл {{maxScore}} дан ошмасин",
+      "fixErrors": "Жадвалдаги хатоларни тузатинг",
+      "maxScoreShort": "макс. {{maxScore}}"
+    },
+    "evaluation": {
+      "coinsSkipped": "{{total}} та ўқувчининг coini янгиланмади",
+      "modeChangedHint": "Текшириш усули ўзгарди. Энди жадвални тўлдириб, қайта сақланг"
+    },
+    "coinsSkippedCode": {
+      "COINS_ALREADY_SPENT": "Аввалги coinларни сарфлаб бўлган — coinлари ўзгармади",
+      "INSUFFICIENT_BALANCE_FOR_PENALTY": "Баланс етмагани учун жарима ёзилмади"
+    },
+    "delete": {
+      "title": "Сессияни ўчириш",
+      "coinsReversedHint": "Сессия текшируви орқали берилган барча coinлар қайтариб олинади.",
+      "coinsSpentTitle": "Coinларни қайтариб бўлмайди",
+      "coinsSpentDescription": "{{total}} та ўқувчи бу сессиядан олган coinларини сарфлаб бўлган. Сессияни coinларни қайтармасдан ўчирасизми?",
+      "keepCoinsAction": "Coinларни қайтармасдан ўчириш"
+    },
+    "teacherForm": {
+      "checkedReadOnlyHint": "Ушбу дарснинг текшируви сақланган. Ўзгартириш керак бўлса, администраторга мурожаат қилинг.",
+      "saveAction": "Маълумотларни сақлаш",
+      "confirmTitle": "Маълумотларни сақлайсизми?",
+      "confirmDescription": "Тасдиқлагандан сўнг дарс ва текширув маълумотларини қайта ўзгартира олмайсиз. Хатолик бўлса, администраторга мурожаат қилинг.",
+      "confirmAction": "Ҳа, сақлаш"
     },
     "infoUpdated": "Дарс маълумотлари янгиланди",
     "locked": "Қулфланган",
@@ -823,6 +913,8 @@
       "title": "Йўқлама",
       "groupNotSet": "Гуруҳ аниқланмади",
       "noStudents": "Гуруҳда ўқувчилар мавжуд эмас",
+      "groupForbidden": "Бу гуруҳни кўриш ҳуқуқингиз йўқ",
+      "groupLoadError": "Гуруҳ ўқувчиларини юклаб бўлмади",
       "present": "Келди",
       "homework": "Уй вазифаси"
     },
@@ -849,7 +941,12 @@
       "roomPlaceholder": "Хонани танланг",
       "teacherPlaceholder": "Ўқитувчи танланг",
       "subjectPlaceholder": "Фанни танланг",
-      "topicLabelOptional": "Мавзу (Ихтиёрий)"
+      "topicLabelOptional": "Мавзу (Ихтиёрий)",
+      "is_checked_session": "Олдин йўқлама қилинган",
+      "is_not_checked_session": "Йўқлама қилинмаган",
+      "evaluationModeLabel": "Текшириш усули",
+      "maxScoreLabel": "Максимал балл (ихтиёрий)",
+      "maxScorePlaceholder": "Масалан: 100"
     }
   },
   "plans": {

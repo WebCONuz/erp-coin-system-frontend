@@ -37,7 +37,13 @@ export interface CoinTransaction {
   id: string;
   amount: number;
   direction: "earn" | "deduct";
-  sourceType: "bonus" | "manual" | "attendance" | "homework";
+  sourceType:
+    | "bonus"
+    | "manual"
+    | "attendance"
+    | "homework"
+    | "competition"
+    | "exam";
   note: string | null;
   createdAt: string;
 }
@@ -90,7 +96,13 @@ export interface CoinRecieved {
   id: string;
   amount: number;
   direction: "earn" | "deduct";
-  sourceType: "bonus" | "manual" | "attendance" | "homework";
+  sourceType:
+    | "bonus"
+    | "manual"
+    | "attendance"
+    | "homework"
+    | "competition"
+    | "exam";
   note: string | null;
   createdAt: string;
   teacher: {
@@ -103,6 +115,9 @@ export interface AttendanceRecord {
   id: string;
   isPresent: boolean;
   homeworkDone: boolean;
+  /** Imtihon/musobaqa natijasi (`scored` rejim). */
+  score?: number | null;
+  note?: string | null;
   recordedAt: string;
   session: {
     id: string;
@@ -110,6 +125,8 @@ export interface AttendanceRecord {
     startTime: string;
     endTime: string;
     sessionType: string;
+    evaluationMode?: "attendance" | "scored";
+    maxScore?: number | null;
     topic: string | null;
     group: {
       id: string;

@@ -6,6 +6,7 @@ const SOURCE_TYPE_LABELS: Record<string, string> = {
   homework: "Uyga vazifa",
   attendance: "Davomat",
   competition: "Musobaqa",
+  exam: "Imtihon",
   bonus: "Bonus",
   manual: "Qo'lda berilgan",
   purchase: "Xarid",

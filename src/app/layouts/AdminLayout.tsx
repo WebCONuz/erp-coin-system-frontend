@@ -19,7 +19,11 @@ export default function MainLayout() {
         <AdminNavbar
           onQuickAction={(key) => setQuickAction(key as QuickAction)}
         />
-        <main className="p-6 bg-bg-primary dark:bg-black h-[calc(100vh-56px)] overflow-y-auto">
+        {/* `relative` — scroll konteyner absolute bolalar (masalan Radix
+            Checkbox'ning <form> ichidagi yashirin inputi) uchun containing
+            block bo'lishi kerak, aks holda ular body balandligini oshirib,
+            ikkinchi scroll va pastda bo'sh joy hosil qiladi. */}
+        <main className="relative p-6 bg-bg-primary dark:bg-black h-[calc(100vh-56px)] overflow-y-auto">
           <Outlet />
         </main>
       </div>

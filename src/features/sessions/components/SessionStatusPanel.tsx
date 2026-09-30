@@ -1,15 +1,13 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { Lock, LockOpen, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatDateTime } from "@/ustils";
-import {
-  useDeleteSession,
-  useLockSession,
-  useUnlockSession,
-} from "../hooks";
+import { formatDateTime, translateApiError } from "@/ustils";
+import { useLockSession, useUnlockSession } from "../hooks";
 import type { SessionItem } from "../types";
+import { SessionDeleteModal } from "./SessionDeleteModal";
 
 interface Props {
   session: SessionItem;
@@ -20,10 +18,9 @@ export const SessionStatusPanel = ({ session }: Props) => {
   const navigate = useNavigate();
   const lockSession = useLockSession(session.id);
   const unlockSession = useUnlockSession(session.id);
-  const deleteSession = useDeleteSession();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
-  const onError = (error: any) =>
-    toast.error(error?.data?.message || t("common.error"));
+  const onError = (error: unknown) => toast.error(translateApiError(error, t));
 
   const handleLock = () => {
     if (!window.confirm(t("sessions.statusPanel.lockConfirm"))) return;
@@ -39,18 +36,6 @@ export const SessionStatusPanel = ({ session }: Props) => {
 
     unlockSession.mutate(undefined, {
       onSuccess: () => toast.success(t("sessions.statusPanel.unlocked")),
-      onError,
-    });
-  };
-
-  const handleDelete = () => {
-    if (!window.confirm(t("sessions.statusPanel.deleteConfirm"))) return;
-
-    deleteSession.mutate(session.id, {
-      onSuccess: () => {
-        toast.success(t("sessions.statusPanel.deleted"));
-        navigate("/admin/sessions");
-      },
       onError,
     });
   };
@@ -95,8 +80,7 @@ export const SessionStatusPanel = ({ session }: Props) => {
 
           <Button
             variant="outline"
-            onClick={handleDelete}
-            disabled={deleteSession.isPending}
+            onClick={() => setIsDeleteOpen(true)}
             className="gap-2 text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/50"
           >
             <Trash size={16} />
@@ -104,6 +88,12 @@ export const SessionStatusPanel = ({ session }: Props) => {
           </Button>
         </div>
       </div>
+
+      <SessionDeleteModal
+        session={isDeleteOpen ? session : null}
+        onClose={() => setIsDeleteOpen(false)}
+        onDeleted={() => navigate("/admin/sessions")}
+      />
     </div>
   );
 };

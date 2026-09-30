@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/ustils";
-import { getSessionTypeLabels } from "../constants";
+import { getSessionTypeLabel } from "../constants";
 import type { SessionItem } from "../types";
 import { isSessionPastDue } from "../utils";
 
@@ -31,7 +31,9 @@ interface Props {
 const TYPE_BADGE_CLASS: Record<string, string> = {
   lesson: "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400",
   exam: "bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-400",
-  trial: "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+  competition:
+    "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
+  extra: "bg-cyan-100 text-cyan-700 dark:bg-cyan-950/50 dark:text-cyan-400",
 };
 
 export const SessionListCard = ({
@@ -41,7 +43,6 @@ export const SessionListCard = ({
 }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const sessionTypeLabels = getSessionTypeLabels(t);
 
   const isPastDue = isSessionPastDue(data);
   const isUnchecked = isPastDue && !data.isChecked;
@@ -92,8 +93,13 @@ export const SessionListCard = ({
             TYPE_BADGE_CLASS[data.sessionType] ?? TYPE_BADGE_CLASS.lesson
           }`}
         >
-          {sessionTypeLabels[data.sessionType] ?? data.sessionType}
+          {getSessionTypeLabel(t, data.sessionType)}
         </span>
+        {data.evaluationMode === "scored" && (
+          <span className="inline-block px-2 py-0.5 rounded-4xl text-xs font-medium bg-orange-100 text-orange-700 dark:bg-orange-950/50 dark:text-orange-400">
+            {t("sessions.evaluationMode.scored")}
+          </span>
+        )}
         {data.subject && (
           <span className="inline-block px-2 py-0.5 rounded-4xl text-xs font-medium bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-400">
             {data.subject.name}
