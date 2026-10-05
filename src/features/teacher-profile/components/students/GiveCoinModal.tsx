@@ -8,13 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { OptionSelect } from "@/components/ui/option-select";
 import {
   useManualCoinTransaction,
   useStudentById,
@@ -163,21 +157,16 @@ export const GiveCoinModal = ({
               <label className="text-xs font-medium text-ink-soft mb-1.5 block">
                 Guruh
               </label>
-              <Select
+              <OptionSelect
                 value={effectiveGroupId}
                 onValueChange={setSelectedGroupId}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Guruhni tanlang" />
-                </SelectTrigger>
-                <SelectContent>
-                  {matchingGroups.map((g) => (
-                    <SelectItem key={g.id} value={g.id}>
-                      {g.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                options={matchingGroups.map((g) => ({
+                  value: g.id,
+                  label: g.name,
+                }))}
+                placeholder="Guruhni tanlang"
+                className="w-full"
+              />
             </div>
           )}
 

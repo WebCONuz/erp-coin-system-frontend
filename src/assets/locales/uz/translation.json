@@ -33,6 +33,7 @@
     "all": "Barchasi",
     "select": "Tanlang",
     "clear": "Tozalash",
+    "nothingFound": "Hech narsa topilmadi",
     "name": "Nomi",
     "description": "Izoh",
     "phone": "Telefon",

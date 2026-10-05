@@ -1,12 +1,6 @@
 import { useSearchParams } from "react-router-dom";
 import { SearchIcon } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { OptionSelect } from "@/components/ui/option-select";
 import { useMyTaughtGroups } from "../../hooks";
 
 const ALL_VALUE = "all";
@@ -34,19 +28,17 @@ export const TeacherStudentsFilterBar = () => {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Select value={groupId} onValueChange={setGroupId}>
-        <SelectTrigger className="w-full sm:w-52 bg-white">
-          <SelectValue placeholder="Guruhni tanlang" />
-        </SelectTrigger>
-        <SelectContent className="bg-white">
-          <SelectItem value={ALL_VALUE}>Barcha guruhlar</SelectItem>
-          {(groups ?? []).map((g) => (
-            <SelectItem key={g.id} value={g.id}>
-              {g.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <OptionSelect
+        value={groupId}
+        onValueChange={setGroupId}
+        options={[
+          { value: ALL_VALUE, label: "Barcha guruhlar" },
+          ...(groups ?? []).map((g) => ({ value: g.id, label: g.name })),
+        ]}
+        placeholder="Guruhni tanlang"
+        className="w-full sm:w-52 bg-white"
+        contentClassName="bg-white"
+      />
 
       <div className="relative w-full sm:w-64">
         <SearchIcon

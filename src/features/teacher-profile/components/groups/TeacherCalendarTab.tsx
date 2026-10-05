@@ -16,13 +16,7 @@ import {
 import { uz } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { OptionSelect } from "@/components/ui/option-select";
 import { PageLoading } from "@/components/loading";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { useMyTaughtGroups, useTeacherCalendar } from "../../hooks";
@@ -75,18 +69,13 @@ export const TeacherCalendarTab = () => {
   return (
     <div className="rounded-2xl border border-ink/10 bg-white p-4">
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <Select value={groupId} onValueChange={setSelectedGroupId}>
-          <SelectTrigger className="w-full sm:w-56">
-            <SelectValue placeholder="Guruhni tanlang" />
-          </SelectTrigger>
-          <SelectContent>
-            {groups.map((g) => (
-              <SelectItem key={g.id} value={g.id}>
-                {g.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <OptionSelect
+          value={groupId}
+          onValueChange={setSelectedGroupId}
+          options={groups.map((g) => ({ value: g.id, label: g.name }))}
+          placeholder="Guruhni tanlang"
+          className="w-full sm:w-56"
+        />
 
         <div className="flex items-center justify-center gap-2">
           <Button
