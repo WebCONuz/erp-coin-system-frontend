@@ -15,6 +15,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface CustomTableProps<T> {
   data: T[];
@@ -47,6 +48,7 @@ export const CustomTable = <T,>({
   selectedRows,
   setSelectedRows,
 }: CustomTableProps<T>) => {
+  const { t } = useTranslation();
   const [isHeaderChecked, setIsHeaderChecked] = useState(false);
   const [isHeaderIndeterminate, setIsHeaderIndeterminate] = useState(false);
 
@@ -131,7 +133,7 @@ export const CustomTable = <T,>({
             colSpan={columnCount}
             className="px-4 py-3 text-center text-gray-500"
           >
-            Ma'lumot mavjud emas!
+            {t("table.empty")}
           </TableCell>
         </TableRow>
       );

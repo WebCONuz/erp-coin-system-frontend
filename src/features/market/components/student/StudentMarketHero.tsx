@@ -67,7 +67,7 @@ export const StudentMarketHero = ({ rewards, balance }: Props) => {
             <div className="flex items-center justify-between mt-1.5 text-[11px] text-paper/50">
               <span className="flex items-center gap-1">
                 <Coins size={11} />
-                {balance}/{goal.coinPrice} coin
+                {balance}/{goal.coinPrice} {t("common.coinLabel")}
               </span>
               <span className="text-gold font-medium">
                 {remaining > 0

@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { useAuth } from "@/features/auth/hooks/useLogin";
@@ -16,6 +17,7 @@ import {
 } from "@/features/student-profile/components/dashboard";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { data, isLoading, isError } = useDashboard();
   const balance = user?.wallet?.balance ?? data?.wallet.balance ?? 0;
@@ -23,7 +25,7 @@ const Dashboard = () => {
 
   if (isLoading) return <PageLoading />;
   if (isError || !data) {
-    return <NoData text="Dashboard ma'lumotlari topilmadi" />;
+    return <NoData text={t("dashboard.notFound")} />;
   }
 
   const streak = computeAttendanceStreak(data.recentTransactions);
@@ -41,20 +43,25 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <RingStatCard
-          label="Bugungi davomat"
+          label={t("studentProfile.dashboard.attendanceLabel")}
           sublabel={
             data.attendance.last30Days.attendanceRate >= 100
-              ? "Barcha darslarga qatnashdingiz"
-              : "So'nggi 30 kunlik davomat"
+              ? t("studentProfile.dashboard.attendanceFull")
+              : t("studentProfile.dashboard.attendanceLast30")
           }
-          value={`${data.attendance.last30Days.presentCount} / ${data.attendance.last30Days.totalSessions} dars`}
+          value={t("studentProfile.dashboard.attendanceValue", {
+            present: data.attendance.last30Days.presentCount,
+            total: data.attendance.last30Days.totalSessions,
+          })}
           percent={data.attendance.last30Days.attendanceRate}
           accent="forest"
         />
         <RingStatCard
-          label="Uy vazifalari"
-          sublabel="30 kunlik davrda bajarilgan"
-          value={`${data.attendance.last30Days.homeworkDoneCount} topshiriq`}
+          label={t("studentProfile.dashboard.homeworkLabel")}
+          sublabel={t("studentProfile.dashboard.homeworkLast30")}
+          value={t("studentProfile.dashboard.homeworkValue", {
+            count: data.attendance.last30Days.homeworkDoneCount,
+          })}
           percent={data.attendance.last30Days.homeworkRate}
           accent="gold"
         />

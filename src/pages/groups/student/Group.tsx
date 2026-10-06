@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   MyGroupsTab,
@@ -7,12 +8,13 @@ import {
 } from "@/features/student-profile/components/groups";
 
 const TAB_OPTIONS = [
-  { value: "groups", label: "Guruhlarim" },
-  { value: "calendar", label: "Dars jadvali" },
-  { value: "attendance", label: "Davomat tarixi" },
+  { value: "groups", labelKey: "studentProfile.groups.tabs.groups" },
+  { value: "calendar", labelKey: "studentProfile.groups.tabs.calendar" },
+  { value: "attendance", labelKey: "studentProfile.tabs.attendance" },
 ];
 
 const Group = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("groups");
 
   return (
@@ -20,10 +22,10 @@ const Group = () => {
       <div>
         <div className="mb-3">
           <h1 className="font-display text-2xl font-semibold text-ink">
-            Guruhlar
+            {t("admin.header.groups")}
           </h1>
           <p className="text-sm text-ink-soft mt-1">
-            Guruhlaringiz, dars jadvali va davomat tarixi
+            {t("studentProfile.groups.pageSubtitle")}
           </p>
         </div>
 
@@ -34,7 +36,7 @@ const Group = () => {
               value={tab.value}
               className="rounded-full px-4 py-2 text-sm data-[state=active]:bg-forest data-[state=active]:text-paper"
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </TabsTrigger>
           ))}
         </TabsList>

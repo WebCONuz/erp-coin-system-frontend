@@ -1,12 +1,6 @@
 import { BookOpen, Clock3, DoorOpen, GraduationCap } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { MyCalendarEntry } from "../../types";
-
-const SESSION_TYPE_LABELS: Record<string, string> = {
-  lesson: "Dars",
-  exam: "Imtihon",
-  trial: "Sinov",
-  competition: "Musobaqa",
-};
 
 interface Props {
   entry: MyCalendarEntry;
@@ -14,6 +8,7 @@ interface Props {
 }
 
 export const StudentSessionChip = ({ entry, colorClass }: Props) => {
+  const { t } = useTranslation();
   const { template, exception, session, group } = entry;
   const subjectName = session?.subject?.name ?? template.subject?.name;
   const teacherName = template.teacher?.fullName;
@@ -21,12 +16,12 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
   if (exception?.isCancelled) {
     return (
       <div
-        title={`${group.name}: bekor qilindi${exception.note ? ` — ${exception.note}` : ""}`}
+        title={`${t("calendarChip.cancelledTitle", { group: group.name })}${exception.note ? ` — ${exception.note}` : ""}`}
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-bloom bg-bloom/10"
       >
         <span className="line-through">{subjectName ?? group.name}</span>
         <br />
-        Bekor qilindi
+        {t("plans.chip.cancelled")}
       </div>
     );
   }
@@ -34,7 +29,7 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
   if (exception) {
     return (
       <div
-        title={`${group.name}: vaqti o'zgardi — ${exception.startTime}:${exception.endTime}${exception.note ? ` (${exception.note})` : ""}`}
+        title={`${t("calendarChip.rescheduledTitle", { group: group.name, start: exception.startTime, end: exception.endTime })}${exception.note ? ` (${exception.note})` : ""}`}
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-gold bg-gold/15"
       >
         {subjectName ?? group.name}
@@ -49,7 +44,7 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
 
   return (
     <div
-      title={`${group.name}: ${SESSION_TYPE_LABELS[session?.sessionType ?? ""] ?? ""}${session?.topic ? ` — ${session.topic}` : ""}`}
+      title={`${group.name}: ${session?.sessionType ? t(`sessions.type.${session.sessionType}`, { defaultValue: "" }) : ""}${session?.topic ? ` — ${session.topic}` : ""}`}
       className={`w-full space-y-0.5 rounded px-1.5 py-1 text-left text-[11px] font-medium ${colorClass}`}
     >
       {(subjectName || teacherName) && (
@@ -79,7 +74,7 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
           <Clock3 size={11} className="shrink-0" />
           <span className="truncate">
             {startTime} - {endTime}
-            {session?.isLocked ? " · qulflangan" : ""}
+            {session?.isLocked ? ` · ${t("calendarChip.locked")}` : ""}
           </span>
         </span>
       </div>

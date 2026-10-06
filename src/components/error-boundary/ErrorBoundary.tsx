@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
+import { t } from "i18next";
 import { Button } from "@/components/ui/button";
 
 interface Props {
@@ -26,17 +27,16 @@ export class ErrorBoundary extends Component<Props, State> {
         <main className="w-full h-screen flex items-center justify-center">
           <div className="flex flex-col items-center">
             <h2 className="text-3xl font-extrabold mb-2">
-              Nimadir xato ketdi
+              {t("system.errorBoundary.title")}
             </h2>
             <p className="text-gray-400 text-lg max-w-110 text-center leading-6 mb-3">
-              Sahifada kutilmagan xatolik yuz berdi. Iltimos, sahifani qayta
-              yuklab ko'ring
+              {t("system.errorBoundary.description")}
             </p>
             <Button
               className="bg-primary h-10 px-4 dark:text-white cursor-pointer"
               onClick={() => window.location.reload()}
             >
-              Sahifani yangilash
+              {t("system.errorBoundary.reload")}
             </Button>
           </div>
         </main>

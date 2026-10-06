@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { BookOpen, Phone, User, Users } from "lucide-react";
 import { BackListButton } from "@/components/shared/back";
 import { PageLoading } from "@/components/loading";
@@ -6,17 +7,18 @@ import { NoData } from "@/components/partials/no-data";
 import { useGroup } from "@/features/groups/hooks";
 
 const GroupDetail = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const { data: group, isLoading, isError } = useGroup(id ?? "");
 
   if (isLoading) return <PageLoading />;
   if (isError || !group) {
-    return <NoData text="Guruh ma'lumotlari topilmadi" />;
+    return <NoData text={t("groups.detail.notFound")} />;
   }
 
   return (
     <div className="space-y-6">
-      <BackListButton title="Guruhlarim" />
+      <BackListButton title={t("studentProfile.groups.tabs.groups")} />
 
       <div className="p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 space-y-4">
         <div className="flex items-center gap-3">
@@ -43,7 +45,9 @@ const GroupDetail = () => {
         <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-600 dark:text-zinc-300 pt-2 border-t border-zinc-100 dark:border-zinc-800">
           <span className="flex items-center gap-1.5">
             <User size={13} />
-            O'qituvchi: {group.teacher.fullName}
+            {t("studentProfile.groups.teacherLabel", {
+              name: group.teacher.fullName,
+            })}
           </span>
           <span className="flex items-center gap-1.5">
             <Phone size={13} />
@@ -54,7 +58,9 @@ const GroupDetail = () => {
 
       <div className="space-y-3">
         <h3 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">
-          Guruhdoshlar ({group.students.length})
+          {t("studentProfile.groups.classmates", {
+            count: group.students.length,
+          })}
         </h3>
 
         <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">

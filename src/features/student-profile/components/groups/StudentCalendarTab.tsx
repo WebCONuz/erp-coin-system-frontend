@@ -15,6 +15,7 @@ import {
 } from "date-fns";
 import { uz } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/loading";
 import { useMySchedule } from "../../hooks";
@@ -22,16 +23,17 @@ import { StudentSessionChip } from "./StudentSessionChip";
 import { getGroupAccent } from "./groupAccent";
 
 const WEEK_HEADER = [
-  { label: "Du", className: "" },
-  { label: "Se", className: "" },
-  { label: "Ch", className: "" },
-  { label: "Pa", className: "" },
-  { label: "Ju", className: "" },
-  { label: "Sh", className: "text-gold" },
-  { label: "Ya", className: "text-bloom" },
+  { labelKey: "plans.weekdayShort.monday", className: "" },
+  { labelKey: "plans.weekdayShort.tuesday", className: "" },
+  { labelKey: "plans.weekdayShort.wednesday", className: "" },
+  { labelKey: "plans.weekdayShort.thursday", className: "" },
+  { labelKey: "plans.weekdayShort.friday", className: "" },
+  { labelKey: "plans.weekdayShort.saturday", className: "text-gold" },
+  { labelKey: "plans.weekdayShort.sunday", className: "text-bloom" },
 ];
 
 export const StudentCalendarTab = () => {
+  const { t } = useTranslation();
   const [viewDate, setViewDate] = useState(() => new Date());
 
   const year = getYear(viewDate);
@@ -89,10 +91,10 @@ export const StudentCalendarTab = () => {
           <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10 min-w-245 sm:min-w-0">
             {WEEK_HEADER.map((day) => (
               <div
-                key={day.label}
+                key={day.labelKey}
                 className={`bg-paper-soft px-2 py-1.5 text-center text-xs font-semibold text-ink-soft ${day.className}`}
               >
-                {day.label}
+                {t(day.labelKey)}
               </div>
             ))}
 

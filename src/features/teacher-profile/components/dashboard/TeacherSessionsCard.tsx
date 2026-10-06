@@ -1,13 +1,8 @@
 import { Link } from "react-router-dom";
 import { CalendarDays, CheckCircle2, Timer } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { relativeUzDayLabel } from "@/ustils";
 import type { TeacherDashboardSession } from "../../types";
-
-const SESSION_TYPE_LABELS: Record<string, string> = {
-  lesson: "Dars",
-  exam: "Imtihon",
-  trial: "Sinov",
-};
 
 function groupByDate(sessions: TeacherDashboardSession[]) {
   const map = new Map<string, TeacherDashboardSession[]>();
@@ -32,18 +27,21 @@ export const TeacherSessionsCard = ({
   todaySessions,
   upcomingSessions,
 }: Props) => {
+  const { t } = useTranslation();
   const groups = groupByDate([...todaySessions, ...upcomingSessions]);
 
   return (
     <div className="rounded-2xl border border-ink/10 bg-white p-5">
       <h3 className="font-display text-sm font-semibold text-ink mb-4">
-        Bugun va yaqin darslaringiz
+        {t("teacherProfile.dashboard.upcomingTitle")}
       </h3>
 
       {!groups.length ? (
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <CalendarDays size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm text-ink-soft">Rejalashtirilgan dars yo'q</p>
+          <p className="text-sm text-ink-soft">
+            {t("teacherProfile.dashboard.noUpcoming")}
+          </p>
         </div>
       ) : (
         <div className="space-y-5">
@@ -84,11 +82,14 @@ export const TeacherSessionsCard = ({
                       ) : (
                         <Timer size={10} />
                       )}
-                      {session.isChecked ? "Yo'qlama olindi" : "Kutilmoqda"}
+                      {session.isChecked
+                        ? t("sessions.attendanceTaken")
+                        : t("sessions.pending")}
                     </span>
                     <span className="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-paper-soft text-ink-soft border border-ink/10">
-                      {SESSION_TYPE_LABELS[session.sessionType] ??
-                        session.sessionType}
+                      {t(`sessions.type.${session.sessionType}`, {
+                        defaultValue: session.sessionType,
+                      })}
                     </span>
                   </Link>
                 ))}

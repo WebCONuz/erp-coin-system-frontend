@@ -1,16 +1,19 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { CalendarClock, ChevronRight, Users } from "lucide-react";
 import type { GroupOverview } from "../../hooks/useMyGroupsOverview";
 import { getGroupAccent } from "./groupAccent";
 
-const UZ_WEEKDAYS = [
-  "Yakshanba",
-  "Dushanba",
-  "Seshanba",
-  "Chorshanba",
-  "Payshanba",
-  "Juma",
-  "Shanba",
+// Date.getDay() tartibida: 0 — yakshanba.
+const WEEKDAY_KEYS = [
+  "plans.weekday.sunday",
+  "plans.weekday.monday",
+  "plans.weekday.tuesday",
+  "plans.weekday.wednesday",
+  "plans.weekday.thursday",
+  "plans.weekday.friday",
+  "plans.weekday.saturday",
 ];
 
 function initials(name: string) {
@@ -22,16 +25,20 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function nextSessionLabel(session: GroupOverview["nextSession"]) {
+function nextSessionLabel(
+  t: TFunction,
+  session: GroupOverview["nextSession"],
+) {
   if (!session) return null;
-  const weekday = UZ_WEEKDAYS[new Date(session.sessionDate).getDay()];
+  const weekday = t(WEEKDAY_KEYS[new Date(session.sessionDate).getDay()]);
   return `${weekday}, ${session.startTime}${session.room ? ` · ${session.room.name}` : ""}`;
 }
 
 export const MyGroupCard = ({ data }: { data: GroupOverview }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const accent = getGroupAccent(data.id);
-  const nextLabel = nextSessionLabel(data.nextSession);
+  const nextLabel = nextSessionLabel(t, data.nextSession);
 
   return (
     <button
@@ -60,7 +67,7 @@ export const MyGroupCard = ({ data }: { data: GroupOverview }) => {
           </div>
           {!data.isActive && (
             <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-bloom/10 text-bloom">
-              Nofaol
+              {t("common.inactive")}
             </span>
           )}
         </div>
@@ -72,36 +79,45 @@ export const MyGroupCard = ({ data }: { data: GroupOverview }) => {
             <p className="font-display text-base font-bold text-gold">
               {data.coinThisMonth}
             </p>
-            <p className="text-[10px] text-ink-soft mt-0.5">Coin (bu oy)</p>
+            <p className="text-[10px] text-ink-soft mt-0.5">
+              {t("studentProfile.groups.coinThisMonth")}
+            </p>
           </div>
           <div>
             <p className="font-display text-base font-bold text-forest">
               {data.homeworkTotal ? `${data.attendanceRate}%` : "—"}
             </p>
-            <p className="text-[10px] text-ink-soft mt-0.5">Davomat</p>
+            <p className="text-[10px] text-ink-soft mt-0.5">
+              {t("students.detail.attendance")}
+            </p>
           </div>
           <div>
             <p className="font-display text-base font-bold text-ink">
               {data.homeworkDone}/{data.homeworkTotal}
             </p>
-            <p className="text-[10px] text-ink-soft mt-0.5">Topshiriq</p>
+            <p className="text-[10px] text-ink-soft mt-0.5">
+              {t("studentProfile.groups.assignments")}
+            </p>
           </div>
         </div>
 
         {nextLabel && (
           <div className="flex items-center gap-1.5 text-xs text-ink-soft mt-3 bg-paper-soft rounded-lg px-2.5 py-2">
             <CalendarClock size={13} className="shrink-0" />
-            Keyingi dars: <b className="text-ink">{nextLabel}</b>
+            {t("studentProfile.groups.nextLesson")}{" "}
+            <b className="text-ink">{nextLabel}</b>
           </div>
         )}
 
         <div className="flex items-center justify-between mt-3">
           <span className="flex items-center gap-1 text-xs text-ink-soft">
             <Users size={12} />
-            {data._count.students} o'quvchi
+            {t("studentProfile.groups.studentsCount", {
+              count: data._count.students,
+            })}
           </span>
           <span className="flex items-center gap-0.5 text-xs font-medium text-forest">
-            Guruh tarixi
+            {t("studentProfile.groups.history")}
             <ChevronRight size={13} />
           </span>
         </div>

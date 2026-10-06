@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Coins, Plus } from "lucide-react";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
@@ -12,6 +13,7 @@ import {
 } from "@/features/teacher-profile/components/coin-rules";
 
 const CoinRulesPage = () => {
+  const { t } = useTranslation();
   const { data: rules, isLoading } = useCoinRules();
   const { data: groups } = useMyTaughtGroups();
   const pagination = usePagination({
@@ -27,10 +29,10 @@ const CoinRulesPage = () => {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">
-            Tanga qoidalari
+            {t("teacherProfile.coinRules.title")}
           </h1>
           <p className="text-sm text-ink-soft mt-1">
-            Coin qanday ishlab topilishi va ayirilishi qoidalari
+            {t("teacherProfile.coinRules.subtitle")}
           </p>
         </div>
 
@@ -40,20 +42,22 @@ const CoinRulesPage = () => {
           className="inline-flex items-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors"
         >
           <Plus size={16} />
-          Yangi qoida
+          {t("teacherProfile.coinRules.newRule")}
         </button>
       </div>
 
       {isLoading ? (
         <PageLoading />
       ) : !rules?.data ? (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       ) : !rules.data.length ? (
         <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-ink/10 bg-white">
           <Coins size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">Qoidalar mavjud emas</p>
+          <p className="text-sm font-medium text-ink">
+            {t("teacherProfile.coinRules.emptyTitle")}
+          </p>
           <p className="text-xs text-ink-soft mt-1 max-w-xs">
-            Hozircha hech qanday tanga qoidasi yaratilmagan.
+            {t("teacherProfile.coinRules.emptyText")}
           </p>
         </div>
       ) : (

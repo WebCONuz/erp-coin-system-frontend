@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
@@ -17,12 +18,13 @@ import {
 } from "@/features/student-profile/hooks";
 
 const TAB_OPTIONS = [
-  { value: "attendance", label: "Davomat tarixi" },
-  { value: "coins", label: "Tanga tarixi" },
-  { value: "gifts", label: "Xaridlar" },
+  { value: "attendance", labelKey: "studentProfile.tabs.attendance" },
+  { value: "coins", labelKey: "studentProfile.tabs.coins" },
+  { value: "gifts", labelKey: "studentProfile.tabs.purchases" },
 ];
 
 const StudentProfilePage = () => {
+  const { t } = useTranslation();
   const { data: student, isLoading, isError } = useMyProfile();
   const [activeTab, setActiveTab] = useState("attendance");
   const [editOpen, setEditOpen] = useState(false);
@@ -30,7 +32,7 @@ const StudentProfilePage = () => {
 
   if (isLoading) return <PageLoading />;
   if (isError || !student) {
-    return <NoData text="Profil ma'lumotlari topilmadi" />;
+    return <NoData text={t("studentProfile.notFound")} />;
   }
 
   return (
@@ -50,7 +52,7 @@ const StudentProfilePage = () => {
               value={tab.value}
               className="rounded-full px-4 py-2 text-sm data-[state=active]:bg-forest data-[state=active]:text-paper"
             >
-              {tab.label}
+              {t(tab.labelKey)}
             </TabsTrigger>
           ))}
         </TabsList>

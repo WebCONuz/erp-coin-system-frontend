@@ -1,21 +1,23 @@
-const UZ_MONTHS = [
-  "yanvar",
-  "fevral",
-  "mart",
-  "aprel",
-  "may",
-  "iyun",
-  "iyul",
-  "avgust",
-  "sentabr",
-  "oktabr",
-  "noyabr",
-  "dekabr",
+import { t } from "i18next";
+
+const MONTH_KEYS = [
+  "dates.months.january",
+  "dates.months.february",
+  "dates.months.march",
+  "dates.months.april",
+  "dates.months.may",
+  "dates.months.june",
+  "dates.months.july",
+  "dates.months.august",
+  "dates.months.september",
+  "dates.months.october",
+  "dates.months.november",
+  "dates.months.december",
 ];
 
 export function formatUzMonthDay(dateStr: string) {
   const d = new Date(dateStr);
-  return `${d.getDate()}-${UZ_MONTHS[d.getMonth()]}`.toUpperCase();
+  return `${d.getDate()}-${t(MONTH_KEYS[d.getMonth()])}`.toUpperCase();
 }
 
 /** "BUGUN · 3-SENTABR" / "ERTAGA · 4-SENTABR" / "12-SENTABR" */
@@ -26,8 +28,9 @@ export function relativeUzDayLabel(dateStr: string) {
   tomorrow.setDate(tomorrow.getDate() + 1);
   const formatted = formatUzMonthDay(dateStr);
 
-  if (d.toDateString() === today.toDateString()) return `BUGUN · ${formatted}`;
+  if (d.toDateString() === today.toDateString())
+    return t("dates.todayWithDate", { date: formatted });
   if (d.toDateString() === tomorrow.toDateString())
-    return `ERTAGA · ${formatted}`;
+    return t("dates.tomorrowWithDate", { date: formatted });
   return formatted;
 }

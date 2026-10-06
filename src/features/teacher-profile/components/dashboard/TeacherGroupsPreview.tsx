@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { TeacherDashboardGroup } from "../../types";
 
 const ACCENTS = [
@@ -18,19 +19,21 @@ export const TeacherGroupsPreview = ({
 }: {
   groups: TeacherDashboardGroup[];
 }) => {
+  const { t } = useTranslation();
+
   if (!groups.length) return null;
 
   return (
     <div className="rounded-2xl border border-ink/10 bg-white p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-display text-sm font-semibold text-ink">
-          Guruhlarim
+          {t("teacherProfile.groups.title")}
         </h3>
         <Link
           to="/teacher/groups"
           className="text-xs font-medium text-forest hover:underline"
         >
-          Barchasi
+          {t("common.all")}
         </Link>
       </div>
 

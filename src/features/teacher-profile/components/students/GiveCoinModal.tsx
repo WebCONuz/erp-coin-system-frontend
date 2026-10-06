@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import { Coins, Minus, Plus } from "lucide-react";
 import {
   Dialog,
@@ -30,6 +31,7 @@ export const GiveCoinModal = ({
   studentName,
   defaultGroupId,
 }: Props) => {
+  const { t } = useTranslation();
   const { data: myGroups } = useMyTaughtGroups();
   const { data: student } = useStudentById(open ? studentId : "");
   const manualCoin = useManualCoinTransaction(studentId);
@@ -64,11 +66,11 @@ export const GiveCoinModal = ({
   const handleSubmit = () => {
     const numAmount = Number(amount);
     if (!numAmount || numAmount < 1) {
-      toast.error("Miqdorni to'g'ri kiriting");
+      toast.error(t("bulkCoin.schema.amount_invalid"));
       return;
     }
     if (!effectiveGroupId) {
-      toast.error("Guruhni tanlang");
+      toast.error(t("coinRules.teacherForm.groupRequiredError"));
       return;
     }
 
@@ -83,11 +85,11 @@ export const GiveCoinModal = ({
       },
       {
         onSuccess: () => {
-          toast.success("Operatsiya bajarildi");
+          toast.success(t("teacherProfile.giveCoin.success"));
           handleClose();
         },
         onError: (error: any) =>
-          toast.error(error?.data?.message || "Xatolik yuz berdi"),
+          toast.error(error?.data?.message || t("common.error")),
       },
     );
   };
@@ -97,10 +99,10 @@ export const GiveCoinModal = ({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-ink">
-            Tanga berish
+            {t("teacherProfile.giveCoin.title")}
           </DialogTitle>
           <DialogDescription className="text-ink-soft">
-            {studentName}ga coin qo'shing yoki ayiring
+            {t("teacherProfile.giveCoin.description", { name: studentName })}
           </DialogDescription>
         </DialogHeader>
 
@@ -116,7 +118,7 @@ export const GiveCoinModal = ({
               }`}
             >
               <Plus size={15} />
-              Qo'shish
+              {t("common.add")}
             </button>
             <button
               type="button"
@@ -128,13 +130,13 @@ export const GiveCoinModal = ({
               }`}
             >
               <Minus size={15} />
-              Ayirish
+              {t("teacherProfile.giveCoin.deduct")}
             </button>
           </div>
 
           <div>
             <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-              Miqdor
+              {t("common.amount")}
             </label>
             <div className="relative">
               <Coins
@@ -146,7 +148,7 @@ export const GiveCoinModal = ({
                 min={1}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                placeholder="Masalan: 15"
+                placeholder={t("teacherProfile.giveCoin.amountPlaceholder")}
                 className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
               />
             </div>
@@ -155,7 +157,7 @@ export const GiveCoinModal = ({
           {matchingGroups.length > 1 && (
             <div>
               <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-                Guruh
+                {t("common.group")}
               </label>
               <OptionSelect
                 value={effectiveGroupId}
@@ -164,7 +166,7 @@ export const GiveCoinModal = ({
                   value: g.id,
                   label: g.name,
                 }))}
-                placeholder="Guruhni tanlang"
+                placeholder={t("sessions.form.groupPlaceholder")}
                 className="w-full"
               />
             </div>
@@ -172,13 +174,13 @@ export const GiveCoinModal = ({
 
           <div>
             <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-              Sabab (ixtiyoriy)
+              {t("bulkCoin.noteLabel")}
             </label>
             <input
               type="text"
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Masalan: Olimpiadada faol ishtirok etgani uchun"
+              placeholder={t("teacherProfile.giveCoin.notePlaceholder")}
               className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
             />
           </div>
@@ -189,7 +191,7 @@ export const GiveCoinModal = ({
             disabled={manualCoin.isPending}
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
           >
-            {manualCoin.isPending ? "Yuborilmoqda..." : "Tasdiqlash"}
+            {manualCoin.isPending ? t("common.sending") : t("common.confirm")}
           </button>
         </div>
       </DialogContent>

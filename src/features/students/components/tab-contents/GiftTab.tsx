@@ -85,7 +85,7 @@ export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
                     <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
                       <span className="flex items-center gap-1">
                         <Coins size={11} />
-                        {purchase.coinSpent} coin
+                        {purchase.coinSpent} {t("common.coinLabel")}
                       </span>
                       <span>·</span>
                       <span>

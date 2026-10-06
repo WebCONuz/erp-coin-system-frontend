@@ -1,11 +1,13 @@
 import { useSearchParams } from "react-router-dom";
 import { SearchIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { OptionSelect } from "@/components/ui/option-select";
 import { useMyTaughtGroups } from "../../hooks";
 
 const ALL_VALUE = "all";
 
 export const TeacherStudentsFilterBar = () => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { data: groups } = useMyTaughtGroups();
 
@@ -32,10 +34,10 @@ export const TeacherStudentsFilterBar = () => {
         value={groupId}
         onValueChange={setGroupId}
         options={[
-          { value: ALL_VALUE, label: "Barcha guruhlar" },
+          { value: ALL_VALUE, label: t("sessions.filter.allGroups") },
           ...(groups ?? []).map((g) => ({ value: g.id, label: g.name })),
         ]}
-        placeholder="Guruhni tanlang"
+        placeholder={t("sessions.form.groupPlaceholder")}
         className="w-full sm:w-52 bg-white"
         contentClassName="bg-white"
       />
@@ -48,7 +50,7 @@ export const TeacherStudentsFilterBar = () => {
         <input
           defaultValue={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="O'quvchi qidirish..."
+          placeholder={t("teacherProfile.students.searchPlaceholder")}
           className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"
         />
       </div>

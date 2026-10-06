@@ -239,7 +239,7 @@ export const BulkGiveCoinModal = ({
                           }
                           options={activeRules.map((rule) => ({
                             value: rule.id,
-                            label: `${rule.name} (${rule.direction === "earn" ? "+" : "-"}${rule.coinAmount} coin)`,
+                            label: `${rule.name} (${rule.direction === "earn" ? "+" : "-"}${rule.coinAmount} ${t("common.coinLabel")})`,
                           }))}
                         />
                         {selectedRule && (
@@ -247,7 +247,7 @@ export const BulkGiveCoinModal = ({
                             {t("bulkCoin.rule.hintPrefix")}{" "}
                             <b className="text-zinc-700 dark:text-zinc-300">
                               {selectedRule.direction === "earn" ? "+" : "-"}
-                              {selectedRule.coinAmount} coin
+                              {selectedRule.coinAmount} {t("common.coinLabel")}
                             </b>{" "}
                             {t("bulkCoin.rule.hintSuffix")}
                           </p>

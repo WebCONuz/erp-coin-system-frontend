@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Table,
   TableBody,
@@ -28,10 +29,12 @@ export function UniversalTable<T extends { id: string | number }>({
   onPageChange,
   isLoading,
 }: UniversalTableProps<T>) {
+  const { t } = useTranslation();
+
   if (isLoading)
     return (
       <div className="p-8 text-center text-muted-foreground">
-        Yuklanmoqda...
+        {t("common.loading")}
       </div>
     );
 
@@ -78,7 +81,7 @@ export function UniversalTable<T extends { id: string | number }>({
                 colSpan={columns.length + 1}
                 className="h-24 text-center text-muted-foreground"
               >
-                Ma'lumot topilmadi.
+                {t("table.notFound")}
               </TableCell>
             </TableRow>
           )}

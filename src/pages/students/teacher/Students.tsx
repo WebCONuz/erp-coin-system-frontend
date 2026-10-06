@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { GraduationCap } from "lucide-react";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
@@ -11,6 +12,7 @@ import {
 } from "@/features/teacher-profile/components/students";
 
 const Students = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const groupId = searchParams.get("groupId") || undefined;
 
@@ -25,10 +27,10 @@ const Students = () => {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="font-display text-2xl font-semibold text-ink">
-            O'quvchilarim
+            {t("teacherProfile.students.backToList")}
           </h1>
           <p className="text-sm text-ink-soft mt-1">
-            Dars beradigan guruhlaringizdagi barcha o'quvchilar
+            {t("teacherProfile.students.subtitle")}
           </p>
         </div>
         <TeacherStudentsFilterBar />
@@ -37,11 +39,13 @@ const Students = () => {
       {isLoading ? (
         <PageLoading />
       ) : !data?.data ? (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       ) : !data.data.length ? (
         <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-ink/10 bg-white">
           <GraduationCap size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">O'quvchilar topilmadi</p>
+          <p className="text-sm font-medium text-ink">
+            {t("teacherProfile.students.empty")}
+          </p>
         </div>
       ) : (
         <>

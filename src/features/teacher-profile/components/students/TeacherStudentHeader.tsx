@@ -1,4 +1,5 @@
 import { Coins, Phone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { StudentDetailFull } from "@/features/students/types";
 
 interface Props {
@@ -12,6 +13,7 @@ export const TeacherStudentHeader = ({
   myGroupIds,
   onGiveCoin,
 }: Props) => {
+  const { t } = useTranslation();
   const myMemberships = (student.groupMemberships ?? []).filter((gm) =>
     myGroupIds.has(gm.group.id),
   );
@@ -50,7 +52,9 @@ export const TeacherStudentHeader = ({
 
         <div className="flex flex-col items-start sm:items-end gap-3 shrink-0">
           <div className="text-left sm:text-right">
-            <p className="text-xs text-paper/50">Coin balansi</p>
+            <p className="text-xs text-paper/50">
+              {t("students.detail.coinBalance")}
+            </p>
             <p className="font-display text-2xl font-bold text-gold flex items-center gap-1.5 sm:justify-end">
               <Coins size={18} />
               {student.wallet?.balance ?? 0}
@@ -62,7 +66,7 @@ export const TeacherStudentHeader = ({
             className="inline-flex items-center gap-2 rounded-xl bg-gold/15 border border-gold/30 text-gold px-4 py-2.5 text-sm font-medium hover:bg-gold/20 transition-colors"
           >
             <Coins size={15} />
-            Coin &nbsp;+/-
+            {t("teacherProfile.students.coinAdjustButton")}
           </button>
         </div>
       </div>

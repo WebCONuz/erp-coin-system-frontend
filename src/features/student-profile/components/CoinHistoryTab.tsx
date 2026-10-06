@@ -1,43 +1,36 @@
+import { useTranslation } from "react-i18next";
 import { TabsContent } from "@/components/ui/tabs";
 import { Coins, Minus, Plus } from "lucide-react";
 import type { StudentDetailFull } from "@/features/students/types";
 import { formatDate } from "@/ustils";
-
-const SOURCE_TYPE_LABELS: Record<string, string> = {
-  homework: "Uyga vazifa",
-  attendance: "Davomat",
-  competition: "Musobaqa",
-  exam: "Imtihon",
-  bonus: "Bonus",
-  manual: "Qo'lda berilgan",
-  // Bekor qilingan xarid uchun qaytarilgan coin ham `purchase` (earn) bilan keladi.
-  purchase: "Xarid",
-};
 
 interface Props {
   student?: StudentDetailFull;
 }
 
 export const CoinHistoryTab = ({ student }: Props) => {
+  const { t } = useTranslation();
   const transactions = student?.coinTransactionsReceived ?? [];
 
   return (
     <TabsContent value="coins" className="mt-4 space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="font-display text-sm font-semibold text-ink">
-          Tanga tarixi
+          {t("studentProfile.tabs.coins")}
         </h3>
-        <span className="text-xs text-ink-soft">So'nggi 20 ta</span>
+        <span className="text-xs text-ink-soft">
+          {t("students.coinTab.last20")}
+        </span>
       </div>
 
       {!transactions.length ? (
         <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-ink/10 bg-white">
           <Coins size={22} className="text-ink-soft/50 mb-2" />
           <p className="text-sm font-medium text-ink">
-            Tranzaksiyalar mavjud emas
+            {t("students.coinTab.noTransactions")}
           </p>
           <p className="text-xs text-ink-soft mt-1 max-w-xs">
-            Coin qo'shilgach yoki ayirilgach, tarix shu yerda ko'rinadi.
+            {t("students.coinTab.noTransactionsText")}
           </p>
         </div>
       ) : (
@@ -65,7 +58,12 @@ export const CoinHistoryTab = ({ student }: Props) => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm text-ink">
-                    <b>{SOURCE_TYPE_LABELS[tx.sourceType] ?? "Qo'shimcha"}</b>
+                    {/* Bekor qilingan xarid uchun qaytarilgan coin ham `purchase` (earn) bilan keladi. */}
+                    <b>
+                      {t(`transactionSource.${tx.sourceType}`, {
+                        defaultValue: t("transactionSource.other"),
+                      })}
+                    </b>
                     {tx.note ? ` — ${tx.note}` : ""}
                   </p>
                   <p className="text-xs text-ink-soft">

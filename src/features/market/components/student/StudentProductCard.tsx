@@ -81,7 +81,7 @@ export const StudentProductCard = ({
           />
         </div>
         <p className="text-[11px] text-ink-soft mt-1.5">
-          {balance}/{product.coinPrice} coin
+          {balance}/{product.coinPrice} {t("common.coinLabel")}
           {remaining > 0
             ? ` · ${t("market.student.moreNeeded", { count: remaining })}`
             : ""}

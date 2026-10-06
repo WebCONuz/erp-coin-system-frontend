@@ -1,4 +1,5 @@
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { CalendarDays } from "lucide-react";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
@@ -11,6 +12,7 @@ import {
 } from "@/features/teacher-profile/components/sessions";
 
 const SessionsPage = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const { data: sessions, isLoading } = useSessions();
   const pagination = usePagination({
@@ -27,10 +29,10 @@ const SessionsPage = () => {
     <div className="space-y-4">
       <div>
         <h1 className="font-display text-2xl font-semibold text-ink">
-          Darslarim
+          {t("teacherNav.sessions")}
         </h1>
         <p className="text-sm text-ink-soft mt-1">
-          Barcha darslaringiz va yo'qlama holati
+          {t("teacherProfile.sessions.subtitle")}
         </p>
       </div>
 
@@ -39,14 +41,14 @@ const SessionsPage = () => {
       {isLoading ? (
         <PageLoading />
       ) : !sessions?.data ? (
-        <NoData text="Ma'lumotlar yuklanmadi!" />
+        <NoData text={t("common.noData")} />
       ) : !list.length ? (
         <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-ink/10 bg-white">
           <CalendarDays size={22} className="text-ink-soft/50 mb-2" />
           <p className="text-sm font-medium text-ink">
             {pendingOnly
-              ? "Yo'qlama kutilayotgan dars yo'q"
-              : "Darslar mavjud emas"}
+              ? t("teacherProfile.sessions.noPending")
+              : t("teacherProfile.sessions.empty")}
           </p>
         </div>
       ) : (

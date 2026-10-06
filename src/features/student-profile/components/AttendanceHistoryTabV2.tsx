@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { TabsContent } from "@/components/ui/tabs";
 import { Award, BookOpenCheck, CalendarCheck, Check, X } from "lucide-react";
 import type {
@@ -30,18 +31,19 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function dateLabel(sessionDate: string) {
+function dateLabel(t: TFunction, sessionDate: string) {
   const d = new Date(sessionDate);
   const today = new Date();
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
 
-  if (d.toDateString() === today.toDateString()) return "Bugun";
-  if (d.toDateString() === yesterday.toDateString()) return "Kecha";
+  if (d.toDateString() === today.toDateString()) return t("dates.today");
+  if (d.toDateString() === yesterday.toDateString())
+    return t("dates.yesterday");
   return formatDate(sessionDate, "dd.MM.yyyy");
 }
 
-function groupByDate(records: AttendanceRecord[]) {
+function groupByDate(t: TFunction, records: AttendanceRecord[]) {
   const map = new Map<string, AttendanceRecord[]>();
   for (const record of records) {
     const key = record.session.sessionDate;
@@ -51,7 +53,7 @@ function groupByDate(records: AttendanceRecord[]) {
   }
   return Array.from(map.entries()).map(([sessionDate, records]) => ({
     sessionDate,
-    label: dateLabel(sessionDate),
+    label: dateLabel(t, sessionDate),
     records,
   }));
 }
@@ -63,7 +65,7 @@ interface Props {
 export const AttendanceHistoryTabV2 = ({ student }: Props) => {
   const { t } = useTranslation();
   const records = student?.attendanceAsStudent ?? [];
-  const groups = groupByDate(records);
+  const groups = groupByDate(t, records);
 
   const presentCount = records.filter((r) => r.isPresent).length;
   // Imtihon/musobaqa (scored) sessiyalarida uy vazifasi tekshirilmaydi.
@@ -83,10 +85,12 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="font-display text-sm font-semibold text-ink">
-            Davomat tarixi
+            {t("studentProfile.attendance.title")}
           </h3>
           <p className="text-xs text-ink-soft mt-0.5">
-            So'nggi {records.length} ta yozuv
+            {t("studentProfile.attendance.lastRecords", {
+              count: records.length,
+            })}
           </p>
         </div>
 
@@ -94,11 +98,15 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-forest/10 text-forest">
               <Check size={12} />
-              {attendanceRate}% qatnashuv
+              {t("studentProfile.attendance.attendanceRate", {
+                rate: attendanceRate,
+              })}
             </span>
             <span className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-gold/15 text-gold">
               <BookOpenCheck size={12} />
-              {homeworkRate}% uy vazifa
+              {t("studentProfile.attendance.homeworkRate", {
+                rate: homeworkRate,
+              })}
             </span>
           </div>
         )}
@@ -108,10 +116,10 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
         <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-ink/10 bg-white">
           <CalendarCheck size={22} className="text-ink-soft/50 mb-2" />
           <p className="text-sm font-medium text-ink">
-            Davomat tarixi mavjud emas
+            {t("studentProfile.attendance.emptyTitle")}
           </p>
           <p className="text-xs text-ink-soft mt-1 max-w-xs">
-            Darslarga qatnashgach, davomat tarixi shu yerda ko'rinadi.
+            {t("studentProfile.attendance.emptyText")}
           </p>
         </div>
       ) : (
@@ -173,7 +181,9 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                             <X size={11} />
                           )}
                           <span className="text-xs">
-                            {record.isPresent ? "Keldi" : "Kelmadi"}
+                            {record.isPresent
+                              ? t("sessions.attendance.present")
+                              : t("sessions.attendance.absent")}
                           </span>
                         </span>
                         {record.session.evaluationMode === "scored" ? (
@@ -200,8 +210,8 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                             <BookOpenCheck size={13} />
                             <span className="text-xs">
                               {record.homeworkDone
-                                ? "Uy vazifasi bajarilgan"
-                                : "Uy vazifasi bajarilmagan"}
+                                ? t("studentProfile.attendance.homeworkDone")
+                                : t("studentProfile.attendance.homeworkNotDone")}
                             </span>
                           </span>
                         )}

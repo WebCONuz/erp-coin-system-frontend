@@ -59,7 +59,9 @@ export function StudentNavbar() {
             <p className="font-display text-forest font-semibold text-lg truncate">
               BB-Coin
             </p>
-            <p className="text-[11px] text-forest/50 truncate">Bilim bog'i</p>
+            <p className="text-[11px] text-forest/50 truncate">
+              {t("brand.tagline")}
+            </p>
           </div>
         </div>
 

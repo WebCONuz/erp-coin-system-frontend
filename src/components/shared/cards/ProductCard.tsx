@@ -96,7 +96,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               {product.coinPrice.toLocaleString("uz-UZ")}
             </span>
             <span className="text-lg text-slate-500 dark:text-slate-400 font-normal">
-              coin
+              {t("common.coinLabel")}
             </span>
           </div>
 

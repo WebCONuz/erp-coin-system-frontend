@@ -154,7 +154,7 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
                   <span
                     className={`text-sm font-medium ${viaSms ? "text-blue-700 dark:text-blue-300" : "text-zinc-600 dark:text-zinc-400"}`}
                   >
-                    SMS
+                    {t("students.sendMessage.sms")}
                   </span>
                 </div>
               </label>
@@ -177,7 +177,7 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
                     <span
                       className={`text-sm font-medium ${viaEmail ? "text-green-700 dark:text-green-300" : "text-zinc-600 dark:text-zinc-400"}`}
                     >
-                      Email
+                      {t("common.email")}
                     </span>
                   </div>
                 </label>

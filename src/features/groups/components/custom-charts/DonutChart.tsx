@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { RadialProgress } from "@/components/shared/charts";
 
 interface DonutChartProps {
@@ -13,6 +14,7 @@ export const DonutChart = ({
   percent,
   isFull,
 }: DonutChartProps) => {
+  const { t } = useTranslation();
   const color = isFull ? "#dc2626" : percent >= 80 ? "#d97706" : "#10b981";
 
   return (
@@ -22,7 +24,7 @@ export const DonutChart = ({
           {value} / {max}
         </span>
         <span className="text-xs text-zinc-500 dark:text-zinc-400">
-          {percent}% to'lgan
+          {t("groups.info.filledPercent", { percent })}
         </span>
       </div>
     </RadialProgress>

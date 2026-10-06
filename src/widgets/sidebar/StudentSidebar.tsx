@@ -74,7 +74,9 @@ export const StudentSidebar = () => {
             <p className="font-display text-gold-soft font-semibold text-lg truncate">
               BB-Coin
             </p>
-            <p className="text-[11px] text-paper/50 truncate">Bilim bog'i</p>
+            <p className="text-[11px] text-paper/50 truncate">
+              {t("brand.tagline")}
+            </p>
           </div>
         )}
       </div>

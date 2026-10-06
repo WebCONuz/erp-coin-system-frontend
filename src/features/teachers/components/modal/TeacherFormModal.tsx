@@ -56,7 +56,7 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
                   control={editForm.control}
                   name="fullName"
                   label={t("students.form.fullNameLabel")}
-                  placeholder="Alisher Karimov"
+                  placeholder={t("teachers.form.fullNamePlaceholder")}
                 />
                 <ControlledInput
                   control={editForm.control}
@@ -111,7 +111,7 @@ export const TeacherFormModal = ({ open, onClose, mode, teacher }: Props) => {
                 control={createForm.control}
                 name="fullName"
                 label={t("students.form.fullNameLabel")}
-                placeholder="Alisher Karimov"
+                placeholder={t("teachers.form.fullNamePlaceholder")}
               />
               <ControlledInput
                 control={createForm.control}

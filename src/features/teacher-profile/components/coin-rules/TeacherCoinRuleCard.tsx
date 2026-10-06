@@ -35,7 +35,10 @@ export const TeacherCoinRuleCard = ({
         }`}
       >
         {isPlus ? "+" : "-"}
-        {data.coinAmount} <span className="text-xs font-normal text-ink-soft">coin</span>
+        {data.coinAmount}{" "}
+        <span className="text-xs font-normal text-ink-soft">
+          {t("common.coinLabel")}
+        </span>
       </p>
 
       {data.description && (

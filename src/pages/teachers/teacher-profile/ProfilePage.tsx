@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { useTeacherProfile } from "@/features/teacher-profile/hooks";
@@ -9,12 +10,13 @@ import {
 import { TeacherGroupsPreview } from "@/features/teacher-profile/components/dashboard";
 
 const ProfilePage = () => {
+  const { t } = useTranslation();
   const { data: profile, isLoading, isError } = useTeacherProfile();
   const [editOpen, setEditOpen] = useState(false);
 
   if (isLoading) return <PageLoading />;
   if (isError || !profile) {
-    return <NoData text="Profil ma'lumotlari topilmadi" />;
+    return <NoData text={t("teacherProfile.profile.notFound")} />;
   }
 
   return (

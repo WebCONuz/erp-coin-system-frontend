@@ -42,12 +42,9 @@ export const LoginDesktop = () => {
 
         <div className="relative max-w-md space-y-4">
           <h1 className="text-4xl leading-tight font-semibold">
-            O'quv markazingizni bitta platformada boshqaring
+            {t("login.hero.title")}
           </h1>
-          <p className="text-white/70">
-            Guruhlar, talabalar, o'qituvchilar va tanga iqtisodiyotini yagona
-            admin panelidan nazorat qiling.
-          </p>
+          <p className="text-white/70">{t("login.hero.description")}</p>
         </div>
 
         <p className="relative text-sm text-white/50">

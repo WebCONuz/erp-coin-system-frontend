@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { PageLoading } from "@/components/loading";
 import { NoData } from "@/components/partials/no-data";
 import { useAuth } from "@/features/auth/hooks/useLogin";
@@ -11,12 +12,13 @@ import {
 } from "@/features/teacher-profile/components/dashboard";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { data, isLoading, isError } = useTeacherDashboard();
 
   if (isLoading) return <PageLoading />;
   if (isError || !data) {
-    return <NoData text="Dashboard ma'lumotlari topilmadi" />;
+    return <NoData text={t("dashboard.notFound")} />;
   }
 
   return (

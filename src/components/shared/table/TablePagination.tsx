@@ -1,3 +1,4 @@
+import { Trans } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/ui/pagination";
 
@@ -25,12 +26,15 @@ export const TablePagination = ({
       <div className="text-sm text-gray-600 dark:text-gray-300">
         {totalItems && (
           <span>
-            <b>{totalItems}</b> ta natijadan &nbsp;
-            <b>
-              {(currentPage - 1) * (pageSize || 10) + 1}-
-              {Math.min(currentPage * (pageSize || 10), totalItems)}
-            </b>
-            &nbsp; tagachasi &nbsp; ko'rsatilmoqda
+            <Trans
+              i18nKey="table.paginationSummary"
+              values={{
+                total: totalItems,
+                from: (currentPage - 1) * (pageSize || 10) + 1,
+                to: Math.min(currentPage * (pageSize || 10), totalItems),
+              }}
+              components={{ b: <b /> }}
+            />
           </span>
         )}
       </div>

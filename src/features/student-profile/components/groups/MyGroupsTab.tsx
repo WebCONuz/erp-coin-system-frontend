@@ -1,9 +1,11 @@
 import { Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { PageLoading } from "@/components/loading";
 import { useMyGroupsOverview } from "../../hooks/useMyGroupsOverview";
 import { MyGroupCard } from "./MyGroupCard";
 
 export const MyGroupsTab = () => {
+  const { t } = useTranslation();
   const { data: groups, isLoading } = useMyGroupsOverview();
 
   if (isLoading) return <PageLoading />;
@@ -12,9 +14,11 @@ export const MyGroupsTab = () => {
     return (
       <div className="flex flex-col items-center justify-center py-14 text-center rounded-2xl border border-ink/10 bg-white">
         <Users size={22} className="text-ink-soft/50 mb-2" />
-        <p className="text-sm font-medium text-ink">Guruhlar mavjud emas</p>
+        <p className="text-sm font-medium text-ink">
+          {t("studentProfile.groups.emptyTitle")}
+        </p>
         <p className="text-xs text-ink-soft mt-1 max-w-xs">
-          Siz hozircha hech qanday guruhga a'zo emassiz.
+          {t("studentProfile.groups.emptyText")}
         </p>
       </div>
     );

@@ -9,20 +9,22 @@ import {
   User,
 } from "lucide-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Tooltip } from "./AdminSidebar";
 
 const LOGO = "/logo.png";
 
 const NAV_ITEMS = [
-  { to: "/teacher", label: "Asosiy", icon: Home, end: true },
-  { to: "/teacher/groups", label: "Guruhlar (Dars jadvali)", icon: UsersRound },
-  { to: "/teacher/sessions", label: "Darslarim", icon: BookOpenCheck },
-  { to: "/teacher/students", label: "O'quvchilarim", icon: GraduationCap },
-  { to: "/teacher/coin-rules", label: "Tanga qoidalari", icon: Coins },
-  { to: "/teacher/profile", label: "Shaxsiy profil", icon: User },
+  { to: "/teacher", labelKey: "teacherNav.main", icon: Home, end: true },
+  { to: "/teacher/groups", labelKey: "teacherNav.groups", icon: UsersRound },
+  { to: "/teacher/sessions", labelKey: "teacherNav.sessions", icon: BookOpenCheck },
+  { to: "/teacher/students", labelKey: "teacherNav.students", icon: GraduationCap },
+  { to: "/teacher/coin-rules", labelKey: "teacherNav.coinRules", icon: Coins },
+  { to: "/teacher/profile", labelKey: "teacherNav.profile", icon: User },
 ];
 
 export const TeacherSidebar = () => {
+  const { t } = useTranslation();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -57,7 +59,7 @@ export const TeacherSidebar = () => {
               BB-Coin
             </p>
             <p className="text-[11px] text-paper/50 truncate">
-              O'qituvchi kabineti
+              {t("teacherNav.cabinet")}
             </p>
           </div>
         )}
@@ -65,8 +67,8 @@ export const TeacherSidebar = () => {
 
       {/* Nav links */}
       <nav className="flex flex-1 flex-col gap-1 px-2 pt-4 pb-2 relative z-20">
-        {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
-          <Tooltip key={to} label={label} show={collapsed}>
+        {NAV_ITEMS.map(({ to, labelKey, icon: Icon, end }) => (
+          <Tooltip key={to} label={t(labelKey)} show={collapsed}>
             <NavLink
               to={to}
               end={end}
@@ -87,7 +89,7 @@ export const TeacherSidebar = () => {
                       color: isActive ? "var(--color-gold)" : undefined,
                     }}
                   />
-                  {!collapsed && <span>{label}</span>}
+                  {!collapsed && <span>{t(labelKey)}</span>}
                 </>
               )}
             </NavLink>

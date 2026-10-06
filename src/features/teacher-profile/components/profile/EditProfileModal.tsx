@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export const EditProfileModal = ({ open, onClose, profile }: Props) => {
+  const { t } = useTranslation();
   const updateProfile = useUpdateTeacherProfile();
   const [email, setEmail] = useState(profile.email ?? "");
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl ?? "");
@@ -40,11 +42,11 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
 
     updateProfile.mutate(payload, {
       onSuccess: () => {
-        toast.success("Profil yangilandi");
+        toast.success(t("profile.updated"));
         onClose();
       },
       onError: (error: any) =>
-        toast.error(error?.data?.message || "Xatolik yuz berdi"),
+        toast.error(error?.data?.message || t("common.error")),
     });
   };
 
@@ -53,17 +55,17 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-ink">
-            Profilni tahrirlash
+            {t("profile.editTitle")}
           </DialogTitle>
           <DialogDescription className="text-ink-soft">
-            Faqat email va profil rasmini o'zgartirishingiz mumkin
+            {t("teacherProfile.profile.editDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
             <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-              Email
+              {t("profile.form.email")}
             </label>
             <input
               type="email"
@@ -76,7 +78,7 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
 
           <div>
             <label className="text-xs font-medium text-ink-soft mb-1.5 block">
-              Profil rasmi (URL)
+              {t("profile.form.avatarUrl")}
             </label>
             <input
               type="text"
@@ -93,7 +95,7 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
             disabled={updateProfile.isPending}
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
           >
-            {updateProfile.isPending ? "Saqlanmoqda..." : "Saqlash"}
+            {updateProfile.isPending ? t("common.saving") : t("common.save")}
           </button>
         </div>
       </DialogContent>

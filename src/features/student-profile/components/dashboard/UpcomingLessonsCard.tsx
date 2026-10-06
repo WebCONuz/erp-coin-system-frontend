@@ -1,26 +1,7 @@
 import { CalendarDays } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { relativeUzDayLabel } from "@/ustils/uz-date";
 import type { DashboardSession } from "../../types";
-
-const SESSION_TYPE_LABELS: Record<string, string> = {
-  lesson: "Dars",
-  exam: "Imtihon",
-  trial: "Sinov",
-};
-
-const UZ_MONTHS = [
-  "yanvar",
-  "fevral",
-  "mart",
-  "aprel",
-  "may",
-  "iyun",
-  "iyul",
-  "avgust",
-  "sentabr",
-  "oktabr",
-  "noyabr",
-  "dekabr",
-];
 
 const AVATAR_STYLES = [
   "bg-forest text-paper",
@@ -42,20 +23,6 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function dateLabel(sessionDate: string) {
-  const d = new Date(sessionDate);
-  const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
-  const formatted = `${d.getDate()}-${UZ_MONTHS[d.getMonth()]}`.toUpperCase();
-
-  if (d.toDateString() === today.toDateString()) return `BUGUN · ${formatted}`;
-  if (d.toDateString() === tomorrow.toDateString())
-    return `ERTAGA · ${formatted}`;
-  return formatted;
-}
-
 function groupByDate(sessions: DashboardSession[]) {
   const map = new Map<string, DashboardSession[]>();
   for (const session of sessions) {
@@ -65,7 +32,7 @@ function groupByDate(sessions: DashboardSession[]) {
   }
   return Array.from(map.entries()).map(([sessionDate, sessions]) => ({
     sessionDate,
-    label: dateLabel(sessionDate),
+    label: relativeUzDayLabel(sessionDate),
     sessions,
   }));
 }
@@ -79,20 +46,23 @@ export const UpcomingLessonsCard = ({
   todaySessions,
   upcomingSessions,
 }: Props) => {
+  const { t } = useTranslation();
   const groups = groupByDate([...todaySessions, ...upcomingSessions]);
 
   return (
     <div className="rounded-2xl border border-ink/10 bg-white p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-display text-sm font-semibold text-ink">
-          Bugun va ertaga darslaringiz
+          {t("studentProfile.dashboard.upcomingTitle")}
         </h3>
       </div>
 
       {!groups.length ? (
         <div className="flex flex-col items-center justify-center py-10 text-center">
           <CalendarDays size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm text-ink-soft">Rejalashtirilgan dars yo'q</p>
+          <p className="text-sm text-ink-soft">
+            {t("studentProfile.dashboard.noUpcoming")}
+          </p>
         </div>
       ) : (
         <div className="space-y-5">
@@ -124,8 +94,9 @@ export const UpcomingLessonsCard = ({
                       </p>
                     </div>
                     <span className="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-paper-soft text-ink-soft border border-ink/10">
-                      {SESSION_TYPE_LABELS[session.sessionType] ??
-                        session.sessionType}
+                      {t(`sessions.type.${session.sessionType}`, {
+                        defaultValue: session.sessionType,
+                      })}
                     </span>
                   </div>
                 ))}

@@ -15,6 +15,7 @@ import {
 } from "date-fns";
 import { uz } from "date-fns/locale";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { OptionSelect } from "@/components/ui/option-select";
 import { PageLoading } from "@/components/loading";
@@ -23,16 +24,17 @@ import { useMyTaughtGroups, useTeacherCalendar } from "../../hooks";
 import { TeacherSessionChip } from "./TeacherSessionChip";
 
 const WEEK_HEADER = [
-  { label: "Du", className: "" },
-  { label: "Se", className: "" },
-  { label: "Ch", className: "" },
-  { label: "Pa", className: "" },
-  { label: "Ju", className: "" },
-  { label: "Sh", className: "text-gold" },
-  { label: "Ya", className: "text-bloom" },
+  { labelKey: "plans.weekdayShort.monday", className: "" },
+  { labelKey: "plans.weekdayShort.tuesday", className: "" },
+  { labelKey: "plans.weekdayShort.wednesday", className: "" },
+  { labelKey: "plans.weekdayShort.thursday", className: "" },
+  { labelKey: "plans.weekdayShort.friday", className: "" },
+  { labelKey: "plans.weekdayShort.saturday", className: "text-gold" },
+  { labelKey: "plans.weekdayShort.sunday", className: "text-bloom" },
 ];
 
 export const TeacherCalendarTab = () => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { data: groups } = useMyTaughtGroups();
   const [selectedGroupId, setSelectedGroupId] = useState<string>("");
@@ -60,7 +62,7 @@ export const TeacherCalendarTab = () => {
     return (
       <div className="flex flex-col items-center justify-center py-14 text-center rounded-2xl border border-ink/10 bg-white">
         <p className="text-sm text-ink-soft">
-          Jadvalni ko'rish uchun avval guruh biriktirilgan bo'lishi kerak.
+          {t("teacherProfile.groups.calendarNoGroups")}
         </p>
       </div>
     );
@@ -73,7 +75,7 @@ export const TeacherCalendarTab = () => {
           value={groupId}
           onValueChange={setSelectedGroupId}
           options={groups.map((g) => ({ value: g.id, label: g.name }))}
-          placeholder="Guruhni tanlang"
+          placeholder={t("sessions.form.groupPlaceholder")}
           className="w-full sm:w-56"
         />
 
@@ -105,10 +107,10 @@ export const TeacherCalendarTab = () => {
           <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10 min-w-245 sm:min-w-0">
             {WEEK_HEADER.map((day) => (
               <div
-                key={day.label}
+                key={day.labelKey}
                 className={`bg-paper-soft px-2 py-1.5 text-center text-xs font-semibold text-ink-soft ${day.className}`}
               >
-                {day.label}
+                {t(day.labelKey)}
               </div>
             ))}
 

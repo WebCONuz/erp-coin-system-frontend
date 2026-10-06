@@ -63,7 +63,9 @@ export const CoinTab = ({
           </p>
           <p className="text-3xl font-bold text-amber-700 dark:text-amber-300">
             {student?.wallet?.balance ?? 0}{" "}
-            <span className="text-base font-normal">coin</span>
+            <span className="text-base font-normal">
+              {t("common.coinLabel")}
+            </span>
           </p>
         </div>
       </div>

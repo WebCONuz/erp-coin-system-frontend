@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { AlertTriangle, ChevronRight } from "lucide-react";
+import { Trans, useTranslation } from "react-i18next";
 import { formatDate } from "@/ustils";
 import type { TeacherDashboardPendingSession } from "../../types";
 
@@ -8,6 +9,8 @@ export const PendingAttendanceBanner = ({
 }: {
   sessions: TeacherDashboardPendingSession[];
 }) => {
+  const { t } = useTranslation();
+
   if (!sessions.length) return null;
 
   return (
@@ -17,7 +20,11 @@ export const PendingAttendanceBanner = ({
           <AlertTriangle size={16} className="text-bloom" />
         </div>
         <p className="text-sm text-ink">
-          <b>{sessions.length}</b> ta darsingiz uchun yo'qlama kiritilmagan
+          <Trans
+            i18nKey="teacherProfile.dashboard.pendingAttendance"
+            values={{ count: sessions.length }}
+            components={{ b: <b /> }}
+          />
         </p>
       </div>
 
@@ -43,7 +50,7 @@ export const PendingAttendanceBanner = ({
           to="/teacher/sessions?pending=true"
           className="inline-block mt-2 text-xs font-medium text-bloom hover:underline"
         >
-          Barchasini ko'rish ({sessions.length})
+          {t("teacherProfile.dashboard.viewAll", { count: sessions.length })}
         </Link>
       )}
     </div>

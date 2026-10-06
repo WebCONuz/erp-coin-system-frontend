@@ -146,6 +146,10 @@
     "submit": "Kirish",
     "schema": {
       "password_min": "Parol kamida 6 ta belgidan iborat bo'lishi kerak"
+    },
+    "hero": {
+      "title": "O'quv markazingizni bitta platformada boshqaring",
+      "description": "Guruhlar, talabalar, o'qituvchilar va tanga iqtisodiyotini yagona admin panelidan nazorat qiling."
     }
   },
   "profile": {
@@ -506,7 +510,8 @@
     },
     "form": {
       "createTitle": "Yangi o'qituvchi qo'shish",
-      "editTitle": "O'qituvchini tahrirlash"
+      "editTitle": "O'qituvchini tahrirlash",
+      "fullNamePlaceholder": "Alisher Karimov"
     },
     "roleNotFound": "O'qituvchi roli topilmadi",
     "passwordChanged": "Parol muvaffaqiyatli o'zgartirildi",
@@ -554,7 +559,8 @@
       "channelLabel": "Yuborish kanali",
       "messageLabel": "Xabar matni",
       "messagePlaceholder": "Xabaringizni kiriting...",
-      "send": "Yuborish"
+      "send": "Yuborish",
+      "sms": "SMS"
     },
     "form": {
       "createTitle": "Yangi talaba qo'shish",
@@ -724,7 +730,8 @@
       "created_at": "Yaratilgan vaqti:",
       "course": "Kurs",
       "spots_left": "Guruh to'lishiga",
-      "spots_count": "{{count}} ta joy bor"
+      "spots_count": "{{count}} ta joy bor",
+      "filledPercent": "{{percent}}% to'lgan"
     },
     "card": {
       "active": "Aktiv",
@@ -822,7 +829,8 @@
         "noStudents": "Guruhda hali o'quvchi yo'q",
         "bulkCoinTitle": "Guruhga ommaviy tanga berish",
         "bulkCoinSubtitle": "{{name}} guruhi o'quvchilariga birdaniga tanga bering"
-      }
+      },
+      "calendarNoGroups": "Jadvalni ko'rish uchun avval guruh biriktirilgan bo'lishi kerak."
     },
     "students": {
       "backToList": "O'quvchilarim",
@@ -831,7 +839,49 @@
       "tabs": {
         "attendance": "Davomat tarixi",
         "coins": "Tanga tarixi"
-      }
+      },
+      "subtitle": "Dars beradigan guruhlaringizdagi barcha o'quvchilar",
+      "empty": "O'quvchilar topilmadi",
+      "searchPlaceholder": "O'quvchi qidirish...",
+      "giveCoinButton": "+ Coin berish",
+      "coinAdjustButton": "Coin +/-"
+    },
+    "dashboard": {
+      "greeting": "Salom, {{name}}! 👋",
+      "heroSubtitle": "Bugungi darslaringiz va o'quvchilaringizning holati bilan tanishing.",
+      "activeGroups": "Faol guruhlar",
+      "totalStudents": "Jami o'quvchilar",
+      "myActivity": "So'nggi faoliyatim",
+      "noActivity": "Harakatlar mavjud emas",
+      "upcomingTitle": "Bugun va yaqin darslaringiz",
+      "noUpcoming": "Rejalashtirilgan dars yo'q",
+      "pendingAttendance": "<b>{{count}}</b> ta darsingiz uchun yo'qlama kiritilmagan",
+      "viewAll": "Barchasini ko'rish ({{count}})"
+    },
+    "profile": {
+      "notFound": "Profil ma'lumotlari topilmadi",
+      "editDescription": "Faqat email va profil rasmini o'zgartirishingiz mumkin",
+      "adminOnlyHint": "Ism-familiya va telefon raqamini faqat administrator o'zgartira oladi."
+    },
+    "giveCoin": {
+      "title": "Tanga berish",
+      "description": "{{name}}ga coin qo'shing yoki ayiring",
+      "deduct": "Ayirish",
+      "amountPlaceholder": "Masalan: 15",
+      "notePlaceholder": "Masalan: Olimpiadada faol ishtirok etgani uchun",
+      "success": "Operatsiya bajarildi"
+    },
+    "sessions": {
+      "subtitle": "Barcha darslaringiz va yo'qlama holati",
+      "noPending": "Yo'qlama kutilayotgan dars yo'q",
+      "empty": "Darslar mavjud emas"
+    },
+    "coinRules": {
+      "title": "Tanga qoidalari",
+      "subtitle": "Coin qanday ishlab topilishi va ayirilishi qoidalari",
+      "newRule": "Yangi qoida",
+      "emptyTitle": "Qoidalar mavjud emas",
+      "emptyText": "Hozircha hech qanday tanga qoidasi yaratilmagan."
     }
   },
   "sessions": {
@@ -839,7 +889,8 @@
       "lesson": "Dars",
       "exam": "Imtihon",
       "competition": "Musobaqa",
-      "extra": "Qo'shimcha"
+      "extra": "Qo'shimcha",
+      "trial": "Sinov"
     },
     "evaluationMode": {
       "attendance": "Yo'qlama",
@@ -921,7 +972,8 @@
       "groupForbidden": "Bu guruhni ko'rish huquqingiz yo'q",
       "groupLoadError": "Guruh o'quvchilarini yuklab bo'lmadi",
       "present": "Keldi",
-      "homework": "Uy vazifasi"
+      "homework": "Uy vazifasi",
+      "absent": "Kelmadi"
     },
     "deleteConfirm": "\"{{group}}\" guruhining {{time}} dagi darsini o'chirishni tasdiqlaysizmi?",
     "noSessions": "Hali Sessiyalar mavjud emas!",
@@ -1249,5 +1301,146 @@
     "stockNotRestored": "Zaxira o'zgarmadi",
     "rewardFilter": "Sovg'a: {{title}}",
     "rewardFilterFallback": "tanlangan sovg'a"
+  },
+  "system": {
+    "goBack": "Ortga qaytish",
+    "errorBoundary": {
+      "title": "Nimadir xato ketdi",
+      "description": "Sahifada kutilmagan xatolik yuz berdi. Iltimos, sahifani qayta yuklab ko'ring",
+      "reload": "Sahifani yangilash"
+    },
+    "forbidden": {
+      "title": "403 — Ruxsat yo'q",
+      "description": "Ushbu sahifani ko'rish uchun sizda yetarli huquq mavjud emas"
+    },
+    "notFound": {
+      "title": "Sahifa Topilmadi!",
+      "description": "Bunday sahifa mavjud emas. Iltimos URL ni tekshirib qayta urinib ko'ring"
+    },
+    "comingSoon": {
+      "title": "Tez orada...",
+      "description": "Bu funksiya \"ishlab chiqish\" jarayonida, tez orada ishga tushadi"
+    }
+  },
+  "brand": {
+    "tagline": "Bilim bog'i"
+  },
+  "teacherNav": {
+    "cabinet": "O'qituvchi kabineti",
+    "main": "Asosiy",
+    "groups": "Guruhlar (Dars jadvali)",
+    "sessions": "Darslarim",
+    "students": "O'quvchilarim",
+    "coinRules": "Tanga qoidalari",
+    "profile": "Shaxsiy profil",
+    "short": {
+      "main": "Asosiy",
+      "groups": "Guruhlar",
+      "sessions": "Darslar",
+      "students": "O'quvchilar",
+      "coinRules": "Tanga",
+      "profile": "Profil"
+    }
+  },
+  "dates": {
+    "today": "Bugun",
+    "yesterday": "Kecha",
+    "todayWithDate": "BUGUN · {{date}}",
+    "tomorrowWithDate": "ERTAGA · {{date}}",
+    "months": {
+      "january": "yanvar",
+      "february": "fevral",
+      "march": "mart",
+      "april": "aprel",
+      "may": "may",
+      "june": "iyun",
+      "july": "iyul",
+      "august": "avgust",
+      "september": "sentabr",
+      "october": "oktabr",
+      "november": "noyabr",
+      "december": "dekabr"
+    }
+  },
+  "dashboard": {
+    "notFound": "Dashboard ma'lumotlari topilmadi",
+    "classSelectPlaceholder": "Sinf tanlang"
+  },
+  "transactionSource": {
+    "homework": "Uyga vazifa",
+    "attendance": "Davomat",
+    "competition": "Musobaqa",
+    "exam": "Imtihon",
+    "bonus": "Bonus",
+    "manual": "Qo'lda berilgan",
+    "purchase": "Xarid",
+    "penalty": "Jarima",
+    "other": "Qo'shimcha"
+  },
+  "calendarChip": {
+    "cancelledTitle": "{{group}}: bekor qilindi",
+    "rescheduledTitle": "{{group}}: vaqti o'zgardi — {{start}}:{{end}}",
+    "locked": "qulflangan"
+  },
+  "studentProfile": {
+    "tabs": {
+      "attendance": "Davomat tarixi",
+      "coins": "Tanga tarixi",
+      "purchases": "Xaridlar"
+    },
+    "notFound": "Profil ma'lumotlari topilmadi",
+    "stats": {
+      "noPurchases": "Hali xarid yo'q"
+    },
+    "attendance": {
+      "title": "Davomat tarixi",
+      "lastRecords": "So'nggi {{count}} ta yozuv",
+      "attendanceRate": "{{rate}}% qatnashuv",
+      "homeworkRate": "{{rate}}% uy vazifa",
+      "emptyTitle": "Davomat tarixi mavjud emas",
+      "emptyText": "Darslarga qatnashgach, davomat tarixi shu yerda ko'rinadi.",
+      "emptyFiltered": "Tanlangan filtr bo'yicha davomat topilmadi.",
+      "homeworkDone": "Uy vazifasi bajarilgan",
+      "homeworkNotDone": "Uy vazifasi bajarilmagan",
+      "homeworkShort": "HW",
+      "fromDate": "Sanadan",
+      "toDate": "Sanagacha"
+    },
+    "groups": {
+      "tabs": {
+        "groups": "Guruhlarim",
+        "calendar": "Dars jadvali"
+      },
+      "pageSubtitle": "Guruhlaringiz, dars jadvali va davomat tarixi",
+      "teacherLabel": "O'qituvchi: {{name}}",
+      "classmates": "Guruhdoshlar ({{count}})",
+      "emptyTitle": "Guruhlar mavjud emas",
+      "emptyText": "Siz hozircha hech qanday guruhga a'zo emassiz.",
+      "coinThisMonth": "Coin (bu oy)",
+      "assignments": "Topshiriq",
+      "nextLesson": "Keyingi dars:",
+      "studentsCount": "{{count}} o'quvchi",
+      "history": "Guruh tarixi"
+    },
+    "dashboard": {
+      "upcomingTitle": "Bugun va ertaga darslaringiz",
+      "noUpcoming": "Rejalashtirilgan dars yo'q",
+      "recentActivity": "So'nggi faoliyat",
+      "noActivity": "Harakatlar mavjud emas",
+      "attendanceLabel": "Bugungi davomat",
+      "attendanceFull": "Barcha darslarga qatnashdingiz",
+      "attendanceLast30": "So'nggi 30 kunlik davomat",
+      "attendanceValue": "{{present}} / {{total}} dars",
+      "homeworkLabel": "Uy vazifalari",
+      "homeworkLast30": "30 kunlik davrda bajarilgan",
+      "homeworkValue": "{{count}} topshiriq",
+      "weeklyOffer": "Haftaning taklifi",
+      "weeklyOfferText": "<b>\"{{title}}\"</b> — {{price}} coin evaziga sotib oling"
+    }
+  },
+  "table": {
+    "empty": "Ma'lumot mavjud emas!",
+    "notFound": "Ma'lumot topilmadi.",
+    "paginationSummary": "<b>{{total}}</b> ta natijadan <b>{{from}}-{{to}}</b> tagachasi ko'rsatilmoqda"
   }
 }

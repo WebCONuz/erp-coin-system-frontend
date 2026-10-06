@@ -36,7 +36,7 @@ export const StudentDataFilter = ({
     groups?.data.map((g) => ({ value: g.id, label: g.name })) ?? [];
   const sortOptions: { field: StudentSortField; label: string }[] = [
     { field: "fullName", label: t("common.name") },
-    { field: "coin", label: "Coin" },
+    { field: "coin", label: t("sessions.results.coin") },
   ];
 
   return (

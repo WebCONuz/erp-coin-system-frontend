@@ -1,4 +1,5 @@
 import { Coins, Gift, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { formatDate } from "@/ustils";
 import { RadialProgress } from "@/components/shared/charts";
 import type { StudentDetailFull } from "@/features/students/types";
@@ -10,6 +11,7 @@ const AttendanceRingTile = ({
   present: number;
   total: number;
 }) => {
+  const { t } = useTranslation();
   const percent = total ? Math.round((present / total) * 100) : 0;
 
   return (
@@ -25,7 +27,9 @@ const AttendanceRingTile = ({
         <p className="font-display text-xl font-bold text-ink">
           {present}/{total}
         </p>
-        <p className="text-xs text-ink-soft">Davomat</p>
+        <p className="text-xs text-ink-soft">
+          {t("students.detail.attendance")}
+        </p>
       </div>
     </div>
   );
@@ -36,6 +40,7 @@ export const ProfileStatsRow = ({
 }: {
   student: StudentDetailFull;
 }) => {
+  const { t } = useTranslation();
   const lastTx = student.coinTransactionsReceived?.[0];
   const lastCoinActivity = lastTx
     ? `${lastTx.direction === "earn" ? "+" : "-"}${lastTx.amount} · ${formatDate(lastTx.createdAt, "dd.MM.yyyy")}`
@@ -51,7 +56,9 @@ export const ProfileStatsRow = ({
           <p className="font-display text-xl font-bold text-ink">
             {student.wallet?.balance ?? 0}
           </p>
-          <p className="text-xs text-ink-soft">Coin balansi</p>
+          <p className="text-xs text-ink-soft">
+            {t("students.detail.coinBalance")}
+          </p>
           {lastCoinActivity && (
             <p className="text-[11px] text-forest font-medium mt-0.5">
               {lastCoinActivity}
@@ -68,7 +75,9 @@ export const ProfileStatsRow = ({
           <p className="font-display text-xl font-bold text-ink">
             {student.groupMemberships?.length ?? 0}
           </p>
-          <p className="text-xs text-ink-soft">Guruhlar soni</p>
+          <p className="text-xs text-ink-soft">
+            {t("students.detail.groupsCount")}
+          </p>
         </div>
       </div>
 
@@ -80,10 +89,12 @@ export const ProfileStatsRow = ({
           <p className="font-display text-xl font-bold text-ink">
             {student.stats?.totalPurchases ?? 0}
           </p>
-          <p className="text-xs text-ink-soft">Sotib olingan</p>
+          <p className="text-xs text-ink-soft">
+            {t("students.detail.purchased")}
+          </p>
           {!student.stats?.totalPurchases && (
             <p className="text-[11px] text-ink-soft/70 mt-0.5">
-              Hali xarid yo'q
+              {t("studentProfile.stats.noPurchases")}
             </p>
           )}
         </div>

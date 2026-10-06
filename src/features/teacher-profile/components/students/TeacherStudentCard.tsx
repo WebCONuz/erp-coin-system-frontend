@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Coins, Phone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { StudentDetail } from "@/features/students/types";
 import { GiveCoinModal } from "./GiveCoinModal";
 
@@ -11,6 +12,7 @@ export const TeacherStudentCard = ({
   student: StudentDetail;
   groupId?: string;
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [coinModalOpen, setCoinModalOpen] = useState(false);
 
@@ -35,7 +37,7 @@ export const TeacherStudentCard = ({
           </div>
           {!student.isActive && (
             <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-bloom/10 text-bloom">
-              Nofaol
+              {t("common.inactive")}
             </span>
           )}
         </div>
@@ -43,7 +45,7 @@ export const TeacherStudentCard = ({
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-ink/8">
           <span className="flex items-center gap-1.5 text-sm font-medium text-gold">
             <Coins size={14} />
-            {student.wallet?.balance ?? 0} coin
+            {student.wallet?.balance ?? 0} {t("common.coinLabel")}
           </span>
           <button
             type="button"
@@ -53,7 +55,7 @@ export const TeacherStudentCard = ({
             }}
             className="text-xs font-medium text-forest hover:underline"
           >
-            + Coin berish
+            {t("teacherProfile.students.giveCoinButton")}
           </button>
         </div>
       </div>

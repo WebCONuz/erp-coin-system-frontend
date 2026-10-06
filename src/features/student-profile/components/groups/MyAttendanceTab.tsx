@@ -68,20 +68,20 @@ export const MyAttendanceTab = () => {
           <ControlledSelect
             control={form.control}
             name="groupId"
-            placeholder="Barcha guruhlar"
+            placeholder={t("sessions.filter.allGroups")}
             options={(groups ?? []).map((g) => ({ value: g.id, label: g.name }))}
             className="w-full sm:w-48"
           />
           <ControlledDatePicker
             control={form.control}
             name="from"
-            placeholder="Sanadan"
+            placeholder={t("studentProfile.attendance.fromDate")}
             className="w-full sm:w-auto sm:min-w-40"
           />
           <ControlledDatePicker
             control={form.control}
             name="to"
-            placeholder="Sanagacha"
+            placeholder={t("studentProfile.attendance.toDate")}
             className="w-full sm:w-auto sm:min-w-40"
           />
         </div>
@@ -93,10 +93,10 @@ export const MyAttendanceTab = () => {
         <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-ink/10 bg-white">
           <CalendarCheck size={22} className="text-ink-soft/50 mb-2" />
           <p className="text-sm font-medium text-ink">
-            Davomat tarixi mavjud emas
+            {t("studentProfile.attendance.emptyTitle")}
           </p>
           <p className="text-xs text-ink-soft mt-1 max-w-xs">
-            Tanlangan filtr bo'yicha davomat topilmadi.
+            {t("studentProfile.attendance.emptyFiltered")}
           </p>
         </div>
       ) : (
@@ -139,7 +139,9 @@ export const MyAttendanceTab = () => {
                     }`}
                   >
                     {record.isPresent ? <Check size={11} /> : <X size={11} />}
-                    {record.isPresent ? "Keldi" : "Kelmadi"}
+                    {record.isPresent
+                      ? t("sessions.attendance.present")
+                      : t("sessions.attendance.absent")}
                   </span>
                   {record.session.evaluationMode === "scored" ? (
                     record.isPresent && (
@@ -167,7 +169,7 @@ export const MyAttendanceTab = () => {
                       ) : (
                         <X size={11} />
                       )}
-                      HW
+                      {t("studentProfile.attendance.homeworkShort")}
                     </span>
                   )}
                 </div>

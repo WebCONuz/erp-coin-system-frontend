@@ -1,12 +1,6 @@
 import { BookOpen, Clock3, DoorOpen, GraduationCap } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { TeacherCalendarEntry } from "../../types";
-
-const SESSION_TYPE_LABELS: Record<string, string> = {
-  lesson: "Dars",
-  exam: "Imtihon",
-  trial: "Sinov",
-  competition: "Musobaqa",
-};
 
 interface Props {
   entry: TeacherCalendarEntry;
@@ -19,6 +13,7 @@ export const TeacherSessionChip = ({
   groupName,
   currentTeacherId,
 }: Props) => {
+  const { t } = useTranslation();
   const { template, exception, session } = entry;
   const subjectName = template.subject?.name;
   const teacherName = template.teacher?.fullName;
@@ -27,12 +22,12 @@ export const TeacherSessionChip = ({
   if (exception?.isCancelled) {
     return (
       <div
-        title={`${groupName}: bekor qilindi${exception.note ? ` — ${exception.note}` : ""}`}
+        title={`${t("calendarChip.cancelledTitle", { group: groupName })}${exception.note ? ` — ${exception.note}` : ""}`}
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-bloom bg-bloom/10"
       >
         <span className="line-through">{subjectName ?? groupName}</span>
         <br />
-        Bekor qilindi
+        {t("plans.chip.cancelled")}
       </div>
     );
   }
@@ -40,7 +35,7 @@ export const TeacherSessionChip = ({
   if (exception) {
     return (
       <div
-        title={`${groupName}: vaqti o'zgardi — ${exception.startTime}:${exception.endTime}${exception.note ? ` (${exception.note})` : ""}`}
+        title={`${t("calendarChip.rescheduledTitle", { group: groupName, start: exception.startTime, end: exception.endTime })}${exception.note ? ` (${exception.note})` : ""}`}
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-gold bg-gold/15"
       >
         {subjectName ?? groupName}
@@ -55,7 +50,7 @@ export const TeacherSessionChip = ({
 
   return (
     <div
-      title={`${groupName}: ${SESSION_TYPE_LABELS[session?.sessionType ?? ""] ?? ""}${session?.topic ? ` — ${session.topic}` : ""}`}
+      title={`${groupName}: ${session?.sessionType ? t(`sessions.type.${session.sessionType}`, { defaultValue: "" }) : ""}${session?.topic ? ` — ${session.topic}` : ""}`}
       className={`w-full space-y-0.5 rounded px-1.5 py-1 text-left text-[11px] font-medium ${
         isOwn ? "bg-gold/25 text-forest-deep" : "bg-paper-soft text-ink-soft"
       }`}
