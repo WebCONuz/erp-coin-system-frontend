@@ -319,6 +319,8 @@ export const TemplateFormModal = ({
               <ControlledDatePicker
                 control={form.control}
                 name="validFrom"
+                // DatePicker'dagi standart `min-w-60` ikki ustunli grid'dan chiqib ketmasin.
+                className="min-w-0"
                 label={`${t("plans.templateForm.validFrom")} ${t("common.optional")}`}
                 placeholder={t("common.date")}
                 buttonClassName="h-8"
@@ -331,6 +333,8 @@ export const TemplateFormModal = ({
               <ControlledDatePicker
                 control={form.control}
                 name="validTo"
+                // DatePicker'dagi standart `min-w-60` ikki ustunli grid'dan chiqib ketmasin.
+                className="min-w-0"
                 label={`${t("plans.templateForm.validTo")} ${t("common.optional")}`}
                 placeholder={t("common.date")}
                 buttonClassName="h-8"
