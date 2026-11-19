@@ -60,6 +60,7 @@ export const BulkGiveCoinModal = ({
     toggleSelectAll,
     result,
     activeRules,
+    teacherCoinLimit,
     isRulesLoading,
     isPending,
     submit,
@@ -256,6 +257,7 @@ export const BulkGiveCoinModal = ({
                                 <Input
                                   type="number"
                                   min={1}
+                                  max={teacherCoinLimit ?? undefined}
                                   placeholder={t(
                                     "bulkCoin.custom.amountPlaceholder",
                                   )}
@@ -266,6 +268,13 @@ export const BulkGiveCoinModal = ({
                                   }
                                 />
                               </FormControl>
+                              {teacherCoinLimit !== null && (
+                                <p className="text-xs text-ink-soft">
+                                  {t("bulkCoin.teacherLimitHint", {
+                                    limit: teacherCoinLimit,
+                                  })}
+                                </p>
+                              )}
                               <FormMessage />
                             </FormItem>
                           )}

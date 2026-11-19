@@ -81,7 +81,10 @@ const StudentDetail = () => {
             </TabsList>
 
             <AttendanceHistoryTabV2 student={student} />
-            <CoinHistoryTab student={student} />
+            {/* Teacher /history da faqat o'zi berganlarini ko'radi — to'liq tarix (oxirgi 20 ta) /students/:id da. */}
+            <CoinHistoryTab
+              transactions={student.coinTransactionsReceived ?? []}
+            />
           </Tabs>
 
           <GiveCoinModal

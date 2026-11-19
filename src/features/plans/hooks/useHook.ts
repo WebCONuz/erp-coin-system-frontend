@@ -1,4 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  type QueryClient,
+} from "@tanstack/react-query";
+import { sessionKeys } from "@/features/sessions/constants";
 import { scheduleTemplateKeys } from "../constants";
 import {
   createException,
@@ -19,6 +25,18 @@ import type {
   UpdateScheduleTemplateDto,
   Weekday,
 } from "../types";
+
+/**
+ * Shablon/istisno o'zgarsa backend kelajakdagi sessiyalarni ham moslashtiradi
+ * (`sessionSync`) — kalendar va sessiyalar ro'yxati keshini yangilaymiz.
+ */
+export const invalidateScheduleCaches = (queryClient: QueryClient) => {
+  queryClient.invalidateQueries({
+    queryKey: scheduleTemplateKeys.allTemplates(),
+  });
+  queryClient.invalidateQueries({ queryKey: ["schedule-calendar"] });
+  queryClient.invalidateQueries({ queryKey: sessionKeys.allSessions() });
+};
 
 // ─── Schedule templates (Kanban) ─────────────────────────────────────────────
 export const useScheduleTemplates = (
@@ -50,11 +68,7 @@ export const useUpdateScheduleTemplate = (templateId: string) => {
   return useMutation({
     mutationFn: (data: UpdateScheduleTemplateDto) =>
       updateScheduleTemplate(templateId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: scheduleTemplateKeys.allTemplates(),
-      });
-    },
+    onSuccess: () => invalidateScheduleCaches(queryClient),
   });
 };
 
@@ -69,11 +83,7 @@ export const useMoveScheduleTemplate = () => {
       templateId: string;
       weekday: Weekday;
     }) => updateScheduleTemplate(templateId, { weekday }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: scheduleTemplateKeys.allTemplates(),
-      });
-    },
+    onSuccess: () => invalidateScheduleCaches(queryClient),
   });
 };
 
@@ -82,11 +92,7 @@ export const useDeleteScheduleTemplate = () => {
 
   return useMutation({
     mutationFn: (templateId: string) => deleteScheduleTemplate(templateId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: scheduleTemplateKeys.allTemplates(),
-      });
-    },
+    onSuccess: () => invalidateScheduleCaches(queryClient),
   });
 };
 
@@ -108,11 +114,7 @@ export const useGenerateSessions = () => {
 
   return useMutation({
     mutationFn: (data: GenerateSessionsDto) => generateSessions(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["schedule-calendar"],
-      });
-    },
+    onSuccess: () => invalidateScheduleCaches(queryClient),
   });
 };
 
@@ -123,9 +125,7 @@ export const useCreateException = (templateId: string) => {
   return useMutation({
     mutationFn: (data: CreateExceptionDto) =>
       createException(templateId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["schedule-calendar"] });
-    },
+    onSuccess: () => invalidateScheduleCaches(queryClient),
   });
 };
 
@@ -140,9 +140,7 @@ export const useUpdateException = () => {
       exceptionId: string;
       data: UpdateExceptionDto;
     }) => updateException(exceptionId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["schedule-calendar"] });
-    },
+    onSuccess: () => invalidateScheduleCaches(queryClient),
   });
 };
 
@@ -151,8 +149,6 @@ export const useDeleteException = () => {
 
   return useMutation({
     mutationFn: (exceptionId: string) => deleteException(exceptionId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["schedule-calendar"] });
-    },
+    onSuccess: () => invalidateScheduleCaches(queryClient),
   });
 };

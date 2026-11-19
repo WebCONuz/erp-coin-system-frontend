@@ -9,7 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
   ControlledInput,
   ControlledSelect,
@@ -17,6 +25,7 @@ import {
 } from "@/components/controls";
 import { useCreateCoinRule } from "@/features/coin-rules/hooks";
 import {
+  COIN_RULE_AMOUNT_MAX,
   getDirectionOptions,
   getSourceTypeOptions,
   getTriggerTypeOptions,
@@ -25,6 +34,8 @@ import {
   createCoinRuleFormSchema,
   type CoinRuleFormValues,
 } from "@/features/coin-rules/schema";
+import { useTeacherCoinLimit } from "@/features/tenant-settings/hooks";
+import { translateApiError } from "@/ustils";
 import { useMyTaughtGroups } from "../../hooks";
 
 interface Props {
@@ -51,7 +62,12 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
   const triggerTypeOptions = getTriggerTypeOptions(t);
   const sourceTypeOptions = getSourceTypeOptions(t);
 
-  const coinRuleFormSchema = useMemo(() => createCoinRuleFormSchema(t), [t]);
+  // Teacher qoidasining coinAmount i ham tenant limitidan oshmasligi kerak.
+  const { limit: teacherCoinLimit } = useTeacherCoinLimit();
+  const coinRuleFormSchema = useMemo(
+    () => createCoinRuleFormSchema(t, teacherCoinLimit),
+    [t, teacherCoinLimit],
+  );
 
   const form = useForm<CoinRuleFormValues>({
     resolver: zodResolver(coinRuleFormSchema),
@@ -96,8 +112,7 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
           toast.success(t("coinRules.teacherForm.createdToast"));
           onClose();
         },
-        onError: (error: any) =>
-          toast.error(error?.data?.message || t("common.error")),
+        onError: (error: unknown) => toast.error(translateApiError(error, t)),
       },
     );
   };
@@ -124,13 +139,37 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
               inputClassName="h-8"
             />
 
-            <ControlledInput
+            {/* Raqam sifatida saqlanadi — sxema `z.number()` (satr rad etiladi). */}
+            <FormField
               control={form.control}
               name="coinAmount"
-              label={t("coinRules.amountLabel")}
-              placeholder="10"
-              isNumber
-              inputClassName="h-8"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("coinRules.amountLabel")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={teacherCoinLimit ?? COIN_RULE_AMOUNT_MAX}
+                      placeholder="10"
+                      className="h-8"
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(e) =>
+                        field.onChange(e.target.valueAsNumber || 0)
+                      }
+                    />
+                  </FormControl>
+                  {teacherCoinLimit !== null && (
+                    <p className="text-xs text-ink-soft">
+                      {t("bulkCoin.teacherLimitHint", {
+                        limit: teacherCoinLimit,
+                      })}
+                    </p>
+                  )}
+                  <FormMessage />
+                </FormItem>
+              )}
             />
 
             <div className="grid grid-cols-2 gap-3">

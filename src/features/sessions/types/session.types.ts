@@ -53,6 +53,13 @@ export interface SessionItem {
   lockedAt?: string | null;
   /** Shu sessionda yo'qlama kiritilganmi (isLocked'dan farqli — tahrirlanish mumkinligiga aloqasi yo'q). */
   isChecked: boolean;
+  /**
+   * Yo'qlama/natija **birinchi** saqlangan vaqt (qayta saqlash o'zgartirmaydi).
+   * Teacher uchun tahrirlash muddati: `checkedAt + 3 kun`.
+   */
+  checkedAt?: string | null;
+  /** Jadval shablonidan yaratilgan bo'lsa — shablon ID'si; qo'lda yaratilgan bo'lsa `null`. */
+  templateId?: string | null;
   group: SessionGroupRef;
   room: SessionRoomRef;
   teacher: SessionTeacherRef;
@@ -107,9 +114,17 @@ export interface DeleteSessionResponse {
 }
 
 // ─── Attendance ───────────────────────────────────────────────────────────────
+/**
+ * Davomat holati. `present`/`late` → `isPresent: true`; `excused`/`absent` → `false`.
+ * `late` — "Kechikish" qoidasi bo'yicha coin (bo'lmasa oddiy davomat coini),
+ * `excused` — coin ham, jarima ham yo'q, `absent` — jarima qoidasi bo'lsa jarima.
+ */
+export type AttendanceStatus = "present" | "late" | "excused" | "absent";
+
+/** Yangi format: `status` yuboriladi (`isPresent` bilan birga yuborilsa mos bo'lishi shart). */
 export interface AttendanceRecordInput {
   studentId: string;
-  isPresent: boolean;
+  status: AttendanceStatus;
   homeworkDone: boolean;
 }
 
@@ -156,7 +171,10 @@ export type SaveResultsResponse = SaveAttendanceResponse;
 
 export interface AttendanceRecord {
   id: string;
+  /** Eski yozuvlarda migratsiya: `isPresent: true` → `present`, `false` → `absent`. */
+  status?: AttendanceStatus;
   isPresent: boolean;
+  tenantId?: string;
   homeworkDone: boolean;
   /** Faqat `scored` rejimda; `attendance` da doim `null`. */
   score?: number | null;
@@ -168,6 +186,36 @@ export interface AttendanceRecord {
     fullName: string;
     phone: string;
   };
+}
+
+// ─── Roster (GET /sessions/:id/roster) ───────────────────────────────────────
+// Yo'qlama/natija formasi uchun — faqat **dars sanasida** guruh a'zosi bo'lgan o'quvchilar.
+export interface RosterRecord {
+  status: AttendanceStatus;
+  isPresent: boolean;
+  homeworkDone: boolean;
+  score: number | null;
+  note: string | null;
+}
+
+export interface RosterStudent {
+  student: { id: string; fullName: string; avatarUrl: string | null };
+  joinedAt: string;
+  /** Bo'lsa — o'quvchi keyinroq guruhdan chiqarilgan. */
+  leftAt: string | null;
+  /** `null` — hali yo'qlama qilinmagan. */
+  record: RosterRecord | null;
+  coinAwarded: number;
+}
+
+export interface SessionRoster {
+  session: {
+    id: string;
+    sessionDate: string;
+    evaluationMode: EvaluationMode;
+  };
+  /** Ism bo'yicha tartiblangan. */
+  students: RosterStudent[];
 }
 
 // ─── Lock / unlock ────────────────────────────────────────────────────────────

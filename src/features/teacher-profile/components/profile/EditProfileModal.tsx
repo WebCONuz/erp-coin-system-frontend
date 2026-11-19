@@ -8,6 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { AVATAR_URL_MAX, isValidAvatarUrl, translateApiError } from "@/ustils";
 import { useUpdateTeacherProfile } from "../../hooks";
 import type { TeacherProfile } from "../../types";
 
@@ -30,10 +31,20 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
     }
   }, [open, profile]);
 
+  const trimmedAvatarUrl = avatarUrl.trim();
+  const avatarUrlError =
+    trimmedAvatarUrl.length > AVATAR_URL_MAX
+      ? t("validation.avatarUrlMax")
+      : trimmedAvatarUrl && !isValidAvatarUrl(trimmedAvatarUrl)
+        ? t("validation.avatarUrlInvalid")
+        : "";
+
   const handleSubmit = () => {
+    if (avatarUrlError) return;
     const payload: { email?: string; avatarUrl?: string } = {};
     if (email !== (profile.email ?? "")) payload.email = email;
-    if (avatarUrl !== (profile.avatarUrl ?? "")) payload.avatarUrl = avatarUrl;
+    if (trimmedAvatarUrl !== (profile.avatarUrl ?? ""))
+      payload.avatarUrl = trimmedAvatarUrl;
 
     if (!Object.keys(payload).length) {
       onClose();
@@ -45,8 +56,7 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
         toast.success(t("profile.updated"));
         onClose();
       },
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
+      onError: (error: unknown) => toast.error(translateApiError(error, t)),
     });
   };
 
@@ -85,14 +95,18 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
               placeholder="https://..."
-              className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
+              aria-invalid={!!avatarUrlError}
+              className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50 aria-invalid:border-bloom/60"
             />
+            {avatarUrlError && (
+              <p className="mt-1 text-xs text-bloom">{avatarUrlError}</p>
+            )}
           </div>
 
           <button
             type="button"
             onClick={handleSubmit}
-            disabled={updateProfile.isPending}
+            disabled={updateProfile.isPending || !!avatarUrlError}
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
           >
             {updateProfile.isPending ? t("common.saving") : t("common.save")}

@@ -12,6 +12,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { getSessionTypeLabel } from "@/features/sessions/constants";
 import { formatSessionScore } from "@/features/sessions/utils";
 import { useMyAttendance, useMyGroups } from "../../hooks";
+import { AttendanceStatusBadge } from "../AttendanceStatusBadge";
 
 interface FilterValues {
   groupId: string;
@@ -131,18 +132,11 @@ export const MyAttendanceTab = () => {
                   )}
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span
-                    className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
-                      record.isPresent
-                        ? "bg-forest/10 text-forest"
-                        : "bg-bloom/10 text-bloom"
-                    }`}
-                  >
-                    {record.isPresent ? <Check size={11} /> : <X size={11} />}
-                    {record.isPresent
-                      ? t("sessions.attendance.present")
-                      : t("sessions.attendance.absent")}
-                  </span>
+                  <AttendanceStatusBadge
+                    status={record.status}
+                    isPresent={record.isPresent}
+                    className="py-0.5"
+                  />
                   {record.session.evaluationMode === "scored" ? (
                     record.isPresent && (
                       <span

@@ -93,6 +93,6 @@ export interface UpdateTeacherDto {
 }
 
 export interface ChangeTeacherPasswordDto {
-  oldPassword?: string;
+  /** Admin → past darajadagi user: `oldPassword` kerak emas (backend e'tiborsiz qoldiradi). */
   newPassword: string;
 }

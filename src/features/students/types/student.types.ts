@@ -1,3 +1,6 @@
+import type { CoinReversalFields, CoinSourceType } from "@/types";
+import type { AttendanceStatus } from "@/features/sessions/types";
+
 // ─── List item (GET /api/students) ──────────────────────────────────────────
 export interface StudentDetail {
   id: string;
@@ -33,19 +36,35 @@ export interface StudentGroup {
   joinedAt: string;
 }
 
-export interface CoinTransaction {
+// GET /coin-transactions/history — teskari yozuv maydonlari bilan.
+export interface CoinTransaction extends CoinReversalFields {
   id: string;
   amount: number;
   direction: "earn" | "deduct";
-  sourceType:
-    | "bonus"
-    | "manual"
-    | "attendance"
-    | "homework"
-    | "competition"
-    | "exam";
+  sourceType: CoinSourceType;
   note: string | null;
   createdAt: string;
+  student?: { fullName: string; phone: string } | null;
+  teacher?: { id?: string; fullName: string } | null;
+  rule?: { name: string } | null;
+  group?: { id: string; name: string } | null;
+}
+
+// GET /coin-transactions/history — sahifalash maydonlari `meta` ichida emas, ildizda.
+// Teacher faqat o'zi bergan tranzaksiyalarni ko'radi (teacherId majburan o'zi).
+export interface CoinTransactionHistoryResponse {
+  data: CoinTransaction[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+// DELETE /coin-transactions/:id/cancel
+export interface CancelCoinTransactionResponse {
+  message: string;
+  reversalTransactionId: string;
+  newBalance: number;
 }
 
 export interface StudentPurchase {
@@ -92,17 +111,13 @@ export interface StudentGroupFull {
   };
 }
 
-export interface CoinRecieved {
+// GET /students/:id → coinTransactionsReceived (oxirgi 20 ta, kim berganidan
+// qat'i nazar) — `reversalOfId`/`reversal` bilan.
+export interface CoinRecieved extends CoinReversalFields {
   id: string;
   amount: number;
   direction: "earn" | "deduct";
-  sourceType:
-    | "bonus"
-    | "manual"
-    | "attendance"
-    | "homework"
-    | "competition"
-    | "exam";
+  sourceType: CoinSourceType;
   note: string | null;
   createdAt: string;
   teacher: {
@@ -113,6 +128,8 @@ export interface CoinRecieved {
 
 export interface AttendanceRecord {
   id: string;
+  /** present / late / excused / absent — `isPresent` bilan sinxron. */
+  status?: AttendanceStatus;
   isPresent: boolean;
   homeworkDone: boolean;
   /** Imtihon/musobaqa natijasi (`scored` rejim). */
@@ -186,15 +203,23 @@ export interface DeactivateStudentDto {
 }
 
 export interface ChangePasswordDto {
-  oldPassword?: string;
+  /** Admin → past darajadagi user: `oldPassword` kerak emas (backend e'tiborsiz qoldiradi). */
   newPassword: string;
 }
 
+/**
+ * Qo'lda coin faqat `manual`/`bonus` bo'ladi. Davomat/imtihon coinlari sessiya
+ * tekshiruvi orqali, xarid — xarid moduli orqali yoziladi (boshqasi → 400).
+ */
+export type ManualCoinSourceType = "manual" | "bonus";
+
 export interface CoinTransactionManualDto {
   studentId: string;
+  /** 1 … 100 000; teacher uchun qo'shimcha `teacherCoinLimit`. */
   amount: number;
   direction: "earn" | "deduct";
-  sourceType: "bonus" | "manual" | "attendance" | "homework";
+  sourceType: ManualCoinSourceType;
+  /** Ko'pi bilan 500 belgi. */
   note?: string;
   ruleId?: string;
   groupId?: string;
@@ -202,13 +227,7 @@ export interface CoinTransactionManualDto {
 }
 
 // ─── Bulk coin transactions ───────────────────────────────────────────────────
-export type BulkCoinSourceType =
-  | "attendance"
-  | "homework"
-  | "competition"
-  | "manual"
-  | "bonus"
-  | "purchase";
+export type BulkCoinSourceType = ManualCoinSourceType;
 
 export interface BulkManualCoinDto {
   studentIds: string[];

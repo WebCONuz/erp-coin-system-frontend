@@ -209,6 +209,8 @@ export const useCancelCoinTransaction = (studentId: string) => {
       queryClient.invalidateQueries({
         queryKey: studentKeys.oneStudentById(studentId),
       });
+      queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
+      queryClient.invalidateQueries({ queryKey: dashboardKeys.admin() });
       queryClient.invalidateQueries({
         queryKey: studentKeys.coinTransactions(),
       });

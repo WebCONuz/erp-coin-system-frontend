@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { numberDecimalMask, numberMask } from "@/ustils/mask-number";
-import { MAX_COIN_AMOUNT, MAX_RESULT_NOTE_LENGTH } from "../../constants";
+import { formatDate } from "@/ustils";
+import { MAX_RESULT_NOTE_LENGTH } from "../../constants";
 import type { SessionEvaluation } from "../../hooks";
 import { EVALUATION_TONES, type EvaluationTone } from "./tones";
 
@@ -22,10 +23,11 @@ const maskScore = (value: string, prev: string) => {
   return decimals.length > 2 ? prev : masked;
 };
 
-const maskCoin = (value: string) => {
+/** `max` — teacher uchun tenant limiti, aks holda umumiy chegara. */
+const maskCoin = (value: string, max: number) => {
   const masked = numberMask(value);
   if (!masked) return "";
-  return String(Math.min(Number(masked), MAX_COIN_AMOUNT));
+  return String(Math.min(Number(masked), max));
 };
 
 export const SessionResultsTable = ({ evaluation, disabled, tone }: Props) => {
@@ -35,6 +37,8 @@ export const SessionResultsTable = ({ evaluation, disabled, tone }: Props) => {
   const {
     students,
     maxScore,
+    maxCoinAmount,
+    teacherCoinLimit,
     scoredRecords,
     scoredErrors,
     invalidStudentIds,
@@ -58,7 +62,9 @@ export const SessionResultsTable = ({ evaluation, disabled, tone }: Props) => {
           <Input
             inputMode="numeric"
             value={bulkCoin}
-            onChange={(e) => setBulkCoin(maskCoin(e.target.value))}
+            onChange={(e) =>
+              setBulkCoin(maskCoin(e.target.value, maxCoinAmount))
+            }
             placeholder="0"
             className="h-8 w-24"
           />
@@ -71,6 +77,11 @@ export const SessionResultsTable = ({ evaluation, disabled, tone }: Props) => {
           >
             {t("sessions.results.applyToAll")}
           </Button>
+          {teacherCoinLimit !== null && (
+            <span className={cn("text-xs", styles.muted)}>
+              {t("bulkCoin.teacherLimitHint", { limit: teacherCoinLimit })}
+            </span>
+          )}
         </div>
       )}
 
@@ -80,9 +91,6 @@ export const SessionResultsTable = ({ evaluation, disabled, tone }: Props) => {
             <tr>
               <th className={cn(styles.th, "text-left")}>
                 {t("common.student")}
-              </th>
-              <th className={cn(styles.th, "text-left")}>
-                {t("common.phone")}
               </th>
               <th className={cn(styles.th, "text-center")}>
                 <div className="flex items-center justify-center gap-2">
@@ -132,15 +140,14 @@ export const SessionResultsTable = ({ evaluation, disabled, tone }: Props) => {
                   )}
                 >
                   <td className={cn("px-4 py-2.5 min-w-40", styles.text)}>
-                    {student.fullName}
-                  </td>
-                  <td
-                    className={cn(
-                      "px-4 py-2.5 whitespace-nowrap",
-                      styles.muted,
+                    <div>{student.fullName}</div>
+                    {student.leftAt && (
+                      <div className={cn("text-xs", styles.muted)}>
+                        {t("sessions.attendance.leftGroupAt", {
+                          date: formatDate(student.leftAt, "dd.MM.yyyy"),
+                        })}
+                      </div>
                     )}
-                  >
-                    {student.phone}
                   </td>
                   <td className="px-4 py-2.5 text-center">
                     <Checkbox
@@ -181,7 +188,7 @@ export const SessionResultsTable = ({ evaluation, disabled, tone }: Props) => {
                       placeholder="0"
                       onChange={(e) =>
                         updateScored(student.id, {
-                          coinAmount: maskCoin(e.target.value),
+                          coinAmount: maskCoin(e.target.value, maxCoinAmount),
                         })
                       }
                       className="h-8 w-24"

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { CheckCircle2, Lock } from "lucide-react";
+import { CheckCircle2, Clock, Lock } from "lucide-react";
 
 import {
   Form,
@@ -28,6 +28,10 @@ import {
 import { SessionEvaluationPanel } from "@/features/sessions/components";
 import type { SessionItem } from "@/features/sessions/types";
 import {
+  getAttendanceEditableUntil,
+  isAttendanceEditWindowExpired,
+} from "@/features/sessions/utils";
+import {
   createTeacherSessionInfoFormSchema,
   type TeacherSessionInfoFormValues,
 } from "../../schema";
@@ -40,10 +44,13 @@ export const TeacherSessionForm = ({ session }: Props) => {
   const { t } = useTranslation();
   const isLocked = session.isLocked;
   const isChecked = session.isChecked;
-  // Admin qulflagan bo'lsa YOKI o'qituvchi tekshiruvni allaqachon saqlagan
-  // bo'lsa (isChecked) — o'qituvchi uchun forma to'liq faqat o'qish uchun
-  // bo'lib qoladi; buni faqat administrator o'zgartira oladi.
-  const readOnly = isLocked || isChecked;
+  // Teacher saqlangan yo'qlamani birinchi saqlashdan (`checkedAt`) keyin 3 kun
+  // ichida tahrirlay oladi; keyin — faqat ko'rish (backend
+  // ATTENDANCE_EDIT_WINDOW_EXPIRED). Admin qulflagan bo'lsa ham faqat ko'rish.
+  const editableUntil = getAttendanceEditableUntil(session.checkedAt);
+  const isEditWindowExpired =
+    isChecked && isAttendanceEditWindowExpired(session.checkedAt);
+  const readOnly = isLocked || isEditWindowExpired;
 
   const updateSession = useUpdateSession(session.id);
   const evaluation = useSessionEvaluation({ session, readOnly });
@@ -153,6 +160,14 @@ export const TeacherSessionForm = ({ session }: Props) => {
                       {t("sessions.filter.checked")}
                     </span>
                   )}
+                  {!isLocked && isChecked && editableUntil && !isEditWindowExpired && (
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-gold/15 text-gold">
+                      <Clock size={12} />
+                      {t("sessions.teacherForm.editableUntil", {
+                        date: formatDate(editableUntil, "dd.MM.yyyy HH:mm"),
+                      })}
+                    </span>
+                  )}
                 </div>
                 <span className="text-sm text-ink-soft">
                   {formatDate(session.sessionDate)}
@@ -207,7 +222,7 @@ export const TeacherSessionForm = ({ session }: Props) => {
                 <p className="text-xs text-ink-soft">
                   {isLocked
                     ? t("sessions.lockedFieldsHint")
-                    : t("sessions.teacherForm.checkedReadOnlyHint")}
+                    : t("sessions.teacherForm.editWindowExpiredHint")}
                 </p>
               )}
 
@@ -242,7 +257,10 @@ export const TeacherSessionForm = ({ session }: Props) => {
             <div className="flex justify-end">
               <button
                 type="submit"
-                disabled={isSaving || evaluation.hasErrors}
+                // Dars boshlanmagan — saqlab bo'lmaydi (backend SESSION_NOT_STARTED).
+                disabled={
+                  isSaving || evaluation.hasErrors || !evaluation.hasStarted
+                }
                 className="inline-flex items-center gap-2 rounded-lg bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
               >
                 {isSaving

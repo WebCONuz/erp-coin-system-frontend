@@ -1,3 +1,4 @@
+import type { CoinReversalFields } from "@/types";
 import type { PurchaseStatus } from "@/features/purchases/types";
 
 export interface DashboardSession {
@@ -12,7 +13,8 @@ export interface DashboardSession {
   subject?: { id: string; name: string } | null;
 }
 
-export interface DashboardTransaction {
+// Teskari yozuv maydonlari (reversalOfId / reversal) bilan.
+export interface DashboardTransaction extends CoinReversalFields {
   id: string;
   amount: number;
   direction: "earn" | "deduct";

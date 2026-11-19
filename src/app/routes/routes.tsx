@@ -87,6 +87,8 @@ const SendMessagePage = lazy(
 );
 const RolesPage = lazy(() => import("@/pages/control/admin/RolesPage"));
 const SubjectsPage = lazy(() => import("@/pages/subjects/SubjectsPage"));
+const HolidaysPage = lazy(() => import("@/pages/control/admin/HolidaysPage"));
+const SettingsPage = lazy(() => import("@/pages/control/admin/SettingsPage"));
 
 const withSuspense = (Component: React.ComponentType) => {
   return (
@@ -216,6 +218,14 @@ export const router = createBrowserRouter([
               {
                 path: "employees",
                 element: withSuspense(EmployeesPage),
+              },
+              {
+                path: "holidays",
+                element: withSuspense(HolidaysPage),
+              },
+              {
+                path: "settings",
+                element: withSuspense(SettingsPage),
               },
             ],
           },

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createUsernameSchema } from "@/ustils/username";
+import { createAvatarUrlSchema } from "@/ustils/avatar-url";
 
 type TFn = (key: string) => string;
 
@@ -26,7 +27,7 @@ export const createMyProfileSchema = (t: TFn) =>
       .email(t("profile.schema.email_invalid"))
       .optional()
       .or(z.literal("")),
-    avatarUrl: z.string().trim().optional().or(z.literal("")),
+    avatarUrl: createAvatarUrlSchema(t),
   });
 
 export type MyProfileFormValues = z.infer<

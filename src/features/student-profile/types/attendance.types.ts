@@ -1,8 +1,14 @@
-import type { EvaluationMode } from "@/features/sessions/types";
+import type {
+  AttendanceStatus,
+  EvaluationMode,
+} from "@/features/sessions/types";
 
 export interface MyAttendanceRecord {
   id: string;
+  /** present / late / excused / absent — `isPresent` bilan sinxron. */
+  status?: AttendanceStatus;
   isPresent: boolean;
+  tenantId?: string;
   homeworkDone: boolean;
   /** Imtihon/musobaqa natijasi (`scored` rejim). */
   score?: number | null;

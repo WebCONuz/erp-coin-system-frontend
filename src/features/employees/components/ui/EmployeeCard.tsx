@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/features/auth/hooks/useLogin";
 import type { Employee } from "../../types";
 
 interface Props {
@@ -31,41 +32,47 @@ export const EmployeeCard = ({
   onRestore,
 }: Props) => {
   const { t } = useTranslation();
+  // Teng yoki yuqori darajadagi user (boshqa admin, o'zi) — backend 403 qaytaradi.
+  const { canManage } = useAuth();
+  const isManageable = canManage(data.role);
+
   return (
     <div className="border bg-background rounded-xl p-4 relative">
-      <div className="absolute top-4 right-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="rounded p-1 text-muted-foreground hover:bg-accent">
-              <MoreVertical size={18} />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-42">
-            <DropdownMenuItem onClick={() => onEdit(data)}>
-              <Pencil className="text-blue-500" />
-              {t("common.edit")}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onChangePassword(data)}>
-              <KeyRound className="text-amber-500" />
-              {t("employees.changePasswordTitle")}
-            </DropdownMenuItem>
-            {data.isActive ? (
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => onArchive(data)}
-              >
-                <Archive />
-                {t("employees.archive")}
+      {isManageable && (
+        <div className="absolute top-4 right-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="rounded p-1 text-muted-foreground hover:bg-accent">
+                <MoreVertical size={18} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-42">
+              <DropdownMenuItem onClick={() => onEdit(data)}>
+                <Pencil className="text-blue-500" />
+                {t("common.edit")}
               </DropdownMenuItem>
-            ) : (
-              <DropdownMenuItem onClick={() => onRestore(data)}>
-                <ArchiveRestore className="text-emerald-500" />
-                {t("employees.restore")}
+              <DropdownMenuItem onClick={() => onChangePassword(data)}>
+                <KeyRound className="text-amber-500" />
+                {t("employees.changePasswordTitle")}
               </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+              {data.isActive ? (
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={() => onArchive(data)}
+                >
+                  <Archive />
+                  {t("employees.archive")}
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem onClick={() => onRestore(data)}>
+                  <ArchiveRestore className="text-emerald-500" />
+                  {t("employees.restore")}
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      )}
 
       <div className="flex gap-x-3 items-center mb-3">
         {data.avatarUrl ? (

@@ -24,4 +24,6 @@ export const ENDPOINTS = {
   SCHEDULE_TEMPLATES: "/api/schedule-templates",
   SCHEDULE_EXCEPTIONS: "/api/schedule-exceptions",
   DASHBOARD: "/api/dashboard",
+  TENANT_SETTINGS: "/api/tenant-settings",
+  HOLIDAYS: "/api/holidays",
 };

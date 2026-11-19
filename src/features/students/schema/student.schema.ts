@@ -1,3 +1,4 @@
+import { createAvatarUrlSchema } from "@/ustils/avatar-url";
 import { z } from "zod";
 import { createUsernameSchema } from "@/ustils/username";
 
@@ -25,11 +26,7 @@ export const createCreateStudentSchema = (t: (key: string) => string) =>
       .max(13, t("students.schema.phone_max"))
       .optional()
       .or(z.literal("")),
-    avatarUrl: z
-      .string()
-      .url(t("students.schema.url_invalid"))
-      .optional()
-      .or(z.literal("")),
+    avatarUrl: createAvatarUrlSchema(t),
   });
 
 export const createEditStudentSchema = (t: (key: string) => string) =>
@@ -48,11 +45,7 @@ export const createEditStudentSchema = (t: (key: string) => string) =>
       .email(t("students.schema.email_invalid"))
       .optional()
       .or(z.literal("")),
-    avatarUrl: z
-      .string()
-      .url(t("students.schema.url_invalid"))
-      .optional()
-      .or(z.literal("")),
+    avatarUrl: createAvatarUrlSchema(t),
     parentPhone: z
       .string()
       .min(9, t("students.schema.phone_min"))

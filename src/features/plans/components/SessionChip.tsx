@@ -1,5 +1,6 @@
 import {
   BookOpen,
+  CalendarOff,
   Check,
   Clock3,
   DoorOpen,
@@ -7,7 +8,20 @@ import {
   Pencil,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { CalendarDayEntry } from "../types";
+import type { CalendarDayEntry, CalendarHoliday } from "../types";
+
+/** Dam olish kuni — shu kunda dars yo'q. */
+export const HolidayChip = ({ holiday }: { holiday: CalendarHoliday }) => {
+  const { t } = useTranslation();
+  return (
+    <div className="flex w-full items-center gap-1 truncate rounded px-1.5 py-0.5 text-[11px] font-medium text-rose-700 bg-rose-100 dark:bg-rose-950/50 dark:text-rose-400">
+      <CalendarOff size={11} className="shrink-0" />
+      <span className="truncate">
+        {t("plans.chip.holiday")}: {holiday.name}
+      </span>
+    </div>
+  );
+};
 
 interface Props {
   entry: CalendarDayEntry;
@@ -47,16 +61,27 @@ export const SessionChip = ({
   }
 
   if (exception) {
+    // Istisno vaqtni, xonani yoki o'qituvchini (o'rinbosar) o'zgartirishi mumkin;
+    // `null` — shablondagisi.
+    const hasNewTime = !!exception.startTime && !!exception.endTime;
     return (
       <button
         onClick={hasAction ? onClick : () => {}}
         className="flex w-full items-center justify-between gap-1 truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-amber-700 bg-amber-100 dark:bg-amber-950/50 dark:text-amber-400"
       >
         <span>
-          <b>{t("common.room")}:</b> {template?.room?.name ?? "-"} <br />
-          <b>{t("plans.chip.newTime")}:</b> {exception.startTime} :{" "}
-          {exception?.endTime}
+          <b>{exception.room ? t("plans.chip.newRoom") : t("common.room")}:</b>{" "}
+          {exception.room?.name ?? template?.room?.name ?? "-"} <br />
+          <b>{hasNewTime ? t("plans.chip.newTime") : t("plans.chip.time")}:</b>{" "}
+          {exception.startTime ?? template.startTime} :{" "}
+          {exception.endTime ?? template.endTime}
           <br />
+          {exception.teacher && (
+            <>
+              <b>{t("plans.chip.substitute")}:</b> {exception.teacher.fullName}
+              <br />
+            </>
+          )}
           <b>{t("plans.chip.reason")}: </b>
           {exception.note ? `${exception.note}` : t("plans.chip.technicalReason")}
         </span>

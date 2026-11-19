@@ -28,7 +28,7 @@ import {
   ControlledInput,
   ControlledSelect,
 } from "@/components/controls";
-import { translateApiError } from "@/ustils";
+import { API_ERROR_CODES, getApiErrorData, translateApiError } from "@/ustils";
 import { createSessionFormSchema, type SessionFormValues } from "../schema";
 import {
   useCreateSession,
@@ -96,7 +96,24 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
     form.setValue("evaluationMode", typeConfig?.defaultMode);
   }, [open, typeConfig, form]);
 
-  const onError = (error: unknown) => toast.error(translateApiError(error, t));
+  const onError = (error: unknown) => {
+    const data = getApiErrorData(error);
+    // Shu guruh/sana/vaqtda dars bor — mavjud darsni ochish taklif qilinadi.
+    if (data?.code === API_ERROR_CODES.SESSION_DUPLICATE && data.sessionId) {
+      const existingId = data.sessionId;
+      toast.error(translateApiError(error, t), {
+        action: {
+          label: t("sessions.openExisting"),
+          onClick: () => {
+            onClose();
+            navigate(`/admin/sessions/${existingId}`);
+          },
+        },
+      });
+      return;
+    }
+    toast.error(translateApiError(error, t));
+  };
 
   const onSubmit = (values: SessionFormValues) => {
     const isScored = effectiveMode === "scored";

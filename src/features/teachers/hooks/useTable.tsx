@@ -6,6 +6,7 @@ import type { Group, Teacher } from "../types";
 import { Archive, ArchiveRestore, Eye, KeyRound, Pencil } from "lucide-react";
 import { formatDate } from "@/ustils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth/hooks/useLogin";
 
 interface Props {
   onView?: (teacher: Teacher) => void;
@@ -23,6 +24,7 @@ export const useTable = ({
   onRestore,
 }: Props) => {
   const { t } = useTranslation();
+  const { canManage } = useAuth();
   const [searchParams] = useSearchParams();
   const currentPage = Number(searchParams.get("page")) || 1;
   const columns = useMemo<ColumnDef<Teacher>[]>(
@@ -105,6 +107,8 @@ export const useTable = ({
         header: t("teachers.table.actions"),
         cell: (info) => {
           const teacher = info.row.original as Teacher;
+          // Boshqarish tugmalari faqat o'zidan past darajadagi user uchun.
+          const isManageable = canManage(teacher.role);
 
           return (
             <div className="flex gap-x-1.5">
@@ -115,43 +119,56 @@ export const useTable = ({
               >
                 <Eye className="text-blue-500" />
               </Button>
-              <Button
-                onClick={() => onEdit?.(teacher)}
-                variant="outline"
-                className="border border-emerald-500 rounded-md w-8 h-8 cursor-pointer hover:bg-emerald-100"
-              >
-                <Pencil className="text-emerald-600" />
-              </Button>
-              <Button
-                onClick={() => onChangePassword?.(teacher)}
-                variant="outline"
-                className="border border-amber-300 rounded-md w-8 h-8 cursor-pointer hover:bg-amber-100"
-              >
-                <KeyRound className="text-amber-500" />
-              </Button>
-              {teacher.isActive ? (
-                <Button
-                  onClick={() => onArchive?.(teacher)}
-                  variant="outline"
-                  className="border border-red-300 rounded-md w-8 h-8 cursor-pointer hover:bg-red-100"
-                >
-                  <Archive className="text-red-500" />
-                </Button>
-              ) : (
-                <Button
-                  onClick={() => onRestore?.(teacher)}
-                  variant="outline"
-                  className="border border-gray-300 rounded-md w-8 h-8 cursor-pointer hover:bg-gray-100"
-                >
-                  <ArchiveRestore className="text-gray-500" />
-                </Button>
+              {isManageable && (
+                <>
+                  <Button
+                    onClick={() => onEdit?.(teacher)}
+                    variant="outline"
+                    className="border border-emerald-500 rounded-md w-8 h-8 cursor-pointer hover:bg-emerald-100"
+                  >
+                    <Pencil className="text-emerald-600" />
+                  </Button>
+                  <Button
+                    onClick={() => onChangePassword?.(teacher)}
+                    variant="outline"
+                    className="border border-amber-300 rounded-md w-8 h-8 cursor-pointer hover:bg-amber-100"
+                  >
+                    <KeyRound className="text-amber-500" />
+                  </Button>
+                  {teacher.isActive ? (
+                    <Button
+                      onClick={() => onArchive?.(teacher)}
+                      variant="outline"
+                      className="border border-red-300 rounded-md w-8 h-8 cursor-pointer hover:bg-red-100"
+                    >
+                      <Archive className="text-red-500" />
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => onRestore?.(teacher)}
+                      variant="outline"
+                      className="border border-gray-300 rounded-md w-8 h-8 cursor-pointer hover:bg-gray-100"
+                    >
+                      <ArchiveRestore className="text-gray-500" />
+                    </Button>
+                  )}
+                </>
               )}
             </div>
           );
         },
       },
     ],
-    [t, currentPage, onView, onEdit, onChangePassword, onArchive, onRestore],
+    [
+      t,
+      currentPage,
+      canManage,
+      onView,
+      onEdit,
+      onChangePassword,
+      onArchive,
+      onRestore,
+    ],
   );
 
   return { columns };

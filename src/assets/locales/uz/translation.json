@@ -51,7 +51,9 @@
     "direction": "Yo'nalish",
     "profile": "Profil",
     "logoutAction": "Chiqish",
-    "coinLabel": "coin"
+    "coinLabel": "coin",
+    "next": "Keyingi",
+    "previous": "Oldingi"
   },
   "sourceTypes": {
     "bonus": "Bonus",
@@ -60,7 +62,9 @@
     "competition": "Musobaqa",
     "purchase": "Xarid",
     "manual": "Qo'lda",
-    "exam": "Imtihon"
+    "exam": "Imtihon",
+    "late": "Kechikish",
+    "penalty": "Jarima"
   },
   "apiErrors": {
     "INVALID_EVALUATION_MODE": "Bu sessiya turi uchun tanlangan tekshirish usuli ruxsat etilmagan. Ruxsat etilganlar: {{allowedModes}}",
@@ -69,10 +73,20 @@
     "SESSION_NOT_LOCKED": "Sessiya qulflanmagan",
     "SESSION_ALREADY_CHECKED": "Sessiya tekshirilgan, uning tekshirish usulini o'zgartirib bo'lmaydi",
     "DUPLICATE_STUDENTS": "Ro'yxatda takrorlangan o'quvchilar bor",
-    "STUDENTS_NOT_IN_GROUP": "Ayrim o'quvchilar sessiya guruhida emas",
+    "STUDENTS_NOT_IN_GROUP": "Ayrim o'quvchilar dars sanasida guruh a'zosi bo'lmagan",
     "SCORE_EXCEEDS_MAX": "Ball maksimal balldan ({{maxScore}}) oshmasligi kerak",
     "MAX_SCORE_BELOW_EXISTING": "Maksimal ball kiritilgan eng yuqori balldan ({{highestScore}}) kichik bo'lmasligi kerak",
-    "SESSION_COINS_SPENT": "Ayrim o'quvchilar bu sessiyadan olgan coinlarini sarflab bo'lgan"
+    "SESSION_COINS_SPENT": "Ayrim o'quvchilar bu sessiyadan olgan coinlarini sarflab bo'lgan",
+    "TENANT_INACTIVE": "Tashkilotingiz faoliyati vaqtincha to'xtatilgan. Administratorga murojaat qiling",
+    "TOO_MANY_REQUESTS": "Juda ko'p urinish. Birozdan keyin qayta urinib ko'ring",
+    "TEACHER_COIN_LIMIT_EXCEEDED": "Bir o'quvchiga bir martada ko'pi bilan {{limit}} coin bera olasiz",
+    "SESSION_NOT_STARTED": "Dars hali boshlanmagan ({{startsAt}}) — yo'qlamani dars boshlangandan keyin qo'ying",
+    "INVALID_TIME_RANGE": "Tugash vaqti boshlanish vaqtidan keyin bo'lishi kerak",
+    "ATTENDANCE_EDIT_WINDOW_EXPIRED": "Saqlangan yo'qlamani 3 kun ichida ({{editableUntil}} gacha) tahrirlash mumkin edi. O'zgartirish uchun administratorga murojaat qiling",
+    "SESSION_DATE_TOO_OLD": "O'qituvchi 7 kundan eski sanaga dars qo'sha olmaydi (eng erta: {{earliestDate}}). Administratorga murojaat qiling",
+    "SESSION_DUPLICATE": "Bu guruh uchun ko'rsatilgan sana va vaqtda dars allaqachon mavjud",
+    "SCHEDULE_CONFLICT": "Jadval to'qnashuvi: {{conflict}}",
+    "ATTENDANCE_STATUS_MISMATCH": "Davomat holati va \"keldi\" belgisi bir-biriga mos emas"
   },
   "coinRules": {
     "direction": {
@@ -88,7 +102,8 @@
       "homework": "Uy vazifasi",
       "competition": "Musobaqa",
       "bonus": "Bonus",
-      "penalty": "Jarima"
+      "penalty": "Jarima",
+      "late": "Kechikish"
     },
     "namePlaceholderAdmin": "Masalan: Darsga kelgani uchun",
     "namePlaceholderTeacher": "Masalan: Darsga faol qatnashgani uchun",
@@ -126,7 +141,8 @@
       "amount_min": "Tanga miqdori kamida 1 bo'lishi kerak",
       "direction_required": "Yo'nalishni tanlang",
       "triggerType_required": "Ishga tushirish turini tanlang",
-      "sourceType_required": "Avtomatik qoida uchun manba turi tanlanishi shart"
+      "sourceType_required": "Avtomatik qoida uchun manba turi tanlanishi shart",
+      "description_max": "Tavsif {{max}} belgidan oshmasligi kerak"
     }
   },
   "username": {
@@ -185,7 +201,8 @@
       "password_min": "Parol kamida 6 ta belgidan iborat bo'lishi kerak",
       "newPassword_same": "Yangi parol joriy paroldan farq qilishi kerak",
       "confirmPassword_mismatch": "Parollar mos kelmadi"
-    }
+    },
+    "passwordChangedRelogin": "Parol o'zgartirildi. Xavfsizlik uchun qayta kiring"
   },
   "garden": {
     "levels": {
@@ -251,8 +268,11 @@
     "schema": {
       "amount_int": "Butun son kiriting",
       "rule_required": "Tanga qoidasini tanlang",
-      "amount_invalid": "Miqdorni to'g'ri kiriting"
-    }
+      "amount_invalid": "Miqdorni to'g'ri kiriting",
+      "amount_max": "Miqdor {{max}} dan oshmasligi kerak",
+      "note_max": "Izoh {{max}} belgidan oshmasligi kerak"
+    },
+    "teacherLimitHint": "Bir o'quvchiga bir martada ko'pi bilan {{limit}} coin"
   },
   "admin": {
     "header": {
@@ -446,8 +466,7 @@
       "role_required": "Rol tanlanishi shart",
       "email_invalid": "Email noto'g'ri formatda",
       "parentPhone_min": "Telefon raqam kamida 9 ta raqam",
-      "url_invalid": "URL noto'g'ri formatda",
-      "newPassword_same": "Yangi parol eskisidan farq qilishi kerak"
+      "url_invalid": "URL noto'g'ri formatda"
     },
     "form": {
       "editTitle": "Xodimni tahrirlash",
@@ -460,8 +479,6 @@
       "passwordLabel": "Parol",
       "passwordPlaceholder": "Parol kiriting",
       "parentPhoneLabel": "Yaqin kishi telefoni",
-      "oldPasswordLabel": "Joriy parol",
-      "oldPasswordPlaceholder": "Agar o'zingizniki bo'lsa kiriting",
       "newPasswordLabel": "Yangi parol",
       "newPasswordPlaceholder": "Yangi parol kiriting"
     },
@@ -505,8 +522,7 @@
       "phone_max": "Telefon raqam juda uzun",
       "password_min": "Parol kamida 6 ta belgi bo'lishi kerak",
       "email_invalid": "Email noto'g'ri formatda",
-      "url_invalid": "URL noto'g'ri formatda",
-      "newPassword_sameAsOld": "Yangi parol eskisidan farq qilishi kerak"
+      "url_invalid": "URL noto'g'ri formatda"
     },
     "form": {
       "createTitle": "Yangi o'qituvchi qo'shish",
@@ -515,8 +531,6 @@
     },
     "roleNotFound": "O'qituvchi roli topilmadi",
     "passwordChanged": "Parol muvaffaqiyatli o'zgartirildi",
-    "currentPasswordLabel": "Joriy parol (ixtiyoriy)",
-    "currentPasswordPlaceholder": "Agar o'zingizniki bo'lsa kiriting",
     "securityTab": {
       "changePasswordTitle": "Parolni o'zgartirish"
     },
@@ -683,7 +697,9 @@
         "attendance": "Tadbirlar",
         "bonus": "Tartib-intizom",
         "other": "Qo'shimcha"
-      }
+      },
+      "cancelSuccess": "Tranzaksiya bekor qilindi. Yangi balans: {{balance}} coin",
+      "totalCount": "Jami: {{count}} ta yozuv"
     },
     "contactRow": {
       "copied": "Nusxalandi",
@@ -921,7 +937,8 @@
     },
     "evaluation": {
       "coinsSkipped": "{{total}} ta o'quvchining coini yangilanmadi",
-      "modeChangedHint": "Tekshirish usuli o'zgardi. Endi jadvalni to'ldirib, qayta saqlang"
+      "modeChangedHint": "Tekshirish usuli o'zgardi. Endi jadvalni to'ldirib, qayta saqlang",
+      "notStartedHint": "Dars hali boshlanmagan — yo'qlamani dars boshlangandan keyin qo'yish mumkin"
     },
     "coinsSkippedCode": {
       "COINS_ALREADY_SPENT": "Avvalgi coinlarni sarflab bo'lgan — coinlari o'zgarmadi",
@@ -935,11 +952,12 @@
       "keepCoinsAction": "Coinlarni qaytarmasdan o'chirish"
     },
     "teacherForm": {
-      "checkedReadOnlyHint": "Ushbu darsning tekshiruvi saqlangan. O'zgartirish kerak bo'lsa, administratorga murojaat qiling.",
       "saveAction": "Ma'lumotlarni saqlash",
       "confirmTitle": "Ma'lumotlarni saqlaysizmi?",
-      "confirmDescription": "Tasdiqlagandan so'ng dars va tekshiruv ma'lumotlarini qayta o'zgartira olmaysiz. Xatolik bo'lsa, administratorga murojaat qiling.",
-      "confirmAction": "Ha, saqlash"
+      "confirmDescription": "Saqlangan tekshiruvni birinchi saqlashdan keyin 3 kun ichida tahrirlash mumkin. Keyin faqat administrator o'zgartira oladi.",
+      "confirmAction": "Ha, saqlash",
+      "editableUntil": "{{date}} gacha tahrirlash mumkin",
+      "editWindowExpiredHint": "Tahrirlash muddati tugagan (saqlangandan keyin 3 kun). O'zgartirish kerak bo'lsa, administratorga murojaat qiling."
     },
     "infoUpdated": "Dars ma'lumotlari yangilandi",
     "locked": "Qulflangan",
@@ -973,7 +991,16 @@
       "groupLoadError": "Guruh o'quvchilarini yuklab bo'lmadi",
       "present": "Keldi",
       "homework": "Uy vazifasi",
-      "absent": "Kelmadi"
+      "absent": "Kelmadi",
+      "statusLabel": "Holat",
+      "markAll": "Hammaga belgilash:",
+      "leftGroupAt": "Guruhdan chiqarilgan: {{date}}",
+      "status": {
+        "present": "Keldi",
+        "late": "Kechikdi",
+        "excused": "Sababli",
+        "absent": "Sababsiz"
+      }
     },
     "deleteConfirm": "\"{{group}}\" guruhining {{time}} dagi darsini o'chirishni tasdiqlaysizmi?",
     "noSessions": "Hali Sessiyalar mavjud emas!",
@@ -1004,7 +1031,8 @@
       "evaluationModeLabel": "Tekshirish usuli",
       "maxScoreLabel": "Maksimal ball (ixtiyoriy)",
       "maxScorePlaceholder": "Masalan: 100"
-    }
+    },
+    "openExisting": "Mavjud darsni ochish"
   },
   "plans": {
     "weekday": {
@@ -1031,7 +1059,11 @@
       "teacher_required": "O'qituvchini tanlang",
       "subject_required": "Fan tanlanishi shart",
       "fromDate_required": "Boshlanish sanasi kiritilishi shart",
-      "toDate_required": "Tugash sanasi kiritilishi shart"
+      "toDate_required": "Tugash sanasi kiritilishi shart",
+      "validRange_invalid": "Tugash sanasi boshlanish sanasidan oldin bo'lmasligi kerak",
+      "timeBothRequired": "Vaqt o'zgarsa boshlanish va tugash vaqti birga kiritilishi kerak",
+      "exceptionChangeRequired": "Yangi vaqt, xona yoki o'qituvchidan kamida bittasini kiriting",
+      "rangeTooLong": "Oraliq 92 kundan oshmasligi kerak"
     },
     "deleteTemplateConfirm": "Bu shablonni o'chirsangiz, kelajakdagi sessiyalar yaratilmaydi. Mavjud sessiyalarga ta'sir etmaydi. Davom etasizmi?",
     "weeklyTemplate": "Haftalik Shablon",
@@ -1045,21 +1077,28 @@
       "weekdayLabel": "Hafta kuni",
       "weekdayPlaceholder": "Hafta kunini tanlang",
       "groupTeacherOption": "Guruh o'qituvchisi",
-      "groupTeacherOptionWithName": "Guruh o'qituvchisi ({{name}})"
+      "groupTeacherOptionWithName": "Guruh o'qituvchisi ({{name}})",
+      "validFrom": "Amal qilish boshlanishi",
+      "validTo": "Amal qilish tugashi",
+      "validityHint": "Muddatdan tashqari sanalarga dars yaratilmaydi. Muddatlari kesishmaydigan shablonlar bir xil xona/vaqtda bo'lishi mumkin."
     },
     "card": {
       "timePrefix": "Vaqti:"
     },
     "exception": {
       "cancelSession": "Bu darsni bekor qilish",
-      "rescheduleTime": "Vaqtini o'zgartirish",
       "goToSessionDetails": "Joriy dars ma'lumotlariga o'tish",
       "noSessionYet": "Bu kun bo'yicha dars yaratilmagan",
       "revertConfirm": "Standart shablonga qaytarilsinmi?",
       "cancelReasonPlaceholder": "Masalan: Bayram sababli",
       "rescheduleReasonPlaceholder": "Masalan: Texnik ishlar sababli",
       "revertToTemplate": "Andozaga qaytarish",
-      "back": "Orqaga"
+      "back": "Orqaga",
+      "modifySession": "Vaqt, xona yoki o'qituvchini o'zgartirish",
+      "roomLabel": "Boshqa xona",
+      "substituteTeacherLabel": "O'rinbosar o'qituvchi",
+      "sameAsTemplate": "Shablondagidek",
+      "templateDefaults": "Shablon: {{time}}, xona {{room}}, o'qituvchi {{teacher}}. Bo'sh qoldirilgan maydon o'zgarmaydi."
     },
     "generate": {
       "title": "Jadval bo'yicha darslar yaratish",
@@ -1068,7 +1107,9 @@
       "warningLabel": "Eslatma!",
       "warningText": "Darslarni \"Belgilangan Jadval\" bo'yicha faqat kelgusi sanalar uchun yaratish mumkin, o'tib ketgan sanalar uchun mumkin emas!",
       "action": "Sessiyalar yaratish",
-      "resultToast": "{{created}} ta sessiya yaratildi, {{cancelled}} ta bekor (istisno), {{skipped}} ta o'tkazib yuborildi (avvaldan bor edi)"
+      "resultToast": "{{created}} ta sessiya yaratildi, {{cancelled}} ta bekor (istisno), {{skipped}} ta o'tkazib yuborildi (avvaldan bor edi)",
+      "holidaysSkipped": "{{count}} ta dars dam olish kuniga to'g'ri kelgani uchun yaratilmadi",
+      "maxRangeHint": "Bir martada ko'pi bilan {{days}} kunlik oraliq"
     },
     "legend": {
       "normal": "Oddiy sessiya",
@@ -1080,11 +1121,20 @@
       "cancelled": "Bekor qilindi",
       "technicalReason": "Texnik sababga ko'ra",
       "newTime": "Yangi vaqti",
-      "reason": "Sabab"
+      "reason": "Sabab",
+      "holiday": "Dam olish kuni",
+      "newRoom": "Yangi xona",
+      "time": "Vaqti",
+      "substitute": "O'rinbosar"
     },
     "tabs": {
       "kanban": "Haftalik Shablon (Kanban)",
       "calendar": "Oylik Kalendar"
+    },
+    "sync": {
+      "summary": "Kelajakdagi darslar moslashtirildi: {{updated}} ta yangilandi, {{removed}} ta o'chirildi, {{created}} ta yaratildi",
+      "conflictsTitle": "{{count}} ta dars yangi jadvalga ko'chirilmadi (to'qnashuv)",
+      "andMore": "…va yana {{count}} ta"
     }
   },
   "reward_categories": {
@@ -1375,12 +1425,14 @@
     "manual": "Qo'lda berilgan",
     "purchase": "Xarid",
     "penalty": "Jarima",
-    "other": "Qo'shimcha"
+    "other": "Qo'shimcha",
+    "late": "Kechikib keldi"
   },
   "calendarChip": {
     "cancelledTitle": "{{group}}: bekor qilindi",
     "rescheduledTitle": "{{group}}: vaqti o'zgardi — {{start}}:{{end}}",
-    "locked": "qulflangan"
+    "locked": "qulflangan",
+    "changed": "O'zgargan"
   },
   "studentProfile": {
     "tabs": {
@@ -1442,5 +1494,65 @@
     "empty": "Ma'lumot mavjud emas!",
     "notFound": "Ma'lumot topilmadi.",
     "paginationSummary": "<b>{{total}}</b> ta natijadan <b>{{from}}-{{to}}</b> tagachasi ko'rsatilmoqda"
+  },
+  "validation": {
+    "timeFormat": "Vaqt formati HH:MM bo'lishi kerak (masalan 09:00)",
+    "endAfterStart": "Tugash vaqti boshlanish vaqtidan keyin bo'lishi kerak",
+    "avatarUrlInvalid": "Rasm manzili '/uploads/avatars/...' yoki 'https://...' bo'lishi kerak",
+    "avatarUrlMax": "Rasm manzili 500 belgidan oshmasligi kerak"
+  },
+  "scheduleConflict": {
+    "kind": {
+      "group": "Guruh band",
+      "room": "Xona band",
+      "teacher": "O'qituvchi band"
+    }
+  },
+  "coinHistory": {
+    "reversalBadge": "Bekor qilish yozuvi",
+    "reversedBadge": "Bekor qilingan · {{date}}",
+    "cancelAction": "Bekor qilish",
+    "cancelConfirmTitle": "Tranzaksiyani bekor qilasizmi?",
+    "cancelConfirmDescription": "{{amount}} coin uchun teskari yozuv qo'shiladi, balans qayta hisoblanadi. Asl yozuv tarixda qoladi."
+  },
+  "holidays": {
+    "title": "Dam olish kunlari",
+    "description": "Shu sanalarda jadval bo'yicha dars yaratilmaydi; mavjud kelajakdagi tekshirilmagan darslar avtomatik o'chiriladi. Dam olish kuni o'chirilsa — darslar qaytariladi.",
+    "nameLabel": "Nomi",
+    "namePlaceholder": "Masalan: Yangi yil",
+    "listTitle": "{{year}}-yil dam olish kunlari",
+    "empty": "Bu yil uchun dam olish kunlari qo'shilmagan",
+    "prevYear": "Oldingi yil",
+    "nextYear": "Keyingi yil",
+    "created": "\"{{name}}\" dam olish kuni qo'shildi",
+    "deleted": "Dam olish kuni o'chirildi",
+    "deleteConfirm": "{{date}} — \"{{name}}\" dam olish kuni o'chirilsinmi? Shu sanadagi jadval darslari qaytariladi.",
+    "manualSessionsWarning": "{{date}} sanasida qo'lda yaratilgan {{count}} ta dars bor — ular avtomatik o'chirilmaydi, ko'rib chiqing",
+    "schema": {
+      "date_required": "Sanani tanlang",
+      "name_required": "Nomini kiriting",
+      "name_max": "Nomi 100 belgidan oshmasligi kerak"
+    }
+  },
+  "tenantSettings": {
+    "title": "Sozlamalar",
+    "saved": "Sozlamalar saqlandi",
+    "noChanges": "O'zgarish yo'q",
+    "coinLimit": {
+      "title": "O'qituvchi coin limiti",
+      "description": "O'qituvchi bir martada bitta o'quvchiga bera oladigan maksimal coin. Admin va yuqori rollarga hamda yo'qlamadagi avtomatik coinlarga qo'llanmaydi.",
+      "label": "Limit (coin)",
+      "placeholder": "Limit yo'q",
+      "hint": "Bo'sh qoldirilsa — limit yo'q."
+    },
+    "timezone": {
+      "title": "Vaqt mintaqasi",
+      "description": "\"Bugun\", \"dars boshlandimi\" va o'qituvchining 7 kunlik oynasi shu mintaqa bo'yicha hisoblanadi.",
+      "label": "Timezone (IANA)"
+    },
+    "schema": {
+      "limit_invalid": "Limit {{min}} … {{max}} oralig'ida butun son bo'lishi kerak",
+      "timezone_required": "Vaqt mintaqasini tanlang"
+    }
   }
 }

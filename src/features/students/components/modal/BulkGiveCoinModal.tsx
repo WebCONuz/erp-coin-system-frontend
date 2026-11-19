@@ -24,7 +24,10 @@ import {
 import { ControlledInput, ControlledSelect } from "@/components/controls";
 import { getDirectionOptions } from "@/features/coin-rules/constants";
 import { useBulkGiveCoinForm } from "../../hooks";
-import { getBulkCoinSourceTypeOptions } from "../../constants";
+import {
+  getBulkCoinSourceTypeOptions,
+  MANUAL_COIN_MAX,
+} from "../../constants";
 
 export interface BulkCoinStudent {
   id: string;
@@ -267,6 +270,7 @@ export const BulkGiveCoinModal = ({
                                 <Input
                                   type="number"
                                   min={1}
+                                  max={MANUAL_COIN_MAX}
                                   placeholder={t("bulkCoin.custom.amountPlaceholder")}
                                   {...field}
                                   value={field.value ?? ""}

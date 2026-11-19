@@ -1,13 +1,15 @@
-import { useTranslation } from "react-i18next";
-import { TabsContent } from "@/components/ui/tabs";
-import { EmptyState } from "../ui";
-import { Coins, Minus, Plus } from "lucide-react";
-import type { StudentDetailFull } from "../../types";
-import { formatDate } from "@/ustils";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useManualCoinTransaction } from "../../hooks";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { Coins, Minus, Plus } from "lucide-react";
+import { TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { translateApiError } from "@/ustils";
+import type { StudentDetailFull } from "../../types";
+import { useManualCoinTransaction } from "../../hooks";
+import { COIN_NOTE_MAX, MANUAL_COIN_MAX } from "../../constants";
+import { CoinHistoryList } from "./CoinHistoryList";
 
 interface CoinFormState {
   amount: string;
@@ -36,6 +38,10 @@ export const CoinTab = ({
   const handleCoinAction = (direction: "earn" | "deduct") => {
     const amount = Number(coinForms[direction].amount);
     if (!amount || amount < 1 || !id) return;
+    if (amount > MANUAL_COIN_MAX) {
+      toast.error(t("bulkCoin.schema.amount_max", { max: MANUAL_COIN_MAX }));
+      return;
+    }
     manualCoin.mutate(
       {
         studentId: id,
@@ -47,6 +53,7 @@ export const CoinTab = ({
       {
         onSuccess: () =>
           setCoinForms((p) => ({ ...p, [direction]: emptyCoinForm })),
+        onError: (error) => toast.error(translateApiError(error, t)),
       },
     );
   };
@@ -92,6 +99,7 @@ export const CoinTab = ({
                   <input
                     type="number"
                     min={1}
+                    max={MANUAL_COIN_MAX}
                     value={coinForms[dir].amount}
                     onChange={(e) =>
                       setCoinForms((p) => ({
@@ -104,6 +112,7 @@ export const CoinTab = ({
                   />
                   <input
                     type="text"
+                    maxLength={COIN_NOTE_MAX}
                     value={coinForms[dir].note}
                     onChange={(e) =>
                       setCoinForms((p) => ({
@@ -132,71 +141,8 @@ export const CoinTab = ({
           })}
         </div>
       )}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
-            {t("students.coinTab.historyTitle")}
-          </p>
-          <span className="text-xs text-zinc-400">
-            {t("students.coinTab.last20")}
-          </span>
-        </div>
-        {!student?.coinTransactionsReceived?.length ? (
-          <EmptyState
-            icon={<Coins size={20} />}
-            title={t("students.coinTab.noTransactions")}
-            text={t("students.coinTab.noTransactionsText")}
-          />
-        ) : (
-          <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-            {student?.coinTransactionsReceived?.map((tx, idx) => (
-              <div
-                key={tx.id}
-                className={`flex items-center justify-between px-4 py-3 bg-white dark:bg-zinc-900 ${idx !== (student?.coinTransactionsReceived?.length ?? 0) - 1 ? "border-b border-zinc-100 dark:border-zinc-800" : ""}`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs ${tx?.direction === "earn" ? "bg-green-100 dark:bg-green-900/40 text-green-600" : "bg-red-100 dark:bg-red-900/40 text-red-600"}`}
-                  >
-                    {tx?.direction === "earn" ? (
-                      <Plus size={12} />
-                    ) : (
-                      <Minus size={12} />
-                    )}{" "}
-                  </div>
-                  <div>
-                    <p className="text-sm text-zinc-700 dark:text-zinc-300">
-                      <b>
-                        {tx?.sourceType === "homework"
-                          ? t("students.coinTab.sourceLabels.homework")
-                          : tx?.sourceType === "attendance"
-                            ? t("students.coinTab.sourceLabels.attendance")
-                            : tx?.sourceType === "bonus"
-                              ? t("students.coinTab.sourceLabels.bonus")
-                              : tx?.sourceType === "exam" ||
-                                  tx?.sourceType === "competition"
-                                ? t(`sourceTypes.${tx.sourceType}`)
-                                : t("students.coinTab.sourceLabels.other")}
-                      </b>
-                      {": "}
-                      {tx?.note ?? "-"}
-                    </p>
-                    <p className="text-xs text-zinc-400">
-                      {formatDate(tx.createdAt, "dd.MM.yyyy")}
-                    </p>
-                  </div>
-                </div>
-                <span
-                  className={`text-sm font-semibold ${tx.direction === "earn" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}
-                >
-                  {tx.direction === "earn" ? "+" : "-"}
-                  {tx.amount}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      {/* Tarix GET /coin-transactions/history dan — teskari yozuvlar va bekor qilish bilan. */}
+      {id && <CoinHistoryList studentId={id} canCancel={!isDeleted} />}
     </TabsContent>
   );
 };

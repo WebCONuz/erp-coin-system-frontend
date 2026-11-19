@@ -2,26 +2,35 @@ import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { useGroup } from "@/features/groups/hooks";
 import { groupKeys } from "@/features/groups/constants";
 import { studentKeys } from "@/features/students/constants";
+import {
+  useTeacherCoinLimit,
+  useTenantSettings,
+} from "@/features/tenant-settings/hooks";
 import {
   getApiErrorData,
   isForbiddenError,
   translateApiError,
 } from "@/ustils";
-import { MAX_COIN_AMOUNT, MAX_RESULT_NOTE_LENGTH } from "../constants";
-import { useAttendance, useSaveAttendance, useSaveResults } from "./useHook";
+import {
+  MAX_COIN_AMOUNT,
+  MAX_RESULT_NOTE_LENGTH,
+  resolveAttendanceStatus,
+} from "../constants";
+import { hasSessionStarted } from "../utils";
+import { useSaveAttendance, useSaveResults, useSessionRoster } from "./useHook";
 import type {
-  AttendanceRecord,
   AttendanceRecordInput,
+  AttendanceStatus,
   ResultRecordInput,
+  RosterStudent,
   SaveAttendanceResponse,
   SessionItem,
 } from "../types";
 
 export type AttendanceLocalRecord = {
-  isPresent: boolean;
+  status: AttendanceStatus;
   homeworkDone: boolean;
 };
 
@@ -44,43 +53,38 @@ export const parseScore = (value: string): number | null => {
   return Number(trimmed.replace(",", "."));
 };
 
-type EvaluationStudent = { id: string; fullName: string; phone: string };
+export type EvaluationStudent = {
+  id: string;
+  fullName: string;
+  avatarUrl: string | null;
+  /** O'quvchi dars sanasidan keyin guruhdan chiqarilgan bo'lsa. */
+  leftAt: string | null;
+};
 
-const buildAttendanceRecords = (
-  students: EvaluationStudent[],
-  attendance?: AttendanceRecord[],
-) => {
-  const byStudentId = new Map((attendance ?? []).map((r) => [r.student.id, r]));
+const buildAttendanceRecords = (roster: RosterStudent[]) => {
   const records: Record<string, AttendanceLocalRecord> = {};
-
-  students.forEach((student) => {
-    const existing = byStudentId.get(student.id);
+  roster.forEach(({ student, record }) => {
     records[student.id] = {
-      isPresent: existing?.isPresent ?? false,
-      homeworkDone: existing?.homeworkDone ?? false,
+      // Yozuvi yo'q o'quvchi — avvalgidek "kelmadi" dan boshlanadi.
+      status: resolveAttendanceStatus(record) ?? "absent",
+      homeworkDone: record?.homeworkDone ?? false,
     };
   });
   return records;
 };
 
-const buildScoredRecords = (
-  students: EvaluationStudent[],
-  attendance?: AttendanceRecord[],
-) => {
-  const byStudentId = new Map((attendance ?? []).map((r) => [r.student.id, r]));
+const buildScoredRecords = (roster: RosterStudent[]) => {
   const records: Record<string, ScoredLocalRecord> = {};
-
-  students.forEach((student) => {
-    const existing = byStudentId.get(student.id);
+  roster.forEach(({ student, record, coinAwarded }) => {
     // Yozuvi yo'q o'quvchi uchun: qatnashgan, ball bo'sh, coin 0.
     records[student.id] = {
-      isPresent: existing?.isPresent ?? true,
+      isPresent: record?.isPresent ?? true,
       score:
-        existing?.score !== null && existing?.score !== undefined
-          ? String(existing.score).replace(".", ",")
+        record?.score !== null && record?.score !== undefined
+          ? String(record.score).replace(".", ",")
           : "",
-      coinAmount: String(Math.max(existing?.coinAwarded ?? 0, 0)),
-      note: existing?.note ?? "",
+      coinAmount: String(Math.max(coinAwarded ?? 0, 0)),
+      note: record?.note ?? "",
     };
   });
   return records;
@@ -98,8 +102,11 @@ interface Params {
 
 /**
  * Sessiyani tekshirish holati — `session.evaluationMode` bo'yicha:
- *   - `attendance`: Keldi + Uy vazifasi → POST /sessions/:id/attendance
+ *   - `attendance`: Holat (keldi/kechikdi/sababli/sababsiz) + Uy vazifasi → POST /sessions/:id/attendance
  *   - `scored`:     Keldi + Ball + Coin + Izoh → POST /sessions/:id/results
+ *
+ * O'quvchilar ro'yxati `GET /sessions/:id/roster` dan — faqat dars sanasida
+ * guruh a'zosi bo'lganlar (aks holda backend `STUDENTS_NOT_IN_GROUP`).
  */
 export const useSessionEvaluation = ({
   session,
@@ -113,22 +120,34 @@ export const useSessionEvaluation = ({
     maxScoreOverride !== undefined ? maxScoreOverride : (session.maxScore ?? null);
 
   const {
-    data: group,
-    isLoading: isGroupLoading,
-    isError: isGroupError,
-    error: groupError,
-  } = useGroup(
-    session.group.id ?? "",
-  );
-  const { data: attendance, isLoading: isAttendanceLoading } = useAttendance(
-    session.id,
-  );
+    data: roster,
+    isLoading,
+    isError: isRosterError,
+    error: rosterError,
+  } = useSessionRoster(session.id);
   const saveAttendance = useSaveAttendance(session.id);
   const saveResults = useSaveResults(session.id);
 
-  const students = useMemo(
-    () => group?.students.map(({ student }) => student) ?? [],
-    [group],
+  // "Dars boshlandimi" — tenant timezone bo'yicha (backend ham shunday hisoblaydi).
+  const { data: tenantSettings } = useTenantSettings();
+  const hasStarted = hasSessionStarted(session, tenantSettings?.timezone);
+
+  // Teacher uchun natija coini tenant limitidan oshmasin (bittasi oshsa butun so'rov rad etiladi).
+  const { limit: teacherCoinLimit } = useTeacherCoinLimit();
+  const maxCoinAmount =
+    teacherCoinLimit !== null
+      ? Math.min(teacherCoinLimit, MAX_COIN_AMOUNT)
+      : MAX_COIN_AMOUNT;
+
+  const students = useMemo<EvaluationStudent[]>(
+    () =>
+      roster?.students.map(({ student, leftAt }) => ({
+        id: student.id,
+        fullName: student.fullName,
+        avatarUrl: student.avatarUrl,
+        leftAt,
+      })) ?? [],
+    [roster],
   );
 
   const [attendanceRecords, setAttendanceRecords] = useState<
@@ -140,45 +159,57 @@ export const useSessionEvaluation = ({
   /** Backend xato qaytargan o'quvchilar (masalan SCORE_EXCEEDS_MAX). */
   const [invalidStudentIds, setInvalidStudentIds] = useState<string[]>([]);
 
-  // Guruh yoki saqlangan yozuvlar (qayta) kelganda inputlar ulardan to'ldiriladi.
-  // Effect o'rniga render paytida sozlanadi (react.dev: "adjusting state when
-  // a prop changes") — ortiqcha qayta render bo'lmasligi uchun.
-  const [prefilledFrom, setPrefilledFrom] = useState<{
-    group?: typeof group;
-    attendance?: typeof attendance;
-  }>({});
+  // Roster (qayta) kelganda inputlar undan to'ldiriladi. Effect o'rniga render
+  // paytida sozlanadi (react.dev: "adjusting state when a prop changes").
+  const [prefilledFrom, setPrefilledFrom] = useState<typeof roster>();
 
-  if (
-    group &&
-    (prefilledFrom.group !== group || prefilledFrom.attendance !== attendance)
-  ) {
-    setPrefilledFrom({ group, attendance });
-    setAttendanceRecords(buildAttendanceRecords(students, attendance));
-    setScoredRecords(buildScoredRecords(students, attendance));
+  if (roster && prefilledFrom !== roster) {
+    setPrefilledFrom(roster);
+    setAttendanceRecords(buildAttendanceRecords(roster.students));
+    setScoredRecords(buildScoredRecords(roster.students));
     setInvalidStudentIds([]);
   }
 
+  const isDisabled = readOnly || !hasStarted;
+
   // ─── Attendance rejimi ────────────────────────────────────────────────────
-  const toggleAttendance = (
-    studentId: string,
-    field: keyof AttendanceLocalRecord,
-  ) => {
-    if (readOnly) return;
+  const setAttendanceStatus = (studentId: string, status: AttendanceStatus) => {
+    if (isDisabled) return;
     setAttendanceRecords((prev) => ({
       ...prev,
-      [studentId]: { ...prev[studentId], [field]: !prev[studentId][field] },
+      [studentId]: { ...prev[studentId], status },
+    }));
+    setInvalidStudentIds((prev) => prev.filter((id) => id !== studentId));
+  };
+
+  const toggleHomework = (studentId: string) => {
+    if (isDisabled) return;
+    setAttendanceRecords((prev) => ({
+      ...prev,
+      [studentId]: {
+        ...prev[studentId],
+        homeworkDone: !prev[studentId].homeworkDone,
+      },
     }));
   };
 
-  const toggleAllAttendance = (
-    field: keyof AttendanceLocalRecord,
-    value: boolean,
-  ) => {
-    if (readOnly) return;
+  const setAllAttendanceStatus = (status: AttendanceStatus) => {
+    if (isDisabled) return;
     setAttendanceRecords((prev) => {
       const next: Record<string, AttendanceLocalRecord> = {};
       for (const [studentId, record] of Object.entries(prev)) {
-        next[studentId] = { ...record, [field]: value };
+        next[studentId] = { ...record, status };
+      }
+      return next;
+    });
+  };
+
+  const setAllHomework = (value: boolean) => {
+    if (isDisabled) return;
+    setAttendanceRecords((prev) => {
+      const next: Record<string, AttendanceLocalRecord> = {};
+      for (const [studentId, record] of Object.entries(prev)) {
+        next[studentId] = { ...record, homeworkDone: value };
       }
       return next;
     });
@@ -189,7 +220,7 @@ export const useSessionEvaluation = ({
     studentId: string,
     patch: Partial<ScoredLocalRecord>,
   ) => {
-    if (readOnly) return;
+    if (isDisabled) return;
     setScoredRecords((prev) => ({
       ...prev,
       [studentId]: { ...prev[studentId], ...patch },
@@ -198,7 +229,7 @@ export const useSessionEvaluation = ({
   };
 
   const setAllScoredPresent = (value: boolean) => {
-    if (readOnly) return;
+    if (isDisabled) return;
     setScoredRecords((prev) => {
       const next: Record<string, ScoredLocalRecord> = {};
       for (const [studentId, record] of Object.entries(prev)) {
@@ -210,7 +241,7 @@ export const useSessionEvaluation = ({
 
   /** "Hammaga coin" — faqat frontendda qatnashgan o'quvchilar qatorini to'ldiradi. */
   const fillCoinsForAll = (coinAmount: string) => {
-    if (readOnly) return;
+    if (isDisabled) return;
     setScoredRecords((prev) => {
       const next: Record<string, ScoredLocalRecord> = {};
       for (const [studentId, record] of Object.entries(prev)) {
@@ -282,8 +313,14 @@ export const useSessionEvaluation = ({
     });
   };
 
+  // Saqlash bitta tranzaksiyada — xatodan keyin hech kim saqlanmaydi, formani
+  // o'zgarishsiz qayta yuborish xavfsiz.
   const handleError = (error: unknown) => {
-    const studentIds = getApiErrorData(error)?.studentIds ?? [];
+    const data = getApiErrorData(error);
+    const studentIds = [
+      ...(data?.studentIds ?? []),
+      ...(data?.studentId ? [data.studentId] : []),
+    ];
     const names = studentIds
       .map((id) => nameById.get(id))
       .filter(Boolean)
@@ -295,6 +332,12 @@ export const useSessionEvaluation = ({
   };
 
   const save = (onSuccess?: () => void) => {
+    // Backend baribir `SESSION_NOT_STARTED` qaytaradi — so'rovni yubormaymiz.
+    if (!hasStarted) {
+      toast.error(t("sessions.evaluation.notStartedHint"));
+      return;
+    }
+
     if (isScored) {
       if (hasErrors) {
         toast.error(t("sessions.results.fixErrors"));
@@ -308,7 +351,7 @@ export const useSessionEvaluation = ({
           // Kelmagan o'quvchi uchun backend ball/coinni baribir e'tiborsiz qoldiradi.
           score: r.isPresent ? parseScore(r.score) : null,
           coinAmount: r.isPresent
-            ? Math.min(Number(r.coinAmount) || 0, MAX_COIN_AMOUNT)
+            ? Math.min(Number(r.coinAmount) || 0, maxCoinAmount)
             : 0,
           note: r.note.trim().slice(0, MAX_RESULT_NOTE_LENGTH) || undefined,
         }),
@@ -327,9 +370,14 @@ export const useSessionEvaluation = ({
       return;
     }
 
+    // Yangi format: faqat `status` (isPresent yuborilmaydi — mos kelmaslik xavfi yo'q).
     const records: AttendanceRecordInput[] = Object.entries(
       attendanceRecords,
-    ).map(([studentId, r]) => ({ studentId, ...r }));
+    ).map(([studentId, r]) => ({
+      studentId,
+      status: r.status,
+      homeworkDone: r.homeworkDone,
+    }));
 
     saveAttendance.mutate(
       { records },
@@ -346,15 +394,21 @@ export const useSessionEvaluation = ({
   return {
     isScored,
     maxScore,
+    maxCoinAmount,
+    teacherCoinLimit,
     students,
     hasGroup: !!session.group.id,
-    isLoading: isGroupLoading || isAttendanceLoading,
-    // Guruh o'quvchilarini olib bo'lmadi — "o'quvchilar yo'q" deb ko'rsatilmasin.
-    isGroupError,
-    isGroupForbidden: isForbiddenError(groupError),
+    /** Dars hali boshlanmagan — yo'qlama qo'yib bo'lmaydi. */
+    hasStarted,
+    isLoading,
+    // Ro'yxatni olib bo'lmadi — "o'quvchilar yo'q" deb ko'rsatilmasin.
+    isRosterError,
+    isRosterForbidden: isForbiddenError(rosterError),
     attendanceRecords,
-    toggleAttendance,
-    toggleAllAttendance,
+    setAttendanceStatus,
+    toggleHomework,
+    setAllAttendanceStatus,
+    setAllHomework,
     scoredRecords,
     scoredErrors,
     invalidStudentIds,

@@ -2,6 +2,8 @@ export type CoinRuleDirection = "earn" | "deduct";
 export type CoinRuleTriggerType = "auto" | "manual";
 export type CoinRuleSourceType =
   | "attendance"
+  /** Kechikib keldi (`status: "late"`) — auto earn qoida; bo'lmasa oddiy davomat coini. */
+  | "late"
   | "homework"
   | "competition"
   | "bonus"

@@ -6,13 +6,18 @@ export const studentKeys = {
   coinTransactions: (params?: Record<string, unknown>) => ["student-coin-transactions", params ?? {}],
 } as const;
 
+// Backend qo'lda coin uchun faqat shu ikkitasini qabul qiladi.
+export const MANUAL_COIN_SOURCE_TYPES = ["bonus", "manual"] as const;
+
 export const getBulkCoinSourceTypeOptions = (
   t: (key: string) => string,
-): IOption[] => [
-  { value: "bonus", label: t("sourceTypes.bonus") },
-  { value: "attendance", label: t("sourceTypes.attendance") },
-  { value: "homework", label: t("sourceTypes.homework") },
-  { value: "competition", label: t("sourceTypes.competition") },
-  { value: "purchase", label: t("sourceTypes.purchase") },
-  { value: "manual", label: t("sourceTypes.manual") },
-];
+): IOption[] =>
+  MANUAL_COIN_SOURCE_TYPES.map((value) => ({
+    value,
+    label: t(`sourceTypes.${value}`),
+  }));
+
+/** Qo'lda coin `amount` chegarasi (backend validatsiyasi bilan bir xil). */
+export const MANUAL_COIN_MAX = 100000;
+/** Coin izohi (`note`) uchun maksimal uzunlik. */
+export const COIN_NOTE_MAX = 500;

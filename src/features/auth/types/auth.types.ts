@@ -21,6 +21,8 @@ export interface UserMe {
     id: string;
     name: string;
     displayName: string;
+    /** creator 100 › super_admin 90 › admin 60 › teacher 40 › student 20 */
+    level: number;
   };
   wallet: {
     balance: number;

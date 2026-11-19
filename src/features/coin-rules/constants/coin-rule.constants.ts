@@ -22,6 +22,7 @@ export const getTriggerTypeOptions = (
 
 export const getSourceTypeOptions = (t: (key: string) => string): IOption[] => [
   { value: "attendance", label: t("coinRules.sourceType.attendance") },
+  { value: "late", label: t("coinRules.sourceType.late") },
   { value: "homework", label: t("coinRules.sourceType.homework") },
   { value: "competition", label: t("coinRules.sourceType.competition") },
   { value: "bonus", label: t("coinRules.sourceType.bonus") },
@@ -32,6 +33,7 @@ export const getSourceTypeLabels = (
   t: (key: string) => string,
 ): Record<string, string> => ({
   attendance: t("coinRules.sourceType.attendance"),
+  late: t("coinRules.sourceType.late"),
   homework: t("coinRules.sourceType.homework"),
   competition: t("coinRules.sourceType.competition"),
   bonus: t("coinRules.sourceType.bonus"),
@@ -39,6 +41,10 @@ export const getSourceTypeLabels = (
 });
 
 export const ALL_GROUPS_VALUE = "all";
+
+/** Backend chegaralari: `coinAmount` 1 … 100 000, `description` ≤ 1000. */
+export const COIN_RULE_AMOUNT_MAX = 100000;
+export const COIN_RULE_DESCRIPTION_MAX = 1000;
 
 // Har bir tenantda bu turdagi umumiy (groupId siz) auto "earn" qoida asosiy
 // qoida sifatida allaqachon mavjud — yangisi faqat guruhga bog'lanib yaratiladi.

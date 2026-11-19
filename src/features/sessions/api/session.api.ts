@@ -11,6 +11,7 @@ import type {
   SaveResultsDto,
   SaveResultsResponse,
   SessionItem,
+  SessionRoster,
   SessionsResponse,
   SessionTypeConfig,
   UnlockSessionResponse,
@@ -72,6 +73,14 @@ export const getAttendance = async (
 ): Promise<AttendanceRecord[]> => {
   const res = await request.get<AttendanceRecord[]>(
     `${ENDPOINTS.SESSIONS}/${id}/attendance`,
+  );
+  return res.data;
+};
+
+/** Dars sanasidagi guruh a'zolari + mavjud yozuvlar — yo'qlama formasi shu yerdan. */
+export const getSessionRoster = async (id: string): Promise<SessionRoster> => {
+  const res = await request.get<SessionRoster>(
+    `${ENDPOINTS.SESSIONS}/${id}/roster`,
   );
   return res.data;
 };

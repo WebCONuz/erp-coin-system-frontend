@@ -13,6 +13,7 @@ import {
 } from "@/features/student-profile/components";
 import { EditMyProfileModal } from "@/features/profile/components";
 import {
+  useMyCoinHistory,
   useMyProfile,
   useStudentLevel,
 } from "@/features/student-profile/hooks";
@@ -29,6 +30,8 @@ const StudentProfilePage = () => {
   const [activeTab, setActiveTab] = useState("attendance");
   const [editOpen, setEditOpen] = useState(false);
   const { progress } = useStudentLevel(student?.wallet?.balance ?? 0);
+  // O'z tarixi — teskari yozuvlar (`reversalOfId`/`reversal`) /my-history da keladi.
+  const coinHistory = useMyCoinHistory({ limit: "20" });
 
   if (isLoading) return <PageLoading />;
   if (isError || !student) {
@@ -58,7 +61,10 @@ const StudentProfilePage = () => {
         </TabsList>
 
         <AttendanceHistoryTabV2 student={student} />
-        <CoinHistoryTab student={student} />
+        <CoinHistoryTab
+          transactions={coinHistory.data?.data ?? []}
+          isLoading={coinHistory.isLoading}
+        />
         <PurchaseHistoryTab />
       </Tabs>
 

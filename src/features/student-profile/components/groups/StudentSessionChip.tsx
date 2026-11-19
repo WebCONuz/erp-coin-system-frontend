@@ -11,7 +11,8 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
   const { t } = useTranslation();
   const { template, exception, session, group } = entry;
   const subjectName = session?.subject?.name ?? template.subject?.name;
-  const teacherName = template.teacher?.fullName;
+  // Istisno o'rinbosar o'qituvchi/boshqa xona/vaqt berishi mumkin; `null` — shablondagisi.
+  const teacherName = (exception?.teacher ?? template.teacher)?.fullName;
 
   if (exception?.isCancelled) {
     return (
@@ -27,14 +28,24 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
   }
 
   if (exception) {
+    const start = exception.startTime ?? template.startTime;
+    const end = exception.endTime ?? template.endTime;
+    const room = exception.room ?? template.room;
     return (
       <div
-        title={`${t("calendarChip.rescheduledTitle", { group: group.name, start: exception.startTime, end: exception.endTime })}${exception.note ? ` (${exception.note})` : ""}`}
+        title={`${t("calendarChip.rescheduledTitle", { group: group.name, start, end })}${exception.note ? ` (${exception.note})` : ""}`}
         className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-gold bg-gold/15"
       >
         {subjectName ?? group.name}
         <br />
-        {exception.startTime}:{exception.endTime}
+        {start}–{end}
+        {room ? ` · ${room.name}` : ""}
+        {exception.teacher && (
+          <>
+            <br />
+            {t("plans.chip.substitute")}: {exception.teacher.fullName}
+          </>
+        )}
       </div>
     );
   }

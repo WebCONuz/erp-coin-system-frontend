@@ -8,8 +8,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDate } from "@/ustils/format-date";
+import { translateApiError } from "@/ustils";
 import { useToggleTenantActive } from "../../hooks";
-import { getTenantTypeLabels } from "../../constants";
+import { getTenantTypeLabels, isSystemTenant } from "../../constants";
 import type { TenentType } from "../../types";
 
 interface Props {
@@ -29,8 +30,7 @@ export const TenantCard = ({ data, onEdit }: Props) => {
     if (!window.confirm(confirmMessage)) return;
 
     toggleActive.mutate(data.id, {
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
+      onError: (error: unknown) => toast.error(translateApiError(error, t)),
     });
   };
 
@@ -84,13 +84,16 @@ export const TenantCard = ({ data, onEdit }: Props) => {
             <Pencil className="text-blue-500" />
             {t("common.edit")}
           </DropdownMenuItem>
-          <DropdownMenuItem
-            variant={data.isActive ? "destructive" : undefined}
-            onClick={handleToggleActive}
-          >
-            <Power className={data.isActive ? "" : "text-green-500"} />
-            {data.isActive ? t("tenants.deactivate") : t("tenants.activate")}
-          </DropdownMenuItem>
+          {/* Tizim tenantini nofaol qilib bo'lmaydi. */}
+          {!isSystemTenant(data) && (
+            <DropdownMenuItem
+              variant={data.isActive ? "destructive" : undefined}
+              onClick={handleToggleActive}
+            >
+              <Power className={data.isActive ? "" : "text-green-500"} />
+              {data.isActive ? t("tenants.deactivate") : t("tenants.activate")}
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

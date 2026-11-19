@@ -28,11 +28,14 @@ export const SessionEvaluationPanel = ({
   const {
     isScored,
     hasGroup,
+    hasStarted,
     isLoading,
-    isGroupError,
-    isGroupForbidden,
+    isRosterError,
+    isRosterForbidden,
     students,
   } = evaluation;
+  // Dars boshlanmagan bo'lsa yo'qlama qo'yib bo'lmaydi (backend SESSION_NOT_STARTED).
+  const isDisabled = disabled || !hasStarted;
 
   const emptyText = cn("py-6 text-center text-sm", styles.muted);
 
@@ -47,14 +50,20 @@ export const SessionEvaluationPanel = ({
         {headerExtra}
       </div>
 
+      {hasGroup && !hasStarted && (
+        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
+          {t("sessions.evaluation.notStartedHint")}
+        </p>
+      )}
+
       {!hasGroup ? (
         <p className={emptyText}>{t("sessions.attendance.groupNotSet")}</p>
       ) : isLoading ? (
         <PageLoading />
-      ) : isGroupError ? (
+      ) : isRosterError ? (
         // Ruxsat yo'qligi va bo'sh guruh foydalanuvchiga turlicha ko'rinishi kerak.
         <p className={cn(emptyText, "text-red-600 dark:text-red-400")}>
-          {isGroupForbidden
+          {isRosterForbidden
             ? t("sessions.attendance.groupForbidden")
             : t("sessions.attendance.groupLoadError")}
         </p>
@@ -63,13 +72,13 @@ export const SessionEvaluationPanel = ({
       ) : isScored ? (
         <SessionResultsTable
           evaluation={evaluation}
-          disabled={disabled}
+          disabled={isDisabled}
           tone={tone}
         />
       ) : (
         <SessionAttendanceTable
           evaluation={evaluation}
-          disabled={disabled}
+          disabled={isDisabled}
           tone={tone}
         />
       )}

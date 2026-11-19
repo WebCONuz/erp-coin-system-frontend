@@ -31,7 +31,7 @@ import { useGroups } from "@/features/groups/hooks";
 import { useScheduleCalendar } from "../hooks";
 import { TEMPLATE_CHIP_COLORS } from "../constants";
 import type { CalendarDayEntry } from "../types";
-import { SessionChip } from "./SessionChip";
+import { HolidayChip, SessionChip } from "./SessionChip";
 import { ExceptionModal } from "./ExceptionModal";
 import { GenerateSessionsModal } from "./GenerateSessionsModal";
 
@@ -218,6 +218,13 @@ export const MonthlyCalendar = ({
               const dateKey = format(day, "yyyy-MM-dd");
               const entries = calendarData?.[dateKey] ?? [];
               const inMonth = isSameMonth(day, monthStart);
+              // `holiday` kun bo'yicha (hamma elementda bir xil). Dam olish kunida
+              // faqat `session` bor elementlar qoladi — tekshirilgan/qulflangan
+              // yoki qo'lda yaratilgan dars (backend ularni o'chirmaydi).
+              const holiday = entries.find((e) => e.holiday)?.holiday;
+              const visibleEntries = holiday
+                ? entries.filter((e) => !!e.session)
+                : entries;
 
               return (
                 <div
@@ -235,7 +242,8 @@ export const MonthlyCalendar = ({
                   >
                     {format(day, "d")}
                   </span>
-                  {entries.map((entry, idx) => (
+                  {holiday && <HolidayChip holiday={holiday} />}
+                  {visibleEntries.map((entry, idx) => (
                     <SessionChip
                       key={`${entry.template.id}-${idx}`}
                       entry={entry}

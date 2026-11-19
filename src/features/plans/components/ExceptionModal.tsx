@@ -23,6 +23,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { ControlledSelect } from "@/components/controls";
+import { translateApiError } from "@/ustils";
+import {
+  useSessionRoomOptions,
+  useSessionTeacherOptions,
+} from "@/features/sessions/hooks";
+import { notifySessionSync } from "../lib/session-sync";
 import {
   createCancelExceptionFormSchema,
   createRescheduleExceptionFormSchema,
@@ -34,7 +41,11 @@ import {
   useDeleteException,
   useUpdateException,
 } from "../hooks";
-import type { CalendarDayEntry } from "../types";
+import type {
+  CalendarDayEntry,
+  SessionSync,
+  UpdateExceptionDto,
+} from "../types";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -55,6 +66,8 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
   const createException = useCreateException(entry?.template.id ?? "");
   const updateException = useUpdateException();
   const deleteException = useDeleteException();
+  const { data: rooms } = useSessionRoomOptions(open);
+  const { data: teachers } = useSessionTeacherOptions(open);
   const isPending =
     createException.isPending ||
     updateException.isPending ||
@@ -74,9 +87,16 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
     defaultValues: { note: "" },
   });
 
+  const emptyModify: RescheduleExceptionFormValues = {
+    startTime: "",
+    endTime: "",
+    roomId: "",
+    teacherId: "",
+    note: "",
+  };
   const rescheduleForm = useForm<RescheduleExceptionFormValues>({
     resolver: zodResolver(rescheduleExceptionFormSchema),
-    defaultValues: { startTime: "", endTime: "", note: "" },
+    defaultValues: emptyModify,
   });
 
   useEffect(() => {
@@ -87,24 +107,28 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
       cancelForm.reset({ note: entry.exception.note ?? "" });
     } else if (entry.exception) {
       setView("reschedule");
+      // Bo'sh maydon — shablondagisi (vaqt/xona/o'qituvchi o'zgarmagan).
       rescheduleForm.reset({
-        startTime: entry.exception.startTime ?? entry.template.startTime,
-        endTime: entry.exception.endTime ?? entry.template.endTime,
+        startTime: entry.exception.startTime ?? "",
+        endTime: entry.exception.endTime ?? "",
+        roomId: entry.exception.room?.id ?? "",
+        teacherId: entry.exception.teacher?.id ?? "",
         note: entry.exception.note ?? "",
       });
     } else {
       setView("choose");
       cancelForm.reset({ note: "" });
-      rescheduleForm.reset({
-        startTime: entry.template.startTime,
-        endTime: entry.template.endTime,
-        note: "",
-      });
+      rescheduleForm.reset(emptyModify);
     }
   }, [open, entry]);
 
-  const onError = (error: any) =>
-    toast.error(error?.data?.message || t("common.error"));
+  const onError = (error: unknown) => toast.error(translateApiError(error, t));
+
+  // Istisno shu sanadagi generatsiya qilingan darsni ham moslashtiradi.
+  const onDone = (res: { sessionSync?: SessionSync }) => {
+    notifySessionSync(res.sessionSync, t);
+    onClose();
+  };
 
   const submitCancel = (values: CancelExceptionFormValues) => {
     if (hasException && entry?.exception) {
@@ -113,39 +137,69 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
           exceptionId: entry.exception.id,
           data: { isCancelled: true, note: values.note },
         },
-        { onSuccess: () => onClose(), onError },
+        { onSuccess: onDone, onError },
       );
     } else {
       createException.mutate(
         { exceptionDate: dateKey, isCancelled: true, note: values.note },
-        { onSuccess: () => onClose(), onError },
+        { onSuccess: onDone, onError },
       );
     }
   };
 
   const submitReschedule = (values: RescheduleExceptionFormValues) => {
+    const note = values.note || undefined;
+
     if (hasException && entry?.exception) {
+      const prev = entry.exception;
+      // PATCH: `null` — shablondagisiga qaytarish (o'qituvchi/xona). Vaqt
+      // tozalansa, avval vaqt o'zgargan bo'lsa — `null` bilan qaytariladi.
+      const data: UpdateExceptionDto = {
+        isCancelled: false,
+        note,
+        teacherId: values.teacherId || null,
+        roomId: values.roomId || null,
+      };
+      if (values.startTime) {
+        data.startTime = values.startTime;
+        data.endTime = values.endTime;
+      } else if (prev.startTime || prev.endTime) {
+        data.startTime = null;
+        data.endTime = null;
+      }
       updateException.mutate(
-        {
-          exceptionId: entry.exception.id,
-          data: { isCancelled: false, ...values },
-        },
-        { onSuccess: () => onClose(), onError },
+        { exceptionId: prev.id, data },
+        { onSuccess: onDone, onError },
       );
     } else {
       createException.mutate(
-        { exceptionDate: dateKey, isCancelled: false, ...values },
-        { onSuccess: () => onClose(), onError },
+        {
+          exceptionDate: dateKey,
+          isCancelled: false,
+          note,
+          ...(values.startTime && {
+            startTime: values.startTime,
+            endTime: values.endTime,
+          }),
+          ...(values.roomId && { roomId: values.roomId }),
+          ...(values.teacherId && { teacherId: values.teacherId }),
+        },
+        { onSuccess: onDone, onError },
       );
     }
   };
+
+  const roomOptions =
+    rooms?.data.map((r) => ({ value: r.id, label: r.name })) ?? [];
+  const teacherOptions =
+    teachers?.data.map((tch) => ({ value: tch.id, label: tch.fullName })) ?? [];
 
   const handleRevert = () => {
     if (!entry?.exception) return;
     if (!window.confirm(t("plans.exception.revertConfirm"))) return;
 
     deleteException.mutate(entry.exception.id, {
-      onSuccess: () => onClose(),
+      onSuccess: onDone,
       onError,
     });
   };
@@ -173,7 +227,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
               onClick={() => setView("reschedule")}
             >
               <Clock size={16} className="text-amber-500" />
-              {t("plans.exception.rescheduleTime")}
+              {t("plans.exception.modifySession")}
             </Button>
             <Button
               variant="outline"
@@ -281,6 +335,30 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                   )}
                 />
               </div>
+
+              <p className="text-xs text-muted-foreground">
+                {t("plans.exception.templateDefaults", {
+                  time: `${entry?.template.startTime ?? ""}–${entry?.template.endTime ?? ""}`,
+                  room: entry?.template.room.name ?? "—",
+                  teacher: entry?.template.teacher?.fullName ?? "—",
+                })}
+              </p>
+
+              <ControlledSelect
+                control={rescheduleForm.control}
+                name="roomId"
+                label={`${t("plans.exception.roomLabel")} ${t("common.optional")}`}
+                options={roomOptions}
+                placeholder={t("plans.exception.sameAsTemplate")}
+              />
+
+              <ControlledSelect
+                control={rescheduleForm.control}
+                name="teacherId"
+                label={`${t("plans.exception.substituteTeacherLabel")} ${t("common.optional")}`}
+                options={teacherOptions}
+                placeholder={t("plans.exception.sameAsTemplate")}
+              />
 
               <FormField
                 control={rescheduleForm.control}

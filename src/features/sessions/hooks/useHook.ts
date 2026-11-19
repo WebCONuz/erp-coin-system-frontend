@@ -19,6 +19,7 @@ import {
   getAllSessions,
   getAttendance,
   getSessionById,
+  getSessionRoster,
   getSessionTypes,
   lockSession,
   saveAttendance,
@@ -103,6 +104,7 @@ const invalidateAfterEvaluation = (queryClient: QueryClient, id: string) => {
   queryClient.invalidateQueries({
     queryKey: sessionKeys.attendanceBySessionId(id),
   });
+  queryClient.invalidateQueries({ queryKey: sessionKeys.rosterBySessionId(id) });
   queryClient.invalidateQueries({ queryKey: sessionKeys.oneSessionById(id) });
   queryClient.invalidateQueries({ queryKey: sessionKeys.allSessions() });
   invalidateCoinDashboards(queryClient);
@@ -134,6 +136,14 @@ export const useAttendance = (id: string) => {
   return useQuery({
     queryKey: sessionKeys.attendanceBySessionId(id),
     queryFn: () => getAttendance(id),
+    enabled: !!id,
+  });
+};
+
+export const useSessionRoster = (id: string) => {
+  return useQuery({
+    queryKey: sessionKeys.rosterBySessionId(id),
+    queryFn: () => getSessionRoster(id),
     enabled: !!id,
   });
 };

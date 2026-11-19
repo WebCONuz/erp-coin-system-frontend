@@ -27,6 +27,7 @@ import {
   ControlledSelect,
   type IOption,
 } from "@/components/controls";
+import { translateApiError } from "@/ustils";
 import { createCoinRuleFormSchema, type CoinRuleFormValues } from "../schema";
 import {
   useActiveGroups,
@@ -35,6 +36,7 @@ import {
 } from "../hooks";
 import {
   ALL_GROUPS_VALUE,
+  COIN_RULE_AMOUNT_MAX,
   getDirectionOptions,
   getSourceTypeOptions,
   getTriggerTypeOptions,
@@ -121,8 +123,7 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
     }
   }, [triggerType]);
 
-  const onError = (error: any) =>
-    toast.error(error?.data?.message || t("common.error"));
+  const onError = (error: unknown) => toast.error(translateApiError(error, t));
 
   const onSubmit = (values: CoinRuleFormValues) => {
     if (isBuiltIn && coinRule) {
@@ -194,6 +195,7 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
                       <Input
                         type="number"
                         min={1}
+                        max={COIN_RULE_AMOUNT_MAX}
                         {...field}
                         onChange={(e) =>
                           field.onChange(e.target.valueAsNumber || 0)

@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/ustils";
 import { getFileUrl } from "@/lib/utils";
+import { useAuth } from "@/features/auth/hooks/useLogin";
 import type { TeacherDetail } from "../../types";
 
 interface Props {
@@ -30,6 +31,9 @@ export const TeacherDetailHeader = ({
   onRestore,
 }: Props) => {
   const { t } = useTranslation();
+  // Teng yoki yuqori darajadagi userni boshqarib bo'lmaydi (backend 403).
+  const { canManage } = useAuth();
+  const isManageable = canManage(teacher.role);
   const avatarLetter = teacher.fullName.charAt(0).toUpperCase();
 
   return (
@@ -97,41 +101,43 @@ export const TeacherDetailHeader = ({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 shrink-0">
-        <Button variant="outline" size="sm" className="gap-2" onClick={onChangePassword}>
-          <KeyRound size={14} />
-          {t("teachers.header.password")}
-        </Button>
-        <Button
-          size="sm"
-          className="gap-2 bg-purple-600 hover:bg-purple-700 text-white"
-          onClick={onEdit}
-        >
-          <Pencil size={14} />
-          {t("common.edit")}
-        </Button>
-        {teacher.isActive ? (
-          <Button
-            variant="outline"
-            size="sm"
-            className="gap-2 text-red-600 hover:bg-red-50 border-red-200 dark:border-red-900 dark:hover:bg-red-950/50"
-            onClick={onArchive}
-          >
-            <Archive size={14} />
-            {t("students.detail.archive")}
+      {isManageable && (
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <Button variant="outline" size="sm" className="gap-2" onClick={onChangePassword}>
+            <KeyRound size={14} />
+            {t("teachers.header.password")}
           </Button>
-        ) : (
           <Button
-            variant="outline"
             size="sm"
-            className="gap-2 text-emerald-600 hover:bg-emerald-50 border-emerald-200 dark:border-emerald-900 dark:hover:bg-emerald-950/50"
-            onClick={onRestore}
+            className="gap-2 bg-purple-600 hover:bg-purple-700 text-white"
+            onClick={onEdit}
           >
-            <ArchiveRestore size={14} />
-            {t("teachers.header.restore")}
+            <Pencil size={14} />
+            {t("common.edit")}
           </Button>
-        )}
-      </div>
+          {teacher.isActive ? (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 text-red-600 hover:bg-red-50 border-red-200 dark:border-red-900 dark:hover:bg-red-950/50"
+              onClick={onArchive}
+            >
+              <Archive size={14} />
+              {t("students.detail.archive")}
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 text-emerald-600 hover:bg-emerald-50 border-emerald-200 dark:border-emerald-900 dark:hover:bg-emerald-950/50"
+              onClick={onRestore}
+            >
+              <ArchiveRestore size={14} />
+              {t("teachers.header.restore")}
+            </Button>
+          )}
+        </div>
+      )}
     </header>
   );
 };

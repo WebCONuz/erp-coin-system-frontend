@@ -1,8 +1,10 @@
 import { formatDistanceToNow, parseISO } from "date-fns";
 import { ru, uz } from "date-fns/locale";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getFileUrl } from "@/lib/utils";
+import { cn, getFileUrl } from "@/lib/utils";
+import { formatDate } from "@/ustils";
+import { getCoinTxState } from "@/types";
 import type {
   AdminDashboardActivity,
   DashboardActivitySourceType,
@@ -60,6 +62,8 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
         <div className="space-y-1">
           {activity.map((item, idx) => {
             const isEarn = item.direction === "earn";
+            // Teskari yozuv — kulrang "↩"; bekor qilingan — summasi chizilgan.
+            const state = getCoinTxState(item);
             const avatarUrl = getFileUrl(item.student.avatarUrl);
 
             return (
@@ -89,13 +93,23 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
                       {item.student.fullName}
                     </p>
                     <span
-                      className={`flex shrink-0 items-center gap-0.5 text-sm font-semibold ${
-                        isEarn
-                          ? "text-emerald-600 dark:text-emerald-400"
-                          : "text-red-600 dark:text-red-400"
-                      }`}
+                      className={cn(
+                        "flex shrink-0 items-center gap-0.5 text-sm font-semibold",
+                        state === "reversal"
+                          ? "text-zinc-500 dark:text-zinc-400"
+                          : isEarn
+                            ? "text-emerald-600 dark:text-emerald-400"
+                            : "text-red-600 dark:text-red-400",
+                        state === "reversed" && "line-through opacity-60",
+                      )}
                     >
-                      {isEarn ? <Plus size={12} /> : <Minus size={12} />}
+                      {state === "reversal" ? (
+                        <Undo2 size={12} />
+                      ) : isEarn ? (
+                        <Plus size={12} />
+                      ) : (
+                        <Minus size={12} />
+                      )}
                       {item.amount}
                     </span>
                   </div>
@@ -108,6 +122,13 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
                   <p className="mt-0.5 text-[11px] text-zinc-400 dark:text-zinc-500">
                     {item.teacher ? `${item.teacher.fullName} · ` : ""}
                     {formatRelative(item.createdAt)}
+                    {state === "reversal" &&
+                      ` · ${t("coinHistory.reversalBadge")}`}
+                    {state === "reversed" &&
+                      item.reversal &&
+                      ` · ${t("coinHistory.reversedBadge", {
+                        date: formatDate(item.reversal.createdAt, "dd.MM.yyyy"),
+                      })}`}
                   </p>
                 </div>
               </div>

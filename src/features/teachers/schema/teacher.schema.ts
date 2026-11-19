@@ -1,3 +1,4 @@
+import { createAvatarUrlSchema } from "@/ustils/avatar-url";
 import { z } from "zod";
 import { createUsernameSchema } from "@/ustils/username";
 
@@ -20,11 +21,7 @@ export const createCreateTeacherSchema = (t: TFn) =>
       .email(t("teachers.schema.email_invalid"))
       .optional()
       .or(z.literal("")),
-    avatarUrl: z
-      .string()
-      .url(t("teachers.schema.url_invalid"))
-      .optional()
-      .or(z.literal("")),
+    avatarUrl: createAvatarUrlSchema(t),
   });
 
 export const createEditTeacherSchema = (t: TFn) =>
@@ -43,11 +40,7 @@ export const createEditTeacherSchema = (t: TFn) =>
       .email(t("teachers.schema.email_invalid"))
       .optional()
       .or(z.literal("")),
-    avatarUrl: z
-      .string()
-      .url(t("teachers.schema.url_invalid"))
-      .optional()
-      .or(z.literal("")),
+    avatarUrl: createAvatarUrlSchema(t),
   });
 
 export type CreateTeacherFormValues = z.infer<
@@ -58,15 +51,11 @@ export type EditTeacherFormValues = z.infer<
 >;
 
 export const createChangeTeacherPasswordSchema = (t: TFn) =>
-  z
-    .object({
-      oldPassword: z.string().optional().or(z.literal("")),
-      newPassword: z.string().min(6, t("teachers.schema.password_min")),
-    })
-    .refine((data) => data.newPassword !== data.oldPassword, {
-      message: t("teachers.schema.newPassword_sameAsOld"),
-      path: ["newPassword"],
-    });
+  // Boshqa userning paroli — backend `oldPassword` ni tekshirmaydi (faqat o'z
+  // parolida majburiy, u profil modalida).
+  z.object({
+    newPassword: z.string().min(6, t("teachers.schema.password_min")),
+  });
 
 export type ChangeTeacherPasswordFormValues = z.infer<
   ReturnType<typeof createChangeTeacherPasswordSchema>

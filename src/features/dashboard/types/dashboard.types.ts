@@ -1,3 +1,5 @@
+import type { CoinReversalFields } from "@/types";
+
 export interface AdminDashboardStats {
   groups: number;
   students: number;
@@ -35,7 +37,8 @@ export type DashboardActivitySourceType =
   | "bonus"
   | "purchase";
 
-export interface AdminDashboardActivity {
+// Teskari yozuv maydonlari (reversalOfId / reversal) bilan.
+export interface AdminDashboardActivity extends CoinReversalFields {
   id: string;
   amount: number;
   direction: "earn" | "deduct";

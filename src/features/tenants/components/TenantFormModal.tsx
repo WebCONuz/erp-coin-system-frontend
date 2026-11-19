@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { ControlledSelect } from "@/components/controls";
 import { createTenantFormSchema, type TenantFormValues } from "../schema";
 import { useCreateTenant, useUpdateTenant } from "../hooks";
-import { getTenantTypeOptions } from "../constants";
+import { getTenantTypeOptions, isSystemTenant } from "../constants";
 import type { TenentType } from "../types";
 
 interface Props {
@@ -44,6 +44,8 @@ const emptyValues: TenantFormValues = {
 export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
   const { t } = useTranslation();
   const isEdit = mode === "edit";
+  // Tizim tenantining slug'i o'zgarmaydi (backend 403) — nomi va turi tahrirlanadi.
+  const isSlugLocked = isEdit && isSystemTenant(tenant);
   const createTenant = useCreateTenant();
   const updateTenant = useUpdateTenant(tenant?.id ?? "");
   const isPending = createTenant.isPending || updateTenant.isPending;
@@ -82,7 +84,9 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
     };
 
     if (isEdit && tenant) {
-      updateTenant.mutate(data, { onSuccess: () => onClose(), onError });
+      // Tizim tenanti uchun slug umuman yuborilmaydi.
+      const updateData = isSlugLocked ? { ...data, slug: undefined } : data;
+      updateTenant.mutate(updateData, { onSuccess: () => onClose(), onError });
     } else {
       createTenant.mutate(data, { onSuccess: () => onClose(), onError });
     }
@@ -126,6 +130,7 @@ export const TenantFormModal = ({ open, onClose, mode, tenant }: Props) => {
                     <Input
                       placeholder={t("tenants.form.slugPlaceholder")}
                       {...field}
+                      disabled={isSlugLocked}
                     />
                   </FormControl>
                   <FormMessage />

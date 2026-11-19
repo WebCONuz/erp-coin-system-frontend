@@ -10,6 +10,8 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { ControlledInput, ControlledSelect } from "@/components/controls";
 import { useRoles } from "@/features/roles/hooks";
+import { useAuth } from "@/features/auth/hooks/useLogin";
+import { ROLES } from "@/assets/constants";
 import type { Employee } from "../../types";
 import { useCreateEditEmployee } from "../../hooks";
 
@@ -26,11 +28,13 @@ export const EmployeeFormModal = ({ open, onClose, mode, employee }: Props) => {
   const { isPending, onSubmitCreate, onSubmitEdit, createForm, editForm } =
     useCreateEditEmployee({ open, isEdit, onClose, employee });
 
+  const { canManage } = useAuth();
   const { data: roles, isLoading: isRolesLoading } = useRoles();
+  // Faqat o'zidan past darajadagi rolni tayinlash mumkin (admin → admin ni bera olmaydi).
   const roleOptions =
     roles?.data?.length && roles.data.length > 0
       ? roles.data
-          .filter((item) => item.name !== "student")
+          .filter((item) => item.name !== ROLES.STUDENT && canManage(item))
           .map((role) => ({
             value: role.id,
             label: role.displayName,

@@ -12,6 +12,7 @@ import type {
   ScheduleTemplatesResponse,
   UpdateExceptionDto,
   UpdateScheduleTemplateDto,
+  WithSessionSync,
 } from "../types";
 
 // ─── Schedule templates ───────────────────────────────────────────────────────
@@ -38,8 +39,8 @@ export const createScheduleTemplate = async (
 export const updateScheduleTemplate = async (
   templateId: string,
   data: UpdateScheduleTemplateDto,
-): Promise<ScheduleTemplate> => {
-  const res = await request.patch<ScheduleTemplate>(
+): Promise<WithSessionSync<ScheduleTemplate>> => {
+  const res = await request.patch<WithSessionSync<ScheduleTemplate>>(
     `${ENDPOINTS.SCHEDULE_TEMPLATES}/${templateId}`,
     data,
   );
@@ -48,8 +49,11 @@ export const updateScheduleTemplate = async (
 
 export const deleteScheduleTemplate = async (
   templateId: string,
-): Promise<void> => {
-  await request.delete(`${ENDPOINTS.SCHEDULE_TEMPLATES}/${templateId}`);
+): Promise<WithSessionSync<{ message?: string }>> => {
+  const res = await request.delete<WithSessionSync<{ message?: string }>>(
+    `${ENDPOINTS.SCHEDULE_TEMPLATES}/${templateId}`,
+  );
+  return res.data;
 };
 
 // ─── Calendar ─────────────────────────────────────────────────────────────────
@@ -79,8 +83,8 @@ export const generateSessions = async (
 export const createException = async (
   templateId: string,
   data: CreateExceptionDto,
-): Promise<ScheduleException> => {
-  const res = await request.post<ScheduleException>(
+): Promise<WithSessionSync<ScheduleException>> => {
+  const res = await request.post<WithSessionSync<ScheduleException>>(
     `${ENDPOINTS.SCHEDULE_TEMPLATES}/${templateId}/exceptions`,
     data,
   );
@@ -90,14 +94,19 @@ export const createException = async (
 export const updateException = async (
   exceptionId: string,
   data: UpdateExceptionDto,
-): Promise<ScheduleException> => {
-  const res = await request.patch<ScheduleException>(
+): Promise<WithSessionSync<ScheduleException>> => {
+  const res = await request.patch<WithSessionSync<ScheduleException>>(
     `${ENDPOINTS.SCHEDULE_EXCEPTIONS}/${exceptionId}`,
     data,
   );
   return res.data;
 };
 
-export const deleteException = async (exceptionId: string): Promise<void> => {
-  await request.delete(`${ENDPOINTS.SCHEDULE_EXCEPTIONS}/${exceptionId}`);
+export const deleteException = async (
+  exceptionId: string,
+): Promise<WithSessionSync<{ message?: string }>> => {
+  const res = await request.delete<WithSessionSync<{ message?: string }>>(
+    `${ENDPOINTS.SCHEDULE_EXCEPTIONS}/${exceptionId}`,
+  );
+  return res.data;
 };

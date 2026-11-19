@@ -30,7 +30,9 @@ import { useRooms } from "@/features/rooms/hooks";
 import { useTeachers } from "@/features/teachers/hooks";
 import { useSubjects } from "@/features/subjects/hooks";
 import { useCurrentTenant } from "@/features/tenants/hooks";
-import { ControlledSelect } from "@/components/controls";
+import { ControlledDatePicker, ControlledSelect } from "@/components/controls";
+import { translateApiError } from "@/ustils";
+import { notifySessionSync } from "../lib/session-sync";
 
 interface TemplateFormModalProps {
   open: boolean;
@@ -82,6 +84,8 @@ export const TemplateFormModal = ({
       subjectId: "",
       startTime: "",
       endTime: "",
+      validFrom: "",
+      validTo: "",
     },
   });
 
@@ -98,6 +102,8 @@ export const TemplateFormModal = ({
         subjectId: template.subjectId ?? template.subject?.id ?? "",
         startTime: template.startTime,
         endTime: template.endTime,
+        validFrom: template.validFrom?.slice(0, 10) ?? "",
+        validTo: template.validTo?.slice(0, 10) ?? "",
       });
     } else {
       form.reset({
@@ -108,12 +114,14 @@ export const TemplateFormModal = ({
         subjectId: "",
         startTime: "",
         endTime: "",
+        validFrom: "",
+        validTo: "",
       });
     }
   }, [open, isEdit, template, weekday, lockGroup, presetGroupId, form]);
 
-  const onError = (error: any) =>
-    toast.error(error?.data?.message || t("common.error"));
+  // SCHEDULE_CONFLICT (o'qituvchi/xona/guruh band) va boshqalar — `code` bo'yicha.
+  const onError = (error: unknown) => toast.error(translateApiError(error, t));
 
   const onSubmit = (values: TemplateFormValues) => {
     const teacherId =
@@ -127,12 +135,28 @@ export const TemplateFormModal = ({
           roomId: values.roomId,
           teacherId: teacherId ?? null,
           subjectId: values.subjectId || null,
+          // `null` — muddat cheklovi olib tashlanadi.
+          validFrom: values.validFrom || null,
+          validTo: values.validTo || null,
         },
-        { onSuccess: () => onClose(), onError },
+        {
+          onSuccess: (res) => {
+            // Kelajakdagi darslar shablonga moslashtirildi — to'qnashganlari ko'rsatiladi.
+            notifySessionSync(res.sessionSync, t);
+            onClose();
+          },
+          onError,
+        },
       );
     } else {
       createTemplate.mutate(
-        { ...values, teacherId, subjectId: values.subjectId || undefined },
+        {
+          ...values,
+          teacherId,
+          subjectId: values.subjectId || undefined,
+          validFrom: values.validFrom || undefined,
+          validTo: values.validTo || undefined,
+        },
         {
           onSuccess: () => onClose(),
           onError,
@@ -165,7 +189,7 @@ export const TemplateFormModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-100 max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
         <DialogHeader>
           <DialogTitle className="text-zinc-900 dark:text-zinc-50">
             {isEdit
@@ -290,6 +314,36 @@ export const TemplateFormModal = ({
                 )}
               />
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <ControlledDatePicker
+                control={form.control}
+                name="validFrom"
+                label={`${t("plans.templateForm.validFrom")} ${t("common.optional")}`}
+                placeholder={t("common.date")}
+                buttonClassName="h-8"
+                maxDate={
+                  form.watch("validTo")
+                    ? new Date(form.watch("validTo") as string)
+                    : undefined
+                }
+              />
+              <ControlledDatePicker
+                control={form.control}
+                name="validTo"
+                label={`${t("plans.templateForm.validTo")} ${t("common.optional")}`}
+                placeholder={t("common.date")}
+                buttonClassName="h-8"
+                minDate={
+                  form.watch("validFrom")
+                    ? new Date(form.watch("validFrom") as string)
+                    : undefined
+                }
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {t("plans.templateForm.validityHint")}
+            </p>
 
             <DialogFooter className="pt-2 gap-2">
               <Button

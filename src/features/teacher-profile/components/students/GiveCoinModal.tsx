@@ -14,6 +14,12 @@ import {
   useManualCoinTransaction,
   useStudentById,
 } from "@/features/students/hooks";
+import {
+  COIN_NOTE_MAX,
+  MANUAL_COIN_MAX,
+} from "@/features/students/constants";
+import { useTeacherCoinLimit } from "@/features/tenant-settings/hooks";
+import { translateApiError } from "@/ustils";
 import { useMyTaughtGroups } from "../../hooks";
 
 interface Props {
@@ -35,6 +41,9 @@ export const GiveCoinModal = ({
   const { data: myGroups } = useMyTaughtGroups();
   const { data: student } = useStudentById(open ? studentId : "");
   const manualCoin = useManualCoinTransaction(studentId);
+  // Tenant sozlamasi: teacher bir martada bitta o'quvchiga bera oladigan maksimum.
+  const { limit: teacherCoinLimit } = useTeacherCoinLimit();
+  const maxAmount = teacherCoinLimit ?? MANUAL_COIN_MAX;
 
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
@@ -65,8 +74,12 @@ export const GiveCoinModal = ({
 
   const handleSubmit = () => {
     const numAmount = Number(amount);
-    if (!numAmount || numAmount < 1) {
+    if (!numAmount || numAmount < 1 || !Number.isInteger(numAmount)) {
       toast.error(t("bulkCoin.schema.amount_invalid"));
+      return;
+    }
+    if (numAmount > maxAmount) {
+      toast.error(t("bulkCoin.schema.amount_max", { max: maxAmount }));
       return;
     }
     if (!effectiveGroupId) {
@@ -88,8 +101,7 @@ export const GiveCoinModal = ({
           toast.success(t("teacherProfile.giveCoin.success"));
           handleClose();
         },
-        onError: (error: any) =>
-          toast.error(error?.data?.message || t("common.error")),
+        onError: (error: unknown) => toast.error(translateApiError(error, t)),
       },
     );
   };
@@ -146,12 +158,18 @@ export const GiveCoinModal = ({
               <input
                 type="number"
                 min={1}
+                max={maxAmount}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder={t("teacherProfile.giveCoin.amountPlaceholder")}
                 className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
               />
             </div>
+            {teacherCoinLimit !== null && (
+              <p className="mt-1 text-xs text-ink-soft">
+                {t("bulkCoin.teacherLimitHint", { limit: teacherCoinLimit })}
+              </p>
+            )}
           </div>
 
           {matchingGroups.length > 1 && (
@@ -179,6 +197,7 @@ export const GiveCoinModal = ({
             <input
               type="text"
               value={note}
+              maxLength={COIN_NOTE_MAX}
               onChange={(e) => setNote(e.target.value)}
               placeholder={t("teacherProfile.giveCoin.notePlaceholder")}
               className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"

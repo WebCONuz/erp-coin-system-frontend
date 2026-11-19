@@ -1,3 +1,5 @@
+import type { CoinReversalFields, CoinSourceType } from "@/types";
+
 export interface MyWallet {
   id: string;
   balance: number;
@@ -5,11 +7,12 @@ export interface MyWallet {
   userId: string;
 }
 
-export interface MyCoinTransaction {
+// GET /coin-transactions/my-history — teskari yozuv maydonlari bilan.
+export interface MyCoinTransaction extends CoinReversalFields {
   id: string;
   amount: number;
   direction: "earn" | "deduct";
-  sourceType: string;
+  sourceType: CoinSourceType;
   note?: string | null;
   createdAt: string;
   teacher?: { id: string; fullName: string } | null;

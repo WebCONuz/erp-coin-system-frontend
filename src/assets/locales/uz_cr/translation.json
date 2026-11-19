@@ -51,7 +51,9 @@
     "direction": "Йўналиш",
     "profile": "Профил",
     "logoutAction": "Чиқиш",
-    "coinLabel": "coin"
+    "coinLabel": "coin",
+    "next": "Кейинги",
+    "previous": "Олдинги"
   },
   "sourceTypes": {
     "bonus": "Бонус",
@@ -60,7 +62,9 @@
     "competition": "Мусобақа",
     "purchase": "Харид",
     "manual": "Қўлда",
-    "exam": "Имтиҳон"
+    "exam": "Имтиҳон",
+    "late": "Кечикиш",
+    "penalty": "Жарима"
   },
   "apiErrors": {
     "INVALID_EVALUATION_MODE": "Бу сессия тури учун танланган текшириш усули рухсат этилмаган. Рухсат этилганлар: {{allowedModes}}",
@@ -69,10 +73,20 @@
     "SESSION_NOT_LOCKED": "Сессия қулфланмаган",
     "SESSION_ALREADY_CHECKED": "Сессия текширилган, унинг текшириш усулини ўзгартириб бўлмайди",
     "DUPLICATE_STUDENTS": "Рўйхатда такрорланган ўқувчилар бор",
-    "STUDENTS_NOT_IN_GROUP": "Айрим ўқувчилар сессия гуруҳида эмас",
+    "STUDENTS_NOT_IN_GROUP": "Айрим ўқувчилар дарс санасида гуруҳ аъзоси бўлмаган",
     "SCORE_EXCEEDS_MAX": "Балл максимал баллдан ({{maxScore}}) ошмаслиги керак",
     "MAX_SCORE_BELOW_EXISTING": "Максимал балл киритилган энг юқори баллдан ({{highestScore}}) кичик бўлмаслиги керак",
-    "SESSION_COINS_SPENT": "Айрим ўқувчилар бу сессиядан олган coinларини сарфлаб бўлган"
+    "SESSION_COINS_SPENT": "Айрим ўқувчилар бу сессиядан олган coinларини сарфлаб бўлган",
+    "TENANT_INACTIVE": "Ташкилотингиз фаолияти вақтинча тўхтатилган. Администраторга мурожаат қилинг",
+    "TOO_MANY_REQUESTS": "Жуда кўп уриниш. Бироздан кейин қайта уриниб кўринг",
+    "TEACHER_COIN_LIMIT_EXCEEDED": "Бир ўқувчига бир марта кўпи билан {{limit}} coin бера оласиз",
+    "SESSION_NOT_STARTED": "Дарс ҳали бошланмаган ({{startsAt}}) — йўқламани дарс бошлангандан кейин қўйинг",
+    "INVALID_TIME_RANGE": "Тугаш вақти бошланиш вақтидан кейин бўлиши керак",
+    "ATTENDANCE_EDIT_WINDOW_EXPIRED": "Сақланган йўқламани 3 кун ичида ({{editableUntil}} гача) таҳрирлаш мумкин эди. Ўзгартириш учун администраторга мурожаат қилинг",
+    "SESSION_DATE_TOO_OLD": "Ўқитувчи 7 кундан эски санага дарс қўша олмайди (энг эрта: {{earliestDate}}). Администраторга мурожаат қилинг",
+    "SESSION_DUPLICATE": "Бу гуруҳ учун кўрсатилган сана ва вақтда дарс аллақачон мавжуд",
+    "SCHEDULE_CONFLICT": "Жадвал тўқнашуви: {{conflict}}",
+    "ATTENDANCE_STATUS_MISMATCH": "Давомат ҳолати ва \"келди\" белгиси бир-бирига мос эмас"
   },
   "coinRules": {
     "direction": {
@@ -88,7 +102,8 @@
       "homework": "Уй вазифаси",
       "competition": "Мусобақа",
       "bonus": "Бонус",
-      "penalty": "Жарима"
+      "penalty": "Жарима",
+      "late": "Кечикиш"
     },
     "namePlaceholderAdmin": "Масалан: Дарсга келгани учун",
     "namePlaceholderTeacher": "Масалан: Дарсга фаол қатнашгани учун",
@@ -126,7 +141,8 @@
       "amount_min": "Танга миқдори камида 1 бўлиши керак",
       "direction_required": "Йўналишни танланг",
       "triggerType_required": "Ишга тушириш турини танланг",
-      "sourceType_required": "Автоматик қоида учун манба тури танланиши шарт"
+      "sourceType_required": "Автоматик қоида учун манба тури танланиши шарт",
+      "description_max": "Тавсиф {{max}} белгидан ошмаслиги керак"
     }
   },
   "username": {
@@ -181,7 +197,8 @@
       "password_min": "Парол камида 6 та белгидан иборат бўлиши керак",
       "newPassword_same": "Янги парол жорий паролдан фарқ қилиши керак",
       "confirmPassword_mismatch": "Пароллар мос келмади"
-    }
+    },
+    "passwordChangedRelogin": "Парол ўзгартирилди. Хавфсизлик учун қайта киринг"
   },
   "garden": {
     "levels": {
@@ -247,8 +264,11 @@
     "schema": {
       "amount_int": "Бутун сон киритинг",
       "rule_required": "Танга қоидасини танланг",
-      "amount_invalid": "Миқдорни тўғри киритинг"
-    }
+      "amount_invalid": "Миқдорни тўғри киритинг",
+      "amount_max": "Миқдор {{max}} дан ошмаслиги керак",
+      "note_max": "Изоҳ {{max}} белгидан ошмаслиги керак"
+    },
+    "teacherLimitHint": "Бир ўқувчига бир марта кўпи билан {{limit}} coin"
   },
   "admin": {
     "header": {
@@ -438,8 +458,7 @@
       "role_required": "Рол танланиши шарт",
       "email_invalid": "Email нотўғри форматда",
       "parentPhone_min": "Телефон рақам камида 9 та рақам",
-      "url_invalid": "URL нотўғри форматда",
-      "newPassword_same": "Янги парол эскисидан фарқ қилиши керак"
+      "url_invalid": "URL нотўғри форматда"
     },
     "form": {
       "editTitle": "Ходимни таҳрирлаш",
@@ -452,8 +471,6 @@
       "passwordLabel": "Парол",
       "passwordPlaceholder": "Парол киритинг",
       "parentPhoneLabel": "Яқин киши телефони",
-      "oldPasswordLabel": "Жорий парол",
-      "oldPasswordPlaceholder": "Агар ўзингизники бўлса киритинг",
       "newPasswordLabel": "Янги парол",
       "newPasswordPlaceholder": "Янги парол киритинг"
     },
@@ -497,8 +514,7 @@
       "phone_max": "Телефон рақам жуда узун",
       "password_min": "Парол камида 6 та белги бўлиши керак",
       "email_invalid": "Email нотўғри форматда",
-      "url_invalid": "URL нотўғри форматда",
-      "newPassword_sameAsOld": "Янги парол эскисидан фарқ қилиши керак"
+      "url_invalid": "URL нотўғри форматда"
     },
     "form": {
       "createTitle": "Янги ўқитувчи қўшиш",
@@ -506,8 +522,6 @@
     },
     "roleNotFound": "Ўқитувчи роли топилмади",
     "passwordChanged": "Парол муваффақиятли ўзгартирилди",
-    "currentPasswordLabel": "Жорий парол (ихтиёрий)",
-    "currentPasswordPlaceholder": "Агар ўзингизники бўлса киритинг",
     "securityTab": {
       "changePasswordTitle": "Паролни ўзгартириш"
     },
@@ -673,7 +687,9 @@
         "attendance": "Тадбирлар",
         "bonus": "Тартиб-интизом",
         "other": "Қўшимча"
-      }
+      },
+      "cancelSuccess": "Транзакция бекор қилинди. Янги баланс: {{balance}} coin",
+      "totalCount": "Жами: {{count}} та ёзув"
     },
     "contactRow": {
       "copied": "Нусхаланди",
@@ -866,7 +882,8 @@
     },
     "evaluation": {
       "coinsSkipped": "{{total}} та ўқувчининг coini янгиланмади",
-      "modeChangedHint": "Текшириш усули ўзгарди. Энди жадвални тўлдириб, қайта сақланг"
+      "modeChangedHint": "Текшириш усули ўзгарди. Энди жадвални тўлдириб, қайта сақланг",
+      "notStartedHint": "Дарс ҳали бошланмаган — йўқламани дарс бошлангандан кейин қўйиш мумкин"
     },
     "coinsSkippedCode": {
       "COINS_ALREADY_SPENT": "Аввалги coinларни сарфлаб бўлган — coinлари ўзгармади",
@@ -880,11 +897,12 @@
       "keepCoinsAction": "Coinларни қайтармасдан ўчириш"
     },
     "teacherForm": {
-      "checkedReadOnlyHint": "Ушбу дарснинг текшируви сақланган. Ўзгартириш керак бўлса, администраторга мурожаат қилинг.",
       "saveAction": "Маълумотларни сақлаш",
       "confirmTitle": "Маълумотларни сақлайсизми?",
-      "confirmDescription": "Тасдиқлагандан сўнг дарс ва текширув маълумотларини қайта ўзгартира олмайсиз. Хатолик бўлса, администраторга мурожаат қилинг.",
-      "confirmAction": "Ҳа, сақлаш"
+      "confirmDescription": "Сақланган текширувни биринчи сақлашдан кейин 3 кун ичида таҳрирлаш мумкин. Кейин фақат администратор ўзгартира олади.",
+      "confirmAction": "Ҳа, сақлаш",
+      "editableUntil": "{{date}} гача таҳрирлаш мумкин",
+      "editWindowExpiredHint": "Таҳрирлаш муддати тугаган (сақлангандан кейин 3 кун). Ўзгартириш керак бўлса, администраторга мурожаат қилинг."
     },
     "infoUpdated": "Дарс маълумотлари янгиланди",
     "locked": "Қулфланган",
@@ -917,7 +935,16 @@
       "groupForbidden": "Бу гуруҳни кўриш ҳуқуқингиз йўқ",
       "groupLoadError": "Гуруҳ ўқувчиларини юклаб бўлмади",
       "present": "Келди",
-      "homework": "Уй вазифаси"
+      "homework": "Уй вазифаси",
+      "statusLabel": "Ҳолат",
+      "markAll": "Ҳаммага белгилаш:",
+      "leftGroupAt": "Гуруҳдан чиқарилган: {{date}}",
+      "status": {
+        "present": "Келди",
+        "late": "Кечикди",
+        "excused": "Сабабли",
+        "absent": "Сабабсиз"
+      }
     },
     "deleteConfirm": "\"{{group}}\" гуруҳининг {{time}} даги дарсини ўчиришни тасдиқлайсизми?",
     "noSessions": "Ҳали Сессиялар мавжуд эмас!",
@@ -948,7 +975,8 @@
       "evaluationModeLabel": "Текшириш усули",
       "maxScoreLabel": "Максимал балл (ихтиёрий)",
       "maxScorePlaceholder": "Масалан: 100"
-    }
+    },
+    "openExisting": "Мавжуд дарсни очиш"
   },
   "plans": {
     "weekday": {
@@ -975,7 +1003,11 @@
       "teacher_required": "Ўқитувчини танланг",
       "subject_required": "Фан танланиши шарт",
       "fromDate_required": "Бошланиш санаси киритилиши шарт",
-      "toDate_required": "Тугаш санаси киритилиши шарт"
+      "toDate_required": "Тугаш санаси киритилиши шарт",
+      "validRange_invalid": "Тугаш санаси бошланиш санасидан олдин бўлмаслиги керак",
+      "timeBothRequired": "Вақт ўзгарса бошланиш ва тугаш вақти бирга киритилиши керак",
+      "exceptionChangeRequired": "Янги вақт, хона ёки ўқитувчидан камида биттасини киритинг",
+      "rangeTooLong": "Оралиқ 92 кундан ошмаслиги керак"
     },
     "deleteTemplateConfirm": "Бу шаблонни ўчирсангиз, келажакдаги сессиялар яратилмайди. Мавжуд сессияларга таъсир этмайди. Давом этасизми?",
     "weeklyTemplate": "Ҳафталик Шаблон",
@@ -989,21 +1021,28 @@
       "weekdayLabel": "Ҳафта куни",
       "weekdayPlaceholder": "Ҳафта кунини танланг",
       "groupTeacherOption": "Гуруҳ ўқитувчиси",
-      "groupTeacherOptionWithName": "Гуруҳ ўқитувчиси ({{name}})"
+      "groupTeacherOptionWithName": "Гуруҳ ўқитувчиси ({{name}})",
+      "validFrom": "Амал қилиш бошланиши",
+      "validTo": "Амал қилиш тугаши",
+      "validityHint": "Муддатдан ташқари саналарга дарс яратилмайди. Муддатлари кесишмайдиган шаблонлар бир хил хона/вақтда бўлиши мумкин."
     },
     "card": {
       "timePrefix": "Вақти:"
     },
     "exception": {
       "cancelSession": "Бу дарсни бекор қилиш",
-      "rescheduleTime": "Вақтини ўзгартириш",
       "goToSessionDetails": "Жорий дарс маълумотларига ўтиш",
       "noSessionYet": "Бу кун бўйича дарс яратилмаган",
       "revertConfirm": "Стандарт шаблонга қайтарилсинми?",
       "cancelReasonPlaceholder": "Масалан: Байрам сабабли",
       "rescheduleReasonPlaceholder": "Масалан: Техник ишлар сабабли",
       "revertToTemplate": "Андозага қайтариш",
-      "back": "Орқага"
+      "back": "Орқага",
+      "modifySession": "Вақт, хона ёки ўқитувчини ўзгартириш",
+      "roomLabel": "Бошқа хона",
+      "substituteTeacherLabel": "Ўринбосар ўқитувчи",
+      "sameAsTemplate": "Шаблондагидек",
+      "templateDefaults": "Шаблон: {{time}}, хона {{room}}, ўқитувчи {{teacher}}. Бўш қолдирилган майдон ўзгармайди."
     },
     "generate": {
       "title": "Жадвал бўйича дарслар яратиш",
@@ -1012,7 +1051,9 @@
       "warningLabel": "Эслатма!",
       "warningText": "Дарсларни \"Белгиланган Жадвал\" бўйича фақат келгуси саналар учун яратиш мумкин, ўтиб кетган саналар учун мумкин эмас!",
       "action": "Сессиялар яратиш",
-      "resultToast": "{{created}} та сессия яратилди, {{cancelled}} та бекор (истисно), {{skipped}} та ўтказиб юборилди (аввалдан бор эди)"
+      "resultToast": "{{created}} та сессия яратилди, {{cancelled}} та бекор (истисно), {{skipped}} та ўтказиб юборилди (аввалдан бор эди)",
+      "holidaysSkipped": "{{count}} та дарс дам олиш кунига тўғри келгани учун яратилмади",
+      "maxRangeHint": "Бир мартада кўпи билан {{days}} кунлик оралиқ"
     },
     "legend": {
       "normal": "Оддий сессия",
@@ -1024,11 +1065,20 @@
       "cancelled": "Бекор қилинди",
       "technicalReason": "Техник сабабга кўра",
       "newTime": "Янги вақти",
-      "reason": "Сабаб"
+      "reason": "Сабаб",
+      "holiday": "Дам олиш куни",
+      "newRoom": "Янги хона",
+      "time": "Вақти",
+      "substitute": "Ўринбосар"
     },
     "tabs": {
       "kanban": "Ҳафталик Шаблон (Kanban)",
       "calendar": "Ойлик Календар"
+    },
+    "sync": {
+      "summary": "Келажакдаги дарслар мослаштирилди: {{updated}} та янгиланди, {{removed}} та ўчирилди, {{created}} та яратилди",
+      "conflictsTitle": "{{count}} та дарс янги жадвалга кўчирилмади (тўқнашув)",
+      "andMore": "…ва яна {{count}} та"
     }
   },
   "reward_categories": {
@@ -1245,5 +1295,71 @@
     "stockNotRestored": "Захира ўзгармади",
     "rewardFilter": "Совға: {{title}}",
     "rewardFilterFallback": "танланган совға"
+  },
+  "validation": {
+    "timeFormat": "Вақт формати ҲҲ:ДД бўлиши керак (масалан 09:00)",
+    "endAfterStart": "Тугаш вақти бошланиш вақтидан кейин бўлиши керак",
+    "avatarUrlInvalid": "Расм манзили '/uploads/avatars/...' ёки 'https://...' бўлиши керак",
+    "avatarUrlMax": "Расм манзили 500 белгидан ошмаслиги керак"
+  },
+  "scheduleConflict": {
+    "kind": {
+      "group": "Гуруҳ банд",
+      "room": "Хона банд",
+      "teacher": "Ўқитувчи банд"
+    }
+  },
+  "transactionSource": {
+    "late": "Кечикиб келди"
+  },
+  "coinHistory": {
+    "reversalBadge": "Бекор қилиш ёзуви",
+    "reversedBadge": "Бекор қилинган · {{date}}",
+    "cancelAction": "Бекор қилиш",
+    "cancelConfirmTitle": "Транзакцияни бекор қиласизми?",
+    "cancelConfirmDescription": "{{amount}} coin учун тескари ёзув қўшилади, баланс қайта ҳисобланади. Асл ёзув тарихда қолади."
+  },
+  "calendarChip": {
+    "changed": "Ўзгарган"
+  },
+  "holidays": {
+    "title": "Дам олиш кунлари",
+    "description": "Шу саналарда жадвал бўйича дарс яратилмайди; мавжуд келажакдаги текширилмаган дарслар автоматик ўчирилади. Дам олиш куни ўчирилса — дарслар қайтарилади.",
+    "nameLabel": "Номи",
+    "namePlaceholder": "Масалан: Янги йил",
+    "listTitle": "{{year}}-йил дам олиш кунлари",
+    "empty": "Бу йил учун дам олиш кунлари қўшилмаган",
+    "prevYear": "Олдинги йил",
+    "nextYear": "Кейинги йил",
+    "created": "\"{{name}}\" дам олиш куни қўшилди",
+    "deleted": "Дам олиш куни ўчирилди",
+    "deleteConfirm": "{{date}} — \"{{name}}\" дам олиш куни ўчирилсинми? Шу санадаги жадвал дарслари қайтарилади.",
+    "manualSessionsWarning": "{{date}} санасида қўлда яратилган {{count}} та дарс бор — улар автоматик ўчирилмайди, кўриб чиқинг",
+    "schema": {
+      "date_required": "Санани танланг",
+      "name_required": "Номини киритинг",
+      "name_max": "Номи 100 белгидан ошмаслиги керак"
+    }
+  },
+  "tenantSettings": {
+    "title": "Созламалар",
+    "saved": "Созламалар сақланди",
+    "noChanges": "Ўзгариш йўқ",
+    "coinLimit": {
+      "title": "Ўқитувчи coin лимити",
+      "description": "Ўқитувчи бир марта битта ўқувчига бера оладиган максимал coin. Админ ва юқори ролларга ҳамда йўқламадаги автоматик coinларга қўлланмайди.",
+      "label": "Лимит (coin)",
+      "placeholder": "Лимит йўқ",
+      "hint": "Бўш қолдирилса — лимит йўқ."
+    },
+    "timezone": {
+      "title": "Вақт минтақаси",
+      "description": "\"Бугун\", \"дарс бошландими\" ва ўқитувчининг 7 кунлик ойнаси шу минтақа бўйича ҳисобланади.",
+      "label": "Timezone (IANA)"
+    },
+    "schema": {
+      "limit_invalid": "Лимит {{min}} … {{max}} оралиғида бутун сон бўлиши керак",
+      "timezone_required": "Вақт минтақасини танланг"
+    }
   }
 }

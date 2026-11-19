@@ -74,6 +74,6 @@ export interface UpdateEmployeeDto {
 }
 
 export interface ChangeEmployeePasswordDto {
-  oldPassword?: string;
+  /** Admin → past darajadagi user: `oldPassword` kerak emas (backend e'tiborsiz qoldiradi). */
   newPassword: string;
 }

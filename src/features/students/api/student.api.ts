@@ -15,6 +15,8 @@ import type {
   StudentDetailFull,
   StudentsResponse,
   CoinTransaction,
+  CoinTransactionHistoryResponse,
+  CancelCoinTransactionResponse,
 } from "../types";
 
 // ─── List ─────────────────────────────────────────────────────────────────────
@@ -89,14 +91,23 @@ export const applyCoinRule = async (
   return res.data;
 };
 
-export const cancelCoinTransaction = async (id: string): Promise<void> => {
-  await request.delete(`${ENDPOINTS.COIN_TRANSACTIONS}/${id}/cancel`);
+// Bekor qilish — teskari yozuv yaratadi; asl yozuv tarixda qoladi.
+export const cancelCoinTransaction = async (
+  id: string,
+): Promise<CancelCoinTransactionResponse> => {
+  const res = await request.delete<CancelCoinTransactionResponse>(
+    `${ENDPOINTS.COIN_TRANSACTIONS}/${id}/cancel`,
+  );
+  return res.data;
 };
 
 export const getCoinTransactionHistory = async (
   params?: Record<string, string | undefined>,
-): Promise<{ data: CoinTransaction[]; meta: { total: number; page: number; limit: number; totalPages: number } }> => {
-  const res = await request.get(`${ENDPOINTS.COIN_TRANSACTIONS}/history`, { params });
+): Promise<CoinTransactionHistoryResponse> => {
+  const res = await request.get<CoinTransactionHistoryResponse>(
+    `${ENDPOINTS.COIN_TRANSACTIONS}/history`,
+    { params },
+  );
   return res.data;
 };
 

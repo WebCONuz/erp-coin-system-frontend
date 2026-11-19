@@ -9,6 +9,8 @@ import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { CategoryFormModal } from "./CategoryFormModal";
 import type { RewardCategory } from "../types";
+import { toast } from "sonner";
+import { translateApiError } from "@/ustils";
 
 interface Props {
   noAction?: boolean;
@@ -77,7 +79,10 @@ export const GiftCategory = ({ noAction = false }: Props) => {
   const handleDelete = (e: React.MouseEvent, categoryId: string) => {
     e.stopPropagation();
     if (window.confirm(t("reward_categories.delete_confirm"))) {
-      deleteCategory.mutate(categoryId);
+      // Soft delete; faol sovg'asi bor kategoriya — 409 (backend xabari ko'rsatiladi).
+      deleteCategory.mutate(categoryId, {
+        onError: (error) => toast.error(translateApiError(error, t)),
+      });
     }
   };
 

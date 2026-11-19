@@ -14,7 +14,7 @@ import {
   subMonths,
 } from "date-fns";
 import { uz } from "date-fns/locale";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarOff, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { OptionSelect } from "@/components/ui/option-select";
@@ -118,6 +118,13 @@ export const TeacherCalendarTab = () => {
               const dateKey = format(day, "yyyy-MM-dd");
               const entries = calendarData?.[dateKey] ?? [];
               const inMonth = isSameMonth(day, monthStart);
+              // `holiday` kun bo'yicha (hamma elementda bir xil). Dam olish kunida
+              // faqat `session` bor elementlar qoladi — tekshirilgan/qulflangan
+              // yoki qo'lda yaratilgan dars (backend ularni o'chirmaydi).
+              const holiday = entries.find((e) => e.holiday)?.holiday;
+              const visibleEntries = holiday
+                ? entries.filter((e) => !!e.session)
+                : entries;
 
               return (
                 <div
@@ -135,7 +142,15 @@ export const TeacherCalendarTab = () => {
                   >
                     {format(day, "d")}
                   </span>
-                  {entries.map((entry, idx) => (
+                  {holiday && (
+                    <div className="flex w-full items-center gap-1 truncate rounded px-1.5 py-0.5 text-[11px] font-medium text-bloom bg-bloom/10">
+                      <CalendarOff size={11} className="shrink-0" />
+                      <span className="truncate">
+                        {t("plans.chip.holiday")}: {holiday.name}
+                      </span>
+                    </div>
+                  )}
+                  {visibleEntries.map((entry, idx) => (
                     <TeacherSessionChip
                       key={`${entry.template.id}-${idx}`}
                       entry={entry}

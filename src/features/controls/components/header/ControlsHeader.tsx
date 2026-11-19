@@ -10,7 +10,8 @@ export const ControlsHeader = () => {
   const contolsHeader = getControlsHeader(t);
 
   return (
-    <header className="mt-2">
+    // Tab'lar ko'paydi — tor ekranda gorizontal scroll (sahifa emas, faqat tab qatori).
+    <header className="mt-2 max-w-full overflow-x-auto">
       <Tabs
         value={location.pathname}
         onValueChange={(value) => navigate(value)}

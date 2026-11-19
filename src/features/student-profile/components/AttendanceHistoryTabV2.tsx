@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { TabsContent } from "@/components/ui/tabs";
-import { Award, BookOpenCheck, CalendarCheck, Check, X } from "lucide-react";
+import { Award, BookOpenCheck, CalendarCheck, Check } from "lucide-react";
 import type {
   AttendanceRecord,
   StudentDetailFull,
@@ -9,6 +9,7 @@ import type {
 import { getSessionTypeLabel } from "@/features/sessions/constants";
 import { formatSessionScore } from "@/features/sessions/utils";
 import { formatDate } from "@/ustils";
+import { AttendanceStatusBadge } from "./AttendanceStatusBadge";
 
 const AVATAR_STYLES = [
   "bg-forest/10 text-forest",
@@ -168,24 +169,10 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                       </div>
 
                       <div className="flex items-center gap-1.5 flex-wrap shrink-0 pl-12 sm:pl-0">
-                        <span
-                          className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
-                            record.isPresent
-                              ? "bg-forest/10 text-forest"
-                              : "bg-bloom/10 text-bloom"
-                          }`}
-                        >
-                          {record.isPresent ? (
-                            <Check size={11} />
-                          ) : (
-                            <X size={11} />
-                          )}
-                          <span className="text-xs">
-                            {record.isPresent
-                              ? t("sessions.attendance.present")
-                              : t("sessions.attendance.absent")}
-                          </span>
-                        </span>
+                        <AttendanceStatusBadge
+                          status={record.status}
+                          isPresent={record.isPresent}
+                        />
                         {record.session.evaluationMode === "scored" ? (
                           record.isPresent && (
                             <span className="flex items-center justify-center gap-1 px-2 py-1 rounded-full shrink-0 bg-gold/15 text-gold">

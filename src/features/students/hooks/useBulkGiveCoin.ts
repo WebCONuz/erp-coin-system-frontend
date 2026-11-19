@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useActiveCoinRulesList } from "@/features/coin-rules/hooks";
 import { groupKeys } from "@/features/groups/constants";
+import { useTeacherCoinLimit } from "@/features/tenant-settings/hooks";
+import { translateApiError } from "@/ustils";
 import { useBulkManualCoinTransaction, useApplyCoinRule } from "./useHook";
 import {
   createBulkGiveCoinSchema,
@@ -38,7 +40,12 @@ export const useBulkGiveCoinForm = ({
     BulkCoinResponse | ApplyCoinRuleResponse | null
   >(null);
 
-  const bulkGiveCoinSchema = useMemo(() => createBulkGiveCoinSchema(t), [t]);
+  // Teacher uchun tenant limiti (admin uchun `null` — umumiy 100 000 chegarasi).
+  const { limit: teacherCoinLimit } = useTeacherCoinLimit();
+  const bulkGiveCoinSchema = useMemo(
+    () => createBulkGiveCoinSchema(t, teacherCoinLimit),
+    [t, teacherCoinLimit],
+  );
 
   const form = useForm<BulkGiveCoinFormValues>({
     resolver: zodResolver(bulkGiveCoinSchema),
@@ -52,7 +59,12 @@ export const useBulkGiveCoinForm = ({
   const bulkManual = useBulkManualCoinTransaction();
   const applyRule = useApplyCoinRule();
 
-  const activeRules = rulesData?.data ?? [];
+  // Avtomatik qoidalar yo'qlama saqlanganda o'zi qo'llanadi — apply-rule ularni
+  // rad etadi (400), shuning uchun ro'yxatda faqat qo'lda qo'llanadiganlar.
+  const activeRules = useMemo(
+    () => (rulesData?.data ?? []).filter((r) => r.triggerType === "manual"),
+    [rulesData],
+  );
   const isPending = bulkManual.isPending || applyRule.isPending;
 
   const toggleSelect = (id: string) => {
@@ -71,8 +83,8 @@ export const useBulkGiveCoinForm = ({
     setResult(null);
   };
 
-  const onError = (error: any) =>
-    toast.error(error?.data?.message || t("common.error"));
+  // groupId/sessionId/limit xatolari endi butun so'rovni rad etadi — `code` bo'yicha tarjima.
+  const onError = (error: unknown) => toast.error(translateApiError(error, t));
 
   // `groupId` faqat shu forma qaysi ekrandan ochilganini bilgani uchun mavjud
   // (masalan, guruh detali sahifasi) — coin qoidasi DTO'sida bu maydon yo'q,
@@ -141,6 +153,7 @@ export const useBulkGiveCoinForm = ({
     toggleSelectAll,
     result,
     activeRules,
+    teacherCoinLimit,
     isRulesLoading,
     isPending,
     submit,

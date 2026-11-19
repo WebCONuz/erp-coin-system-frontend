@@ -41,3 +41,6 @@ export const scheduleTemplateKeys = {
     params ?? {},
   ],
 } as const;
+
+/** `generate-sessions` — bir so'rovdagi eng katta oraliq (kun). */
+export const GENERATE_SESSIONS_MAX_DAYS = 92;

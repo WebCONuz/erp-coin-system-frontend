@@ -3,5 +3,7 @@ export const getControlsHeader = (t: (key: string) => string) => [
   { name: t("roles.title"), link: "/admin/control/roles" },
   { name: t("employees.title"), link: "/admin/control/employees" },
   { name: t("rooms.title"), link: "/admin/control/rooms" },
+  { name: t("holidays.title"), link: "/admin/control/holidays" },
+  { name: t("tenantSettings.title"), link: "/admin/control/settings" },
   // { name: t("controls.sendMessage"), link: "/admin/control/send-message" },
 ];

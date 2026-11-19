@@ -8,6 +8,15 @@ export const tenantQueryKeys = {
 
 export const TENANT_KEY = "active_tenant_id";
 
+/**
+ * creator/super_admin joylashgan tizim tenanti — backend uni o'chirish,
+ * nofaol qilish va slug'ini o'zgartirishni taqiqlaydi (403).
+ */
+export const SYSTEM_TENANT_SLUG = "system";
+
+export const isSystemTenant = (tenant?: { slug?: string } | null) =>
+  tenant?.slug === SYSTEM_TENANT_SLUG;
+
 export const getTenantTypeLabels = (
   t: (key: string) => string,
 ): Record<TenantOrgType, string> => ({

@@ -1,3 +1,5 @@
+import type { CoinReversalFields } from "@/types";
+
 export interface TeacherDashboardSession {
   id: string;
   sessionDate: string;
@@ -23,7 +25,8 @@ export interface TeacherDashboardPendingSession {
   subject?: { id: string; name: string } | null;
 }
 
-export interface TeacherDashboardTransaction {
+// Teskari yozuv maydonlari (reversalOfId / reversal) bilan.
+export interface TeacherDashboardTransaction extends CoinReversalFields {
   id: string;
   amount: number;
   direction: "earn" | "deduct";

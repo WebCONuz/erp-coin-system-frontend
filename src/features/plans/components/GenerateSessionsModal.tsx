@@ -19,6 +19,9 @@ import {
 } from "../schema";
 import { useGenerateSessions } from "../hooks";
 import { ControlledDatePicker } from "@/components/controls";
+import { translateApiError } from "@/ustils";
+import { notifySyncConflicts } from "../lib/session-sync";
+import { GENERATE_SESSIONS_MAX_DAYS } from "../constants";
 
 interface Props {
   open: boolean;
@@ -57,6 +60,7 @@ export const GenerateSessionsModal = ({
       { groupId, ...values },
       {
         onSuccess: (result) => {
+          // `skipped` — mavjud sessiya tufayli o'tkazib yuborilgan darslar soni.
           toast.success(
             t("plans.generate.resultToast", {
               created: result.created,
@@ -64,10 +68,16 @@ export const GenerateSessionsModal = ({
               skipped: result.skipped,
             }),
           );
+          if (result.holidays) {
+            toast.info(
+              t("plans.generate.holidaysSkipped", { count: result.holidays }),
+            );
+          }
+          // Xona/o'qituvchi band bo'lgani uchun yaratilmagan darslar.
+          notifySyncConflicts(result.conflicts, t);
           onClose();
         },
-        onError: (error: any) =>
-          toast.error(error?.data?.message || t("common.error")),
+        onError: (error: unknown) => toast.error(translateApiError(error, t)),
       },
     );
   };
@@ -113,11 +123,16 @@ export const GenerateSessionsModal = ({
                 }
               />
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
               <span className="text-yellow-600">
                 {t("plans.generate.warningLabel")}
               </span>{" "}
               {t("plans.generate.warningText")}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t("plans.generate.maxRangeHint", {
+                days: GENERATE_SESSIONS_MAX_DAYS,
+              })}
             </p>
 
             <DialogFooter className="pt-2 gap-2">

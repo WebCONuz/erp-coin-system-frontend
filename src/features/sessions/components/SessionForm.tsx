@@ -135,6 +135,10 @@ export const SessionForm = ({ session }: Props) => {
           return;
         }
 
+        // Dars hali boshlanmagan — faqat ma'lumotlar saqlanadi, yo'qlama
+        // keyin (backend SESSION_NOT_STARTED qaytargan bo'lardi).
+        if (!evaluation.hasStarted) return;
+
         evaluation.save(() => setConfirmResave(false));
       },
       onError: (error) => toast.error(translateApiError(error, t)),

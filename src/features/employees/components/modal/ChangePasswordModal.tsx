@@ -2,6 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { translateApiError } from "@/ustils";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -37,28 +38,24 @@ export const ChangePasswordModal = ({ open, onClose, employeeId }: Props) => {
 
   const form = useForm<ChangeEmployeePasswordFormValues>({
     resolver: zodResolver(changeEmployeePasswordSchema),
-    defaultValues: { oldPassword: "", newPassword: "" },
+    defaultValues: { newPassword: "" },
   });
 
   useEffect(() => {
     if (!open) {
-      form.reset({ oldPassword: "", newPassword: "" });
+      form.reset({ newPassword: "" });
     }
   }, [open, form]);
 
   const onSubmit = (values: ChangeEmployeePasswordFormValues) => {
     changePassword.mutate(
-      {
-        newPassword: values.newPassword,
-        oldPassword: values.oldPassword || undefined,
-      },
+      { newPassword: values.newPassword },
       {
         onSuccess: () => {
           toast.success(t("employees.passwordChanged"));
           onClose();
         },
-        onError: (error: any) =>
-          toast.error(error?.data?.message || t("common.error")),
+        onError: (error: unknown) => toast.error(translateApiError(error, t)),
       },
     );
   };
@@ -72,13 +69,6 @@ export const ChangePasswordModal = ({ open, onClose, employeeId }: Props) => {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <ControlledInput
-              control={form.control}
-              name="oldPassword"
-              label={`${t("employees.form.oldPasswordLabel")} ${t("common.optional")}`}
-              placeholder={t("employees.form.oldPasswordPlaceholder")}
-              type="password"
-            />
             <ControlledInput
               control={form.control}
               name="newPassword"

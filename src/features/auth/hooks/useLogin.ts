@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -6,6 +7,14 @@ import { authQueryKeys } from "../constants";
 import { getMe, login, logout } from "../api";
 import { clearLocalStoragaData } from "@/services/helpers";
 import { ROLES } from "@/assets/constants";
+import {
+  API_ERROR_CODES,
+  canManageRole,
+  getApiErrorMessage,
+  hasApiErrorCode,
+  isTooManyRequestsError,
+  type RoleLike,
+} from "@/ustils";
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
@@ -41,8 +50,18 @@ export const useAuth = () => {
             : "/admin",
       );
     },
-    onError: (error: any) => {
-      toast.error(error?.data?.message || t("invalid_credentials"));
+    onError: (error: unknown) => {
+      // Tashkilot to'xtatilgan — backend xabari ko'rsatiladi (oddiy "noto'g'ri parol" emas).
+      if (hasApiErrorCode(error, API_ERROR_CODES.TENANT_INACTIVE)) {
+        toast.error(getApiErrorMessage(error) || t("apiErrors.TENANT_INACTIVE"));
+        return;
+      }
+      // Username bo'yicha urinishlar limiti (15 daqiqada 10 ta).
+      if (isTooManyRequestsError(error)) {
+        toast.error(t("apiErrors.TOO_MANY_REQUESTS"));
+        return;
+      }
+      toast.error(getApiErrorMessage(error) || t("invalid_credentials"));
     },
   });
 
@@ -57,8 +76,16 @@ export const useAuth = () => {
     },
   });
 
+  /** Joriy user `target` rolidagi userni boshqara oladimi (`target.level < me.level`). */
+  const actorRole = user?.role;
+  const canManage = useCallback(
+    (target: RoleLike) => canManageRole(actorRole, target),
+    [actorRole],
+  );
+
   return {
     user,
+    canManage,
     isAuthenticated: !!user,
     isLoading,
     isError,

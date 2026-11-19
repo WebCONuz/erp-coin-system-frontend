@@ -11,6 +11,7 @@ export interface PurchasePerson {
 
 export interface Purchase {
   id: string;
+  tenantId?: string;
   coinSpent: number;
   status: PurchaseStatus;
   // Adminning oxirgi izohi (tasdiqlashda — qayerdan olish, bekor qilishda — sabab).

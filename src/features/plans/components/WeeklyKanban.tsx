@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { ChevronDown, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { translateApiError } from "@/ustils";
+import { notifySessionSync } from "../lib/session-sync";
 import { useTranslation } from "react-i18next";
 import {
   DndContext,
@@ -133,9 +135,10 @@ export const WeeklyKanban = ({
   const handleDelete = (template: ScheduleTemplate) => {
     if (!window.confirm(t("plans.deleteTemplateConfirm"))) return;
 
+    // Shablon o'chirilsa kelajakdagi (tekshirilmagan) darslari ham o'chiriladi.
     deleteTemplate.mutate(template.id, {
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
+      onSuccess: (res) => notifySessionSync(res.sessionSync, t),
+      onError: (error: unknown) => toast.error(translateApiError(error, t)),
     });
   };
 
@@ -156,8 +159,9 @@ export const WeeklyKanban = ({
     moveTemplate.mutate(
       { templateId: template.id, weekday: newWeekday },
       {
-        onError: (error: any) =>
-          toast.error(error?.data?.message || t("common.error")),
+        // Hafta kuni o'zgarsa darslar yangi kunga ko'chiriladi — to'qnashuvlar ko'rsatiladi.
+        onSuccess: (res) => notifySessionSync(res.sessionSync, t),
+        onError: (error: unknown) => toast.error(translateApiError(error, t)),
       },
     );
   };

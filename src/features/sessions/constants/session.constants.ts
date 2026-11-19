@@ -1,5 +1,9 @@
 import type { IOption } from "@/components/controls";
-import type { EvaluationMode, SessionTypeConfig } from "../types";
+import type {
+  AttendanceStatus,
+  EvaluationMode,
+  SessionTypeConfig,
+} from "../types";
 
 type TFn = (key: string, options?: Record<string, unknown>) => string;
 
@@ -7,6 +11,7 @@ export const sessionKeys = {
   allSessions: (params?: Record<string, any>) => ["all-sessions", params ?? {}],
   oneSessionById: (id: string) => ["one-session-by-id", id],
   attendanceBySessionId: (id: string) => ["session-attendance", id],
+  rosterBySessionId: (id: string) => ["session-roster", id],
   sessionTypes: () => ["session-types"],
 } as const;
 
@@ -54,3 +59,25 @@ export const ALL_VALUE = "all";
 export const MAX_SCORE_LIMIT = 100000;
 export const MAX_COIN_AMOUNT = 10000;
 export const MAX_RESULT_NOTE_LENGTH = 500;
+
+// ─── Davomat holatlari ────────────────────────────────────────────────────────
+export const ATTENDANCE_STATUSES: AttendanceStatus[] = [
+  "present",
+  "late",
+  "excused",
+  "absent",
+];
+
+/** `present`/`late` → keldi (`isPresent: true`). */
+export const isPresentStatus = (status: AttendanceStatus) =>
+  status === "present" || status === "late";
+
+/** Eski yozuvlarda `status` bo'lmasa — `isPresent` dan. */
+export const resolveAttendanceStatus = (record?: {
+  status?: AttendanceStatus | null;
+  isPresent?: boolean;
+} | null): AttendanceStatus | null => {
+  if (!record) return null;
+  if (record.status) return record.status;
+  return record.isPresent ? "present" : "absent";
+};
