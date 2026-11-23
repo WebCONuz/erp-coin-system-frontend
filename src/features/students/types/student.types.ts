@@ -197,6 +197,7 @@ export interface UpdateStudentDto {
   parentPhone?: string;
 }
 
+// PATCH /students/:id/status — `isDeleted: false` (tiklash) faqat super_admin.
 export interface DeactivateStudentDto {
   isActive?: boolean;
   isDeleted?: boolean;
@@ -271,11 +272,26 @@ export interface ApplyCoinRuleResponse extends BulkCoinResponse {
   };
 }
 
+export type MessageChannel = "sms" | "email";
+
+// POST /messages/send — `channels` kamida 1 ta, takrorsiz.
 export interface SendMessageDto {
+  /** `sms` bo'lsa majburiy, `+998XXXXXXXXX`. */
   recipientPhone?: string;
+  /** `email` bo'lsa majburiy, ≤150 belgi. */
   recipientEmail?: string;
+  /** Qabul qiluvchi tenant useri (ota-onaga yuborilsa ham — o'quvchi ID'si) — logda bog'lanadi. */
+  userId?: string;
+  /** Email mavzusi, ≤200 belgi. Berilmasa backend standart mavzu qo'yadi. */
+  subject?: string;
+  /** Oddiy matn, ≤2000 belgi. */
   message: string;
-  channels: ("sms" | "email")[];
+  channels: MessageChannel[];
+}
+
+export interface SendMessageResponse {
+  message: string;
+  results: { channel: MessageChannel; success: boolean; error?: string }[];
 }
 
 export type ConfirmAction = "archive" | "delete" | "restore" | null;

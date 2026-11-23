@@ -16,6 +16,7 @@ import { Form } from "@/components/ui/form";
 import { ControlledInput, ControlledSelect } from "@/components/controls";
 import { useStudentFilter, useStudentGroupOptions } from "../../hooks";
 import type { StudentSortField } from "../../hooks/useFilter";
+import { TEXT_LIMITS } from "@/ustils/api-limits";
 
 interface StudentFilterProps {
   onAddStudent: () => void;
@@ -113,6 +114,7 @@ export const StudentDataFilter = ({
               <ControlledInput
                 control={form.control}
                 name="search"
+                maxLength={TEXT_LIMITS.SEARCH}
                 placeholder={t("students.filter.searchPlaceholder")}
                 inputClassName="border-none focus-within:ring-0 w-64 h-9 bg-transparent"
               />

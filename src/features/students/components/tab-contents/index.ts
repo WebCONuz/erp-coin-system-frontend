@@ -3,3 +3,4 @@ export * from "./GroupTab";
 export * from "./CoinTab";
 export * from "./GiftTab";
 export * from "./SecurityTab";
+export * from "./HistoryTab";

@@ -13,6 +13,7 @@ import { useRoles } from "@/features/roles/hooks";
 import { ROLES } from "@/assets/constants";
 import { useFilter } from "../hooks";
 import { ALL_VALUE } from "../constants";
+import { TEXT_LIMITS } from "@/ustils/api-limits";
 
 interface Props {
   onAdd: () => void;
@@ -84,6 +85,7 @@ export const EmployeeDataFilter = ({ onAdd }: Props) => {
                 control={form.control}
                 placeholder={t("employees.filter.searchPlaceholder")}
                 name="search"
+                maxLength={TEXT_LIMITS.SEARCH}
                 inputClassName="pl-7 rounded-lg h-10 border border-gray-300 min-w-75"
               />
             </div>

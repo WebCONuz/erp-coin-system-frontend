@@ -6,6 +6,7 @@ import { ControlledInput } from "@/components/controls";
 import { Form } from "@/components/ui/form";
 import { DashboardTitle } from "@/components/shared/title";
 import { useFilter } from "../hooks";
+import { TEXT_LIMITS } from "@/ustils/api-limits";
 
 interface Props {
   onAddGift?: () => void;
@@ -63,6 +64,7 @@ export const ProductDataFilter = ({ onAddGift }: Props) => {
               control={form.control}
               placeholder={t("common.search")}
               name="search"
+              maxLength={TEXT_LIMITS.SEARCH}
               inputClassName="pl-7 rounded-lg h-9 border border-gray-300 min-w-64"
             />
           </div>

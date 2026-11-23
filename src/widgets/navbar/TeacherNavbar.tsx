@@ -1,5 +1,13 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { Bell, ChevronDown, Languages, LogOut, User } from "lucide-react";
+import {
+  Bell,
+  ChevronDown,
+  Languages,
+  LogOut,
+  MonitorSmartphone,
+  User,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/features/auth/hooks/useLogin";
+import { LogoutAllModal } from "@/features/auth/components";
 import { getFileUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +34,7 @@ const LANGUAGES = [
 export function TeacherNavbar() {
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
+  const [isLogoutAllOpen, setIsLogoutAllOpen] = useState(false);
   const currentLang =
     LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
 
@@ -146,10 +156,22 @@ export function TeacherNavbar() {
                 <LogOut size={14} />
                 {t("common.logoutAction")}
               </DropdownMenuItem>
+              <DropdownMenuItem
+                className="gap-2.5 text-sm cursor-pointer text-destructive focus:text-destructive"
+                onClick={() => setIsLogoutAllOpen(true)}
+              >
+                <MonitorSmartphone size={14} />
+                {t("logoutAll.action")}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
+
+      <LogoutAllModal
+        open={isLogoutAllOpen}
+        onClose={() => setIsLogoutAllOpen(false)}
+      />
     </header>
   );
 }

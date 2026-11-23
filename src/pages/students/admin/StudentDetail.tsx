@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { translateApiError } from "@/ustils";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentDetailSkeleton } from "@/features/students/components/ui";
@@ -29,6 +31,7 @@ import {
   GiftTab,
   GroupTab,
   SecurityTab,
+  HistoryTab,
 } from "@/features/students/components/tab-contents";
 import { BackListButton } from "@/components/shared/back";
 
@@ -52,21 +55,16 @@ const StudentDetail = () => {
 
   const handleConfirm = () => {
     if (!id) return;
+    const options = {
+      onSuccess: () => setConfirmAction(null),
+      onError: (error: unknown) => toast.error(translateApiError(error, t)),
+    };
     if (confirmAction === "archive")
-      deactivate.mutate(
-        { isActive: false },
-        { onSuccess: () => setConfirmAction(null) },
-      );
+      deactivate.mutate({ isActive: false }, options);
     else if (confirmAction === "restore")
-      deactivate.mutate(
-        { isActive: true },
-        { onSuccess: () => setConfirmAction(null) },
-      );
+      deactivate.mutate({ isActive: true }, options);
     else if (confirmAction === "delete")
-      deactivate.mutate(
-        { isDeleted: true },
-        { onSuccess: () => setConfirmAction(null) },
-      );
+      deactivate.mutate({ isDeleted: true }, options);
   };
 
   if (isLoading) return <StudentDetailSkeleton />;
@@ -125,6 +123,7 @@ const StudentDetail = () => {
               isDeleted={isDeleted}
               setConfirmAction={setConfirmAction}
             />
+            <HistoryTab student={student} />
           </Tabs>
         </div>
 

@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllGroups } from "@/features/groups/api";
 import { dashboardKeys } from "@/features/dashboard/constants";
+import { auditLogKeys } from "@/features/audit-logs/constants";
 import {
   createStudent,
   updateStudent,
@@ -29,9 +30,16 @@ import type {
   SendMessageDto,
 } from "../types";
 import { useSearchParams } from "react-router-dom";
+import { useIdempotencyKey } from "@/hooks";
 
 // ─── Queries ──────────────────────────────────────────────────────────────────
-export const useStudents = (limit?: number) => {
+// `overrides` — URL paramlaridan ustun turadigan qiymatlar (masalan guruhga
+// qo'shish oynasida faqat faol o'quvchilar: `{ isActive: "true" }`).
+// `limit` backendda ko'pi bilan 100.
+export const useStudents = (
+  limit?: number,
+  overrides?: Record<string, string | undefined>,
+) => {
   const [searchParams] = useSearchParams();
   const status = searchParams.get("status");
 
@@ -44,6 +52,7 @@ export const useStudents = (limit?: number) => {
     sortOrder: searchParams.get("sortOrder") || undefined,
     page: searchParams.get("page") || undefined,
     limit: limit?.toString() || "20",
+    ...overrides,
   };
   return useQuery({
     queryKey: studentKeys.allStudents(params),
@@ -112,6 +121,10 @@ export const useDeactivateStudent = (studentId: string) => {
       queryClient.invalidateQueries({
         queryKey: studentKeys.oneStudentById(studentId),
       });
+      // Arxivlash / o'chirish / tiklash audit log'ga yoziladi ("Tarix" tab).
+      queryClient.invalidateQueries({
+        queryKey: auditLogKeys.allAuditLogs(),
+      });
     },
   });
 };
@@ -152,10 +165,15 @@ export const useRemoveStudentFromGroup = (studentId: string) => {
   });
 };
 
+// Coin mutatsiyalari `Idempotency-Key` bilan: kalit muvaffaqiyatgacha bir xil
+// qoladi (qayta bosish / qayta urinish coinni ikki marta bermaydi).
 export const useManualCoinTransaction = (studentId: string) => {
   const queryClient = useQueryClient();
+  const idempotency = useIdempotencyKey();
   return useMutation({
-    mutationFn: (data: CoinTransactionManualDto) => manualCoinTransaction(data),
+    mutationFn: (data: CoinTransactionManualDto) =>
+      manualCoinTransaction(data, idempotency.getKey()),
+    onSettled: (_res, error) => idempotency.settle(error),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: studentKeys.oneStudentById(studentId),
@@ -169,8 +187,11 @@ export const useManualCoinTransaction = (studentId: string) => {
 
 export const useBulkManualCoinTransaction = () => {
   const queryClient = useQueryClient();
+  const idempotency = useIdempotencyKey();
   return useMutation({
-    mutationFn: (data: BulkManualCoinDto) => bulkManualCoinTransaction(data),
+    mutationFn: (data: BulkManualCoinDto) =>
+      bulkManualCoinTransaction(data, idempotency.getKey()),
+    onSettled: (_res, error) => idempotency.settle(error),
     onSuccess: (_res, variables) => {
       queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
       queryClient.invalidateQueries({ queryKey: studentKeys.coinTransactions() });
@@ -186,8 +207,11 @@ export const useBulkManualCoinTransaction = () => {
 
 export const useApplyCoinRule = () => {
   const queryClient = useQueryClient();
+  const idempotency = useIdempotencyKey();
   return useMutation({
-    mutationFn: (data: ApplyCoinRuleDto) => applyCoinRule(data),
+    mutationFn: (data: ApplyCoinRuleDto) =>
+      applyCoinRule(data, idempotency.getKey()),
+    onSettled: (_res, error) => idempotency.settle(error),
     onSuccess: (_res, variables) => {
       queryClient.invalidateQueries({ queryKey: studentKeys.allStudents() });
       queryClient.invalidateQueries({ queryKey: studentKeys.coinTransactions() });

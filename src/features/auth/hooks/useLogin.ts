@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { t } from "i18next";
 import { authQueryKeys } from "../constants";
-import { getMe, login, logout } from "../api";
+import { getMe, login, logout, logoutAll } from "../api";
 import { clearLocalStoragaData } from "@/services/helpers";
 import { ROLES } from "@/assets/constants";
 import {
@@ -13,6 +13,7 @@ import {
   getApiErrorMessage,
   hasApiErrorCode,
   isTooManyRequestsError,
+  translateApiError,
   type RoleLike,
 } from "@/ustils";
 
@@ -65,15 +66,28 @@ export const useAuth = () => {
     },
   });
 
-  // logout
+  const finishLogout = () => {
+    clearLocalStoragaData();
+    queryClient.clear();
+    window.location.href = "/login";
+  };
+
+  // logout — faqat joriy qurilma. Backend doim `200` qaytaradi; tarmoq xatosida
+  // ham lokal holat tozalanadi (cookie'lar backend tomonda tugaydi).
   const logoutMutation = useMutation({
     mutationFn: logout,
+    onSuccess: () => toast.success(t("logout")),
+    onSettled: finishLogout,
+  });
+
+  // logout-all — barcha qurilmalardagi sessiyalar yopiladi.
+  const logoutAllMutation = useMutation({
+    mutationFn: logoutAll,
     onSuccess: () => {
-      toast.success(t("logout"));
-      clearLocalStoragaData();
-      queryClient.clear();
-      window.location.href = "/login";
+      toast.success(t("logoutAll.success"));
+      finishLogout();
     },
+    onError: (error: unknown) => toast.error(translateApiError(error, t)),
   });
 
   /** Joriy user `target` rolidagi userni boshqara oladimi (`target.level < me.level`). */
@@ -92,5 +106,7 @@ export const useAuth = () => {
     login: loginMutation.mutate,
     isLoginLoading: loginMutation.isPending,
     logout: logoutMutation.mutate,
+    logoutAll: logoutAllMutation.mutate,
+    isLogoutAllLoading: logoutAllMutation.isPending,
   };
 };

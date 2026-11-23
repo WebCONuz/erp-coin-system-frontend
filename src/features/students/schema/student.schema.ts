@@ -1,5 +1,10 @@
 import { createAvatarUrlSchema } from "@/ustils/avatar-url";
 import { z } from "zod";
+import {
+  TEXT_LIMITS,
+  createPasswordSchema,
+  maxLengthMessage,
+} from "@/ustils/api-limits";
 import { createUsernameSchema } from "@/ustils/username";
 
 export const createCreateStudentSchema = (t: (key: string) => string) =>
@@ -13,11 +18,12 @@ export const createCreateStudentSchema = (t: (key: string) => string) =>
       .string()
       .min(9, t("students.schema.phone_min"))
       .max(13, t("students.schema.phone_max")),
-    password: z.string().min(6, t("students.schema.password_min")),
+    password: createPasswordSchema(t),
     roleId: z.string().min(1, t("students.schema.roleId_required")),
     email: z
       .string()
       .email(t("students.schema.email_invalid"))
+      .max(TEXT_LIMITS.EMAIL, maxLengthMessage(t, TEXT_LIMITS.EMAIL))
       .optional()
       .or(z.literal("")),
     parentPhone: z
@@ -43,6 +49,7 @@ export const createEditStudentSchema = (t: (key: string) => string) =>
     email: z
       .string()
       .email(t("students.schema.email_invalid"))
+      .max(TEXT_LIMITS.EMAIL, maxLengthMessage(t, TEXT_LIMITS.EMAIL))
       .optional()
       .or(z.literal("")),
     avatarUrl: createAvatarUrlSchema(t),

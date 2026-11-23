@@ -30,7 +30,7 @@ export const SessionsFilterBar = ({
   const { t } = useTranslation();
   const { form } = useFilter();
   const { data: groups } = useSessionGroupOptions();
-  const { data: teachers } = useSessionTeacherOptions();
+  const { data: teachers } = useSessionTeacherOptions(true, false);
   const { data: sessionTypes } = useSessionTypes();
   const sessionType = form.watch("sessionType");
 

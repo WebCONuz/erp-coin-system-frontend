@@ -14,7 +14,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import {
+  API_ERROR_CODES,
+  getApiErrorData,
+  hasApiErrorCode,
+  translateApiError,
+} from "@/ustils";
 import type { GroupDetail } from "../../types";
+import { BULK_ADD_STUDENTS_MAX } from "../../constants";
 import { useAddStudent, useBulkAddStudents } from "../../hooks";
 import { useStudents } from "@/features/students/hooks";
 
@@ -33,8 +42,19 @@ export const AddStudentDrawer = ({
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"single" | "bulk">("single");
+  // `STUDENTS_NOT_FOUND` — backend qaytargan, faol student bo'lmagan ID'lar.
+  const [invalidIds, setInvalidIds] = useState<Set<string>>(new Set());
 
-  const { data: studentsData, isLoading } = useStudents(100);
+  // Guruhga faqat shu tenantdagi faol o'quvchi qo'shiladi (aks holda 400/404).
+  // Sahifaning URL filtrlari (search/page/groupId) bu ro'yxatga ta'sir qilmasin.
+  const { data: studentsData, isLoading } = useStudents(100, {
+    isActive: "true",
+    search: undefined,
+    groupId: undefined,
+    page: undefined,
+    sortBy: undefined,
+    sortOrder: undefined,
+  });
   const addStudent = useAddStudent(group.id);
   const bulkAddStudents = useBulkAddStudents(group.id);
 
@@ -65,13 +85,16 @@ export const AddStudentDrawer = ({
   const handleClose = () => {
     setSearch("");
     setSelectedIds([]);
+    setInvalidIds(new Set());
     setActiveTab("single");
     onClose();
   };
 
+  const onError = (error: unknown) => toast.error(translateApiError(error, t));
+
   // --- Single add ---
   const handleSingleAdd = (studentId: string) => {
-    addStudent.mutate({ studentId }, { onSuccess: handleClose });
+    addStudent.mutate({ studentId }, { onSuccess: handleClose, onError });
   };
 
   // --- Bulk add ---
@@ -81,12 +104,30 @@ export const AddStudentDrawer = ({
     );
   };
 
+  const isOverBulkLimit = selectedIds.length > BULK_ADD_STUDENTS_MAX;
+
   const handleBulkAdd = () => {
-    if (selectedIds.length === 0) return;
+    if (selectedIds.length === 0 || isOverBulkLimit) return;
     bulkAddStudents.mutate(
-      { studentIds: selectedIds },
-      { onSuccess: handleClose },
+      // Takroriy ID → 400; Set bilan himoyalanamiz.
+      { studentIds: Array.from(new Set(selectedIds)) },
+      {
+        onSuccess: handleClose,
+        onError: (error) => {
+          // Bittasi mos kelmasa hech kim qo'shilmaydi — mos kelmaganlarni
+          // ro'yxatda belgilab, tanlovdan olib tashlash imkonini beramiz.
+          if (hasApiErrorCode(error, API_ERROR_CODES.STUDENTS_NOT_FOUND)) {
+            setInvalidIds(new Set(getApiErrorData(error)?.studentIds ?? []));
+          }
+          onError(error);
+        },
+      },
     );
+  };
+
+  const removeInvalidFromSelection = () => {
+    setSelectedIds((prev) => prev.filter((id) => !invalidIds.has(id)));
+    setInvalidIds(new Set());
   };
 
   const isPending = addStudent.isPending || bulkAddStudents.isPending;
@@ -209,26 +250,42 @@ export const AddStudentDrawer = ({
                 <EmptyState search={search} />
               ) : (
                 <div className="space-y-2 pb-4 h-[calc(100vh-340px)] overflow-y-auto">
-                  {filteredStudents.map((student) => (
-                    <label
-                      key={student.id}
-                      className="flex items-center gap-3 p-3 rounded-lg border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 cursor-pointer transition-colors"
-                    >
-                      <Checkbox
-                        checked={selectedIds.includes(student.id)}
-                        onCheckedChange={() => toggleSelect(student.id)}
-                        className="border-zinc-300 dark:border-zinc-600"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
-                          {student.fullName}
-                        </p>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                          {student.phone}
-                        </p>
-                      </div>
-                    </label>
-                  ))}
+                  {filteredStudents.map((student) => {
+                    const isInvalid = invalidIds.has(student.id);
+                    return (
+                      <label
+                        key={student.id}
+                        className={cn(
+                          "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
+                          isInvalid
+                            ? "border-red-300 bg-red-50 dark:border-red-900/60 dark:bg-red-950/30"
+                            : "border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60",
+                        )}
+                      >
+                        <Checkbox
+                          checked={selectedIds.includes(student.id)}
+                          onCheckedChange={() => toggleSelect(student.id)}
+                          className="border-zinc-300 dark:border-zinc-600"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
+                            {student.fullName}
+                          </p>
+                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                            {student.phone}
+                          </p>
+                        </div>
+                        {isInvalid && (
+                          <Badge
+                            variant="secondary"
+                            className="shrink-0 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300"
+                          >
+                            {t("groups.addStudent.notAvailable")}
+                          </Badge>
+                        )}
+                      </label>
+                    );
+                  })}
                 </div>
               )}
             </ScrollArea>
@@ -246,6 +303,31 @@ export const AddStudentDrawer = ({
                   {t("groups.addStudent.countUnit", { count: selectedIds.length })}
                 </Badge>
               </div>
+              {isOverBulkLimit && (
+                <p className="mb-3 text-xs text-red-600 dark:text-red-400">
+                  {t("groups.addStudent.bulkLimit", {
+                    max: BULK_ADD_STUDENTS_MAX,
+                  })}
+                </p>
+              )}
+              {invalidIds.size > 0 && (
+                <div className="mb-3 flex items-center justify-between gap-2 rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/30 px-3 py-2">
+                  <p className="min-w-0 text-xs text-red-700 dark:text-red-300">
+                    {t("groups.addStudent.invalidSelected", {
+                      count: invalidIds.size,
+                    })}
+                  </p>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={removeInvalidFromSelection}
+                    className="h-7 shrink-0 text-xs border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40"
+                  >
+                    {t("groups.addStudent.removeInvalid")}
+                  </Button>
+                </div>
+              )}
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -257,7 +339,9 @@ export const AddStudentDrawer = ({
                 </Button>
                 <Button
                   onClick={handleBulkAdd}
-                  disabled={selectedIds.length === 0 || isPending}
+                  disabled={
+                    selectedIds.length === 0 || isOverBulkLimit || isPending
+                  }
                   className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
                 >
                   {isPending

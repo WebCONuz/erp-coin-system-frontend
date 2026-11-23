@@ -12,7 +12,15 @@ export const getMe = async (): Promise<UserMe> => {
   return res.data.data;
 };
 
-export const logout = async (): Promise<{ success: boolean }> => {
-  const res = await request.post<{ success: boolean }>(ENDPOINTS.LOGOUT);
+// Faqat joriy qurilma yopiladi. Access token talab qilinmaydi — doim `200`.
+export const logout = async (): Promise<{ message: string }> => {
+  const res = await request.post<{ message: string }>(ENDPOINTS.LOGOUT);
+  return res.data;
+};
+
+// Barcha qurilmalardagi sessiyalar yopiladi (boshqa qurilmalarda access token
+// ko'pi bilan 15 daqiqa amal qiladi, keyin refresh `401`).
+export const logoutAll = async (): Promise<{ message: string }> => {
+  const res = await request.post<{ message: string }>(ENDPOINTS.LOGOUT_ALL);
   return res.data;
 };

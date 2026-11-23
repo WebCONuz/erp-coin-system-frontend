@@ -47,7 +47,10 @@ export const suggestUsername = (fullName: string) => {
 };
 
 // Axios interceptor `error.response` ni reject qiladi: { status, data: { message } }
-type ApiErrorResponse = { status?: number; data?: { message?: unknown } };
+type ApiErrorResponse = {
+  status?: number;
+  data?: { message?: unknown; fields?: unknown };
+};
 
 export const getApiErrorStatus = (error: unknown) =>
   (error as ApiErrorResponse | undefined)?.status;
@@ -66,6 +69,12 @@ export const getUserConflictField = (
   error: unknown,
 ): "username" | "phone" | null => {
   if (getApiErrorStatus(error) !== 409) return null;
+  // `DUPLICATE_VALUE` javobi qaysi maydon takrorlanganini `fields` da beradi.
+  const fields = (error as ApiErrorResponse | undefined)?.data?.fields;
+  if (Array.isArray(fields)) {
+    if (fields.includes("username")) return "username";
+    if (fields.includes("phone")) return "phone";
+  }
   const message = (getApiErrorMessage(error) ?? "").toLowerCase();
   if (message.includes("username")) return "username";
   if (message.includes("telefon") || message.includes("phone")) return "phone";

@@ -5,6 +5,7 @@ import { Plus, SearchIcon } from "lucide-react";
 import { ControlledInput } from "@/components/controls";
 import { useFilter } from "../../hooks";
 import { Form } from "@/components/ui/form";
+import { TEXT_LIMITS } from "@/ustils/api-limits";
 
 interface Props {
   handleCreate: () => void;
@@ -51,6 +52,7 @@ export const HeaderFilter = ({ handleCreate }: Props) => {
                   control={form.control}
                   placeholder={t("groups.search_placeholder")}
                   name="search"
+                  maxLength={TEXT_LIMITS.SEARCH}
                   inputClassName="pl-7 rounded-lg h-10 border border-gray-300 min-w-75"
                 />
               </div>

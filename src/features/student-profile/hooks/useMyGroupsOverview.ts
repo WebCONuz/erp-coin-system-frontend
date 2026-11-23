@@ -1,4 +1,6 @@
 import { useMemo } from "react";
+import { format, startOfMonth } from "date-fns";
+import { MAX_PAGE_LIMIT } from "@/ustils";
 import { useMyGroups } from "./useMyGroups";
 import { useMyCoinHistory } from "./useMyCoin";
 import { useMyAttendance } from "./useMyAttendance";
@@ -13,10 +15,18 @@ export interface GroupOverview extends MyGroupItem {
   nextSession: DashboardSession | null;
 }
 
+// Joriy oy boshi (`YYYY-MM-DD`, mahalliy sana) — `my-history` `from` ni tenant
+// kunining boshidan hisoblaydi, shuning uchun "shu oy" coinlari to'liq keladi.
+const getMonthStart = () => format(startOfMonth(new Date()), "yyyy-MM-dd");
+
 export const useMyGroupsOverview = () => {
   const groupsQuery = useMyGroups();
-  const coinQuery = useMyCoinHistory({ limit: "200" });
-  const attendanceQuery = useMyAttendance({ limit: 200 });
+  // Backend `limit` ≤ 100 (oshsa 400).
+  const coinQuery = useMyCoinHistory({
+    limit: String(MAX_PAGE_LIMIT),
+    from: getMonthStart(),
+  });
+  const attendanceQuery = useMyAttendance({ limit: MAX_PAGE_LIMIT });
   const dashboardQuery = useDashboard();
 
   const isLoading =

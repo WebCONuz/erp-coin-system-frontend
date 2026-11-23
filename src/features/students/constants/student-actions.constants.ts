@@ -71,4 +71,5 @@ export const getStudentTabOptions = (t: TFn) => [
   { value: "coins", label: t("students.tabs.coins") },
   { value: "gifts", label: t("students.tabs.gifts") },
   { value: "security", label: t("students.tabs.security") },
+  { value: "history", label: t("students.tabs.history") },
 ];

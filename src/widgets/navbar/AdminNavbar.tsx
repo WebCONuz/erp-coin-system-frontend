@@ -10,6 +10,7 @@ import {
   User,
   Settings,
   LogOut,
+  MonitorSmartphone,
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ import { useEffect, useState } from "react";
 import type { TenentType } from "@/features/tenants/types";
 import { useQueryClient } from "@tanstack/react-query";
 import { MyProfileModal } from "@/features/profile/components";
+import { LogoutAllModal } from "@/features/auth/components";
 
 // Constants
 const LANGUAGES = [
@@ -65,6 +67,7 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentTenat, setCurrentTenant] = useState<string>();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isLogoutAllOpen, setIsLogoutAllOpen] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -299,6 +302,13 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
                 <LogOut size={14} />
                 {t("admin.navbar.logout")}
               </DropdownMenuItem>
+              <DropdownMenuItem
+                className="gap-2.5 text-sm cursor-pointer text-destructive focus:text-destructive"
+                onClick={() => setIsLogoutAllOpen(true)}
+              >
+                <MonitorSmartphone size={14} />
+                {t("logoutAll.action")}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -307,6 +317,10 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
       <MyProfileModal
         open={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
+      />
+      <LogoutAllModal
+        open={isLogoutAllOpen}
+        onClose={() => setIsLogoutAllOpen(false)}
       />
     </header>
   );

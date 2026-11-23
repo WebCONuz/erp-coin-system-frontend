@@ -1,6 +1,11 @@
 import { z } from "zod";
+import {
+  TEXT_LIMITS,
+  createOptionalTextSchema,
+  isValidImageUrl,
+} from "@/ustils";
 
-type TFn = (key: string) => string;
+type TFn = (key: string, options?: Record<string, unknown>) => string;
 
 // `currentStock` — faqat tahrirlashda: `stockDelta` zaxirani 0 dan pastga
 // tushirmasligini tekshirish uchun (backend ham 400 qaytaradi).
@@ -8,10 +13,18 @@ export const createRewardFormSchema = (t: TFn, currentStock?: number) =>
   z
     .object({
       title: z.string().min(1, t("market.schema.title_required")),
-      description: z.string().optional(),
+      description: createOptionalTextSchema(t, TEXT_LIMITS.DESCRIPTION),
+      // Backend: `/uploads/...` yoki `https://...`, ≤500 belgi; `""` — rasmni olib tashlash.
       imageUrl: z
         .string()
-        .url(t("market.schema.url_invalid"))
+        .trim()
+        .max(
+          TEXT_LIMITS.IMAGE_URL,
+          t("validation.maxLength", { max: TEXT_LIMITS.IMAGE_URL }),
+        )
+        .refine((value) => !value || isValidImageUrl(value), {
+          message: t("market.schema.url_invalid"),
+        })
         .optional()
         .or(z.literal("")),
       coinPrice: z.number().min(1, t("market.schema.price_min")),

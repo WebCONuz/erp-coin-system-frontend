@@ -1,5 +1,6 @@
 import { request } from "@/services/api";
 import { ENDPOINTS } from "@/services/endpoints";
+import { idempotencyHeaders } from "@/ustils";
 import type {
   CreateStudentDto,
   UpdateStudentDto,
@@ -11,6 +12,7 @@ import type {
   BulkCoinResponse,
   ApplyCoinRuleResponse,
   SendMessageDto,
+  SendMessageResponse,
   StudentDetail,
   StudentDetailFull,
   StudentsResponse,
@@ -46,8 +48,9 @@ export const updateStudent = async (id: string, data: UpdateStudentDto): Promise
 };
 
 // ─── Archive / Soft-delete / Restore ─────────────────────────────────────────
+// `PATCH /students/:id/status` (eskirgan `DELETE /students/:id` body bilan o'rniga).
 export const deactivateStudent = async (id: string, data: DeactivateStudentDto): Promise<StudentDetail> => {
-  const res = await request.delete<StudentDetail>(`${ENDPOINTS.STUDENTS}/${id}`, { data });
+  const res = await request.patch<StudentDetail>(`${ENDPOINTS.STUDENTS}/${id}/status`, data);
   return res.data;
 };
 
@@ -66,27 +69,40 @@ export const removeStudentFromGroup = async (groupId: string, studentId: string)
 };
 
 // ─── Coin transactions ───────────────────────────────────────────────────────
-export const manualCoinTransaction = async (data: CoinTransactionManualDto): Promise<CoinTransaction> => {
-  const res = await request.post<CoinTransaction>(`${ENDPOINTS.COIN_TRANSACTIONS}/manual`, data);
+// `idempotencyKey` majburiy (yo'q bo'lsa `400 IDEMPOTENCY_KEY_REQUIRED`) —
+// qayta yuborishda o'sha kalit, yangi amal uchun yangi kalit (`useIdempotencyKey`).
+export const manualCoinTransaction = async (
+  data: CoinTransactionManualDto,
+  idempotencyKey: string,
+): Promise<CoinTransaction> => {
+  const res = await request.post<CoinTransaction>(
+    `${ENDPOINTS.COIN_TRANSACTIONS}/manual`,
+    data,
+    { headers: idempotencyHeaders(idempotencyKey) },
+  );
   return res.data;
 };
 
 export const bulkManualCoinTransaction = async (
   data: BulkManualCoinDto,
+  idempotencyKey: string,
 ): Promise<BulkCoinResponse> => {
   const res = await request.post<BulkCoinResponse>(
     `${ENDPOINTS.COIN_TRANSACTIONS}/bulk-manual`,
     data,
+    { headers: idempotencyHeaders(idempotencyKey) },
   );
   return res.data;
 };
 
 export const applyCoinRule = async (
   data: ApplyCoinRuleDto,
+  idempotencyKey: string,
 ): Promise<ApplyCoinRuleResponse> => {
   const res = await request.post<ApplyCoinRuleResponse>(
     `${ENDPOINTS.COIN_TRANSACTIONS}/apply-rule`,
     data,
+    { headers: idempotencyHeaders(idempotencyKey) },
   );
   return res.data;
 };
@@ -114,7 +130,7 @@ export const getCoinTransactionHistory = async (
 // ─── Send message ─────────────────────────────────────────────────────────────
 export const sendMessage = async (
   data: SendMessageDto,
-): Promise<{ message: string; results: { channel: string; success: boolean; error?: string }[] }> => {
-  const res = await request.post(`${ENDPOINTS.MESSAGES}/send`, data);
+): Promise<SendMessageResponse> => {
+  const res = await request.post<SendMessageResponse>(`${ENDPOINTS.MESSAGES}/send`, data);
   return res.data;
 };

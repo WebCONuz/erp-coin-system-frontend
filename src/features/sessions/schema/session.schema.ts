@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createTimeSchema, isEndAfterStart } from "@/ustils/time";
+import { TEXT_LIMITS, createOptionalTextSchema } from "@/ustils/api-limits";
 import { MAX_SCORE_LIMIT } from "../constants";
 
 type TFn = (key: string, options?: Record<string, unknown>) => string;
@@ -35,7 +36,7 @@ export const createSessionFormSchema = (t: TFn) =>
       roomId: z.string().min(1, t("sessions.schema.room_required")),
       teacherId: z.string().min(1, t("sessions.schema.teacher_required")),
       subjectId: z.string().optional(),
-      topic: z.string().optional(),
+      topic: createOptionalTextSchema(t, TEXT_LIMITS.TOPIC),
     })
     // Backend `INVALID_TIME_RANGE` bilan bir xil qoida.
     .refine((data) => isEndAfterStart(data.startTime, data.endTime), {
@@ -50,7 +51,7 @@ export type SessionFormValues = z.infer<
 export const createSessionInfoFormSchema = (t: TFn) =>
   z
     .object({
-      topic: z.string().optional(),
+      topic: createOptionalTextSchema(t, TEXT_LIMITS.TOPIC),
       startTime: createTimeSchema(t, "sessions.schema.startTime_required"),
       endTime: createTimeSchema(t, "sessions.schema.endTime_required"),
       roomId: z.string().min(1, t("sessions.schema.room_required")),

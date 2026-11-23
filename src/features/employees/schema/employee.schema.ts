@@ -1,5 +1,10 @@
 import { createAvatarUrlSchema } from "@/ustils/avatar-url";
 import { z } from "zod";
+import {
+  TEXT_LIMITS,
+  createPasswordSchema,
+  maxLengthMessage,
+} from "@/ustils/api-limits";
 import { createUsernameSchema } from "@/ustils/username";
 
 export const createCreateEmployeeSchema = (t: (key: string) => string) =>
@@ -13,11 +18,12 @@ export const createCreateEmployeeSchema = (t: (key: string) => string) =>
       .string()
       .min(9, t("employees.schema.phone_min"))
       .max(13, t("employees.schema.phone_max")),
-    password: z.string().min(6, t("employees.schema.password_min")),
+    password: createPasswordSchema(t),
     roleId: z.string().min(1, t("employees.schema.role_required")),
     email: z
       .string()
       .email(t("employees.schema.email_invalid"))
+      .max(TEXT_LIMITS.EMAIL, maxLengthMessage(t, TEXT_LIMITS.EMAIL))
       .optional()
       .or(z.literal("")),
     parentPhone: z
@@ -44,6 +50,7 @@ export const createEditEmployeeSchema = (t: (key: string) => string) =>
     email: z
       .string()
       .email(t("employees.schema.email_invalid"))
+      .max(TEXT_LIMITS.EMAIL, maxLengthMessage(t, TEXT_LIMITS.EMAIL))
       .optional()
       .or(z.literal("")),
     avatarUrl: createAvatarUrlSchema(t),
@@ -62,7 +69,7 @@ export const createChangeEmployeePasswordSchema = (
   // Boshqa userning paroli — backend `oldPassword` ni tekshirmaydi (faqat o'z
   // parolida majburiy, u profil modalida).
   z.object({
-    newPassword: z.string().min(6, t("employees.schema.password_min")),
+    newPassword: createPasswordSchema(t),
   });
 
 export type ChangeEmployeePasswordFormValues = z.infer<

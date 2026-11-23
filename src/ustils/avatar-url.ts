@@ -9,6 +9,10 @@ export const AVATAR_URL_MAX = 500;
 export const isValidAvatarUrl = (value: string) =>
   value.startsWith("/uploads/avatars/") || /^https:\/\/\S+$/.test(value);
 
+/** Sovg'a rasmi: tizimga yuklangan fayl (`/uploads/...`) yoki `https://...`. */
+export const isValidImageUrl = (value: string) =>
+  value.startsWith("/uploads/") || /^https:\/\/\S+$/.test(value);
+
 /** Bo'sh qiymat — maydon yuborilmaydi. */
 export const createAvatarUrlSchema = (t: (key: string) => string) =>
   z

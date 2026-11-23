@@ -131,7 +131,8 @@ export const RewardFormModal = ({
     const data: UpdateRewardDto = {};
     if (dirty.title) data.title = fields.title;
     if (dirty.description) data.description = fields.description;
-    if (dirty.imageUrl) data.imageUrl = imageUrl || undefined;
+    // Bo'sh satr — rasmni olib tashlash.
+    if (dirty.imageUrl) data.imageUrl = imageUrl ?? "";
     if (dirty.coinPrice) data.coinPrice = fields.coinPrice;
     if (dirty.rewardType) data.rewardType = fields.rewardType;
     if (dirty.categoryId) data.categoryId = fields.categoryId;

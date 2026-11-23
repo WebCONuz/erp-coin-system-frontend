@@ -31,7 +31,7 @@ const GroupDetail = () => {
       (group?.students ?? []).map((gs) => ({
         id: gs.student.id,
         fullName: gs.student.fullName,
-        phone: gs.student.phone,
+        phone: gs.student.phone ?? "",
       })),
     [group],
   );

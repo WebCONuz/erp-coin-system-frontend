@@ -5,5 +5,6 @@ export const getControlsHeader = (t: (key: string) => string) => [
   { name: t("rooms.title"), link: "/admin/control/rooms" },
   { name: t("holidays.title"), link: "/admin/control/holidays" },
   { name: t("tenantSettings.title"), link: "/admin/control/settings" },
+  { name: t("auditLogs.title"), link: "/admin/control/audit-logs" },
   // { name: t("controls.sendMessage"), link: "/admin/control/send-message" },
 ];

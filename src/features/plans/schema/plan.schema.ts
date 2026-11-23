@@ -5,6 +5,7 @@ import {
   normalizeTime,
   TIME_REGEX,
 } from "@/ustils/time";
+import { TEXT_LIMITS, createOptionalTextSchema } from "@/ustils/api-limits";
 import { WEEKDAYS } from "../types";
 import { GENERATE_SESSIONS_MAX_DAYS } from "../constants";
 
@@ -50,9 +51,9 @@ export type TemplateFormValues = z.infer<
   ReturnType<typeof getTemplateFormSchema>
 >;
 
-export const createCancelExceptionFormSchema = (_t: TFn) =>
+export const createCancelExceptionFormSchema = (t: TFn) =>
   z.object({
-    note: z.string().optional(),
+    note: createOptionalTextSchema(t, TEXT_LIMITS.EXCEPTION_NOTE),
   });
 
 export type CancelExceptionFormValues = z.infer<
@@ -71,7 +72,7 @@ export const createRescheduleExceptionFormSchema = (t: TFn) =>
       endTime: z.string().transform(normalizeTime),
       roomId: z.string().optional(),
       teacherId: z.string().optional(),
-      note: z.string().optional(),
+      note: createOptionalTextSchema(t, TEXT_LIMITS.EXCEPTION_NOTE),
     })
     .refine((d) => !d.startTime || TIME_REGEX.test(d.startTime), {
       message: t("validation.timeFormat"),

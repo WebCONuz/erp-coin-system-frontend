@@ -21,6 +21,7 @@ import type {
   UpdateRewardDto,
 } from "../types";
 import { useSearchParams } from "react-router-dom";
+import { useIdempotencyKey } from "@/hooks";
 
 // REWARDS
 export const useRewards = () => {
@@ -98,11 +99,15 @@ export const useDeleteReward = () => {
 };
 
 // PURCHASES (xaridlar ro'yxati — `features/purchases`)
+// `Idempotency-Key` sovg'a bo'yicha: ikki marta bosish ikki marta sotib olmaydi.
 export const usePurchaseReward = () => {
   const queryClient = useQueryClient();
+  const idempotency = useIdempotencyKey();
 
   return useMutation({
-    mutationFn: (rewardId: string) => purchaseReward(rewardId),
+    mutationFn: (rewardId: string) =>
+      purchaseReward(rewardId, idempotency.getKey(rewardId)),
+    onSettled: (_res, error) => idempotency.settle(error),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: rewardKeys.allRewards() });
       queryClient.invalidateQueries({ queryKey: purchaseKeys.allPurchases() });

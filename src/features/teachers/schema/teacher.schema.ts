@@ -1,5 +1,10 @@
 import { createAvatarUrlSchema } from "@/ustils/avatar-url";
 import { z } from "zod";
+import {
+  TEXT_LIMITS,
+  createPasswordSchema,
+  maxLengthMessage,
+} from "@/ustils/api-limits";
 import { createUsernameSchema } from "@/ustils/username";
 
 type TFn = (key: string) => string;
@@ -15,10 +20,11 @@ export const createCreateTeacherSchema = (t: TFn) =>
       .string()
       .min(9, t("teachers.schema.phone_min"))
       .max(13, t("teachers.schema.phone_max")),
-    password: z.string().min(6, t("teachers.schema.password_min")),
+    password: createPasswordSchema(t),
     email: z
       .string()
       .email(t("teachers.schema.email_invalid"))
+      .max(TEXT_LIMITS.EMAIL, maxLengthMessage(t, TEXT_LIMITS.EMAIL))
       .optional()
       .or(z.literal("")),
     avatarUrl: createAvatarUrlSchema(t),
@@ -38,6 +44,7 @@ export const createEditTeacherSchema = (t: TFn) =>
     email: z
       .string()
       .email(t("teachers.schema.email_invalid"))
+      .max(TEXT_LIMITS.EMAIL, maxLengthMessage(t, TEXT_LIMITS.EMAIL))
       .optional()
       .or(z.literal("")),
     avatarUrl: createAvatarUrlSchema(t),
@@ -54,7 +61,7 @@ export const createChangeTeacherPasswordSchema = (t: TFn) =>
   // Boshqa userning paroli — backend `oldPassword` ni tekshirmaydi (faqat o'z
   // parolida majburiy, u profil modalida).
   z.object({
-    newPassword: z.string().min(6, t("teachers.schema.password_min")),
+    newPassword: createPasswordSchema(t),
   });
 
 export type ChangeTeacherPasswordFormValues = z.infer<

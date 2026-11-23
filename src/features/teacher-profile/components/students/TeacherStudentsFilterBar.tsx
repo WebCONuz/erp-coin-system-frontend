@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import { SearchIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { OptionSelect } from "@/components/ui/option-select";
+import { TEXT_LIMITS } from "@/ustils";
 import { useMyTaughtGroups } from "../../hooks";
 
 const ALL_VALUE = "all";
@@ -49,6 +50,7 @@ export const TeacherStudentsFilterBar = () => {
         />
         <input
           defaultValue={search}
+          maxLength={TEXT_LIMITS.SEARCH}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("teacherProfile.students.searchPlaceholder")}
           className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"

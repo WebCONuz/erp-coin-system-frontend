@@ -2,6 +2,8 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { translateApiError } from "@/ustils";
 
 import {
   Dialog,
@@ -45,7 +47,10 @@ export const GroupFormModal = ({
   const { t } = useTranslation();
 
   const { data: courses, isLoading: isCoursesLoading } = useCourses();
-  const { data: teachers, isLoading: isTeachersLoading } = useTeachers({});
+  // Guruh o'qituvchisi faqat faol teacher bo'lishi mumkin (aks holda 404).
+  const { data: teachers, isLoading: isTeachersLoading } = useTeachers({
+    isActive: "true",
+  });
 
   const createGroup = useCreateGroup();
   const updateGroup = useUpdateGroup(group?.id ?? "");
@@ -84,13 +89,17 @@ export const GroupFormModal = ({
   }, [open, form]);
 
   const onSubmit = (values: GroupFormValues) => {
+    const onError = (error: unknown) =>
+      toast.error(translateApiError(error, t));
     if (isEdit) {
       updateGroup.mutate(values, {
         onSuccess: () => onClose(),
+        onError,
       });
     } else {
       createGroup.mutate(values, {
         onSuccess: () => onClose(),
+        onError,
       });
     }
   };

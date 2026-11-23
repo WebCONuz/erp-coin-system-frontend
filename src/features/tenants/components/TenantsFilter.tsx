@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardTitle } from "@/components/shared/title";
+import { TEXT_LIMITS } from "@/ustils";
 
 interface TenantFilterProps {
   onSearch: (value: string) => void;
@@ -62,6 +63,7 @@ export const TenantDataFilter = ({
           </div>
           <Input
             placeholder={t("common.search")}
+            maxLength={TEXT_LIMITS.SEARCH}
             className="border-none focus-visible:ring-0 w-64 h-9 placeholder:text-muted-foreground/50 bg-transparent dark:bg-[#0A0A0A]"
             onChange={(e) => onSearch(e.target.value)}
           />

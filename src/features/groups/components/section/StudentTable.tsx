@@ -52,7 +52,7 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
       (gs) =>
         !query ||
         gs.student.fullName.toLowerCase().includes(query) ||
-        gs.student.phone.includes(query),
+        (gs.student.phone ?? "").includes(query),
     )
     .sort((a, b) => {
       let cmp = 0;

@@ -63,7 +63,8 @@ export const TemplateFormModal = ({
 
   const { data: groups } = useGroups();
   const { data: rooms } = useRooms();
-  const { data: teachers } = useTeachers({});
+  // Shablon o'qituvchisi faqat faol teacher (guruh/sessiya bilan bir xil qoida).
+  const { data: teachers } = useTeachers({ isActive: "true" });
   const { data: subjects } = useSubjects();
   const { isLearningCenter } = useCurrentTenant();
   const showSubject = !isLearningCenter;

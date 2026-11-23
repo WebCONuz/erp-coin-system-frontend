@@ -1,5 +1,6 @@
 import { request } from "@/services/api";
 import { ENDPOINTS } from "@/services/endpoints";
+import { idempotencyHeaders } from "@/ustils";
 import type {
   CreateRewardCategoryDto,
   CreateRewardDto,
@@ -40,11 +41,15 @@ export const deleteReward = async (rewardId: string): Promise<void> => {
   await request.delete(`${ENDPOINTS.REWARDS}/${rewardId}`);
 };
 
+// Faqat student sotib oladi (boshqa rol — `403`). `Idempotency-Key` majburiy.
 export const purchaseReward = async (
   rewardId: string,
+  idempotencyKey: string,
 ): Promise<PurchaseRewardResponse> => {
   const res = await request.post<PurchaseRewardResponse>(
     `${ENDPOINTS.REWARDS}/${rewardId}/purchase`,
+    undefined,
+    { headers: idempotencyHeaders(idempotencyKey) },
   );
   return res.data;
 };

@@ -214,10 +214,16 @@ export const useSessionRoomOptions = (enabled: boolean = true) => {
   });
 };
 
-export const useSessionTeacherOptions = (enabled: boolean = true) => {
+// Formalarda sessiya o'qituvchisi faqat faol teacher bo'lishi mumkin (aks holda
+// 404). Filtrlarda (`activeOnly: false`) arxivdagilar ham — eski darslarini topish uchun.
+export const useSessionTeacherOptions = (
+  enabled: boolean = true,
+  activeOnly: boolean = true,
+) => {
   return useQuery({
-    queryKey: ["session-form-teachers"],
-    queryFn: () => getAllTeachers({}),
+    queryKey: ["session-form-teachers", { activeOnly }],
+    queryFn: () =>
+      getAllTeachers(activeOnly ? { isActive: "true" } : {}),
     enabled,
   });
 };

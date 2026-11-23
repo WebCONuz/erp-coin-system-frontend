@@ -8,9 +8,16 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { TEXT_LIMITS, translateApiError } from "@/ustils";
 import { useSendMessage } from "../../hooks";
-import type { StudentDetail, StudentDetailFull } from "../../types";
+import type {
+  MessageChannel,
+  StudentDetail,
+  StudentDetailFull,
+} from "../../types";
 
 interface Props {
   open: boolean;
@@ -21,6 +28,7 @@ interface Props {
 export const SendMessageModal = ({ open, onClose, student }: Props) => {
   const { t } = useTranslation();
   const [message, setMessage] = useState("");
+  const [subject, setSubject] = useState("");
   const [viaSms, setViaSms] = useState(true);
   const [viaEmail, setViaEmail] = useState(false);
   const [recipient, setRecipient] = useState<"student" | "parent">("student");
@@ -28,11 +36,16 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
 
   const hasEmail = !!student.email;
   const hasParentPhone = !!student.parentPhone;
+  const isEmailSelected = hasEmail && viaEmail;
   const canSend =
-    message.trim().length > 0 && (viaSms || (hasEmail && viaEmail));
+    message.trim().length > 0 &&
+    message.length <= TEXT_LIMITS.MESSAGE &&
+    subject.length <= TEXT_LIMITS.MESSAGE_SUBJECT &&
+    (viaSms || isEmailSelected);
 
   const handleClose = () => {
     setMessage("");
+    setSubject("");
     setViaSms(true);
     setViaEmail(false);
     setRecipient("student");
@@ -40,9 +53,9 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
   };
 
   const handleSend = () => {
-    const channels: ("sms" | "email")[] = [];
+    const channels: MessageChannel[] = [];
     if (viaSms) channels.push("sms");
-    if (viaEmail && hasEmail) channels.push("email");
+    if (isEmailSelected) channels.push("email");
 
     const phone =
       recipient === "parent" && student.parentPhone
@@ -53,13 +66,43 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
       {
         message,
         channels,
+        // Ota-onaga yuborilganda ham o'quvchi ID'si — logda bog'lanadi.
+        userId: student.id,
+        subject:
+          channels.includes("email") && subject.trim()
+            ? subject.trim()
+            : undefined,
         recipientPhone: channels.includes("sms") ? phone : undefined,
         recipientEmail:
           channels.includes("email") && student.email
             ? student.email
             : undefined,
       },
-      { onSuccess: handleClose },
+      {
+        onSuccess: (res) => {
+          const failed = res.results.filter((r) => !r.success);
+          if (failed.length === 0) {
+            toast.success(res.message);
+            handleClose();
+            return;
+          }
+          // Qisman / to'liq muvaffaqiyatsiz — qaysi kanal yuborilmaganini ko'rsatamiz.
+          toast.warning(res.message, {
+            description: failed
+              .map((r) =>
+                t("students.sendMessage.channelFailed", {
+                  channel:
+                    r.channel === "sms"
+                      ? t("students.sendMessage.sms")
+                      : t("common.email"),
+                }),
+              )
+              .join(", "),
+          });
+          if (failed.length < res.results.length) handleClose();
+        },
+        onError: (error) => toast.error(translateApiError(error, t)),
+      },
     );
   };
 
@@ -185,6 +228,22 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
             </div>
           </div>
 
+          {/* Email subject — faqat email kanali tanlanganda */}
+          {isEmailSelected && (
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                {t("students.sendMessage.subjectLabel")}
+              </label>
+              <Input
+                value={subject}
+                maxLength={TEXT_LIMITS.MESSAGE_SUBJECT}
+                onChange={(e) => setSubject(e.target.value)}
+                placeholder={t("students.sendMessage.subjectPlaceholder")}
+                className="bg-transparent border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400"
+              />
+            </div>
+          )}
+
           {/* Message textarea */}
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
@@ -192,14 +251,20 @@ export const SendMessageModal = ({ open, onClose, student }: Props) => {
             </label>
             <textarea
               value={message}
+              maxLength={TEXT_LIMITS.MESSAGE}
               onChange={(e) => setMessage(e.target.value)}
               placeholder={t("students.sendMessage.messagePlaceholder")}
               rows={4}
               className="w-full px-3 py-2.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-transparent text-sm text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 outline-none focus:border-purple-400 transition-colors resize-none"
             />
-            <p className="text-xs text-zinc-400 text-right">
-              {message.length} / 500
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-xs text-zinc-400">
+                {t("students.sendMessage.plainTextHint")}
+              </p>
+              <p className="text-xs text-zinc-400 shrink-0">
+                {message.length} / {TEXT_LIMITS.MESSAGE}
+              </p>
+            </div>
           </div>
         </div>
 

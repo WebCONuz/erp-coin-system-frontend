@@ -3,6 +3,7 @@ export const ENDPOINTS = {
   LOGIN: "/api/auth/login",
   ME: "/api/auth/me",
   LOGOUT: "/api/auth/logout",
+  LOGOUT_ALL: "/api/auth/logout-all",
   TENANTS: "/api/tenants",
   TEACHERS: "/api/users/teachers",
   TEACHER_SELF: "/api/teachers",
@@ -26,4 +27,5 @@ export const ENDPOINTS = {
   DASHBOARD: "/api/dashboard",
   TENANT_SETTINGS: "/api/tenant-settings",
   HOLIDAYS: "/api/holidays",
+  AUDIT_LOGS: "/api/audit-logs",
 };

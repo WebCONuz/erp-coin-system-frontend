@@ -86,7 +86,30 @@
     "SESSION_DATE_TOO_OLD": "Ўқитувчи 7 кундан эски санага дарс қўша олмайди (энг эрта: {{earliestDate}}). Администраторга мурожаат қилинг",
     "SESSION_DUPLICATE": "Бу гуруҳ учун кўрсатилган сана ва вақтда дарс аллақачон мавжуд",
     "SCHEDULE_CONFLICT": "Жадвал тўқнашуви: {{conflict}}",
-    "ATTENDANCE_STATUS_MISMATCH": "Давомат ҳолати ва \"келди\" белгиси бир-бирига мос эмас"
+    "ATTENDANCE_STATUS_MISMATCH": "Давомат ҳолати ва \"келди\" белгиси бир-бирига мос эмас",
+    "STUDENTS_NOT_FOUND": "Айрим ўқувчилар топилмади ёки фаол эмас — ҳеч ким қўшилмади",
+    "IDEMPOTENCY_KEY_REQUIRED": "Сўров ҳимоя калитисиз юборилди. Саҳифани янгилаб, қайта уриниб кўринг",
+    "IDEMPOTENCY_KEY_INVALID": "Сўров ҳимоя калити нотўғри. Саҳифани янгилаб, қайта уриниб кўринг",
+    "IDEMPOTENCY_REQUEST_IN_PROGRESS": "Бу амал ҳали бажарилмоқда. Бироз кутиб, рўйхатни янгиланг",
+    "IDEMPOTENCY_KEY_REUSED": "Аввалги сўров маълумотлари ўзгарган. Қайта юборинг",
+    "DUPLICATE_VALUE": "Бу қиймат аллақачон мавжуд",
+    "DUPLICATE_VALUE_FIELDS": "{{fields}} аллақачон мавжуд",
+    "RECORD_NOT_FOUND": "Ёзув топилмади",
+    "RELATED_RECORD_CONSTRAINT": "Боғлиқ ёзув топилмади ёки бу ёзув бошқа жойда ишлатилмоқда",
+    "VALUE_TOO_LONG": "Киритилган қиймат жуда узун",
+    "CONCURRENT_UPDATE": "Маълумот шу орада бошқа сўров билан ўзгарди. Қайта уриниб кўринг",
+    "DATABASE_UNAVAILABLE": "Сервер вақтинча жавоб бермаяпти. Бироздан кейин қайта уриниб кўринг",
+    "DATABASE_REQUEST_FAILED": "Сўровни бажариб бўлмади",
+    "requestId": "Хато коди: {{id}}",
+    "fields": {
+      "username": "Username",
+      "phone": "Телефон рақам",
+      "email": "Email",
+      "slug": "Slug",
+      "name": "Ном",
+      "title": "Ном",
+      "date": "Сана"
+    }
   },
   "coinRules": {
     "direction": {
@@ -194,7 +217,6 @@
       "phone_invalid": "Телефон рақам +998XXXXXXXXX форматида бўлиши керак",
       "email_invalid": "Email формати нотўғри",
       "oldPassword_required": "Жорий паролни киритинг",
-      "password_min": "Парол камида 6 та белгидан иборат бўлиши керак",
       "newPassword_same": "Янги парол жорий паролдан фарқ қилиши керак",
       "confirmPassword_mismatch": "Пароллар мос келмади"
     },
@@ -454,7 +476,6 @@
       "fullName_max": "Ф.И.Ш 100 та белгидан ошмаслиги керак",
       "phone_min": "Телефон рақам камида 9 та рақам бўлиши керак",
       "phone_max": "Телефон рақам жуда узун",
-      "password_min": "Парол камида 6 та белги бўлиши керак",
       "role_required": "Рол танланиши шарт",
       "email_invalid": "Email нотўғри форматда",
       "parentPhone_min": "Телефон рақам камида 9 та рақам",
@@ -512,7 +533,6 @@
       "fullName_max": "Ф.И.Ш 100 та белгидан ошмаслиги керак",
       "phone_min": "Телефон рақам камида 9 та рақам бўлиши керак",
       "phone_max": "Телефон рақам жуда узун",
-      "password_min": "Парол камида 6 та белги бўлиши керак",
       "email_invalid": "Email нотўғри форматда",
       "url_invalid": "URL нотўғри форматда"
     },
@@ -564,7 +584,12 @@
       "channelLabel": "Юбориш канали",
       "messageLabel": "Хабар матни",
       "messagePlaceholder": "Хабарингизни киритинг...",
-      "send": "Юбориш"
+      "send": "Юбориш",
+      "subjectLabel": "Email мавзуси (ихтиёрий)",
+      "subjectPlaceholder": "Масалан: Дарс жадвали ўзгарди",
+      "plainTextHint": "Оддий матн — HTML теглар матн сифатида кўринади",
+      "channelFailed": "{{channel}} юборилмади",
+      "sms": "SMS"
     },
     "form": {
       "createTitle": "Янги талаба қўшиш",
@@ -583,7 +608,6 @@
       "fullName_max": "Ф.И.Ш 100 та белгидан ошмаслиги керак",
       "phone_min": "Телефон рақам камида 9 та рақам бўлиши керак",
       "phone_max": "Телефон рақам жуда узун",
-      "password_min": "Парол камида 6 та белги бўлиши керак",
       "roleId_required": "Рол ID мажбурий",
       "email_invalid": "Email нотўғри форматда",
       "url_invalid": "URL нотўғри форматда"
@@ -629,7 +653,8 @@
       "groups": "Гуруҳлар",
       "coins": "Тангалар",
       "gifts": "Совғалар",
-      "security": "Хавфсизлик"
+      "security": "Хавфсизлик",
+      "history": "Тарих"
     },
     "filter": {
       "addStudent": "Талаба қўшиш",
@@ -694,6 +719,10 @@
     "contactRow": {
       "copied": "Нусхаланди",
       "copyFailed": "Нусхалаб бўлмади"
+    },
+    "historyTab": {
+      "title": "Амаллар тарихи",
+      "empty": "Бу ўқувчи устида ҳали ҳеч қандай амал қайд этилмаган"
     }
   },
   "courses": {
@@ -773,7 +802,11 @@
       "addSelected": "{{count}} та қўшиш",
       "noResults": "Ҳеч нарса топилмади",
       "noStudents": "Қўшиш учун студент йўқ",
-      "noResultsFor": "\"{{search}}\" бўйича натижа топилмади"
+      "noResultsFor": "\"{{search}}\" бўйича натижа топилмади",
+      "notAvailable": "Фаол эмас",
+      "bulkLimit": "Бир мартада кўпи билан {{max}} та ўқувчи қўшиш мумкин",
+      "invalidSelected": "{{count}} та ўқувчи фаол эмас ёки топилмади — уларни олиб ташланг",
+      "removeInvalid": "Олиб ташлаш"
     },
     "detail": {
       "notFound": "Гуруҳ маълумотлари топилмади",
@@ -1131,7 +1164,7 @@
     },
     "schema": {
       "title_required": "Совға номи киритилиши шарт",
-      "url_invalid": "Тўғри URL киритинг",
+      "url_invalid": "Расм манзили '/uploads/...' ёки 'https://...' бўлиши керак",
       "price_min": "Нарх 0 дан катта бўлиши керак",
       "stock_min": "Дона сони манфий бўлиши мумкин эмас",
       "category_required": "Категория танланиши шарт",
@@ -1300,7 +1333,10 @@
     "timeFormat": "Вақт формати ҲҲ:ДД бўлиши керак (масалан 09:00)",
     "endAfterStart": "Тугаш вақти бошланиш вақтидан кейин бўлиши керак",
     "avatarUrlInvalid": "Расм манзили '/uploads/avatars/...' ёки 'https://...' бўлиши керак",
-    "avatarUrlMax": "Расм манзили 500 белгидан ошмаслиги керак"
+    "avatarUrlMax": "Расм манзили 500 белгидан ошмаслиги керак",
+    "maxLength": "Кўпи билан {{max}} та белги киритиш мумкин",
+    "passwordMin": "Парол камида {{min}} та белгидан иборат бўлиши керак",
+    "passwordMax": "Парол {{max}} та белгидан ошмаслиги керак"
   },
   "scheduleConflict": {
     "kind": {
@@ -1360,6 +1396,97 @@
     "schema": {
       "limit_invalid": "Лимит {{min}} … {{max}} оралиғида бутун сон бўлиши керак",
       "timezone_required": "Вақт минтақасини танланг"
+    }
+  },
+  "logoutAll": {
+    "action": "Барча қурилмалардан чиқиш",
+    "title": "Барча қурилмалардан чиқилсинми?",
+    "description": "Ҳисобингиз кирилган барча қурилмалардаги сессиялар ёпилади. Бошқа қурилмаларда кўпи билан 15 дақиқадан кейин қайта кириш талаб қилинади.",
+    "confirm": "Ҳаммасидан чиқиш",
+    "success": "Барча қурилмалардан чиқилди"
+  },
+  "auditLogs": {
+    "title": "Аудит лог",
+    "description": "Ким, қачон ва қандай амал бажарганини кўринг",
+    "details": "Батафсил",
+    "empty": "Ҳали ҳеч қандай амал қайд этилмаган",
+    "forbidden": "Аудит логни кўриш учун рухсат йўқ",
+    "performedBy": "Бажарди: {{name}}",
+    "filter": {
+      "allActions": "Барча амаллар",
+      "allEntities": "Барча объектлар",
+      "fromDate": "Бошланиш санаси",
+      "toDate": "Тугаш санаси",
+      "reset": "Тозалаш"
+    },
+    "table": {
+      "date": "Вақт",
+      "user": "Бажарувчи",
+      "action": "Амал",
+      "entity": "Объект",
+      "entityId": "Объект ID",
+      "changes": "Ўзгаришлар",
+      "device": "IP / қурилма"
+    },
+    "action": {
+      "create": "Яратиш",
+      "update": "Таҳрирлаш",
+      "delete": "Ўчириш",
+      "archive": "Архивлаш",
+      "restore": "Тиклаш",
+      "assign": "Рол бериш",
+      "approve": "Тасдиқлаш",
+      "reject": "Бекор қилиш",
+      "coin_transaction": "Танга амали",
+      "sms_sent": "SMS юборилди",
+      "email_sent": "Email юборилди"
+    },
+    "entity": {
+      "CoinTransaction": "Танга транзакцияси",
+      "CoinOperation": "Оммавий танга амали",
+      "CoinRule": "Танга қоидаси",
+      "User": "Фойдаланувчи",
+      "Purchase": "Харид",
+      "Session": "Дарс",
+      "Tenant": "Ташкилот",
+      "SmsLog": "SMS",
+      "EmailLog": "Email"
+    },
+    "field": {
+      "studentId": "Ўқувчи ID",
+      "amount": "Миқдор",
+      "direction": "Йўналиш",
+      "sourceType": "Манба",
+      "ruleId": "Қоида ID",
+      "groupId": "Гуруҳ ID",
+      "sessionId": "Дарс ID",
+      "kind": "Тури",
+      "transactions": "Транзакциялар",
+      "failedCount": "Муваффақиятсиз",
+      "operation": "Амал",
+      "reversalTransactionId": "Тескари транзакция ID",
+      "before": "Аввалги қиймат",
+      "username": "Username",
+      "fullName": "Ф.И.Ш.",
+      "role": "Рол",
+      "roleFrom": "Аввалги рол",
+      "roleTo": "Янги рол",
+      "field": "Майдон",
+      "self": "Ўзи",
+      "isActive": "Фаол",
+      "isDeleted": "Ўчирилган",
+      "from": "Аввалги ҳолат",
+      "to": "Янги ҳолат",
+      "rewardId": "Совға ID",
+      "coinSpent": "Сарфланган танга",
+      "restock": "Захирага қайтарилди",
+      "isLocked": "Қулфланган",
+      "keepCoins": "Тангалар сақланди",
+      "reversedTransactions": "Қайтарилган транзакциялар",
+      "sessionDate": "Дарс санаси",
+      "settings": "Созламалар",
+      "userId": "Фойдаланувчи ID",
+      "messageLength": "Хабар узунлиги"
     }
   }
 }

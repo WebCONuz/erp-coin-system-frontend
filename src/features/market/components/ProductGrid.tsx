@@ -7,6 +7,7 @@ import { NoData } from "@/components/partials/no-data";
 import { NoDataBox } from "@/features/tenants/components/ui";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { ROLES } from "@/assets/constants";
+import { translateApiError } from "@/ustils";
 import { useRewards, usePurchaseReward, useDeleteReward } from "../hooks";
 import type { Reward } from "../types";
 import { RewardInventory } from "./RewardInventory";
@@ -32,8 +33,7 @@ export const ProductGrid = ({ onAddGift, onEdit }: Props) => {
 
     purchaseReward.mutate(reward.id, {
       onSuccess: (res) => toast.success(res.message),
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
+      onError: (error) => toast.error(translateApiError(error, t)),
     });
   };
 
@@ -42,8 +42,7 @@ export const ProductGrid = ({ onAddGift, onEdit }: Props) => {
       return;
 
     deleteReward.mutate(reward.id, {
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
+      onError: (error) => toast.error(translateApiError(error, t)),
     });
   };
 

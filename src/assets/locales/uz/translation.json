@@ -86,7 +86,30 @@
     "SESSION_DATE_TOO_OLD": "O'qituvchi 7 kundan eski sanaga dars qo'sha olmaydi (eng erta: {{earliestDate}}). Administratorga murojaat qiling",
     "SESSION_DUPLICATE": "Bu guruh uchun ko'rsatilgan sana va vaqtda dars allaqachon mavjud",
     "SCHEDULE_CONFLICT": "Jadval to'qnashuvi: {{conflict}}",
-    "ATTENDANCE_STATUS_MISMATCH": "Davomat holati va \"keldi\" belgisi bir-biriga mos emas"
+    "ATTENDANCE_STATUS_MISMATCH": "Davomat holati va \"keldi\" belgisi bir-biriga mos emas",
+    "STUDENTS_NOT_FOUND": "Ayrim o'quvchilar topilmadi yoki faol emas — hech kim qo'shilmadi",
+    "IDEMPOTENCY_KEY_REQUIRED": "So'rov himoya kalitisiz yuborildi. Sahifani yangilab, qayta urinib ko'ring",
+    "IDEMPOTENCY_KEY_INVALID": "So'rov himoya kaliti noto'g'ri. Sahifani yangilab, qayta urinib ko'ring",
+    "IDEMPOTENCY_REQUEST_IN_PROGRESS": "Bu amal hali bajarilmoqda. Biroz kutib, ro'yxatni yangilang",
+    "IDEMPOTENCY_KEY_REUSED": "Avvalgi so'rov ma'lumotlari o'zgargan. Qayta yuboring",
+    "DUPLICATE_VALUE": "Bu qiymat allaqachon mavjud",
+    "DUPLICATE_VALUE_FIELDS": "{{fields}} allaqachon mavjud",
+    "RECORD_NOT_FOUND": "Yozuv topilmadi",
+    "RELATED_RECORD_CONSTRAINT": "Bog'liq yozuv topilmadi yoki bu yozuv boshqa joyda ishlatilmoqda",
+    "VALUE_TOO_LONG": "Kiritilgan qiymat juda uzun",
+    "CONCURRENT_UPDATE": "Ma'lumot shu orada boshqa so'rov bilan o'zgardi. Qayta urinib ko'ring",
+    "DATABASE_UNAVAILABLE": "Server vaqtincha javob bermayapti. Birozdan keyin qayta urinib ko'ring",
+    "DATABASE_REQUEST_FAILED": "So'rovni bajarib bo'lmadi",
+    "requestId": "Xato kodi: {{id}}",
+    "fields": {
+      "username": "Username",
+      "phone": "Telefon raqam",
+      "email": "Email",
+      "slug": "Slug",
+      "name": "Nom",
+      "title": "Nom",
+      "date": "Sana"
+    }
   },
   "coinRules": {
     "direction": {
@@ -198,7 +221,6 @@
       "phone_invalid": "Telefon raqam +998XXXXXXXXX formatida bo'lishi kerak",
       "email_invalid": "Email formati noto'g'ri",
       "oldPassword_required": "Joriy parolni kiriting",
-      "password_min": "Parol kamida 6 ta belgidan iborat bo'lishi kerak",
       "newPassword_same": "Yangi parol joriy paroldan farq qilishi kerak",
       "confirmPassword_mismatch": "Parollar mos kelmadi"
     },
@@ -462,7 +484,6 @@
       "fullName_max": "F.I.Sh 100 ta belgidan oshmasligi kerak",
       "phone_min": "Telefon raqam kamida 9 ta raqam bo'lishi kerak",
       "phone_max": "Telefon raqam juda uzun",
-      "password_min": "Parol kamida 6 ta belgi bo'lishi kerak",
       "role_required": "Rol tanlanishi shart",
       "email_invalid": "Email noto'g'ri formatda",
       "parentPhone_min": "Telefon raqam kamida 9 ta raqam",
@@ -520,7 +541,6 @@
       "fullName_max": "F.I.Sh 100 ta belgidan oshmasligi kerak",
       "phone_min": "Telefon raqam kamida 9 ta raqam bo'lishi kerak",
       "phone_max": "Telefon raqam juda uzun",
-      "password_min": "Parol kamida 6 ta belgi bo'lishi kerak",
       "email_invalid": "Email noto'g'ri formatda",
       "url_invalid": "URL noto'g'ri formatda"
     },
@@ -574,7 +594,11 @@
       "messageLabel": "Xabar matni",
       "messagePlaceholder": "Xabaringizni kiriting...",
       "send": "Yuborish",
-      "sms": "SMS"
+      "sms": "SMS",
+      "subjectLabel": "Email mavzusi (ixtiyoriy)",
+      "subjectPlaceholder": "Masalan: Dars jadvali o'zgardi",
+      "plainTextHint": "Oddiy matn — HTML teglar matn sifatida ko'rinadi",
+      "channelFailed": "{{channel}} yuborilmadi"
     },
     "form": {
       "createTitle": "Yangi talaba qo'shish",
@@ -593,7 +617,6 @@
       "fullName_max": "F.I.Sh 100 ta belgidan oshmasligi kerak",
       "phone_min": "Telefon raqam kamida 9 ta raqam bo'lishi kerak",
       "phone_max": "Telefon raqam juda uzun",
-      "password_min": "Parol kamida 6 ta belgi bo'lishi kerak",
       "roleId_required": "Rol ID majburiy",
       "email_invalid": "Email noto'g'ri formatda",
       "url_invalid": "URL noto'g'ri formatda"
@@ -639,7 +662,8 @@
       "groups": "Guruhlar",
       "coins": "Tangalar",
       "gifts": "Sovg'alar",
-      "security": "Xavfsizlik"
+      "security": "Xavfsizlik",
+      "history": "Tarix"
     },
     "filter": {
       "addStudent": "Talaba qo'shish",
@@ -704,6 +728,10 @@
     "contactRow": {
       "copied": "Nusxalandi",
       "copyFailed": "Nusxalab bo'lmadi"
+    },
+    "historyTab": {
+      "title": "Amallar tarixi",
+      "empty": "Bu o'quvchi ustida hali hech qanday amal qayd etilmagan"
     }
   },
   "courses": {
@@ -784,7 +812,11 @@
       "addSelected": "{{count}} ta qo'shish",
       "noResults": "Hech narsa topilmadi",
       "noStudents": "Qo'shish uchun student yo'q",
-      "noResultsFor": "\"{{search}}\" bo'yicha natija topilmadi"
+      "noResultsFor": "\"{{search}}\" bo'yicha natija topilmadi",
+      "notAvailable": "Faol emas",
+      "bulkLimit": "Bir martada ko'pi bilan {{max}} ta o'quvchi qo'shish mumkin",
+      "invalidSelected": "{{count}} ta o'quvchi faol emas yoki topilmadi — ularni olib tashlang",
+      "removeInvalid": "Olib tashlash"
     },
     "detail": {
       "notFound": "Guruh ma'lumotlari topilmadi",
@@ -1187,7 +1219,7 @@
     },
     "schema": {
       "title_required": "Sovg'a nomi kiritilishi shart",
-      "url_invalid": "To'g'ri URL kiriting",
+      "url_invalid": "Rasm manzili '/uploads/...' yoki 'https://...' bo'lishi kerak",
       "price_min": "Narx 0 dan katta bo'lishi kerak",
       "stock_min": "Dona soni manfiy bo'lishi mumkin emas",
       "category_required": "Kategoriya tanlanishi shart",
@@ -1499,7 +1531,10 @@
     "timeFormat": "Vaqt formati HH:MM bo'lishi kerak (masalan 09:00)",
     "endAfterStart": "Tugash vaqti boshlanish vaqtidan keyin bo'lishi kerak",
     "avatarUrlInvalid": "Rasm manzili '/uploads/avatars/...' yoki 'https://...' bo'lishi kerak",
-    "avatarUrlMax": "Rasm manzili 500 belgidan oshmasligi kerak"
+    "avatarUrlMax": "Rasm manzili 500 belgidan oshmasligi kerak",
+    "maxLength": "Ko'pi bilan {{max}} ta belgi kiritish mumkin",
+    "passwordMin": "Parol kamida {{min}} ta belgidan iborat bo'lishi kerak",
+    "passwordMax": "Parol {{max}} ta belgidan oshmasligi kerak"
   },
   "scheduleConflict": {
     "kind": {
@@ -1553,6 +1588,97 @@
     "schema": {
       "limit_invalid": "Limit {{min}} … {{max}} oralig'ida butun son bo'lishi kerak",
       "timezone_required": "Vaqt mintaqasini tanlang"
+    }
+  },
+  "logoutAll": {
+    "action": "Barcha qurilmalardan chiqish",
+    "title": "Barcha qurilmalardan chiqilsinmi?",
+    "description": "Hisobingiz kirilgan barcha qurilmalardagi sessiyalar yopiladi. Boshqa qurilmalarda ko'pi bilan 15 daqiqadan keyin qayta kirish talab qilinadi.",
+    "confirm": "Hammasidan chiqish",
+    "success": "Barcha qurilmalardan chiqildi"
+  },
+  "auditLogs": {
+    "title": "Audit log",
+    "description": "Kim, qachon va qanday amal bajarganini ko'ring",
+    "details": "Batafsil",
+    "empty": "Hali hech qanday amal qayd etilmagan",
+    "forbidden": "Audit logni ko'rish uchun ruxsat yo'q",
+    "performedBy": "Bajardi: {{name}}",
+    "filter": {
+      "allActions": "Barcha amallar",
+      "allEntities": "Barcha obyektlar",
+      "fromDate": "Boshlanish sanasi",
+      "toDate": "Tugash sanasi",
+      "reset": "Tozalash"
+    },
+    "table": {
+      "date": "Vaqt",
+      "user": "Bajaruvchi",
+      "action": "Amal",
+      "entity": "Obyekt",
+      "entityId": "Obyekt ID",
+      "changes": "O'zgarishlar",
+      "device": "IP / qurilma"
+    },
+    "action": {
+      "create": "Yaratish",
+      "update": "Tahrirlash",
+      "delete": "O'chirish",
+      "archive": "Arxivlash",
+      "restore": "Tiklash",
+      "assign": "Rol berish",
+      "approve": "Tasdiqlash",
+      "reject": "Bekor qilish",
+      "coin_transaction": "Tanga amali",
+      "sms_sent": "SMS yuborildi",
+      "email_sent": "Email yuborildi"
+    },
+    "entity": {
+      "CoinTransaction": "Tanga tranzaksiyasi",
+      "CoinOperation": "Ommaviy tanga amali",
+      "CoinRule": "Tanga qoidasi",
+      "User": "Foydalanuvchi",
+      "Purchase": "Xarid",
+      "Session": "Dars",
+      "Tenant": "Tashkilot",
+      "SmsLog": "SMS",
+      "EmailLog": "Email"
+    },
+    "field": {
+      "studentId": "O'quvchi ID",
+      "amount": "Miqdor",
+      "direction": "Yo'nalish",
+      "sourceType": "Manba",
+      "ruleId": "Qoida ID",
+      "groupId": "Guruh ID",
+      "sessionId": "Dars ID",
+      "kind": "Turi",
+      "transactions": "Tranzaksiyalar",
+      "failedCount": "Muvaffaqiyatsiz",
+      "operation": "Amal",
+      "reversalTransactionId": "Teskari tranzaksiya ID",
+      "before": "Avvalgi qiymat",
+      "username": "Username",
+      "fullName": "F.I.Sh.",
+      "role": "Rol",
+      "roleFrom": "Avvalgi rol",
+      "roleTo": "Yangi rol",
+      "field": "Maydon",
+      "self": "O'zi",
+      "isActive": "Faol",
+      "isDeleted": "O'chirilgan",
+      "from": "Avvalgi holat",
+      "to": "Yangi holat",
+      "rewardId": "Sovg'a ID",
+      "coinSpent": "Sarflangan tanga",
+      "restock": "Zaxiraga qaytarildi",
+      "isLocked": "Qulflangan",
+      "keepCoins": "Tangalar saqlandi",
+      "reversedTransactions": "Qaytarilgan tranzaksiyalar",
+      "sessionDate": "Dars sanasi",
+      "settings": "Sozlamalar",
+      "userId": "Foydalanuvchi ID",
+      "messageLength": "Xabar uzunligi"
     }
   }
 }

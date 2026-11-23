@@ -89,6 +89,9 @@ const RolesPage = lazy(() => import("@/pages/control/admin/RolesPage"));
 const SubjectsPage = lazy(() => import("@/pages/subjects/SubjectsPage"));
 const HolidaysPage = lazy(() => import("@/pages/control/admin/HolidaysPage"));
 const SettingsPage = lazy(() => import("@/pages/control/admin/SettingsPage"));
+const AuditLogsPage = lazy(
+  () => import("@/pages/control/admin/AuditLogsPage"),
+);
 
 const withSuspense = (Component: React.ComponentType) => {
   return (
@@ -226,6 +229,10 @@ export const router = createBrowserRouter([
               {
                 path: "settings",
                 element: withSuspense(SettingsPage),
+              },
+              {
+                path: "audit-logs",
+                element: withSuspense(AuditLogsPage),
               },
             ],
           },

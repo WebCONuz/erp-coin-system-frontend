@@ -1,4 +1,9 @@
 import { z } from "zod";
+import {
+  TEXT_LIMITS,
+  createPasswordSchema,
+  maxLengthMessage,
+} from "@/ustils/api-limits";
 import { createUsernameSchema } from "@/ustils/username";
 import { createAvatarUrlSchema } from "@/ustils/avatar-url";
 
@@ -25,6 +30,7 @@ export const createMyProfileSchema = (t: TFn) =>
       .string()
       .trim()
       .email(t("profile.schema.email_invalid"))
+      .max(TEXT_LIMITS.EMAIL, maxLengthMessage(t, TEXT_LIMITS.EMAIL))
       .optional()
       .or(z.literal("")),
     avatarUrl: createAvatarUrlSchema(t),
@@ -38,7 +44,7 @@ export const createChangeMyPasswordSchema = (t: TFn) =>
   z
     .object({
       oldPassword: z.string().min(1, t("profile.schema.oldPassword_required")),
-      newPassword: z.string().min(6, t("profile.schema.password_min")),
+      newPassword: createPasswordSchema(t),
       confirmPassword: z.string(),
     })
     .refine((data) => data.newPassword !== data.oldPassword, {

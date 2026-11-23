@@ -6,6 +6,7 @@ import { DashboardTitle } from "@/components/shared/title";
 import { ControlledInput } from "@/components/controls";
 import { useFilter } from "../hooks";
 import { Form } from "@/components/ui/form";
+import { TEXT_LIMITS } from "@/ustils/api-limits";
 
 interface Props {
   onAdd: () => void;
@@ -61,6 +62,7 @@ export const TeacherDataFilter = ({ onAdd }: Props) => {
               control={form.control}
               placeholder={t("common.search")}
               name="search"
+              maxLength={TEXT_LIMITS.SEARCH}
               inputClassName="pl-7 rounded-lg h-10 border border-gray-300 min-w-75"
             />
           </div>

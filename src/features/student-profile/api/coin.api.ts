@@ -1,5 +1,6 @@
 import { request } from "@/services/api";
 import { ENDPOINTS } from "@/services/endpoints";
+import { MAX_LEADERBOARD_LIMIT } from "@/ustils";
 import type {
   CoinStatsResponse,
   LeaderboardEntry,
@@ -35,12 +36,13 @@ export const getMyCoinStats = async (params?: {
   return res.data;
 };
 
+// Faqat faol studentlar; `limit` 1–50 (oshsa 400).
 export const getLeaderboard = async (
   limit = 10,
 ): Promise<LeaderboardEntry[]> => {
   const res = await request.get<LeaderboardEntry[]>(
     `${ENDPOINTS.COIN_TRANSACTIONS}/leaderboard`,
-    { params: { limit } },
+    { params: { limit: Math.min(Math.max(1, limit), MAX_LEADERBOARD_LIMIT) } },
   );
   return res.data;
 };

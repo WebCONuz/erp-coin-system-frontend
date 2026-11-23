@@ -37,7 +37,8 @@ export interface GroupStudent {
   student: {
     id: string;
     fullName: string;
-    phone: string;
+    /** Student so'raganda boshqa o'quvchilarniki `null` (faqat o'ziniki ko'rinadi). */
+    phone: string | null;
     wallet?: {
       balance: number;
     };
