@@ -1486,7 +1486,17 @@
       "sessionDate": "Дарс санаси",
       "settings": "Созламалар",
       "userId": "Фойдаланувчи ID",
-      "messageLength": "Хабар узунлиги"
+      "messageLength": "Хабар узунлиги",
+      "reversedCount": "Бекор қилинган тангалар",
+      "skippedCount": "Ўтказиб юборилган"
+    },
+    "refresh": "Янгилаш",
+    "itemsCount": "{{count}} та",
+    "kind": {
+      "attendance": "Йўқлама",
+      "results": "Натижа",
+      "bulk_manual": "Оммавий қўлда",
+      "apply_rule": "Қоида қўллаш"
     }
   }
 }

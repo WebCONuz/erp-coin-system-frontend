@@ -13,9 +13,21 @@ import { AuditActionBadge } from "./AuditActionBadge";
 
 const PREVIEW_FIELDS = 3;
 
-const formatValue = (value: unknown): string => {
+type TFn = (key: string, options?: Record<string, unknown>) => string;
+
+// Massiv (masalan `transactions[]`) — soni; `kind` / `direction` / `sourceType` —
+// tarjima qilingan qiymat; boshqasi — qisqa JSON / matn.
+const formatValue = (key: string, value: unknown, t: TFn): string => {
   if (value === null || value === undefined) return "—";
+  if (Array.isArray(value)) return t("auditLogs.itemsCount", { count: value.length });
+  if (typeof value === "boolean") return value ? t("common.yes") : t("common.no");
   if (typeof value === "object") return JSON.stringify(value);
+  if (key === "kind")
+    return t(`auditLogs.kind.${value}`, { defaultValue: String(value) });
+  if (key === "direction")
+    return t(`coinRules.direction.${value}`, { defaultValue: String(value) });
+  if (key === "sourceType")
+    return t(`coinRules.sourceType.${value}`, { defaultValue: String(value) });
   return String(value);
 };
 
@@ -44,7 +56,7 @@ export const AuditChangesPreview = ({ log }: Props) => {
       {entries.slice(0, PREVIEW_FIELDS).map(([key, value]) => (
         <p key={key} className="truncate text-muted-foreground">
           <span className="text-foreground/80">{fieldLabel(key)}:</span>{" "}
-          {formatValue(value)}
+          {formatValue(key, value, t)}
         </p>
       ))}
       {entries.length > 0 && (

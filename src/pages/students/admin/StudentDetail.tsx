@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { translateApiError } from "@/ustils";
+import { canViewAuditLogs, translateApiError } from "@/ustils";
+import { useAuth } from "@/features/auth/hooks/useLogin";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentDetailSkeleton } from "@/features/students/components/ui";
@@ -40,6 +41,7 @@ const StudentDetail = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
+  const { user } = useAuth();
   const { data: student, isLoading, isError } = useStudentById(id ?? "");
   const deactivate = useDeactivateStudent(id ?? "");
 
@@ -51,7 +53,10 @@ const StudentDetail = () => {
   const isActive = student?.isActive ?? false;
   const isDeleted = student?.isDeleted ?? false;
   const { confirmContent } = StudentActions(student, t);
-  const studentTabOptions = getStudentTabOptions(t);
+  const canSeeHistory = canViewAuditLogs(user?.role);
+  const studentTabOptions = getStudentTabOptions(t, {
+    withHistory: canSeeHistory,
+  });
 
   const handleConfirm = () => {
     if (!id) return;
@@ -123,7 +128,7 @@ const StudentDetail = () => {
               isDeleted={isDeleted}
               setConfirmAction={setConfirmAction}
             />
-            <HistoryTab student={student} />
+            {canSeeHistory && <HistoryTab student={student} />}
           </Tabs>
         </div>
 

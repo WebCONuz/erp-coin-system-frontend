@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { RotateCcw } from "lucide-react";
+import { RefreshCw, RotateCcw } from "lucide-react";
 import { parse } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
@@ -20,7 +20,12 @@ import {
 const toDate = (value: string) =>
   value ? parse(value, DATE_FORMAT_ISO_8601, new Date()) : undefined;
 
-export const AuditLogsDataFilter = () => {
+interface Props {
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
+}
+
+export const AuditLogsDataFilter = ({ onRefresh, isRefreshing }: Props) => {
   const { t } = useTranslation();
   const { form, hasActiveFilters, reset } = useFilter();
   const fromDate = form.watch("fromDate");
@@ -39,10 +44,31 @@ export const AuditLogsDataFilter = () => {
   return (
     <Form {...form}>
       <div className="w-full space-y-3 py-4">
-        <DashboardTitle
-          title={t("auditLogs.title")}
-          description={t("auditLogs.description")}
-        />
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <DashboardTitle
+              title={t("auditLogs.title")}
+              description={t("auditLogs.description")}
+            />
+          </div>
+          {onRefresh && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={onRefresh}
+              disabled={isRefreshing}
+              className="h-9 shrink-0 gap-2 border-zinc-300 dark:border-zinc-700"
+            >
+              <RefreshCw
+                size={14}
+                className={isRefreshing ? "animate-spin" : undefined}
+              />
+              <span className="hidden sm:inline">
+                {t("auditLogs.refresh")}
+              </span>
+            </Button>
+          )}
+        </div>
 
         <div className="flex flex-wrap items-start gap-3">
           <div className="w-full sm:w-48">

@@ -230,9 +230,19 @@ export const router = createBrowserRouter([
                 path: "settings",
                 element: withSuspense(SettingsPage),
               },
+              // Audit log — faqat super_admin / creator (admin uchun backend 403).
               {
-                path: "audit-logs",
-                element: withSuspense(AuditLogsPage),
+                element: (
+                  <ProtectedRoute
+                    allowedRoles={[ROLES.SUPER_ADMIN, ROLES.CREATOR]}
+                  />
+                ),
+                children: [
+                  {
+                    path: "audit-logs",
+                    element: withSuspense(AuditLogsPage),
+                  },
+                ],
               },
             ],
           },

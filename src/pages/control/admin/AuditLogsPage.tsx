@@ -8,7 +8,14 @@ import { isForbiddenError, translateApiError } from "@/ustils";
 
 const AuditLogsPage = () => {
   const { t } = useTranslation();
-  const { data: logs, isLoading, isError, error } = useAuditLogs();
+  const {
+    data: logs,
+    isLoading,
+    isError,
+    error,
+    isFetching,
+    refetch,
+  } = useAuditLogs();
   const { columns } = useTable();
 
   const pagination = usePagination({
@@ -18,7 +25,10 @@ const AuditLogsPage = () => {
 
   return (
     <>
-      <AuditLogsDataFilter />
+      <AuditLogsDataFilter
+        onRefresh={() => refetch()}
+        isRefreshing={isFetching}
+      />
 
       {isError ? (
         <p className="rounded-lg border border-gray-200 dark:border-gray-900 p-8 text-center text-sm text-muted-foreground">

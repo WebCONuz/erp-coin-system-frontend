@@ -1678,7 +1678,17 @@
       "sessionDate": "Dars sanasi",
       "settings": "Sozlamalar",
       "userId": "Foydalanuvchi ID",
-      "messageLength": "Xabar uzunligi"
+      "messageLength": "Xabar uzunligi",
+      "reversedCount": "Bekor qilingan coinlar",
+      "skippedCount": "O'tkazib yuborilgan"
+    },
+    "refresh": "Yangilash",
+    "itemsCount": "{{count}} ta",
+    "kind": {
+      "attendance": "Yo'qlama",
+      "results": "Natija",
+      "bulk_manual": "Ommaviy qo'lda",
+      "apply_rule": "Qoida qo'llash"
     }
   }
 }

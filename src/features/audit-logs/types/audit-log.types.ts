@@ -1,4 +1,6 @@
-// GET /api/audit-logs (admin, super_admin) — kim, qachon, qanday amal bajargani.
+// GET /api/audit-logs (faqat super_admin, creator; admin — 403) — kim, qachon,
+// qanday amal bajargani. Yo'qlama/natija coinlari — `entityType: Session`,
+// `changes.kind: attendance | results`.
 
 export type AuditActionType =
   | "create"

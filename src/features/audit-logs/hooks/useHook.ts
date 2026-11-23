@@ -28,5 +28,10 @@ export const useAuditLogs = (
     queryFn: () => getAuditLogs(params),
     enabled: options?.enabled ?? true,
     placeholderData: keepPreviousData,
+    // Audit — jonli jurnal: yozuvlar boshqa sahifalardagi (yo'qlama, coin, xarid …)
+    // va boshqa userlar/qurilmalardagi amallardan keladi, ularning hammasini
+    // invalidatsiya qilib bo'lmaydi. Global 5 daqiqalik `staleTime` o'rniga har
+    // ochilganda / oynaga qaytilganda qayta so'raladi.
+    staleTime: 0,
   });
 };

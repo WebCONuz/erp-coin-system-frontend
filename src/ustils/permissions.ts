@@ -1,4 +1,4 @@
-import { ROLE_LEVELS } from "@/assets/constants";
+import { ROLE_LEVELS, ROLES } from "@/assets/constants";
 
 export type RoleLike = { name?: string; level?: number } | null | undefined;
 
@@ -16,3 +16,10 @@ export const getRoleLevel = (role: RoleLike): number => {
  */
 export const canManageRole = (actor: RoleLike, target: RoleLike): boolean =>
   getRoleLevel(target) < getRoleLevel(actor);
+
+/**
+ * Audit log — yuqori nazorat vositasi: faqat `super_admin` va `creator`
+ * (`role.level >= 90`). Admin, teacher, student uchun backend `403` qaytaradi.
+ */
+export const canViewAuditLogs = (role: RoleLike): boolean =>
+  getRoleLevel(role) >= ROLE_LEVELS[ROLES.SUPER_ADMIN];

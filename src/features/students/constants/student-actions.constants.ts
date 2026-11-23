@@ -65,11 +65,17 @@ export const StudentStatusBadge = (
         };
 };
 
-export const getStudentTabOptions = (t: TFn) => [
+// "Tarix" (audit log) — faqat super_admin / creator (`canViewAuditLogs`).
+export const getStudentTabOptions = (
+  t: TFn,
+  { withHistory = false }: { withHistory?: boolean } = {},
+) => [
   { value: "info", label: t("students.tabs.info") },
   { value: "groups", label: t("students.tabs.groups") },
   { value: "coins", label: t("students.tabs.coins") },
   { value: "gifts", label: t("students.tabs.gifts") },
   { value: "security", label: t("students.tabs.security") },
-  { value: "history", label: t("students.tabs.history") },
+  ...(withHistory
+    ? [{ value: "history", label: t("students.tabs.history") }]
+    : []),
 ];

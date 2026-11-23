@@ -1,13 +1,18 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/features/auth/hooks/useLogin";
+import { canViewAuditLogs } from "@/ustils";
 import { getControlsHeader } from "../../constants";
 
 export const ControlsHeader = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const contolsHeader = getControlsHeader(t);
+  const { user } = useAuth();
+  const contolsHeader = getControlsHeader(t, {
+    canViewAuditLogs: canViewAuditLogs(user?.role),
+  });
 
   return (
     // Tab'lar ko'paydi — tor ekranda gorizontal scroll (sahifa emas, faqat tab qatori).

@@ -10,6 +10,7 @@ import { getAllRooms } from "@/features/rooms/api";
 import { getAllSubjects } from "@/features/subjects/api";
 import { getAllTeachers } from "@/features/teachers/api/teachers.api";
 import { dashboardKeys } from "@/features/dashboard/constants";
+import { auditLogKeys } from "@/features/audit-logs/constants";
 import { studentSelfKeys } from "@/features/student-profile/constants";
 import { teacherSelfKeys } from "@/features/teacher-profile/constants";
 import { sessionKeys } from "../constants";
@@ -108,6 +109,8 @@ const invalidateAfterEvaluation = (queryClient: QueryClient, id: string) => {
   queryClient.invalidateQueries({ queryKey: sessionKeys.oneSessionById(id) });
   queryClient.invalidateQueries({ queryKey: sessionKeys.allSessions() });
   invalidateCoinDashboards(queryClient);
+  // Coin o'zgarsa sessiya bo'yicha audit yozuvi qo'shiladi (`entityType: Session`).
+  queryClient.invalidateQueries({ queryKey: auditLogKeys.allAuditLogs() });
 };
 
 export const useDeleteSession = () => {
@@ -119,6 +122,7 @@ export const useDeleteSession = () => {
       queryClient.invalidateQueries({ queryKey: sessionKeys.allSessions() });
       // O'chirilganda sessiya orqali berilgan coinlar qaytariladi.
       invalidateCoinDashboards(queryClient);
+      queryClient.invalidateQueries({ queryKey: auditLogKeys.allAuditLogs() });
     },
   });
 };

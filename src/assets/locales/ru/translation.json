@@ -1486,7 +1486,17 @@
       "sessionDate": "Дата занятия",
       "settings": "Настройки",
       "userId": "ID пользователя",
-      "messageLength": "Длина сообщения"
+      "messageLength": "Длина сообщения",
+      "reversedCount": "Отменённые монеты",
+      "skippedCount": "Пропущено"
+    },
+    "refresh": "Обновить",
+    "itemsCount": "Кол-во: {{count}}",
+    "kind": {
+      "attendance": "Посещаемость",
+      "results": "Результаты",
+      "bulk_manual": "Массово вручную",
+      "apply_rule": "Применение правила"
     }
   }
 }
