@@ -14,7 +14,7 @@ npm run lint       # ESLint (has pre-existing `no-explicit-any` errors in query-
 
 ## Stack
 
-React 19, TypeScript, Vite 8, Tailwind 4, shadcn/ui (Radix), React Router 7, TanStack Query 5 + Table 8, Axios, React Hook Form + Zod 4, i18next, Recharts, dnd-kit. Zustand is installed but unused (`src/app/store` is a stub).
+React 19, TypeScript, Vite 8, Tailwind 4, shadcn/ui (Radix), React Router 7, TanStack Query 5 + Table 8, Axios, React Hook Form + Zod 4, i18next, Recharts, dnd-kit. Zustand is installed but unused (no store exists).
 
 ## Architecture
 
