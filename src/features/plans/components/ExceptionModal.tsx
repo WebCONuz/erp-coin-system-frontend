@@ -57,6 +57,21 @@ interface Props {
 
 type View = "choose" | "cancel" | "reschedule";
 
+const EMPTY_MODIFY: RescheduleExceptionFormValues = {
+  startTime: "",
+  endTime: "",
+  roomId: "",
+  teacherId: "",
+  note: "",
+};
+
+const getInitialView = (entry: CalendarDayEntry | null): View =>
+  entry?.exception?.isCancelled
+    ? "cancel"
+    : entry?.exception
+      ? "reschedule"
+      : "choose";
+
 export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -87,26 +102,25 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
     defaultValues: { note: "" },
   });
 
-  const emptyModify: RescheduleExceptionFormValues = {
-    startTime: "",
-    endTime: "",
-    roomId: "",
-    teacherId: "",
-    note: "",
-  };
   const rescheduleForm = useForm<RescheduleExceptionFormValues>({
     resolver: zodResolver(rescheduleExceptionFormSchema),
-    defaultValues: emptyModify,
+    defaultValues: EMPTY_MODIFY,
   });
+
+  // Ko'rinishni effect o'rniga render paytida moslaymiz (ortiqcha render yo'q).
+  const viewSource = open ? entry : null;
+  const [syncedViewSource, setSyncedViewSource] = useState(viewSource);
+  if (viewSource !== syncedViewSource) {
+    setSyncedViewSource(viewSource);
+    if (viewSource) setView(getInitialView(viewSource));
+  }
 
   useEffect(() => {
     if (!open || !entry) return;
 
     if (entry.exception?.isCancelled) {
-      setView("cancel");
       cancelForm.reset({ note: entry.exception.note ?? "" });
     } else if (entry.exception) {
-      setView("reschedule");
       // Bo'sh maydon — shablondagisi (vaqt/xona/o'qituvchi o'zgarmagan).
       rescheduleForm.reset({
         startTime: entry.exception.startTime ?? "",
@@ -116,11 +130,10 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
         note: entry.exception.note ?? "",
       });
     } else {
-      setView("choose");
       cancelForm.reset({ note: "" });
-      rescheduleForm.reset(emptyModify);
+      rescheduleForm.reset(EMPTY_MODIFY);
     }
-  }, [open, entry]);
+  }, [open, entry, cancelForm, rescheduleForm]);
 
   const onError = (error: unknown) => toast.error(translateApiError(error, t));
 
@@ -238,7 +251,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
               disabled={!entry?.session?.id}
             >
               <Link size={16} className="text-info" />
-              {!!entry?.session?.id
+              {entry?.session?.id
                 ? t("plans.exception.goToSessionDetails")
                 : t("plans.exception.noSessionYet")}
             </Button>

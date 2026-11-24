@@ -5,15 +5,22 @@ import { AdminBottomNav, AdminNavbar } from "@/widgets/navbar";
 import { StudentFormModal } from "@/features/students/components/modal";
 import { GroupFormModal } from "@/features/groups/components/modals";
 import { SessionFormModal } from "@/features/sessions/components";
+import { useEnsureActiveTenant } from "@/features/tenants/hooks";
+import { PageLoader } from "@/components/shared/loaders";
 
 type QuickAction = "student" | "group" | "session" | null;
 
 export default function MainLayout() {
   const [quickAction, setQuickAction] = useState<QuickAction>(null);
   const closeQuickAction = () => setQuickAction(null);
+  // super_admin/creator: tenant tanlanmaguncha hech qanday tenant so'rovi ketmasin.
+  const { isReady, tenantId } = useEnsureActiveTenant();
+
+  if (!isReady) return <PageLoader />;
 
   return (
-    <div className="flex h-dvh bg-background">
+    // `key` — tenant almashganda butun kontent qayta mount bo'ladi.
+    <div key={tenantId ?? "own-tenant"} className="flex h-dvh bg-background">
       <AdminSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <AdminNavbar

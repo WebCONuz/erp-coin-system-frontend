@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { translateApiError } from "@/ustils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -67,8 +68,8 @@ export const RoomFormModal = ({ open, onClose, mode, room }: Props) => {
     }
   }, [open, isEdit, room, form]);
 
-  const onError = (error: any) =>
-    toast.error(error?.data?.message || t("common.error"));
+  const onError = (error: unknown) =>
+    toast.error(translateApiError(error, t));
 
   const onSubmit = (values: RoomFormValues) => {
     const data = { ...values, description: values.description || undefined };

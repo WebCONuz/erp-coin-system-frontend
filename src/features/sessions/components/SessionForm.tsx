@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -78,8 +78,11 @@ export const SessionForm = ({ session }: Props) => {
     form.reset(getDefaultValues(session));
   }, [session, form]);
 
-  const watchedMaxScore = form.watch("maxScore");
-  const formMode = form.watch("evaluationMode") ?? session.evaluationMode;
+  const [watchedMaxScore, watchedMode] = useWatch({
+    control: form.control,
+    name: ["maxScore", "evaluationMode"],
+  });
+  const formMode = watchedMode ?? session.evaluationMode;
   const evaluation = useSessionEvaluation({
     session,
     readOnly: isLocked,

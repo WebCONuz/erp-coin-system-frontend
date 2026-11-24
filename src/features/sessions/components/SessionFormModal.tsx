@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -78,8 +78,10 @@ export const SessionFormModal = ({ open, onClose }: Props) => {
     defaultValues: emptyValues,
   });
 
-  const sessionType = form.watch("sessionType");
-  const evaluationMode = form.watch("evaluationMode");
+  const [sessionType, evaluationMode] = useWatch({
+    control: form.control,
+    name: ["sessionType", "evaluationMode"],
+  });
   const typeConfig = sessionTypes?.find((item) => item.type === sessionType);
   const effectiveMode = evaluationMode ?? typeConfig?.defaultMode;
   const canChooseMode = (typeConfig?.allowedModes.length ?? 0) > 1;

@@ -46,6 +46,7 @@ export const ControlledTextarea = <TFieldValues extends FieldValues>({
           <FormControl>
             <Textarea
               {...{ ...field, ...rest }}
+              placeholder={placeholder}
               onChange={(e) => {
                 let value = e.target.value;
                 if (isLatinNumber) {

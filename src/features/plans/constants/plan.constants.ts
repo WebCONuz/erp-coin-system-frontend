@@ -17,11 +17,11 @@ export const getWeekdayLabels = (
 export const GROUP_TEACHER_VALUE = "group-teacher";
 
 export const scheduleTemplateKeys = {
-  allTemplates: (params?: Record<string, any>) => [
+  allTemplates: (params?: Record<string, unknown>) => [
     "all-schedule-templates",
     params ?? {},
   ],
-  calendar: (params?: Record<string, any>) => [
+  calendar: (params?: Record<string, unknown>) => [
     "schedule-calendar",
     params ?? {},
   ],

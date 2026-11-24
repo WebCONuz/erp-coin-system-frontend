@@ -1,7 +1,6 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
-import { updateSearchParams } from "@/ustils";
+import { useSyncFiltersToUrl } from "@/hooks";
 
 type FilterFormData = {
   search: string;
@@ -9,7 +8,7 @@ type FilterFormData = {
 };
 
 export const useFilter = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const form = useForm<FilterFormData>({
     defaultValues: {
@@ -18,18 +17,12 @@ export const useFilter = () => {
     },
   });
 
-  const searchValue = form.watch("search");
-  const statusValue = form.watch("status");
+  const [search, status] = useWatch({
+    control: form.control,
+    name: ["search", "status"],
+  });
 
-  useEffect(() => {
-    searchParams.delete("page");
-    updateSearchParams("search", searchValue, searchParams, setSearchParams);
-  }, [searchValue]);
-
-  useEffect(() => {
-    searchParams.delete("page");
-    updateSearchParams("status", statusValue, searchParams, setSearchParams);
-  }, [statusValue]);
+  useSyncFiltersToUrl({ search, status });
 
   return {
     form,

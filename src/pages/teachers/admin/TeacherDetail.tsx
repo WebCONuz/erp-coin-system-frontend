@@ -1,3 +1,4 @@
+import { translateApiError } from "@/ustils";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -34,8 +35,8 @@ const TeacherDetail = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isPasswordOpen, setIsPasswordOpen] = useState(false);
 
-  const onError = (error: any) =>
-    toast.error(error?.data?.message || t("common.error"));
+  const onError = (error: unknown) =>
+    toast.error(translateApiError(error, t));
 
   const handleArchive = () => {
     if (!id || !teacher) return;

@@ -1,6 +1,6 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useSyncFiltersToUrl } from "@/hooks";
 import { ALL_VALUE } from "../constants";
 
 type FilterFormData = {
@@ -10,7 +10,7 @@ type FilterFormData = {
 };
 
 export const useFilter = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const form = useForm<FilterFormData>({
     defaultValues: {
@@ -20,32 +20,16 @@ export const useFilter = () => {
     },
   });
 
-  const searchValue = form.watch("search");
-  const statusValue = form.watch("status");
-  const roleIdValue = form.watch("roleId");
+  const [search, status, roleId] = useWatch({
+    control: form.control,
+    name: ["search", "status", "roleId"],
+  });
 
-  // Bitta effektda barcha maydonlarni birgalikda yozamiz — alohida
-  // effektlar bir xil (eski) searchParams asosida ketma-ket setSearchParams
-  // chaqirsa, keyingisi avvalgisining yozgan qiymatini ustidan bosib
-  // o'chirib yuboradi (masalan, "status" active bo'lib qolmaydi).
-  useEffect(() => {
-    const newParams = new URLSearchParams(searchParams);
-    newParams.delete("page");
-
-    if (searchValue) newParams.set("search", searchValue);
-    else newParams.delete("search");
-
-    if (statusValue) newParams.set("status", statusValue);
-    else newParams.delete("status");
-
-    if (roleIdValue && roleIdValue !== ALL_VALUE) {
-      newParams.set("roleId", roleIdValue);
-    } else {
-      newParams.delete("roleId");
-    }
-
-    setSearchParams(newParams, { replace: true });
-  }, [searchValue, statusValue, roleIdValue]);
+  useSyncFiltersToUrl({
+    search,
+    status,
+    roleId: roleId === ALL_VALUE ? null : roleId,
+  });
 
   return {
     form,

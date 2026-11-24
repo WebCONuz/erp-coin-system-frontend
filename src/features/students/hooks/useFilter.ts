@@ -1,7 +1,6 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
-import { updateSearchParams } from "@/ustils";
+import { useSyncFiltersToUrl } from "@/hooks";
 
 type FilterFormData = {
   search: string;
@@ -23,24 +22,12 @@ export const useStudentFilter = () => {
     },
   });
 
-  const searchValue = form.watch("search");
-  const statusValue = form.watch("status");
-  const groupIdValue = form.watch("groupId");
+  const [search, status, groupId] = useWatch({
+    control: form.control,
+    name: ["search", "status", "groupId"],
+  });
 
-  useEffect(() => {
-    searchParams.delete("page");
-    updateSearchParams("search", searchValue, searchParams, setSearchParams);
-  }, [searchValue]);
-
-  useEffect(() => {
-    searchParams.delete("page");
-    updateSearchParams("status", statusValue, searchParams, setSearchParams);
-  }, [statusValue]);
-
-  useEffect(() => {
-    searchParams.delete("page");
-    updateSearchParams("groupId", groupIdValue, searchParams, setSearchParams);
-  }, [groupIdValue]);
+  useSyncFiltersToUrl({ search, status, groupId });
 
   const sortBy = (searchParams.get("sortBy") as StudentSortField) || undefined;
   const sortOrder =

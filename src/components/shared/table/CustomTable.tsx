@@ -88,6 +88,8 @@ export const CustomTable = <T,>({
     });
   };
 
+  // TanStack Table React Compiler bilan mos emas; compiler loyihada yoqilmagan.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable<T>({
     data,
     columns,

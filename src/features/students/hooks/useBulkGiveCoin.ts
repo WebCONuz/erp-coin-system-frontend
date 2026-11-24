@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -52,7 +52,7 @@ export const useBulkGiveCoinForm = ({
     defaultValues: emptyValues,
   });
 
-  const mode = form.watch("mode");
+  const mode = useWatch({ control: form.control, name: "mode" });
 
   const { data: rulesData, isLoading: isRulesLoading } =
     useActiveCoinRulesList();

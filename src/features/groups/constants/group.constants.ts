@@ -1,5 +1,5 @@
 export const groupKeys = {
-  allGroups: (params?: Record<string, any>) => ["all-groups", params ?? {}],
+  allGroups: (params?: Record<string, unknown>) => ["all-groups", params ?? {}],
   oneGroupById: (id: string) => ["one-group-by-id", id],
   groupStats: (id: string) => ["group-stats", id],
 } as const;

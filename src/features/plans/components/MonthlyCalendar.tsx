@@ -110,7 +110,7 @@ export const MonthlyCalendar = ({
     if (!groupId && groups?.data.length) {
       setGroupId(groups.data[0].id);
     }
-  }, [groupId, groups]);
+  }, [groupId, groups, setGroupId]);
 
   const year = getYear(viewDate);
   const month = getMonth(viewDate) + 1;

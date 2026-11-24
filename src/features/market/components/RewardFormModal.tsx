@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { translateApiError } from "@/ustils";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -113,8 +114,8 @@ export const RewardFormModal = ({
       ...fields
     } = values;
     const exactStock = isUnlimited ? UNLIMITED_STOCK : stock;
-    const onError = (error: any) =>
-      toast.error(error?.data?.message || t("common.error"));
+    const onError = (error: unknown) =>
+      toast.error(translateApiError(error, t));
 
     if (!isEdit || !reward) {
       // `stock` doim yuboriladi — aks holda backend 0 qo'yadi.

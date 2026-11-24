@@ -1,3 +1,4 @@
+import { getApiErrorStatus, translateApiError } from "@/ustils";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -71,13 +72,12 @@ export const PurchaseStatusModal = ({ purchase, status, onClose }: Props) => {
           );
           onClose();
         },
-        onError: (error: any) => {
+        onError: (error: unknown) => {
+          const isConflict = getApiErrorStatus(error) === 409;
           toast.error(
-            error?.status === 409
-              ? t("purchases.conflict")
-              : error?.data?.message || t("common.error"),
+            isConflict ? t("purchases.conflict") : translateApiError(error, t),
           );
-          if (error?.status === 409) onClose();
+          if (isConflict) onClose();
         },
       },
     );

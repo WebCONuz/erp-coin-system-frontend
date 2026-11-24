@@ -1,7 +1,7 @@
 import type { IOption } from "@/components/controls";
 
 export const coinRuleKeys = {
-  allCoinRules: (params?: Record<string, any>) => [
+  allCoinRules: (params?: Record<string, unknown>) => [
     "all-coin-rules",
     params ?? {},
   ],

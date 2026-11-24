@@ -1,3 +1,4 @@
+import { translateApiError } from "@/ustils";
 import { useState } from "react";
 
 import { toast } from "sonner";
@@ -65,15 +66,15 @@ const EmployeesPage = () => {
       return;
 
     archiveEmployee.mutate(employee.id, {
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
+      onError: (error: unknown) =>
+        toast.error(translateApiError(error, t)),
     });
   };
 
   const handleRestore = (employee: Employee) => {
     restoreEmployee.mutate(employee.id, {
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
+      onError: (error: unknown) =>
+        toast.error(translateApiError(error, t)),
     });
   };
 

@@ -1,3 +1,4 @@
+import { translateApiError } from "@/ustils";
 import { useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -48,8 +49,8 @@ const RoomsPage = () => {
       return;
 
     deleteRoom.mutate(room.id, {
-      onError: (error: any) =>
-        toast.error(error?.data?.message || t("common.error")),
+      onError: (error: unknown) =>
+        toast.error(translateApiError(error, t)),
     });
   };
 

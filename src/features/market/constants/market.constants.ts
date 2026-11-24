@@ -1,5 +1,5 @@
 export const rewardKeys = {
-  allRewards: (params?: Record<string, any>) => ["all-rewards", params ?? {}],
+  allRewards: (params?: Record<string, unknown>) => ["all-rewards", params ?? {}],
 } as const;
 
 export const rewardCategoryKeys = {

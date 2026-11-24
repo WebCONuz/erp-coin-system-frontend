@@ -33,10 +33,11 @@ import { useAuth } from "@/features/auth/hooks/useLogin";
 import { ROLES } from "@/assets/constants";
 import { useAllTenants } from "@/features/tenants/hooks";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { TENANT_KEY } from "@/features/tenants/constants";
 import { useEffect, useState } from "react";
-import type { TenentType } from "@/features/tenants/types";
-import { useQueryClient } from "@tanstack/react-query";
+import {
+  setActiveTenantId,
+  useActiveTenantId,
+} from "@/features/tenants/lib";
 import { MyProfileModal } from "@/features/profile/components";
 import { LogoutAllModal } from "@/features/auth/components";
 
@@ -69,10 +70,9 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
       user?.role?.name === ROLES.CREATOR,
   );
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentTenat, setCurrentTenant] = useState<string>();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLogoutAllOpen, setIsLogoutAllOpen] = useState(false);
-  const queryClient = useQueryClient();
+  const activeTenantId = useActiveTenantId();
   const navigate = useNavigate();
 
   const currentLang =
@@ -87,54 +87,35 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
         .toUpperCase()
     : "A";
 
-  const getTenantName = (id: string, arr: TenentType[]) => {
-    if (arr.length === 0) return "";
+  const currentTenat = tenants?.find(
+    (item) => item.id.toString() === activeTenantId,
+  )?.name;
 
-    const finded = arr.find((item) => item.id == id);
-    if (!finded) return "";
-
-    return finded.name;
-  };
-
-  useEffect(() => {
-    if (
-      user?.role?.name === ROLES.SUPER_ADMIN ||
-      user?.role?.name === ROLES.CREATOR
-    ) {
-      if (!tenants?.length) return;
-
-      const queryTenant = searchParams.get("tenantId");
-      const localTenant = localStorage.getItem(TENANT_KEY);
-      const activeTenant =
-        queryTenant || localTenant || tenants[0].id.toString();
-
-      if (!localTenant) {
-        handleTenantChange(activeTenant);
-      } else {
-        localStorage.setItem(TENANT_KEY, activeTenant);
-        const name = getTenantName(activeTenant, tenants);
-        setCurrentTenant(name);
-
-        if (!queryTenant) {
-          searchParams.set("tenantId", activeTenant);
-          setSearchParams(searchParams);
-        }
-      }
-    }
-  }, [tenants]);
-
+  // Tenantni almashtirish: store yangilanadi → AdminLayout `key` orqali qayta
+  // mount bo'ladi va barcha query'lar yangi tenant hash'i bilan olinadi.
   const handleTenantChange = (id: string) => {
-    localStorage.setItem(TENANT_KEY, id);
-    searchParams.set("tenantId", id);
-    setSearchParams(searchParams);
-
-    const name = getTenantName(id, tenants || []);
-    setCurrentTenant(name);
-    navigate("/admin");
-
-    // window.location.reload();
-    queryClient.invalidateQueries();
+    setActiveTenantId(id);
+    navigate(`/admin?tenantId=${id}`);
   };
+
+  const isSystemUser =
+    user?.role?.name === ROLES.SUPER_ADMIN ||
+    user?.role?.name === ROLES.CREATOR;
+
+  // Faol tenant URL'da ham ko'rinsin (havolani ulashish uchun). Tanlashning
+  // o'zi `useEnsureActiveTenant` da (AdminLayout) bajariladi.
+  const hasTenantInUrl = searchParams.has("tenantId");
+  useEffect(() => {
+    if (!isSystemUser || !activeTenantId || hasTenantInUrl) return;
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        next.set("tenantId", activeTenantId);
+        return next;
+      },
+      { replace: true },
+    );
+  }, [isSystemUser, activeTenantId, hasTenantInUrl, setSearchParams]);
 
   const isDark = resolvedTheme === "dark";
 

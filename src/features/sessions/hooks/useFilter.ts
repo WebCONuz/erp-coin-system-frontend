@@ -1,7 +1,7 @@
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
 import { useEffect } from "react";
-import { updateSearchParams } from "@/ustils";
+import { useSyncFiltersToUrl } from "@/hooks";
 import { ALL_VALUE } from "../constants";
 
 type FilterFormData = {
@@ -13,7 +13,7 @@ type FilterFormData = {
 };
 
 export const useFilter = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const form = useForm<FilterFormData>({
     defaultValues: {
@@ -25,71 +25,27 @@ export const useFilter = () => {
     },
   });
 
-  const groupId = form.watch("groupId");
-  const teacherId = form.watch("teacherId");
-  const sessionType = form.watch("sessionType");
-  const date = form.watch("date");
-  const isChecked = form.watch("isChecked");
+  const [groupId, teacherId, sessionType, date, isChecked] = useWatch({
+    control: form.control,
+    name: ["groupId", "teacherId", "sessionType", "date", "isChecked"],
+  });
 
-  useEffect(() => {
-    searchParams.delete("page");
-    updateSearchParams(
-      "groupId",
-      groupId === ALL_VALUE ? undefined : groupId,
-      searchParams,
-      setSearchParams,
-    );
-  }, [groupId]);
-
-  useEffect(() => {
-    searchParams.delete("page");
-    updateSearchParams(
-      "teacherId",
-      teacherId === ALL_VALUE ? undefined : teacherId,
-      searchParams,
-      setSearchParams,
-    );
-  }, [teacherId]);
-
-  useEffect(() => {
-    searchParams.delete("page");
-    updateSearchParams("date", date || undefined, searchParams, setSearchParams);
-  }, [date]);
-
-  // sessionType + isChecked are updated together in one effect/one
-  // setSearchParams call: react-router's setSearchParams captures the
-  // searchParams snapshot from render, so two effects both depending on
-  // `sessionType` and calling setSearchParams separately would race and the
-  // second call would silently overwrite the first's change.
   // isChecked is only meaningful for "lesson" type sessions.
+  const isLesson = sessionType === "lesson";
   useEffect(() => {
-    if (sessionType !== "lesson" && isChecked !== ALL_VALUE) {
+    if (!isLesson && form.getValues("isChecked") !== ALL_VALUE) {
       form.setValue("isChecked", ALL_VALUE);
-      return;
     }
+  }, [isLesson, form]);
 
-    setSearchParams(
-      (prev) => {
-        const newParams = new URLSearchParams(prev);
-        newParams.delete("page");
-
-        if (sessionType === ALL_VALUE) {
-          newParams.delete("sessionType");
-        } else {
-          newParams.set("sessionType", sessionType);
-        }
-
-        if (sessionType !== "lesson" || isChecked === ALL_VALUE) {
-          newParams.delete("isChecked");
-        } else {
-          newParams.set("isChecked", isChecked);
-        }
-
-        return newParams;
-      },
-      { replace: true },
-    );
-  }, [sessionType, isChecked]);
+  const toParam = (value: string) => (value === ALL_VALUE ? null : value);
+  useSyncFiltersToUrl({
+    groupId: toParam(groupId),
+    teacherId: toParam(teacherId),
+    date,
+    sessionType: toParam(sessionType),
+    isChecked: isLesson ? toParam(isChecked) : null,
+  });
 
   return {
     form,

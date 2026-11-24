@@ -2,7 +2,7 @@ import type { IOption } from "@/components/controls";
 import type { TenantOrgType } from "../types";
 
 export const tenantQueryKeys = {
-  allTenants: (params?: Record<string, any>) => ["all-tenants", params ?? {}],
+  allTenants: (params?: Record<string, unknown>) => ["all-tenants", params ?? {}],
   oneTenantById: (id: string) => ["one-tenant-by-id", id],
 } as const;
 

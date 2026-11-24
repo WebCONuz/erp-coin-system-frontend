@@ -1,3 +1,3 @@
 export const roomKeys = {
-  allRooms: (params?: Record<string, any>) => ["all-rooms", params ?? {}],
+  allRooms: (params?: Record<string, unknown>) => ["all-rooms", params ?? {}],
 } as const;

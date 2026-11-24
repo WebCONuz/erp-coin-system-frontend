@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ```bash
 npm run dev        # Dev server (http://localhost:5173)
 npm run build      # tsc -b + vite build — use this to verify changes (no test suite)
-npm run lint       # ESLint (has pre-existing `no-explicit-any` errors in query-key files)
+npm run lint       # ESLint — keep it at 0 problems
 ```
 
 `.env`: `VITE_API_URL=http://localhost:3031` — must NOT end in `/api`; `ENDPOINTS` (`src/services/endpoints/api-endpoints.ts`) already include the `/api` prefix.
@@ -25,7 +25,7 @@ Data flow: `ENDPOINTS` → `api/*` (shared `request` axios instance, `src/servic
 - Query keys live in each feature's `constants/` as `xKeys = { allX: (params?) => ["all-x", params ?? {}], ... } as const`.
 - Paginated responses: `{ status, data: T[], meta: { total, page, limit, totalPages } }`.
 - Forms: `useForm({ resolver: zodResolver(schema) })`; schemas often are factories taking `t` for i18n messages; export `type XFormValues = z.infer<...>`.
-- Filters live in URL search params (`useFilter` pattern, e.g. `src/features/groups/hooks/useFilter.ts`); pagination via `usePagination` (`src/hooks/usePagination.ts`, syncs `?page`).
+- Filters live in URL search params (`useFilter` pattern, e.g. `src/features/groups/hooks/useFilter.ts`): read form values with `useWatch` (not `form.watch`) and write them with `useSyncFiltersToUrl` (`src/hooks`), one call per filter set. Pagination via `usePagination` (`src/hooks/usePagination.ts`, derives page from `?page`).
 - Shared UI: `src/components/ui` (shadcn), `src/components/shared` (loaders, table, title, charts), `src/components/controls` (ControlledInput/Select), `src/widgets` (navbars, sidebars, bottom navs).
 - Utilities: `cn()` in `src/lib/utils.ts`; date helpers in `src/ustils/` (folder is misspelled `ustils` — keep it).
 
@@ -35,7 +35,7 @@ Data flow: `ENDPOINTS` → `api/*` (shared `request` axios instance, `src/servic
 - Self-profile for every role is `GET/PATCH /api/users/me` via `src/features/profile` (`MyProfileModal` in AdminNavbar, `EditMyProfileModal` on student profile; students can't change their own password).
 - Cookie JWT (HTTP-only, never touched in JS). `is_authenticated` in localStorage gates the `/auth/me` query. `useAuth()` is in `src/features/auth/hooks/useLogin.ts`.
 - Axios interceptor adds `Accept-Language` and `tenantId` (from `localStorage[TENANT_KEY]` = `active_tenant_id`) to every request; on 401 it queues requests, refreshes once, replays, or calls `handleAutoLogout()`.
-- `super_admin`/`creator` switch tenants via `AdminNavbar` (writes `TENANT_KEY` + `?tenantId=`, then `invalidateQueries()`). Admins are bound to `user.tenantId`. See `useCurrentTenant`.
+- `super_admin`/`creator`: active tenant lives in `src/features/tenants/lib/active-tenant.ts` (`setActiveTenantId`/`useActiveTenantId`, backed by `TENANT_KEY`). `useEnsureActiveTenant` in `AdminLayout` picks it (`?tenantId=` → stored → first tenant) before any content renders, and the layout is keyed by it so switching remounts everything. The QueryClient `queryKeyHashFn` prefixes every query hash with the active tenant, so feature query keys don't need a `tenantId`. Never write `TENANT_KEY` directly. Admins are bound to `user.tenantId`. See `useCurrentTenant`.
 
 ## Roles (backend-managed — important)
 

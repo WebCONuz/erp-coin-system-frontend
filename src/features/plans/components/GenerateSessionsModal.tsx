@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -48,6 +48,7 @@ export const GenerateSessionsModal = ({
     resolver: zodResolver(generateSessionsFormSchema),
     defaultValues: { fromDate: "", toDate: "" },
   });
+  const fromDate = useWatch({ control: form.control, name: "fromDate" });
 
   useEffect(() => {
     if (!open) {
@@ -115,12 +116,8 @@ export const GenerateSessionsModal = ({
                 className="min-w-42"
                 buttonClassName="h-8"
                 label={t("plans.generate.to")}
-                disabled={!form.watch("fromDate")}
-                minDate={
-                  !!form.watch("fromDate")
-                    ? new Date(form.watch("fromDate"))
-                    : new Date()
-                }
+                disabled={!fromDate}
+                minDate={fromDate ? new Date(fromDate) : new Date()}
               />
             </div>
             <p className="text-sm text-muted-foreground">

@@ -1,3 +1,4 @@
+import { getApiErrorStatus } from "@/ustils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { dashboardKeys } from "@/features/dashboard/constants";
@@ -51,9 +52,9 @@ export const useUpdatePurchaseStatus = () => {
         queryClient.invalidateQueries({ queryKey: ["one-student-by-id"] });
       }
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
       // 409 — holat shu orada boshqa so'rov bilan o'zgargan: ro'yxatni yangilaymiz.
-      if (error?.status === 409) invalidatePurchases();
+      if (getApiErrorStatus(error) === 409) invalidatePurchases();
     },
   });
 };

@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
@@ -166,11 +166,15 @@ export const TemplateFormModal = ({
     }
   };
 
+  const [watchedGroupId, validFrom, validTo] = useWatch({
+    control: form.control,
+    name: ["groupId", "validFrom", "validTo"],
+  });
   const activeGroupId = isEdit
     ? (template?.groupId ?? template?.group.id)
     : lockGroup
       ? presetGroupId
-      : form.watch("groupId");
+      : watchedGroupId;
   const groupDefaultTeacherName = groups?.data.find(
     (g) => g.id === activeGroupId,
   )?.teacher?.fullName;
@@ -326,8 +330,8 @@ export const TemplateFormModal = ({
                 placeholder={t("common.date")}
                 buttonClassName="h-8"
                 maxDate={
-                  form.watch("validTo")
-                    ? new Date(form.watch("validTo") as string)
+                  validTo
+                    ? new Date(validTo as string)
                     : undefined
                 }
               />
@@ -340,8 +344,8 @@ export const TemplateFormModal = ({
                 placeholder={t("common.date")}
                 buttonClassName="h-8"
                 minDate={
-                  form.watch("validFrom")
-                    ? new Date(form.watch("validFrom") as string)
+                  validFrom
+                    ? new Date(validFrom as string)
                     : undefined
                 }
               />

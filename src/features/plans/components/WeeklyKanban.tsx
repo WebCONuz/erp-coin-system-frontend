@@ -54,7 +54,7 @@ export const WeeklyKanban = ({
     if (!groupFilter && groups?.data.length) {
       setGroupFilter(groups.data[0].id);
     }
-  }, [groupFilter, groups]);
+  }, [groupFilter, groups, setGroupFilter]);
 
   const { data: templates, isLoading } = useScheduleTemplates({
     groupId: groupFilter || undefined,

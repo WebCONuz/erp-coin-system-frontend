@@ -1,3 +1,3 @@
 export const roleKeys = {
-  allRoles: (params?: Record<string, any>) => ["all-roles", params ?? {}],
+  allRoles: (params?: Record<string, unknown>) => ["all-roles", params ?? {}],
 } as const;

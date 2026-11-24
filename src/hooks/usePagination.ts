@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
 interface UsePaginationProps {
@@ -30,13 +30,12 @@ export const usePagination = ({
 }: UsePaginationProps = {}): UsePaginationReturn => {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Get current page from URL query or default to 1
-  const currentPageFromQuery = useMemo(() => {
+  // URL is the single source of truth for the current page
+  const currentPage = useMemo(() => {
     const page = parseInt(searchParams.get(queryParam) || "1", 10);
     return isNaN(page) ? 1 : Math.max(1, page);
   }, [searchParams, queryParam]);
 
-  const [currentPage, setCurrentPageState] = useState(currentPageFromQuery);
   const [pageSize, setPageSize] = useState(initialPageSize);
 
   // Calculate totalPages safely
@@ -67,7 +66,6 @@ export const usePagination = ({
       if (newPage === currentPage) {
         return;
       }
-      setCurrentPageState(newPage);
       // Update URL query parameter - ALWAYS keep page in URL
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set(queryParam, newPage.toString()); // Always set, even for page=1
@@ -75,18 +73,6 @@ export const usePagination = ({
     },
     [totalPages, searchParams, queryParam, currentPage, setSearchParams],
   );
-
-  // Sync with URL changes - only when URL actually changes
-  useEffect(() => {
-    const pageFromQuery = currentPageFromQuery;
-    if (
-      pageFromQuery !== currentPage &&
-      pageFromQuery > 0 &&
-      pageFromQuery <= totalPages
-    ) {
-      setCurrentPageState(pageFromQuery);
-    }
-  }, [currentPageFromQuery, currentPage, totalPages]);
 
   const nextPage = useCallback(() => {
     if (currentPage < totalPages) {

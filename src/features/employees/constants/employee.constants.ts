@@ -1,5 +1,5 @@
 export const employeeKeys = {
-  allEmployees: (params?: Record<string, any>) => [
+  allEmployees: (params?: Record<string, unknown>) => [
     "all-employees",
     params ?? {},
   ],

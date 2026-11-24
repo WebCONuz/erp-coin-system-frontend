@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import {
@@ -24,12 +24,17 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
   const [email, setEmail] = useState(profile.email ?? "");
   const [avatarUrl, setAvatarUrl] = useState(profile.avatarUrl ?? "");
 
-  useEffect(() => {
-    if (open) {
-      setEmail(profile.email ?? "");
-      setAvatarUrl(profile.avatarUrl ?? "");
+  // Modal ochilganda (yoki profil yangilanganda) maydonlarni qayta to'ldirish —
+  // effect o'rniga render paytida, ortiqcha qayta render bo'lmasligi uchun.
+  const syncSource = open ? profile : null;
+  const [syncedSource, setSyncedSource] = useState(syncSource);
+  if (syncSource !== syncedSource) {
+    setSyncedSource(syncSource);
+    if (syncSource) {
+      setEmail(syncSource.email ?? "");
+      setAvatarUrl(syncSource.avatarUrl ?? "");
     }
-  }, [open, profile]);
+  }
 
   const trimmedAvatarUrl = avatarUrl.trim();
   const avatarUrlError =

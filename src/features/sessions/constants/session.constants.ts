@@ -8,7 +8,7 @@ import type {
 type TFn = (key: string, options?: Record<string, unknown>) => string;
 
 export const sessionKeys = {
-  allSessions: (params?: Record<string, any>) => ["all-sessions", params ?? {}],
+  allSessions: (params?: Record<string, unknown>) => ["all-sessions", params ?? {}],
   oneSessionById: (id: string) => ["one-session-by-id", id],
   attendanceBySessionId: (id: string) => ["session-attendance", id],
   rosterBySessionId: (id: string) => ["session-roster", id],
