@@ -41,53 +41,47 @@ export const SessionStatusPanel = ({ session }: Props) => {
   };
 
   return (
-    <div className="rounded-2xl bg-background p-6 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="text-sm text-muted-foreground">
-          {session.isLocked ? (
-            <span className="flex items-center gap-1.5">
-              <Lock size={14} />
-              {t("sessions.locked")}
-              {session.lockedAt && ` — ${formatDateTime(session.lockedAt)}`}
-            </span>
-          ) : (
-            <span>{t("sessions.statusPanel.notLocked")}</span>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2">
-          {session.isLocked ? (
-            <Button
-              variant="outline"
-              onClick={handleUnlock}
-              disabled={unlockSession.isPending}
-              className="gap-2"
-            >
-              <LockOpen size={16} />
-              {t("sessions.statusPanel.unlockAction")}
-            </Button>
-          ) : (
-            <Button
-              variant="outline"
-              onClick={handleLock}
-              disabled={lockSession.isPending}
-              className="gap-2"
-            >
-              <Lock size={16} />
-              {t("sessions.statusPanel.lockAction")}
-            </Button>
-          )}
-
+    <div className="flex flex-col gap-2 lg:items-end">
+      <div className="flex flex-wrap items-center gap-2">
+        {session.isLocked ? (
           <Button
             variant="outline"
-            onClick={() => setIsDeleteOpen(true)}
-            className="gap-2 text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950/50"
+            onClick={handleUnlock}
+            disabled={unlockSession.isPending}
+            className="gap-2"
           >
-            <Trash size={16} />
-            {t("common.delete")}
+            <LockOpen className="size-4" aria-hidden />
+            {t("sessions.statusPanel.unlockAction")}
           </Button>
-        </div>
+        ) : (
+          <Button
+            variant="outline"
+            onClick={handleLock}
+            disabled={lockSession.isPending}
+            className="gap-2"
+          >
+            <Lock className="size-4" aria-hidden />
+            {t("sessions.statusPanel.lockAction")}
+          </Button>
+        )}
+
+        <Button
+          variant="ghost"
+          onClick={() => setIsDeleteOpen(true)}
+          className="gap-2 text-destructive hover:bg-destructive-soft hover:text-destructive"
+        >
+          <Trash className="size-4" aria-hidden />
+          {t("common.delete")}
+        </Button>
       </div>
+
+      <p className="text-xs text-muted-foreground">
+        {session.isLocked
+          ? `${t("sessions.locked")}${
+              session.lockedAt ? `: ${formatDateTime(session.lockedAt)}` : ""
+            }`
+          : t("sessions.statusPanel.notLocked")}
+      </p>
 
       <SessionDeleteModal
         session={isDeleteOpen ? session : null}

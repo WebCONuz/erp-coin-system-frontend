@@ -1,65 +1,72 @@
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CalendarDays } from "lucide-react";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { CalendarCheck2, CalendarX2 } from "lucide-react";
+import { DashboardTitle } from "@/components/shared/title";
+import { EmptyState, ErrorState } from "@/components/shared/states";
 import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 import { useSessions } from "@/features/sessions/hooks";
 import {
-  TeacherSessionsFilterBar,
-  TeacherSessionCard,
-} from "@/features/teacher-profile/components/sessions";
+  SessionsGrid,
+  SessionsGridSkeleton,
+} from "@/features/sessions/components";
+import { TeacherSessionsFilterBar } from "@/features/teacher-profile/components/sessions";
 
 const SessionsPage = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const { data: sessions, isLoading } = useSessions();
+  const {
+    data: sessions,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useSessions();
   const pagination = usePagination({
     totalItems: sessions?.meta?.total || 0,
     initialPageSize: 20,
   });
 
+  // Dashboard'dagi "barchasi" havolasidan — faqat qulflanmagan darslar.
   const pendingOnly = searchParams.get("pending") === "true";
   const list = pendingOnly
     ? (sessions?.data ?? []).filter((s) => !s.isLocked)
     : (sessions?.data ?? []);
 
   return (
-    <div className="space-y-4">
-      <div>
-        <h1 className="font-display text-2xl font-semibold text-ink">
-          {t("teacherNav.sessions")}
-        </h1>
-        <p className="text-sm text-ink-soft mt-1">
-          {t("teacherProfile.sessions.subtitle")}
-        </p>
-      </div>
+    <div className="space-y-4 sm:space-y-5">
+      <DashboardTitle
+        title={t("teacherNav.sessions")}
+        description={t("teacherProfile.sessions.subtitle")}
+      />
 
       <TeacherSessionsFilterBar />
 
       {isLoading ? (
-        <PageLoading />
-      ) : !sessions?.data ? (
-        <NoData text={t("common.noData")} />
+        <SessionsGridSkeleton />
+      ) : isError && !sessions ? (
+        <ErrorState onRetry={() => refetch()} isRetrying={isFetching} />
       ) : !list.length ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-ink/10 bg-white">
-          <CalendarDays size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">
-            {pendingOnly
-              ? t("teacherProfile.sessions.noPending")
-              : t("teacherProfile.sessions.empty")}
-          </p>
+        <div className="rounded-2xl border bg-card">
+          <EmptyState
+            icon={pendingOnly ? CalendarCheck2 : CalendarX2}
+            title={
+              pendingOnly
+                ? t("teacherProfile.sessions.noPending")
+                : t("teacherProfile.sessions.empty")
+            }
+          />
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {list.map((session) => (
-              <TeacherSessionCard key={session.id} data={session} />
-            ))}
-          </div>
+          <SessionsGrid
+            sessions={list}
+            hasAction={false}
+            hideTeacher
+            basePath="/teacher/sessions"
+          />
 
-          {sessions.meta.totalPages > 1 && (
+          {!!sessions?.meta.total && sessions.meta.totalPages > 1 && (
             <TablePagination
               totalItems={sessions.meta.total}
               currentPage={pagination.currentPage}

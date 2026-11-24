@@ -91,27 +91,27 @@ export const MyAttendanceTab = () => {
       {isLoading ? (
         <PageLoading />
       ) : !records.length ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-ink/10 bg-white">
-          <CalendarCheck size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">
+        <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-border bg-card">
+          <CalendarCheck size={22} className="text-muted-foreground/50 mb-2" />
+          <p className="text-sm font-medium text-foreground">
             {t("studentProfile.attendance.emptyTitle")}
           </p>
-          <p className="text-xs text-ink-soft mt-1 max-w-xs">
+          <p className="text-xs text-muted-foreground mt-1 max-w-xs">
             {t("studentProfile.attendance.emptyFiltered")}
           </p>
         </div>
       ) : (
         <>
-          <div className="rounded-2xl border border-ink/10 bg-white overflow-hidden">
+          <div className="rounded-2xl border border-border bg-card overflow-hidden">
             {records.map((record, idx) => (
               <div
                 key={record.id}
                 className={`flex items-center justify-between px-4 py-3 ${
-                  idx !== records.length - 1 ? "border-b border-ink/8" : ""
+                  idx !== records.length - 1 ? "border-b border-border" : ""
                 }`}
               >
                 <div className="min-w-0">
-                  <p className="text-sm text-ink truncate">
+                  <p className="text-sm text-foreground truncate">
                     <b>
                       {record.session.subject?.name ??
                         record.session.group.name}
@@ -121,12 +121,12 @@ export const MyAttendanceTab = () => {
                       : ""}
                     {record.session.topic ? ` · ${record.session.topic}` : ""}
                   </p>
-                  <p className="text-xs text-ink-soft">
+                  <p className="text-xs text-muted-foreground">
                     {formatDate(record.session.sessionDate, "dd.MM.yyyy")} ·{" "}
                     {getSessionTypeLabel(t, record.session.sessionType)}
                   </p>
                   {record.note && (
-                    <p className="text-xs text-ink-soft italic truncate">
+                    <p className="text-xs text-muted-foreground italic truncate">
                       {record.note}
                     </p>
                   )}
@@ -141,7 +141,7 @@ export const MyAttendanceTab = () => {
                     record.isPresent && (
                       <span
                         title={t("sessions.results.score")}
-                        className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gold/15 text-gold"
+                        className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-info-soft text-info"
                       >
                         <Award size={11} />
                         {formatSessionScore(
@@ -154,8 +154,8 @@ export const MyAttendanceTab = () => {
                     <span
                       className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-full ${
                         record.homeworkDone
-                          ? "bg-gold/15 text-gold"
-                          : "bg-paper-soft text-ink-soft"
+                          ? "bg-success-soft text-success"
+                          : "bg-muted text-muted-foreground"
                       }`}
                     >
                       {record.homeworkDone ? (

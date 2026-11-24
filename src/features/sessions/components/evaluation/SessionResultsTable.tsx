@@ -136,7 +136,7 @@ export const SessionResultsTable = ({ evaluation, disabled, tone }: Props) => {
                   className={cn(
                     styles.row,
                     "align-top",
-                    isInvalid && "bg-red-50 dark:bg-red-950/20",
+                    isInvalid && "bg-destructive-soft/60",
                   )}
                 >
                   <td className={cn("px-4 py-2.5 min-w-40", styles.text)}>

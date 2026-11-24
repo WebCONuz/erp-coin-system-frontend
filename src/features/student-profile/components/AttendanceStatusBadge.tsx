@@ -8,10 +8,10 @@ const STATUS_STYLES: Record<
   AttendanceStatus,
   { className: string; Icon: typeof Check }
 > = {
-  present: { className: "bg-forest/10 text-forest", Icon: Check },
-  late: { className: "bg-gold/15 text-gold", Icon: Clock },
-  excused: { className: "bg-ink/5 text-ink-soft", Icon: ShieldCheck },
-  absent: { className: "bg-bloom/10 text-bloom", Icon: X },
+  present: { className: "bg-primary/10 text-primary", Icon: Check },
+  late: { className: "bg-warning-soft text-warning", Icon: Clock },
+  excused: { className: "bg-foreground/5 text-muted-foreground", Icon: ShieldCheck },
+  absent: { className: "bg-destructive/10 text-destructive", Icon: X },
 };
 
 interface Props {

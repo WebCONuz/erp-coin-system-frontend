@@ -121,7 +121,7 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display text-ink">
+          <DialogTitle className="font-heading text-foreground">
             {t("coinRules.teacherForm.title")}
           </DialogTitle>
         </DialogHeader>
@@ -161,7 +161,7 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
                     />
                   </FormControl>
                   {teacherCoinLimit !== null && (
-                    <p className="text-xs text-ink-soft">
+                    <p className="text-xs text-muted-foreground">
                       {t("bulkCoin.teacherLimitHint", {
                         limit: teacherCoinLimit,
                       })}
@@ -220,7 +220,7 @@ export const CreateCoinRuleModal = ({ open, onClose }: Props) => {
             <button
               type="submit"
               disabled={createRule.isPending}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
+              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
             >
               {createRule.isPending ? t("common.creating") : t("common.create")}
             </button>

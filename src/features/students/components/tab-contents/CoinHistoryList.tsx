@@ -4,7 +4,10 @@ import { toast } from "sonner";
 import { ChevronLeft, ChevronRight, Coins, Minus, Plus, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/shared/modal";
-import { PageLoading } from "@/components/loading";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { CoinAmount } from "@/components/shared/coin";
+import { ErrorState } from "@/components/shared/states";
 import { cn } from "@/lib/utils";
 import { formatDate, translateApiError } from "@/ustils";
 import { canCancelCoinTx, getCoinTxState } from "@/types";
@@ -76,24 +79,26 @@ export const CoinHistoryList = ({ studentId, canCancel }: Props) => {
   };
 
   return (
-    <div className="space-y-2 min-w-0">
+    <div className="min-w-0 space-y-3">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">
+        <h3 className="font-heading text-base font-semibold">
           {t("students.coinTab.historyTitle")}
-        </p>
+        </h3>
         {data?.total ? (
-          <span className="text-xs text-zinc-400">
+          <span className="text-xs tabular-nums text-muted-foreground">
             {t("students.coinTab.totalCount", { count: data.total })}
           </span>
         ) : null}
       </div>
 
       {isLoading ? (
-        <PageLoading />
+        <div aria-busy="true" className="space-y-2">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-14 rounded-xl" />
+          ))}
+        </div>
       ) : isError ? (
-        <p className="py-6 text-center text-sm text-red-600 dark:text-red-400">
-          {t("common.error")}
-        </p>
+        <ErrorState className="py-8" />
       ) : !transactions.length ? (
         <EmptyState
           icon={<Coins size={20} />}
@@ -101,7 +106,7 @@ export const CoinHistoryList = ({ studentId, canCancel }: Props) => {
           text={t("students.coinTab.noTransactionsText")}
         />
       ) : (
-        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden divide-y divide-zinc-100 dark:divide-zinc-800">
+        <ul className="divide-y overflow-hidden rounded-2xl border bg-card">
           {transactions.map((tx) => {
             const state = getCoinTxState(tx);
             const isEarn = tx.direction === "earn";
@@ -109,88 +114,104 @@ export const CoinHistoryList = ({ studentId, canCancel }: Props) => {
             const isLinked = state !== "normal";
 
             return (
-              <div
+              <li
                 key={tx.id}
                 onClick={isLinked ? () => togglePair(tx) : undefined}
+                onKeyDown={
+                  isLinked
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          togglePair(tx);
+                        }
+                      }
+                    : undefined
+                }
+                tabIndex={isLinked ? 0 : undefined}
+                aria-pressed={isLinked ? isHighlighted : undefined}
                 className={cn(
-                  "flex items-center justify-between gap-3 px-4 py-3 bg-white dark:bg-zinc-900 transition-colors",
-                  isLinked && "cursor-pointer",
-                  state === "reversal" && "bg-zinc-50 dark:bg-zinc-900/60",
-                  isHighlighted &&
-                    "bg-amber-50 dark:bg-amber-950/30 ring-1 ring-inset ring-amber-300 dark:ring-amber-800",
+                  "flex items-center justify-between gap-3 px-4 py-3 transition-colors",
+                  isLinked &&
+                    "cursor-pointer focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring",
+                  state === "reversal" && "bg-muted/40",
+                  isHighlighted && "bg-warning-soft ring-1 ring-inset ring-warning/40",
                 )}
               >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div
+                <div className="flex min-w-0 items-center gap-3">
+                  <span
                     className={cn(
-                      "w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-xs",
+                      "flex size-8 shrink-0 items-center justify-center rounded-full",
                       state === "reversal"
-                        ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400"
+                        ? "bg-muted text-muted-foreground"
                         : isEarn
-                          ? "bg-green-100 dark:bg-green-900/40 text-green-600"
-                          : "bg-red-100 dark:bg-red-900/40 text-red-600",
+                          ? "bg-success-soft text-success"
+                          : "bg-destructive-soft text-destructive",
                     )}
+                    aria-hidden
                   >
                     {state === "reversal" ? (
-                      <Undo2 size={12} />
+                      <Undo2 size={14} />
                     ) : isEarn ? (
-                      <Plus size={12} />
+                      <Plus size={14} />
                     ) : (
-                      <Minus size={12} />
+                      <Minus size={14} />
                     )}
-                  </div>
+                  </span>
                   <div className="min-w-0">
                     <p
                       className={cn(
-                        "text-sm truncate",
-                        state === "reversal"
-                          ? "text-zinc-500 dark:text-zinc-400"
-                          : "text-zinc-700 dark:text-zinc-300",
+                        "truncate text-sm",
+                        state === "reversal" && "text-muted-foreground",
                       )}
                     >
-                      <b>{getSourceLabel(tx.sourceType)}</b>
+                      <span className="font-medium">
+                        {getSourceLabel(tx.sourceType)}
+                      </span>
                       {tx.note ? `: ${tx.note}` : ""}
                     </p>
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-zinc-400">
-                      <span>{formatDate(tx.createdAt, "dd.MM.yyyy HH:mm")}</span>
-                      {tx.teacher && <span>· {tx.teacher.fullName}</span>}
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                      <span className="tabular-nums">
+                        {formatDate(tx.createdAt, "dd.MM.yyyy HH:mm")}
+                      </span>
+                      {tx.teacher && <span>{tx.teacher.fullName}</span>}
                       {state === "reversal" && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-zinc-200 dark:bg-zinc-800 px-1.5 py-0.5 text-zinc-600 dark:text-zinc-300">
-                          <Undo2 size={10} />
+                        <Badge variant="secondary" className="h-auto py-0">
+                          <Undo2 aria-hidden />
                           {t("coinHistory.reversalBadge")}
-                        </span>
+                        </Badge>
                       )}
                       {state === "reversed" && tx.reversal && (
-                        <span className="rounded-full bg-red-100 dark:bg-red-950/50 px-1.5 py-0.5 text-red-700 dark:text-red-400">
+                        <Badge variant="danger" className="h-auto py-0">
                           {t("coinHistory.reversedBadge", {
                             date: formatDate(tx.reversal.createdAt, "dd.MM.yyyy"),
                           })}
-                        </span>
+                        </Badge>
                       )}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 shrink-0">
-                  <span
-                    className={cn(
-                      "text-sm font-semibold tabular-nums",
-                      state === "reversal"
-                        ? "text-zinc-500 dark:text-zinc-400"
-                        : isEarn
-                          ? "text-green-600 dark:text-green-400"
-                          : "text-red-600 dark:text-red-400",
-                      state === "reversed" && "line-through opacity-60",
-                    )}
-                  >
-                    {isEarn ? "+" : "-"}
-                    {tx.amount}
-                  </span>
+                <div className="flex shrink-0 items-center gap-1">
+                  {state === "reversal" ? (
+                    <span className="text-sm font-semibold tabular-nums text-muted-foreground">
+                      {isEarn ? "+" : "−"}
+                      {tx.amount}
+                    </span>
+                  ) : (
+                    <CoinAmount
+                      value={isEarn ? tx.amount : -tx.amount}
+                      signed
+                      className={cn(
+                        isEarn ? "text-success" : "text-destructive",
+                        state === "reversed" && "line-through opacity-60",
+                      )}
+                    />
+                  )}
                   {canCancel && canCancelCoinTx(tx) && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 px-2 text-xs text-zinc-500 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400"
+                      className="h-8 px-2 text-xs text-muted-foreground hover:bg-destructive-soft hover:text-destructive"
                       onClick={(e) => {
                         e.stopPropagation();
                         setPendingCancel(tx);
@@ -200,10 +221,10 @@ export const CoinHistoryList = ({ studentId, canCancel }: Props) => {
                     </Button>
                   )}
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
 
       {totalPages > 1 && (
@@ -211,25 +232,25 @@ export const CoinHistoryList = ({ studentId, canCancel }: Props) => {
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8"
+            className="size-8"
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
             aria-label={t("common.previous")}
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft className="size-4" aria-hidden />
           </Button>
-          <span className="text-xs text-zinc-500 tabular-nums">
+          <span className="text-xs tabular-nums text-muted-foreground">
             {page} / {totalPages}
           </span>
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8"
+            className="size-8"
             disabled={page >= totalPages}
             onClick={() => setPage((p) => p + 1)}
             aria-label={t("common.next")}
           >
-            <ChevronRight size={16} />
+            <ChevronRight className="size-4" aria-hidden />
           </Button>
         </div>
       )}

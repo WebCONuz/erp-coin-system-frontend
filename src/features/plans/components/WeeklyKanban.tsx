@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { ChevronDown, Plus } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Plus } from "lucide-react";
 import { toast } from "sonner";
 import { translateApiError } from "@/ustils";
 import { notifySessionSync } from "../lib/session-sync";
@@ -14,14 +14,7 @@ import {
   type DragStartEvent,
 } from "@dnd-kit/core";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { PageLoading } from "@/components/loading";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useGroups } from "@/features/groups/hooks";
 import {
   useScheduleTemplates,
@@ -34,28 +27,20 @@ import { TemplateCard } from "./TemplateCard";
 import { DraggableTemplateCard } from "./DraggableTemplateCard";
 import { DroppableColumn } from "./DroppableColumn";
 import { TemplateFormModal } from "./TemplateFormModal";
+import { GroupPicker } from "./GroupPicker";
 
-const CARD_COLORS = [
-  "border-l-blue-500 bg-blue-100 dark:bg-blue-900/20",
-  "border-l-amber-500 bg-amber-100 dark:bg-amber-900/20",
-  "border-l-emerald-500 bg-emerald-50 dark:bg-emerald-900/20",
-  "border-l-pink-500 bg-pink-50 dark:bg-pink-900/20",
-  "border-l-fuchsia-500 bg-fuchsia-50 dark:bg-fuchsia-900/20",
-  "border-l-cyan-500 bg-cyan-50 dark:bg-cyan-900/20",
-  "border-l-sky-500 bg-sky-50 dark:bg-sky-900/20",
-  "border-l-purple-500 bg-purple-50 dark:bg-purple-900/20",
-  "border-l-yellow-500 bg-yellow-50 dark:bg-yellow-900/20",
-  "border-l-lime-500 bg-lime-50 dark:bg-lime-900/20",
-];
 
 interface Props {
   groupFilter?: string;
   onGroupFilterChange?: (groupId: string) => void;
+  /** Ko'rinish almashtirgichi (haftalik/oylik) — guruh tanlash yonida chiqadi. */
+  viewSwitcher?: ReactNode;
 }
 
 export const WeeklyKanban = ({
   groupFilter: controlledGroupFilter,
   onGroupFilterChange,
+  viewSwitcher,
 }: Props = {}) => {
   const { t } = useTranslation();
   const WEEKDAY_LABELS = getWeekdayLabels(t);
@@ -166,92 +151,93 @@ export const WeeklyKanban = ({
     );
   };
 
+  const selectedGroupName = groups?.data.find((g) => g.id === groupFilter)?.name;
+
   return (
-    <div className="rounded-2xl bg-background p-4 shadow-sm">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-lg font-semibold">{t("plans.weeklyTemplate")}</h3>
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="max-w-100 min-w-48 justify-between font-normal"
-              >
-                <span className="truncate">
-                  {groups?.data.find((g) => g.id === groupFilter)?.name ??
-                    t("plans.selectGroup")}
-                </span>
-                <ChevronDown size={16} className="shrink-0 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-60">
-              <DropdownMenuRadioGroup
-                value={groupFilter}
-                onValueChange={setGroupFilter}
-              >
-                {groups?.data.map((group) => (
-                  <DropdownMenuRadioItem key={group.id} value={group.id}>
-                    {group.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button
-            onClick={openCreateGeneric}
-            className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white"
-          >
-            <Plus size={18} />
-            {t("plans.addTemplate")}
+    <section
+      aria-labelledby="weekly-template-title"
+      className="rounded-2xl border bg-card p-4 sm:p-5"
+    >
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2
+          id="weekly-template-title"
+          className="font-heading text-base font-semibold"
+        >
+          {t("plans.weeklyTemplate")}
+        </h2>
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          {viewSwitcher}
+          <GroupPicker
+            groups={groups?.data ?? []}
+            value={groupFilter}
+            onChange={setGroupFilter}
+            label={selectedGroupName ?? t("plans.selectGroup")}
+          />
+          <Button onClick={openCreateGeneric} className="h-9 shrink-0 gap-2">
+            <Plus className="size-4" aria-hidden />
+            <span className="hidden sm:inline">{t("plans.addTemplate")}</span>
+            <span className="sr-only sm:hidden">{t("plans.addTemplate")}</span>
           </Button>
         </div>
       </div>
 
       {isLoading ? (
-        <PageLoading />
+        <div aria-busy="true" className="flex gap-2 overflow-hidden 2xl:grid 2xl:grid-cols-7">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <Skeleton key={i} className="h-72 w-56 shrink-0 rounded-xl 2xl:w-auto" />
+          ))}
+        </div>
       ) : (
         <DndContext
           sensors={sensors}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
         >
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-7">
-            {WEEKDAYS.map((weekday) => {
-              const dayTemplates =
-                templates?.data.filter((t) => t.weekday === weekday) ?? [];
+          {/* 2xl dan kichik ekranlarda ustunlar gorizontal suriladi */}
+          <div className="-mx-4 overflow-x-auto px-4 pb-2 sm:-mx-5 sm:px-5 2xl:mx-0 2xl:overflow-visible 2xl:px-0">
+            <div className="flex snap-x gap-2 2xl:grid 2xl:grid-cols-7">
+              {WEEKDAYS.map((weekday) => {
+                const dayTemplates = (
+                  templates?.data.filter((t) => t.weekday === weekday) ?? []
+                ).sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-              return (
-                <DroppableColumn key={weekday} weekday={weekday}>
-                  <div className="flex items-center gap-x-2 px-1">
-                    <span className="text-sm font-semibold">
+                return (
+                  <DroppableColumn
+                    key={weekday}
+                    weekday={weekday}
+                    className="w-60 shrink-0 snap-start 2xl:w-auto"
+                  >
+                    <h3 className="flex items-center gap-2 px-1 pt-0.5 text-sm font-semibold">
                       {WEEKDAY_LABELS[weekday]}
-                    </span>
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/10 px-1.5 text-xs font-medium text-primary">
-                      {dayTemplates.length}
-                    </span>
-                  </div>
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-card px-1.5 text-xs font-medium tabular-nums text-muted-foreground">
+                        {dayTemplates.length}
+                      </span>
+                    </h3>
 
-                  <div className="flex flex-col gap-2">
-                    {dayTemplates.map((template, idx) => (
-                      <DraggableTemplateCard
-                        key={template.id}
-                        template={template}
-                        colorClass={CARD_COLORS[idx % CARD_COLORS.length]}
-                        onEdit={() => openEdit(template)}
-                        onDelete={() => handleDelete(template)}
-                      />
-                    ))}
+                    <div className="flex flex-col gap-2">
+                      {dayTemplates.map((template) => (
+                        <DraggableTemplateCard
+                          key={template.id}
+                          template={template}
+                          onEdit={() => openEdit(template)}
+                          onDelete={() => handleDelete(template)}
+                        />
+                      ))}
 
-                    <button
-                      onClick={() => openCreateForDay(weekday)}
-                      className="rounded-lg border border-dashed border-border py-2 text-xs text-muted-foreground hover:border-primary/50 hover:text-primary transition-colors"
-                    >
-                      + {t("common.add")}
-                    </button>
-                  </div>
-                </DroppableColumn>
-              );
-            })}
+                      <button
+                        type="button"
+                        onClick={() => openCreateForDay(weekday)}
+                        aria-label={`${t("common.add")}: ${WEEKDAY_LABELS[weekday]}`}
+                        className="flex h-9 items-center justify-center gap-1 rounded-lg border border-dashed border-border text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:bg-card hover:text-primary focus-visible:outline-2 focus-visible:outline-ring"
+                      >
+                        <Plus className="size-3.5" aria-hidden />
+                        {t("common.add")}
+                      </button>
+                    </div>
+                  </DroppableColumn>
+                );
+              })}
+            </div>
           </div>
 
           <DragOverlay>
@@ -259,7 +245,7 @@ export const WeeklyKanban = ({
               <TemplateCard
                 template={activeTemplate}
                 groupName={activeTemplate.group.name}
-                colorClass="border-l-primary shadow-lg"
+                isOverlay
                 onEdit={() => {}}
                 onDelete={() => {}}
               />
@@ -278,6 +264,6 @@ export const WeeklyKanban = ({
         lockGroup={modalState.lockGroup}
         template={modalState.template}
       />
-    </div>
+    </section>
   );
 };

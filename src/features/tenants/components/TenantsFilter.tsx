@@ -6,65 +6,72 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardTitle } from "@/components/shared/title";
 import { TEXT_LIMITS } from "@/ustils";
 
+export type TenantStatusFilter = "active" | "archive";
+
 interface TenantFilterProps {
+  status: TenantStatusFilter;
+  onStatusChange: (status: TenantStatusFilter) => void;
+  search: string;
   onSearch: (value: string) => void;
   addTenant: () => void;
 }
 
 export const TenantDataFilter = ({
+  status,
+  onStatusChange,
+  search,
   onSearch,
   addTenant,
 }: TenantFilterProps) => {
   const { t } = useTranslation();
 
   return (
-    <div className="w-full space-y-3 py-4">
-      {/* 1-QATOR: Sarlavha va Harakat tugmalari */}
-      <div className="flex items-center justify-between">
+    <div className="w-full space-y-4">
+      <div className="flex items-center justify-between gap-3">
         <DashboardTitle title={t("admin.header.tenants")} />
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={addTenant}
-            className="bg-linear-to-br from-purple-500 to-purple-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
-          >
-            <Plus size={18} />
-            <span className="hidden sm:inline">{t("tenants.filter.add")}</span>
-          </Button>
-        </div>
+        <Button
+          onClick={addTenant}
+          className="h-9 gap-2 px-3.5"
+          aria-label={t("tenants.filter.add")}
+        >
+          <Plus className="size-4" aria-hidden />
+          <span className="hidden sm:inline">{t("tenants.filter.add")}</span>
+        </Button>
       </div>
 
-      {/* 2-QATOR: Filtrlash paneli */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        {/* Tablar */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <Tabs
-          defaultValue="active"
-          className="bg-muted/50 p-1 rounded-lg border border-border"
+          value={status}
+          onValueChange={(value) => onStatusChange(value as TenantStatusFilter)}
         >
-          <TabsList className="bg-transparent border-none gap-1 h-8">
-            <TabsTrigger
-              value="active"
-              className="rounded-md px-3 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
-            >
-              {t("tenants.filter.active")}
-            </TabsTrigger>
-            <TabsTrigger
-              value="archive"
-              className="rounded-md px-4 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
-            >
-              {t("groups.tabs.archive")}
-            </TabsTrigger>
+          <TabsList className="h-auto gap-0.5 rounded-xl border bg-card p-1">
+            {[
+              { value: "active", label: t("tenants.filter.active") },
+              { value: "archive", label: t("tenants.filter.inactive") },
+            ].map((tab) => (
+              <TabsTrigger
+                key={tab.value}
+                value={tab.value}
+                className="h-8 flex-none rounded-lg px-3 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary-soft data-[state=active]:text-primary data-[state=active]:shadow-none dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary-soft"
+              >
+                {tab.label}
+              </TabsTrigger>
+            ))}
           </TabsList>
         </Tabs>
 
-        {/* Qidiruv */}
-        <div className="flex items-center bg-background border border-border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-500/20 transition-all shadow-sm">
-          <div className="pl-3 text-muted-foreground/60">
-            <Search size={18} />
-          </div>
+        <div role="search" className="relative w-full sm:w-72">
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
           <Input
-            placeholder={t("common.search")}
+            type="search"
+            value={search}
+            placeholder={t("tenants.filter.searchPlaceholder")}
+            aria-label={t("tenants.filter.searchPlaceholder")}
             maxLength={TEXT_LIMITS.SEARCH}
-            className="border-none focus-visible:ring-0 w-64 h-9 placeholder:text-muted-foreground/50 bg-transparent dark:bg-[#0A0A0A]"
+            className="h-9 pl-9"
             onChange={(e) => onSearch(e.target.value)}
           />
         </div>

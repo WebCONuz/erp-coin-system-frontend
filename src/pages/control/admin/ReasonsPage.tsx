@@ -12,15 +12,21 @@ import {
   useDeleteCoinRule,
 } from "@/features/coin-rules/hooks";
 import type { CoinRule } from "@/features/coin-rules/types";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
-import { NoDataBox } from "@/features/tenants/components/ui";
+import { useSearchParams } from "react-router-dom";
+import { Plus, Scale } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CardGrid } from "@/components/shared/card-grid";
 import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 
 const ReasonsPage = () => {
   const { t } = useTranslation();
-  const { data: coinRules, isLoading } = useCoinRules();
+  const [searchParams] = useSearchParams();
+  const { data: coinRules, isLoading, isError, refetch, isFetching } =
+    useCoinRules();
+  const direction = searchParams.get("direction");
+  const isFiltered =
+    !!searchParams.get("search") || (!!direction && direction !== "all");
   const { data: groupsData } = useActiveGroups();
   const pagination = usePagination({ totalItems: coinRules?.meta?.total || 0 });
 
@@ -61,46 +67,46 @@ const ReasonsPage = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-5">
       <CoinRuleDataFilter onAdd={handleCreate} />
 
-      {isLoading ? (
-        <PageLoading />
-      ) : coinRules?.data ? (
-        <>
-          {coinRules.data.length === 0 ? (
-            <NoDataBox
-              title={t("reasons.noData")}
-              btnText={t("reasons.addReason")}
-              btnFn={handleCreate}
-              hasAction={false}
-            />
-          ) : (
-            <div className="grid grid-cols-4 gap-5">
-              {coinRules.data.map((item) => (
-                <CoinRuleCard
-                  data={item}
-                  key={item.id}
-                  groupName={item.groupId ? groupNameById.get(item.groupId) : undefined}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              ))}
-            </div>
-          )}
+      <CardGrid
+        items={coinRules?.data}
+        getKey={(item) => item.id}
+        isLoading={isLoading}
+        isError={isError}
+        onRetry={() => refetch()}
+        isRetrying={isFetching}
+        isFiltered={isFiltered}
+        emptyIcon={Scale}
+        emptyTitle={t("reasons.noData")}
+        emptyHint={t("reasons.emptyHint")}
+        emptyAction={
+          <Button onClick={handleCreate} className="gap-2">
+            <Plus className="size-4" aria-hidden />
+            {t("reasons.addReason")}
+          </Button>
+        }
+        renderItem={(item) => (
+          <CoinRuleCard
+            data={item}
+            groupName={
+              item.groupId ? groupNameById.get(item.groupId) : undefined
+            }
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+          />
+        )}
+      />
 
-          {coinRules.meta.total > 0 && (
-            <TablePagination
-              totalItems={coinRules.meta.total}
-              currentPage={pagination.currentPage}
-              totalPages={pagination.totalPages}
-              pageSize={pagination.pageSize}
-              onPageChange={pagination.setPage}
-            />
-          )}
-        </>
-      ) : (
-        <NoData text={t("common.noData")} />
+      {!!coinRules?.meta.total && (
+        <TablePagination
+          totalItems={coinRules.meta.total}
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          pageSize={pagination.pageSize}
+          onPageChange={pagination.setPage}
+        />
       )}
 
       <CoinRuleFormModal

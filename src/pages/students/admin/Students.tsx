@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useStudents } from "@/features/students/hooks";
 import type { StudentDetail } from "@/features/students/types";
 import {
@@ -11,7 +12,16 @@ import {
 } from "@/features/students/components/modal";
 
 const Students = () => {
-  const { data: students, isLoading } = useStudents();
+  const [searchParams] = useSearchParams();
+  const {
+    data: students,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useStudents();
+  const isFiltered =
+    !!searchParams.get("search") || !!searchParams.get("groupId");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
@@ -42,15 +52,21 @@ const Students = () => {
   };
 
   return (
-    <div className="flex flex-col gap-y-6">
+    <div className="flex flex-col gap-y-4 sm:gap-y-5">
       <StudentDataFilter
         onAddStudent={handleCreate}
         onBulkGiveCoin={() => setBulkCoinOpen(true)}
+        total={students?.meta?.total}
       />
 
       <StudentList
         data={students}
         isLoading={isLoading}
+        isError={isError}
+        isRetrying={isFetching}
+        onRetry={() => refetch()}
+        isFiltered={isFiltered}
+        onAdd={handleCreate}
         handleEdit={handleEdit}
       />
 

@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { Link2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 interface Props {
   className?: string;
@@ -11,15 +11,13 @@ export const AssignedGroupBadge = ({ className }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <span
+    <Badge
+      variant="info"
       title={t("teacherProfile.groups.assignedHint")}
-      className={cn(
-        "inline-flex items-center gap-1 shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-gold/15 text-gold",
-        className,
-      )}
+      className={className}
     >
-      <Link2 size={10} />
+      <Link2 aria-hidden />
       {t("teacherProfile.groups.assigned")}
-    </span>
+    </Badge>
   );
 };

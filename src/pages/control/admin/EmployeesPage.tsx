@@ -14,15 +14,22 @@ import {
   useRestoreEmployee,
 } from "@/features/employees/hooks";
 import type { Employee } from "@/features/employees/types";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
-import { NoDataBox } from "@/features/tenants/components/ui";
+import { useSearchParams } from "react-router-dom";
+import { Plus, UsersRound } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CardGrid } from "@/components/shared/card-grid";
 import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 
 const EmployeesPage = () => {
   const { t } = useTranslation();
-  const { data: employees, isLoading } = useEmployees();
+  const [searchParams] = useSearchParams();
+  const { data: employees, isLoading, isError, refetch, isFetching } =
+    useEmployees();
+  const isFiltered =
+    !!searchParams.get("search") ||
+    !!searchParams.get("roleId") ||
+    searchParams.get("status") === "archive";
   const pagination = usePagination({ totalItems: employees?.meta?.total || 0 });
 
   const archiveEmployee = useArchiveEmployee();
@@ -71,47 +78,45 @@ const EmployeesPage = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       <EmployeeDataFilter onAdd={handleCreate} />
 
-      {isLoading ? (
-        <PageLoading />
-      ) : employees?.data ? (
-        <>
-          {employees.data.length === 0 ? (
-            <NoDataBox
-              title={t("employees.noData")}
-              btnText={t("employees.addEmployee")}
-              btnFn={handleCreate}
-              hasAction={false}
-            />
-          ) : (
-            <div className="grid grid-cols-4 gap-4">
-              {employees.data.map((item) => (
-                <EmployeeCard
-                  data={item}
-                  key={item.id}
-                  onEdit={handleEdit}
-                  onChangePassword={setPasswordEmployee}
-                  onArchive={handleArchive}
-                  onRestore={handleRestore}
-                />
-              ))}
-            </div>
-          )}
+      <CardGrid
+        items={employees?.data}
+        getKey={(item) => item.id}
+        isLoading={isLoading}
+        isError={isError}
+        onRetry={() => refetch()}
+        isRetrying={isFetching}
+        isFiltered={isFiltered}
+        emptyIcon={UsersRound}
+        emptyTitle={t("employees.noData")}
+        emptyHint={t("employees.emptyHint")}
+        emptyAction={
+          <Button onClick={handleCreate} className="gap-2">
+            <Plus className="size-4" aria-hidden />
+            {t("employees.addEmployee")}
+          </Button>
+        }
+        renderItem={(item) => (
+          <EmployeeCard
+            data={item}
+            onEdit={handleEdit}
+            onChangePassword={setPasswordEmployee}
+            onArchive={handleArchive}
+            onRestore={handleRestore}
+          />
+        )}
+      />
 
-          {employees.meta.total > 0 && (
-            <TablePagination
-              totalItems={employees.meta.total}
-              currentPage={pagination.currentPage}
-              totalPages={pagination.totalPages}
-              pageSize={pagination.pageSize}
-              onPageChange={pagination.setPage}
-            />
-          )}
-        </>
-      ) : (
-        <NoData text={t("common.noData")} />
+      {!!employees?.meta.total && (
+        <TablePagination
+          totalItems={employees.meta.total}
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          pageSize={pagination.pageSize}
+          onPageChange={pagination.setPage}
+        />
       )}
 
       <EmployeeFormModal

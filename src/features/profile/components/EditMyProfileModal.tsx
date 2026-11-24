@@ -26,10 +26,10 @@ export const EditMyProfileModal = ({ open, onClose }: Props) => {
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-ink">
+          <DialogTitle className="font-heading text-foreground">
             {t("profile.editTitle")}
           </DialogTitle>
-          <DialogDescription className="flex items-start gap-1.5 text-ink-soft">
+          <DialogDescription className="flex items-start gap-1.5 text-muted-foreground">
             <Info size={14} className="mt-0.5 shrink-0" />
             {t("profile.passwordByAdmin")}
           </DialogDescription>
@@ -37,7 +37,7 @@ export const EditMyProfileModal = ({ open, onClose }: Props) => {
 
         {isLoading ? (
           <div className="flex justify-center py-10">
-            <Loader2 className="animate-spin text-ink-soft" />
+            <Loader2 className="animate-spin text-muted-foreground" />
           </div>
         ) : isError || !profile ? (
           <NoData text={t("common.noData")} />

@@ -28,8 +28,8 @@ const WEEK_HEADER = [
   { labelKey: "plans.weekdayShort.wednesday", className: "" },
   { labelKey: "plans.weekdayShort.thursday", className: "" },
   { labelKey: "plans.weekdayShort.friday", className: "" },
-  { labelKey: "plans.weekdayShort.saturday", className: "text-gold" },
-  { labelKey: "plans.weekdayShort.sunday", className: "text-bloom" },
+  { labelKey: "plans.weekdayShort.saturday", className: "text-muted-foreground/70" },
+  { labelKey: "plans.weekdayShort.sunday", className: "text-muted-foreground/70" },
 ];
 
 export const StudentCalendarTab = () => {
@@ -63,7 +63,7 @@ export const StudentCalendarTab = () => {
   }, [calendarData]);
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-4">
+    <div className="rounded-2xl border border-border bg-card p-4">
       <div className="mb-4 flex items-center justify-center gap-2">
         <Button
           variant="ghost"
@@ -72,7 +72,7 @@ export const StudentCalendarTab = () => {
         >
           <ChevronLeft size={18} />
         </Button>
-        <h3 className="w-40 text-center text-base font-semibold capitalize text-ink">
+        <h3 className="w-40 text-center text-base font-semibold capitalize text-foreground">
           {format(viewDate, "LLLL yyyy", { locale: uz })}
         </h3>
         <Button
@@ -88,11 +88,11 @@ export const StudentCalendarTab = () => {
         <PageLoading />
       ) : (
         <div className="overflow-auto max-h-[65vh] sm:max-h-none sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0">
-          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-ink/10 bg-ink/10 min-w-245 sm:min-w-0">
+          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-border bg-foreground/10 min-w-245 sm:min-w-0">
             {WEEK_HEADER.map((day) => (
               <div
                 key={day.labelKey}
-                className={`bg-paper-soft px-2 py-1.5 text-center text-xs font-semibold text-ink-soft ${day.className}`}
+                className={`bg-muted/55 px-2 py-1.5 text-center text-xs font-semibold text-muted-foreground ${day.className}`}
               >
                 {t(day.labelKey)}
               </div>
@@ -113,21 +113,21 @@ export const StudentCalendarTab = () => {
               return (
                 <div
                   key={dateKey}
-                  className={`min-h-24 space-y-1 bg-white p-1.5 ${
+                  className={`min-h-24 space-y-1 bg-card p-1.5 ${
                     inMonth ? "" : "opacity-40"
                   }`}
                 >
                   <span
                     className={`text-xs font-medium ${
                       isToday(day)
-                        ? "flex h-5 w-5 items-center justify-center rounded-full bg-gold text-forest-deep"
-                        : "text-ink-soft"
+                        ? "flex h-5 w-5 items-center justify-center rounded-full bg-coin text-coin-ink"
+                        : "text-muted-foreground"
                     }`}
                   >
                     {format(day, "d")}
                   </span>
                   {holiday && (
-                    <div className="flex w-full items-center gap-1 truncate rounded px-1.5 py-0.5 text-[11px] font-medium text-bloom bg-bloom/10">
+                    <div className="flex w-full items-center gap-1 truncate rounded px-1.5 py-0.5 text-[11px] font-medium text-destructive bg-destructive/10">
                       <CalendarOff size={11} className="shrink-0" />
                       <span className="truncate">
                         {t("plans.chip.holiday")}: {holiday.name}

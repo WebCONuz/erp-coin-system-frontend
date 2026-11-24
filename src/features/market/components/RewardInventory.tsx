@@ -12,7 +12,7 @@ interface Props {
   className?: string;
 }
 
-// Admin uchun zaxira: Sotuvda (stock) · Band (reservedCount) · Omborda (ikkalasi).
+// Admin uchun zaxira: Sotuvda (stock), Band (reservedCount), Omborda (ikkalasi).
 export const RewardInventory = ({ reward, linkReserved, className }: Props) => {
   const { t } = useTranslation();
   const reservedCount = reward.reservedCount ?? 0;
@@ -21,50 +21,50 @@ export const RewardInventory = ({ reward, linkReserved, className }: Props) => {
   const reserved = t("market.inventory.reserved", { count: reservedCount });
 
   return (
-    <div
+    <ul
       className={cn(
-        "flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500 dark:text-zinc-400",
+        "flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground",
         className,
       )}
     >
-      {isUnlimitedStock(reward) ? (
-        <span className="flex items-center gap-1 font-medium text-emerald-600 dark:text-emerald-400">
-          <InfinityIcon size={14} />
-          {t("market.unlimited")}
-        </span>
-      ) : reward.stock === 0 ? (
-        <span className="rounded-4xl bg-red-100 px-2 py-0.5 font-medium text-red-700 dark:bg-red-950/50 dark:text-red-400">
-          {t("market.outOfStock")}
-        </span>
-      ) : (
-        <span>
-          {t("market.inventory.onSale", { count: reward.stock })}
-        </span>
-      )}
+      <li>
+        {isUnlimitedStock(reward) ? (
+          <span className="flex items-center gap-1 font-medium text-success">
+            <InfinityIcon className="size-3.5" aria-hidden />
+            {t("market.unlimited")}
+          </span>
+        ) : reward.stock === 0 ? (
+          <span className="font-medium text-destructive">
+            {t("market.outOfStock")}
+          </span>
+        ) : (
+          <span className="tabular-nums">
+            {t("market.inventory.onSale", { count: reward.stock })}
+          </span>
+        )}
+      </li>
 
       {reservedCount > 0 && (
-        <>
-          <span>·</span>
+        <li>
           {linkReserved ? (
             <Link
               to={`/admin/purchases?rewardId=${reward.id}&status=pending`}
               title={t("market.inventory.reservedLinkHint")}
-              className="font-medium text-blue-600 underline-offset-2 hover:underline dark:text-blue-400"
+              className="font-medium tabular-nums text-info underline-offset-2 hover:underline focus-visible:underline"
             >
               {reserved}
             </Link>
           ) : (
-            <span>{reserved}</span>
+            <span className="tabular-nums">{reserved}</span>
           )}
-        </>
+        </li>
       )}
 
       {warehouse !== null && reservedCount > 0 && (
-        <>
-          <span>·</span>
-          <span>{t("market.inventory.warehouse", { count: warehouse })}</span>
-        </>
+        <li className="tabular-nums">
+          {t("market.inventory.warehouse", { count: warehouse })}
+        </li>
       )}
-    </div>
+    </ul>
   );
 };

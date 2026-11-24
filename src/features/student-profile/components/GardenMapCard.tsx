@@ -11,14 +11,14 @@ export const GardenMapCard = ({ progress }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-5">
-      <h3 className="font-display text-sm font-semibold text-ink">
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <h3 className="font-heading text-sm font-semibold text-foreground">
         {t("garden.map.title")}
       </h3>
 
       {progress ? (
         <>
-          <p className="text-xs text-ink-soft mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             {t("garden.levelLabel", { level: progress.level.daraja })}
             {" · "}
             {progress.nextLevel
@@ -30,13 +30,13 @@ export const GardenMapCard = ({ progress }: Props) => {
             <GardenPath progress={progress} tone="light" />
           </div>
 
-          <div className="flex items-center gap-4 mt-9 pt-4 border-t border-ink/8 text-xs text-ink-soft">
+          <div className="flex items-center gap-4 mt-9 pt-4 border-t border-border text-xs text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-gold" />
+              <span className="w-2 h-2 rounded-full bg-coin" />
               {t("garden.map.reached")}
             </span>
             <span className="flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full border border-ink/25" />
+              <span className="w-2 h-2 rounded-full border border-foreground/25" />
               {t("garden.map.locked")}
             </span>
           </div>

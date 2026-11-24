@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Coins, Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { CoinIcon } from "@/components/shared/coin";
+import { cn } from "@/lib/utils";
 import { TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { translateApiError } from "@/ustils";
-import type { StudentDetailFull } from "../../types";
 import { useManualCoinTransaction } from "../../hooks";
 import { COIN_NOTE_MAX, MANUAL_COIN_MAX } from "../../constants";
 import { CoinHistoryList } from "./CoinHistoryList";
@@ -18,13 +20,7 @@ interface CoinFormState {
 
 const emptyCoinForm: CoinFormState = { amount: "", note: "" };
 
-export const CoinTab = ({
-  student,
-  isDeleted,
-}: {
-  student?: StudentDetailFull;
-  isDeleted: boolean;
-}) => {
+export const CoinTab = ({ isDeleted }: { isDeleted: boolean }) => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const manualCoin = useManualCoinTransaction(id ?? "");
@@ -60,83 +56,99 @@ export const CoinTab = ({
 
   return (
     <TabsContent value="coins" className="mt-4 space-y-4">
-      <div className="flex items-center gap-4 p-5 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-linear-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/20">
-        <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/60 flex items-center justify-center">
-          <Coins size={24} className="text-amber-600 dark:text-amber-400" />
-        </div>
-        <div>
-          <p className="text-xs text-amber-600 dark:text-amber-400 font-medium uppercase tracking-wide">
-            {t("students.coinTab.currentBalance")}
-          </p>
-          <p className="text-3xl font-bold text-amber-700 dark:text-amber-300">
-            {student?.wallet?.balance ?? 0}{" "}
-            <span className="text-base font-normal">
-              {t("common.coinLabel")}
-            </span>
-          </p>
-        </div>
-      </div>
-
       {!isDeleted && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {(["earn", "deduct"] as const).map((dir) => {
             const isEarn = dir === "earn";
+            const amountId = `coin-${dir}-amount`;
+            const noteId = `coin-${dir}-note`;
             return (
-              <div key={dir} className="space-y-2">
-                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">
+              <form
+                key={dir}
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleCoinAction(dir);
+                }}
+                className="space-y-3 rounded-2xl border bg-card p-4"
+              >
+                <h3 className="flex items-center gap-2 font-heading text-sm font-semibold">
+                  <span
+                    className={cn(
+                      "flex size-6 items-center justify-center rounded-full",
+                      isEarn
+                        ? "bg-success-soft text-success"
+                        : "bg-destructive-soft text-destructive",
+                    )}
+                    aria-hidden
+                  >
+                    {isEarn ? <Plus size={14} /> : <Minus size={14} />}
+                  </span>
                   {isEarn
                     ? t("students.coinTab.addCoin")
                     : t("students.coinTab.deductCoin")}
-                </p>
-                <div
-                  className={`flex items-center gap-3 p-4 rounded-xl border ${isEarn ? "border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-950/30" : "border-red-200 dark:border-red-900 bg-red-50 dark:bg-red-950/30"}`}
-                >
-                  <div
-                    className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${isEarn ? "bg-green-100 dark:bg-green-900 text-green-600" : "bg-red-100 dark:bg-red-900 text-red-600"}`}
-                  >
-                    {isEarn ? <Plus size={16} /> : <Minus size={16} />}
+                </h3>
+                <div className="grid grid-cols-[7rem_1fr] gap-2">
+                  <div className="space-y-1">
+                    <label
+                      htmlFor={amountId}
+                      className="text-xs text-muted-foreground"
+                    >
+                      {t("common.amount")}
+                    </label>
+                    <Input
+                      id={amountId}
+                      type="number"
+                      inputMode="numeric"
+                      min={1}
+                      max={MANUAL_COIN_MAX}
+                      value={coinForms[dir].amount}
+                      onChange={(e) =>
+                        setCoinForms((p) => ({
+                          ...p,
+                          [dir]: { ...p[dir], amount: e.target.value },
+                        }))
+                      }
+                      placeholder="0"
+                      className="h-10 tabular-nums"
+                    />
                   </div>
-                  <input
-                    type="number"
-                    min={1}
-                    max={MANUAL_COIN_MAX}
-                    value={coinForms[dir].amount}
-                    onChange={(e) =>
-                      setCoinForms((p) => ({
-                        ...p,
-                        [dir]: { ...p[dir], amount: e.target.value },
-                      }))
-                    }
-                    placeholder={`${t("common.amount")}...`}
-                    className="flex-1 bg-transparent border-0 outline-none text-sm text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400 w-0"
-                  />
-                  <input
-                    type="text"
-                    maxLength={COIN_NOTE_MAX}
-                    value={coinForms[dir].note}
-                    onChange={(e) =>
-                      setCoinForms((p) => ({
-                        ...p,
-                        [dir]: { ...p[dir], note: e.target.value },
-                      }))
-                    }
-                    placeholder={t("students.coinTab.reason")}
-                    className="flex-1 bg-transparent border-0 outline-none text-sm text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400 border-l border-zinc-200 dark:border-zinc-700 pl-3 w-0"
-                  />
-                  <Button
-                    size="sm"
-                    disabled={!coinForms[dir].amount || manualCoin.isPending}
-                    className={
-                      isEarn
-                        ? "bg-green-600 hover:bg-green-700 text-white"
-                        : "bg-red-600 hover:bg-red-700 text-white"
-                    }
-                    onClick={() => handleCoinAction(dir)}
-                  >
-                    {isEarn ? t("common.add") : t("students.coinTab.deduct")}
-                  </Button>
+                  <div className="space-y-1">
+                    <label
+                      htmlFor={noteId}
+                      className="text-xs text-muted-foreground"
+                    >
+                      {t("students.coinTab.reason")}
+                    </label>
+                    <Input
+                      id={noteId}
+                      type="text"
+                      maxLength={COIN_NOTE_MAX}
+                      value={coinForms[dir].note}
+                      onChange={(e) =>
+                        setCoinForms((p) => ({
+                          ...p,
+                          [dir]: { ...p[dir], note: e.target.value },
+                        }))
+                      }
+                      placeholder={t("common.optional")}
+                      className="h-10"
+                    />
+                  </div>
                 </div>
-              </div>
+                <Button
+                  type="submit"
+                  variant={isEarn ? "default" : "outline"}
+                  disabled={!coinForms[dir].amount || manualCoin.isPending}
+                  className={cn(
+                    "h-10 w-full gap-2",
+                    !isEarn &&
+                      "border-destructive/40 text-destructive hover:bg-destructive-soft hover:text-destructive",
+                  )}
+                >
+                  <CoinIcon className="size-4" />
+                  {isEarn ? t("common.add") : t("students.coinTab.deduct")}
+                </Button>
+              </form>
             );
           })}
         </div>

@@ -1,6 +1,7 @@
 import {
   Area,
   AreaChart,
+  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -10,6 +11,7 @@ import {
 export interface TrendLineSeries {
   key: string;
   label: string;
+  /** Rang — iloji boricha token: `var(--chart-1)`. */
   color: string;
 }
 
@@ -23,6 +25,8 @@ interface TrendLineChartProps<T extends object> {
   height?: number;
 }
 
+const AXIS_TICK = { fontSize: 11, fill: "var(--muted-foreground)" };
+
 export const TrendLineChart = <T extends object>({
   data,
   series,
@@ -35,7 +39,10 @@ export const TrendLineChart = <T extends object>({
 
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <AreaChart data={chartData} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
+      <AreaChart
+        data={chartData}
+        margin={{ top: 4, right: 4, left: -8, bottom: 0 }}
+      >
         <defs>
           {series.map((s) => (
             <linearGradient
@@ -46,20 +53,47 @@ export const TrendLineChart = <T extends object>({
               x2="0"
               y2="1"
             >
-              <stop offset="5%" stopColor={s.color} stopOpacity={0.35} />
+              <stop offset="5%" stopColor={s.color} stopOpacity={0.25} />
               <stop offset="95%" stopColor={s.color} stopOpacity={0} />
             </linearGradient>
           ))}
         </defs>
+        <CartesianGrid
+          vertical={false}
+          stroke="var(--border)"
+          strokeDasharray="3 3"
+        />
         <XAxis
           dataKey={xDataKey}
           tickFormatter={xTickFormatter}
-          tick={{ fontSize: 10 }}
+          tick={AXIS_TICK}
           axisLine={false}
           tickLine={false}
+          tickMargin={8}
+          minTickGap={16}
         />
-        <YAxis hide domain={["auto", "auto"]} />
-        <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+        <YAxis
+          domain={["auto", "auto"]}
+          allowDecimals={false}
+          tick={AXIS_TICK}
+          axisLine={false}
+          tickLine={false}
+          width={40}
+        />
+        <Tooltip
+          labelFormatter={(label) =>
+            xTickFormatter ? xTickFormatter(String(label)) : String(label)
+          }
+          contentStyle={{
+            fontSize: 12,
+            borderRadius: 10,
+            border: "1px solid var(--border)",
+            background: "var(--popover)",
+            color: "var(--popover-foreground)",
+            boxShadow: "0 4px 16px rgb(0 0 0 / 0.08)",
+          }}
+          labelStyle={{ color: "var(--muted-foreground)", marginBottom: 4 }}
+        />
         {series.map((s) => (
           <Area
             key={s.key}

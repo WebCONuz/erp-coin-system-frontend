@@ -35,6 +35,8 @@ import {
   HistoryTab,
 } from "@/features/students/components/tab-contents";
 import { BackListButton } from "@/components/shared/back";
+import { EmptyState } from "@/components/shared/states";
+import { UserX } from "lucide-react";
 
 const StudentDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -75,19 +77,25 @@ const StudentDetail = () => {
   if (isLoading) return <StudentDetailSkeleton />;
   if (isError || !student) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <p className="text-zinc-500 dark:text-zinc-400">
-          {t("students.detail.notFound")}
-        </p>
-        <Button variant="outline" onClick={() => navigate(-1)}>
-          {t("common.back")}
-        </Button>
+      <div className="space-y-4">
+        <BackListButton title={t("admin.header.students")} />
+        <div className="rounded-2xl border bg-card">
+          <EmptyState
+            icon={UserX}
+            title={t("students.detail.notFound")}
+            action={
+              <Button variant="outline" onClick={() => navigate("/admin/students")}>
+                {t("admin.header.students")}
+              </Button>
+            }
+          />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       <BackListButton title={t("admin.header.students")} />
       <StudentDetailHeader
         isActive={isActive}
@@ -99,29 +107,29 @@ const StudentDetail = () => {
         setIsMsgOpen={setIsMsgOpen}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-        <div className="lg:col-span-2 space-y-6">
-          <StatisticSection student={student} />
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="bg-zinc-100 dark:bg-zinc-800 p-1 rounded-full h-auto flex-wrap gap-1">
-              {studentTabOptions.map((tab) => (
-                <TabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  className="rounded-full px-4 py-2 text-sm data-[state=active]:bg-purple-600 data-[state=active]:text-white"
-                >
-                  {tab.label}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+      <StatisticSection student={student} />
 
-            <InfoTab
-              student={student}
-              isDeleted={isDeleted}
-              setIsEditOpen={setIsEditOpen}
-            />
+      <div className="grid grid-cols-1 items-start gap-4 sm:gap-5 lg:grid-cols-3">
+        <div className="min-w-0 lg:col-span-2">
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            {/* Telefonda tablar sig'masa — faqat tab qatori suriladi */}
+            <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+              <TabsList className="h-auto gap-0.5 rounded-xl border bg-card p-1">
+                {studentTabOptions.map((tab) => (
+                  <TabsTrigger
+                    key={tab.value}
+                    value={tab.value}
+                    className="h-8 flex-none rounded-lg px-3 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary-soft data-[state=active]:text-primary data-[state=active]:shadow-none dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary-soft"
+                  >
+                    {tab.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+
+            <InfoTab student={student} />
             <GroupTab isDeleted={isDeleted} student={student} />
-            <CoinTab isDeleted={isDeleted} student={student} />
+            <CoinTab isDeleted={isDeleted} />
             <GiftTab student={student} />
             <SecurityTab
               isActive={isActive}
@@ -132,12 +140,7 @@ const StudentDetail = () => {
           </Tabs>
         </div>
 
-        <StudentDetailSidebar
-          isDeleted={isDeleted}
-          setIsEditOpen={setIsEditOpen}
-          setIsMsgOpen={setIsMsgOpen}
-          student={student}
-        />
+        <StudentDetailSidebar student={student} />
       </div>
 
       {/* ── Modals ── */}

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import {
   getPurchaseStatusLabels,
   PURCHASE_STATUS_BADGE_CLASS,
+  PURCHASE_STATUS_DOT_CLASS,
 } from "../constants";
 import type { PurchaseStatus } from "../types";
 
@@ -18,11 +19,15 @@ export const PurchaseStatusBadge = ({ status, className }: Props) => {
   return (
     <span
       className={cn(
-        "inline-block whitespace-nowrap px-2 py-0.5 rounded-4xl text-xs font-medium",
+        "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-medium",
         PURCHASE_STATUS_BADGE_CLASS[status],
         className,
       )}
     >
+      <span
+        className={cn("size-1.5 rounded-full", PURCHASE_STATUS_DOT_CLASS[status])}
+        aria-hidden
+      />
       {labels[status] ?? status}
     </span>
   );

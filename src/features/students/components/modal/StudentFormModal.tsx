@@ -37,9 +37,9 @@ export const StudentFormModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-lg bg-card border border-border">
         <DialogHeader>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="text-foreground">
             {isEdit
               ? t("students.form.editTitle")
               : t("students.form.createTitle")}
@@ -105,14 +105,14 @@ export const StudentFormModal = ({
                   variant="outline"
                   onClick={onClose}
                   disabled={isPending}
-                  className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                  className="border-border text-foreground"
                 >
                   {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                 
                 >
                   {isPending ? t("common.saving") : t("common.save")}
                 </Button>
@@ -181,14 +181,14 @@ export const StudentFormModal = ({
                   variant="outline"
                   onClick={onClose}
                   disabled={isPending}
-                  className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                  className="border-border text-foreground"
                 >
                   {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-purple-600 hover:bg-purple-700 text-white"
+                 
                 >
                   {isPending ? t("common.adding") : t("common.add")}
                 </Button>

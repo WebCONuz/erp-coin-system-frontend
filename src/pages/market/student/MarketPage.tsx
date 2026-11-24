@@ -12,7 +12,8 @@ import {
   StudentPurchaseStatusFilter,
 } from "@/features/purchases/components";
 import { useRewardsCatalog } from "@/features/market/hooks";
-import { PageLoading } from "@/components/loading";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DashboardTitle } from "@/components/shared/title";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 
 const SHOP_TAB = "shop";
@@ -39,28 +40,28 @@ const StudentMarketPage = () => {
   const balance = user?.wallet?.balance ?? 0;
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+    <Tabs
+      value={activeTab}
+      onValueChange={setActiveTab}
+      className="space-y-4 sm:space-y-5"
+    >
       <div className="flex flex-col gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-semibold text-ink">
-            {t("market.student.title")}
-          </h1>
-          <p className="text-sm text-ink-soft mt-1">
-            {t("market.student.subtitle")}
-          </p>
-        </div>
+        <DashboardTitle
+          title={t("market.student.title")}
+          description={t("market.student.subtitle")}
+        />
 
-        <div className="flex min-w-0 items-center gap-2">
-          <TabsList className="bg-white border border-ink/10 p-1 rounded-full h-auto shrink-0 gap-1">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <TabsList className="h-auto gap-0.5 rounded-xl border bg-card p-1">
             <TabsTrigger
               value={SHOP_TAB}
-              className="rounded-full px-4 py-2 text-sm data-[state=active]:bg-forest data-[state=active]:text-paper"
+              className="h-8 flex-none rounded-lg px-3 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary-soft data-[state=active]:text-primary data-[state=active]:shadow-none dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary-soft"
             >
               {t("market.student.shopTab")}
             </TabsTrigger>
             <TabsTrigger
               value={PURCHASES_TAB}
-              className="rounded-full px-4 py-2 text-sm data-[state=active]:bg-forest data-[state=active]:text-paper"
+              className="h-8 flex-none rounded-lg px-3 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary-soft data-[state=active]:text-primary data-[state=active]:shadow-none dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary-soft"
             >
               {t("market.student.purchasesTab")}
             </TabsTrigger>
@@ -70,19 +71,26 @@ const StudentMarketPage = () => {
         </div>
       </div>
 
-      <TabsContent value={SHOP_TAB} className="space-y-4 mt-0">
+      <TabsContent value={SHOP_TAB} className="mt-0 space-y-4 sm:space-y-5">
         {isLoading ? (
-          <PageLoading />
+          <div aria-busy="true" className="space-y-4">
+            <Skeleton className="h-40 rounded-3xl" />
+            <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Skeleton key={i} className="aspect-3/4 rounded-2xl" />
+              ))}
+            </div>
+          </div>
         ) : (
           <>
             <StudentMarketHero rewards={rewards} balance={balance} />
             <StudentEarnTips />
 
-            <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-              <div className="lg:col-span-1">
+            <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-5">
+              <div className="min-w-0 lg:sticky lg:top-0">
                 <StudentCategorySidebar totalCount={rewards.length} />
               </div>
-              <div className="lg:col-span-4">
+              <div className="min-w-0">
                 <StudentProductGrid
                   rewards={rewards}
                   onGoToPurchases={() => setActiveTab(PURCHASES_TAB)}

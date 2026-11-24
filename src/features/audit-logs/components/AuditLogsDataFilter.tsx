@@ -43,12 +43,13 @@ export const AuditLogsDataFilter = ({ onRefresh, isRefreshing }: Props) => {
 
   return (
     <Form {...form}>
-      <div className="w-full space-y-3 py-4">
+      <div className="w-full space-y-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <DashboardTitle
               title={t("auditLogs.title")}
               description={t("auditLogs.description")}
+              as="h2"
             />
           </div>
           {onRefresh && (
@@ -57,11 +58,12 @@ export const AuditLogsDataFilter = ({ onRefresh, isRefreshing }: Props) => {
               variant="outline"
               onClick={onRefresh}
               disabled={isRefreshing}
-              className="h-9 shrink-0 gap-2 border-zinc-300 dark:border-zinc-700"
+              className="h-9 shrink-0 gap-2"
+              aria-label={t("auditLogs.refresh")}
             >
               <RefreshCw
-                size={14}
-                className={isRefreshing ? "animate-spin" : undefined}
+                className={isRefreshing ? "size-4 animate-spin" : "size-4"}
+                aria-hidden
               />
               <span className="hidden sm:inline">
                 {t("auditLogs.refresh")}
@@ -70,8 +72,8 @@ export const AuditLogsDataFilter = ({ onRefresh, isRefreshing }: Props) => {
           )}
         </div>
 
-        <div className="flex flex-wrap items-start gap-3">
-          <div className="w-full sm:w-48">
+        <div className="grid grid-cols-2 items-start gap-2 sm:flex sm:flex-wrap sm:gap-2.5">
+          <div className="min-w-0 sm:w-48">
             <ControlledSelect
               control={form.control}
               name="actionType"
@@ -79,7 +81,7 @@ export const AuditLogsDataFilter = ({ onRefresh, isRefreshing }: Props) => {
               clearable={false}
             />
           </div>
-          <div className="w-full sm:w-48">
+          <div className="min-w-0 sm:w-48">
             <ControlledSelect
               control={form.control}
               name="entityType"
@@ -106,11 +108,11 @@ export const AuditLogsDataFilter = ({ onRefresh, isRefreshing }: Props) => {
           {hasActiveFilters && (
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               onClick={reset}
-              className="h-10 gap-2 border-zinc-300 dark:border-zinc-700"
+              className="col-span-2 h-10 gap-2 text-muted-foreground hover:text-foreground sm:col-span-1"
             >
-              <RotateCcw size={14} />
+              <RotateCcw className="size-4" aria-hidden />
               {t("auditLogs.filter.reset")}
             </Button>
           )}

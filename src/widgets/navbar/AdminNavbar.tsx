@@ -11,8 +11,12 @@ import {
   Settings,
   LogOut,
   MonitorSmartphone,
+  Building2,
+  Check,
+  Languages,
   type LucideIcon,
 } from "lucide-react";
+import { APP_LOGO, APP_NAME } from "@/assets/constants";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -38,9 +42,9 @@ import { LogoutAllModal } from "@/features/auth/components";
 
 // Constants
 const LANGUAGES = [
-  { code: "uz", label: "O'zbekcha" },
-  { code: "uz_cr", label: "Кирилча" },
-  { code: "ru", label: "Русский" },
+  { code: "uz", label: "O'zbekcha", short: "UZ" },
+  { code: "uz_cr", label: "Кирилча", short: "ЎЗ" },
+  { code: "ru", label: "Русский", short: "RU" },
 ];
 
 // Props
@@ -52,7 +56,7 @@ interface AdminNavbarProps {
 // Component
 export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
   const { t, i18n } = useTranslation();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   const quickActions: { key: string; label: string; icon: LucideIcon }[] = [
     { key: "student", label: t("admin.navbar.newStudent"), icon: UserPlus },
@@ -132,28 +136,45 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
     queryClient.invalidateQueries();
   };
 
+  const isDark = resolvedTheme === "dark";
+
   return (
-    <header className="w-full border-b bg-background">
-      <div className="flex h-14 items-center gap-4 pr-4 pl-8">
+    <header className="sticky top-0 z-20 w-full shrink-0 border-b bg-card">
+      <div className="flex h-14 items-center gap-2 px-3 sm:gap-3 sm:px-6">
+        {/* Mobilda sidebar yo'q — logo shu yerda */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <img src={APP_LOGO} alt="" className="size-7" />
+          <span className="sr-only sm:not-sr-only font-heading text-base font-semibold tracking-tight">
+            {APP_NAME}
+          </span>
+        </div>
+
         {/* Quick add dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="h-9 gap-1 px-2.5 text-sm font-medium focus-visible:ring-0"
+              className="h-9 gap-1.5 px-2.5"
+              aria-label={t("admin.navbar.quickAdd")}
             >
-              <Plus size={15} /> {t("admin.navbar.quickAdd")}
-              <ChevronDown size={13} className="text-muted-foreground" />
+              <Plus className="size-4" aria-hidden />
+              <span className="hidden sm:inline">
+                {t("admin.navbar.quickAdd")}
+              </span>
+              <ChevronDown
+                className="hidden size-3.5 text-muted-foreground sm:block"
+                aria-hidden
+              />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-44">
+          <DropdownMenuContent align="start" className="w-48">
             {quickActions.map(({ key, label, icon: Icon }) => (
               <DropdownMenuItem
                 key={key}
-                className="gap-2.5 text-sm cursor-pointer"
+                className="cursor-pointer gap-2.5 text-sm"
                 onClick={() => onQuickAction?.(key)}
               >
-                <Icon size={14} className="text-muted-foreground" />
+                <Icon size={15} className="text-muted-foreground" aria-hidden />
                 {label}
               </DropdownMenuItem>
             ))}
@@ -167,52 +188,76 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="h-9 gap-2 px-2.5 text-sm font-medium focus-visible:ring-0"
+                className="h-9 min-w-0 gap-2 px-2.5"
+                aria-label={t("admin.navbar.selectCenter")}
               >
-                <span>{currentTenat ?? t("admin.navbar.selectCenter")}</span>
-                <ChevronDown size={13} className="text-muted-foreground" />
+                <Building2
+                  className="size-4 shrink-0 text-muted-foreground"
+                  aria-hidden
+                />
+                <span className="max-w-28 truncate sm:max-w-48">
+                  {currentTenat || t("admin.navbar.selectCenter")}
+                </span>
+                <ChevronDown
+                  className="size-3.5 shrink-0 text-muted-foreground"
+                  aria-hidden
+                />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-44">
+            <DropdownMenuContent
+              align="start"
+              className="max-h-80 w-56 overflow-y-auto"
+            >
               {tenants?.map(({ id, name }) => (
                 <DropdownMenuItem
                   key={id}
-                  className="gap-2.5 text-sm cursor-pointer"
+                  className={cn(
+                    "cursor-pointer justify-between gap-2.5 text-sm",
+                    name === currentTenat && "font-medium text-primary",
+                  )}
                   onClick={() => handleTenantChange(id.toString())}
                 >
-                  {name}
+                  <span className="truncate">{name}</span>
+                  {name === currentTenat && (
+                    <Check className="size-4" aria-hidden />
+                  )}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
         )}
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
           {/* Language selector */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                variant="outline"
-                className="h-9 gap-1.5 px-3 text-sm font-medium focus-visible:ring-0"
+                variant="ghost"
+                className="h-9 gap-1.5 px-2.5"
+                aria-label={t("shell.language")}
               >
-                {currentLang.label}
-                <ChevronDown size={13} className="text-muted-foreground" />
+                <Languages
+                  className="size-4 text-muted-foreground"
+                  aria-hidden
+                />
+                <span className="hidden md:inline">{currentLang.label}</span>
+                <span className="md:hidden">{currentLang.short}</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-36">
+            <DropdownMenuContent align="end" className="w-40">
               {LANGUAGES.map((lang) => (
                 <DropdownMenuItem
                   key={lang.code}
+                  lang={lang.code === "ru" ? "ru" : "uz"}
                   className={cn(
-                    "text-sm cursor-pointer justify-between",
-                    i18n.language === lang.code &&
-                      "text-purple-600 font-medium",
+                    "cursor-pointer justify-between text-sm",
+                    i18n.language === lang.code && "font-medium text-primary",
                   )}
                   onClick={() => i18n.changeLanguage(lang.code)}
                 >
                   {lang.label}
                   {i18n.language === lang.code && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-purple-600" />
+                    <Check className="size-4" aria-hidden />
                   )}
                 </DropdownMenuItem>
               ))}
@@ -221,92 +266,103 @@ export function AdminNavbar({ onQuickAction }: AdminNavbarProps) {
 
           {/* Bell */}
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="relative h-9 w-9 text-muted-foreground hover:text-foreground"
+            className="hidden size-9 text-muted-foreground hover:text-foreground sm:inline-flex"
+            aria-label={t("shell.notifications")}
           >
-            <Bell size={17} />
-            <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-purple-600" />
+            <Bell className="size-4.5" aria-hidden />
           </Button>
 
           {/* Dark mode toggle */}
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="h-9 w-9 text-muted-foreground hover:text-foreground dark:border-yellow-600/40"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className="size-9 text-muted-foreground hover:text-foreground"
+            onClick={() => setTheme(isDark ? "light" : "dark")}
+            aria-label={isDark ? t("shell.lightMode") : t("shell.darkMode")}
           >
-            {theme === "dark" ? (
-              <Sun size={17} className="text-yellow-500" />
+            {isDark ? (
+              <Sun className="size-4.5" aria-hidden />
             ) : (
-              <Moon size={17} />
+              <Moon className="size-4.5" aria-hidden />
             )}
           </Button>
 
           {/* User avatar dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              {user?.avatarUrl ? (
-                <div className="h-8 w-8 rounded-full border-2 border-purple-600/50 overflow-hidden">
+              <button
+                type="button"
+                aria-label={t("admin.navbar.profile")}
+                className="ml-1 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                {user?.avatarUrl ? (
                   <img
-                    src={user?.avatarUrl}
-                    alt="profile-image"
-                    className="w-full h-full object-cover"
+                    src={user.avatarUrl}
+                    alt=""
+                    className="size-8 rounded-full object-cover ring-2 ring-border"
                   />
-                </div>
-              ) : (
-                <Avatar className="h-8 w-8 cursor-pointer select-none">
-                  <AvatarFallback className="bg-linear-to-br from-purple-500 to-purple-700 text-white text-xs font-medium">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-              )}
+                ) : (
+                  <Avatar className="size-8 select-none">
+                    <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                )}
+              </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
+            <DropdownMenuContent align="end" className="w-56">
               {/* User info */}
-              <div className="px-3 py-2.5 border-b">
-                <p className="text-sm font-medium leading-none">
+              <div className="border-b px-3 py-2.5">
+                <p className="truncate text-sm font-medium leading-none">
                   {user?.fullName ? user.fullName : t("admin.navbar.noName")}
                 </p>
                 {user?.username && (
-                  <p className="text-xs text-muted-foreground mt-1 truncate">
+                  <p className="mt-1 truncate text-xs text-muted-foreground">
                     @{user.username}
                   </p>
                 )}
-                <p className="text-xs mt-1 text-[10px] font-medium uppercase text-purple-600 dark:text-yellow-500">
-                  {user?.role?.name ? user?.role?.name : "student"}
-                </p>
+                {user?.role && (
+                  <p className="mt-1.5 inline-flex rounded-full bg-primary-soft px-2 py-0.5 text-[11px] font-medium text-primary">
+                    {user.role.displayName || user.role.name}
+                  </p>
+                )}
               </div>
 
               <DropdownMenuItem
-                className="gap-2.5 mt-1 text-sm cursor-pointer"
+                className="mt-1 cursor-pointer gap-2.5 text-sm"
                 onClick={() => setIsProfileOpen(true)}
               >
-                <User size={14} className="text-muted-foreground" />
+                <User size={15} className="text-muted-foreground" aria-hidden />
                 {t("admin.navbar.profile")}
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="gap-2.5 text-sm cursor-pointer"
+                className="cursor-pointer gap-2.5 text-sm"
                 onClick={() => navigate("/admin/control/reasons?direction=all")}
               >
-                <Settings size={14} className="text-muted-foreground" />
+                <Settings
+                  size={15}
+                  className="text-muted-foreground"
+                  aria-hidden
+                />
                 {t("admin.navbar.settings")}
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
-                className="gap-2.5 text-sm cursor-pointer text-destructive focus:text-destructive"
+                className="cursor-pointer gap-2.5 text-sm text-destructive focus:text-destructive"
                 onClick={() => logout()}
               >
-                <LogOut size={14} />
+                <LogOut size={15} aria-hidden />
                 {t("admin.navbar.logout")}
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="gap-2.5 text-sm cursor-pointer text-destructive focus:text-destructive"
+                className="cursor-pointer gap-2.5 text-sm text-destructive focus:text-destructive"
                 onClick={() => setIsLogoutAllOpen(true)}
               >
-                <MonitorSmartphone size={14} />
+                <MonitorSmartphone size={15} aria-hidden />
                 {t("logoutAll.action")}
               </DropdownMenuItem>
             </DropdownMenuContent>

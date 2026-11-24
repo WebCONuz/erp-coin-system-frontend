@@ -19,6 +19,13 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+        // Holat badge'lari — och fon + AA kontrastli matn.
+        soft: "bg-primary-soft text-primary",
+        success: "bg-success-soft text-success",
+        warning: "bg-warning-soft text-warning",
+        info: "bg-info-soft text-info",
+        danger: "bg-destructive-soft text-destructive",
+        coin: "bg-coin-soft text-coin-ink",
       },
     },
     defaultVariants: {

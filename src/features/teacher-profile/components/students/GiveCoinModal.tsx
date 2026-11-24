@@ -110,10 +110,10 @@ export const GiveCoinModal = ({
     <Dialog open={open} onOpenChange={(v) => !v && handleClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display text-ink">
+          <DialogTitle className="font-heading text-foreground">
             {t("teacherProfile.giveCoin.title")}
           </DialogTitle>
-          <DialogDescription className="text-ink-soft">
+          <DialogDescription className="text-muted-foreground">
             {t("teacherProfile.giveCoin.description", { name: studentName })}
           </DialogDescription>
         </DialogHeader>
@@ -125,8 +125,8 @@ export const GiveCoinModal = ({
               onClick={() => setDirection("earn")}
               className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${
                 direction === "earn"
-                  ? "border-forest/40 bg-forest/10 text-forest"
-                  : "border-ink/10 text-ink-soft"
+                  ? "border-primary/40 bg-primary/10 text-primary"
+                  : "border-border text-muted-foreground"
               }`}
             >
               <Plus size={15} />
@@ -137,8 +137,8 @@ export const GiveCoinModal = ({
               onClick={() => setDirection("deduct")}
               className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${
                 direction === "deduct"
-                  ? "border-bloom/40 bg-bloom/10 text-bloom"
-                  : "border-ink/10 text-ink-soft"
+                  ? "border-destructive/40 bg-destructive/10 text-destructive"
+                  : "border-border text-muted-foreground"
               }`}
             >
               <Minus size={15} />
@@ -147,13 +147,13 @@ export const GiveCoinModal = ({
           </div>
 
           <div>
-            <label className="text-xs font-medium text-ink-soft mb-1.5 block">
+            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
               {t("common.amount")}
             </label>
             <div className="relative">
               <Coins
                 size={15}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gold"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-coin"
               />
               <input
                 type="number"
@@ -162,11 +162,11 @@ export const GiveCoinModal = ({
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder={t("teacherProfile.giveCoin.amountPlaceholder")}
-                className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
+                className="w-full rounded-xl border border-border bg-card pl-9 pr-3 py-2.5 text-sm text-foreground outline-none focus:border-coin/50"
               />
             </div>
             {teacherCoinLimit !== null && (
-              <p className="mt-1 text-xs text-ink-soft">
+              <p className="mt-1 text-xs text-muted-foreground">
                 {t("bulkCoin.teacherLimitHint", { limit: teacherCoinLimit })}
               </p>
             )}
@@ -174,7 +174,7 @@ export const GiveCoinModal = ({
 
           {matchingGroups.length > 1 && (
             <div>
-              <label className="text-xs font-medium text-ink-soft mb-1.5 block">
+              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
                 {t("common.group")}
               </label>
               <OptionSelect
@@ -191,7 +191,7 @@ export const GiveCoinModal = ({
           )}
 
           <div>
-            <label className="text-xs font-medium text-ink-soft mb-1.5 block">
+            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
               {t("bulkCoin.noteLabel")}
             </label>
             <input
@@ -200,7 +200,7 @@ export const GiveCoinModal = ({
               maxLength={COIN_NOTE_MAX}
               onChange={(e) => setNote(e.target.value)}
               placeholder={t("teacherProfile.giveCoin.notePlaceholder")}
-              className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
+              className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none focus:border-coin/50"
             />
           </div>
 
@@ -208,7 +208,7 @@ export const GiveCoinModal = ({
             type="button"
             onClick={handleSubmit}
             disabled={manualCoin.isPending}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
           >
             {manualCoin.isPending ? t("common.sending") : t("common.confirm")}
           </button>

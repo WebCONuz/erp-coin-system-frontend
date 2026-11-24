@@ -5,17 +5,11 @@ import { TemplateCard } from "./TemplateCard";
 
 interface Props {
   template: ScheduleTemplate;
-  colorClass: string;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-export const DraggableTemplateCard = ({
-  template,
-  colorClass,
-  onEdit,
-  onDelete,
-}: Props) => {
+export const DraggableTemplateCard = ({ template, onEdit, onDelete }: Props) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({ id: template.id });
 
@@ -26,14 +20,13 @@ export const DraggableTemplateCard = ({
         transform: CSS.Translate.toString(transform),
         opacity: isDragging ? 0.4 : 1,
       }}
-      className="touch-none"
+      className="touch-none rounded-lg focus-visible:outline-2 focus-visible:outline-ring"
       {...listeners}
       {...attributes}
     >
       <TemplateCard
         template={template}
         groupName={template.group.name}
-        colorClass={colorClass}
         onEdit={onEdit}
         onDelete={onDelete}
       />

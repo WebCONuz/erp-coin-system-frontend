@@ -1,3 +1,5 @@
+import { Input } from "@/components/ui/input";
+import { EmptyState } from "@/components/shared/states";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -63,39 +65,39 @@ export const StudentProductGrid = ({ rewards, onGoToPurchases }: Props) => {
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-ink-soft">
+        <p className="text-sm text-muted-foreground">
           {t("market.student.foundCount", { count: filtered.length })}
         </p>
-        <div className="relative w-full sm:w-64">
+        <div role="search" className="relative w-full sm:w-72">
           <SearchIcon
-            size={15}
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-soft/50"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
           />
-          <input
+          <Input
+            type="search"
             defaultValue={search}
             maxLength={TEXT_LIMITS.SEARCH}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder={t("market.student.searchPlaceholder")}
-            className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"
+            aria-label={t("market.student.searchPlaceholder")}
+            className="h-9 pl-9"
           />
         </div>
       </div>
 
       {!filtered.length ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-ink/10 bg-white">
-          <Gift size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">
-            {t("market.student.notFound")}
-          </p>
-          <p className="text-xs text-ink-soft mt-1 max-w-xs">
-            {t("market.student.notFoundHint")}
-          </p>
+        <div className="rounded-2xl border bg-card">
+          <EmptyState
+            icon={Gift}
+            title={t("market.student.notFound")}
+            description={t("market.student.notFoundHint")}
+          />
         </div>
       ) : (
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+        <ul className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {filtered.map((reward) => (
+            <li key={reward.id}>
             <StudentProductCard
-              key={reward.id}
               product={reward}
               balance={balance}
               onBuy={handleBuy}
@@ -103,8 +105,9 @@ export const StudentProductGrid = ({ rewards, onGoToPurchases }: Props) => {
                 purchaseReward.isPending && selected?.reward.id === reward.id
               }
             />
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
       <StudentPurchaseModal

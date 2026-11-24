@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Coins, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { StudentDetail } from "@/features/students/types";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/shared/avatar";
+import { CoinAmount, CoinIcon } from "@/components/shared/coin";
 import { GiveCoinModal } from "./GiveCoinModal";
 
+/** O'quvchi kartasi: profilga havola + alohida "Tanga berish" tugmasi. */
 export const TeacherStudentCard = ({
   student,
   groupId,
@@ -13,52 +17,45 @@ export const TeacherStudentCard = ({
   groupId?: string;
 }) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const [coinModalOpen, setCoinModalOpen] = useState(false);
 
   return (
     <>
-      <div
-        onClick={() => navigate(`/teacher/students/${student.id}`)}
-        className="rounded-2xl border border-ink/10 bg-white p-4 cursor-pointer transition-shadow hover:shadow-md"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-forest text-gold-soft flex items-center justify-center text-sm font-semibold shrink-0">
-            {student.fullName.charAt(0).toUpperCase()}
-          </div>
+      <article className="flex h-full flex-col rounded-2xl border bg-card">
+        <Link
+          to={`/teacher/students/${student.id}`}
+          className="flex flex-1 items-center gap-3 rounded-t-2xl p-4 transition-colors hover:bg-muted/40 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
+        >
+          <UserAvatar name={student.fullName} url={student.avatarUrl} className="size-10" />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-ink truncate">
-              {student.fullName}
+            <p className="flex items-center gap-2">
+              <span className="truncate text-sm font-semibold">
+                {student.fullName}
+              </span>
+              {!student.isActive && (
+                <Badge variant="secondary">{t("common.inactive")}</Badge>
+              )}
             </p>
-            <p className="text-xs text-ink-soft flex items-center gap-1 mt-0.5">
-              <Phone size={11} />
+            <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
               {student.phone}
             </p>
           </div>
-          {!student.isActive && (
-            <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-bloom/10 text-bloom">
-              {t("common.inactive")}
-            </span>
-          )}
-        </div>
+        </Link>
 
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-ink/8">
-          <span className="flex items-center gap-1.5 text-sm font-medium text-gold">
-            <Coins size={14} />
-            {student.wallet?.balance ?? 0} {t("common.coinLabel")}
-          </span>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setCoinModalOpen(true);
-            }}
-            className="text-xs font-medium text-forest hover:underline"
+        <div className="flex items-center justify-between gap-2 border-t px-4 py-2.5">
+          <CoinAmount value={student.wallet?.balance ?? 0} variant="pill" size="sm" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 gap-1.5 text-primary hover:bg-primary-soft hover:text-primary"
+            onClick={() => setCoinModalOpen(true)}
+            aria-label={`${t("teacherProfile.students.giveCoinButton")}: ${student.fullName}`}
           >
+            <CoinIcon className="size-3.5" />
             {t("teacherProfile.students.giveCoinButton")}
-          </button>
+          </Button>
         </div>
-      </div>
+      </article>
 
       <GiveCoinModal
         open={coinModalOpen}

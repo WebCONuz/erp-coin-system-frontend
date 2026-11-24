@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { CheckCircle2, Clock, Lock } from "lucide-react";
+import { Clock, Lock } from "lucide-react";
 
 import {
   Form,
@@ -19,7 +19,7 @@ import { ControlledSelect } from "@/components/controls";
 import { ConfirmModal } from "@/components/shared/modal";
 import { formatDate, translateApiError } from "@/ustils";
 import { cn } from "@/lib/utils";
-import { getSessionTypeLabel } from "@/features/sessions/constants";
+import { Button } from "@/components/ui/button";
 import {
   useSessionEvaluation,
   useSessionRoomOptions,
@@ -119,69 +119,43 @@ export const TeacherSessionForm = ({ session }: Props) => {
     <>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-          {/* Scored jadvalda ustunlar ko'p — u ma'lumotlar ostida to'liq kenglikda chiqadi. */}
+          {/* Yo'qlama — asosiy ish (birinchi). Scored jadvalda ustunlar ko'p —
+              u to'liq kenglikda chiqadi. */}
           <div
             className={cn(
-              "grid grid-cols-1 gap-4",
-              !evaluation.isScored && "lg:grid-cols-2",
+              "grid grid-cols-1 items-start gap-4 sm:gap-5",
+              !evaluation.isScored &&
+                "lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]",
             )}
           >
+            <SessionEvaluationPanel
+              evaluation={evaluation}
+              disabled={readOnly}
+              tone="admin"
+            />
+
             {/* Session info panel */}
-            <div className="rounded-2xl border border-ink/10 bg-white p-5 space-y-4 min-w-0">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-forest text-paper">
-                    {getSessionTypeLabel(t, session.sessionType)}
-                  </span>
-                  {evaluation.isScored && (
-                    <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-gold/15 text-gold">
-                      {t("sessions.evaluationMode.scored")}
-                      {session.maxScore
-                        ? ` · ${t("sessions.results.maxScoreShort", {
-                            maxScore: session.maxScore,
-                          })}`
-                        : ""}
-                    </span>
-                  )}
-                  {session?.subject && (
-                    <span className="inline-block px-2.5 py-1 rounded-full text-xs font-medium bg-forest/20 text-forest">
-                      {session.subject.name}
-                    </span>
-                  )}
-                  {isLocked && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-gold/15 text-gold">
-                      <Lock size={12} />
-                      {t("sessions.locked")}
-                    </span>
-                  )}
-                  {!isLocked && isChecked && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-forest/15 text-forest">
-                      <CheckCircle2 size={12} />
-                      {t("sessions.filter.checked")}
-                    </span>
-                  )}
-                  {!isLocked && isChecked && editableUntil && !isEditWindowExpired && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs bg-gold/15 text-gold">
-                      <Clock size={12} />
-                      {t("sessions.teacherForm.editableUntil", {
-                        date: formatDate(editableUntil, "dd.MM.yyyy HH:mm"),
-                      })}
-                    </span>
-                  )}
-                </div>
-                <span className="text-sm text-ink-soft">
-                  {formatDate(session.sessionDate)}
-                </span>
-              </div>
+            <section
+              aria-labelledby="teacher-session-info-title"
+              className="min-w-0 space-y-4 rounded-2xl border bg-card p-4 sm:p-5"
+            >
+              <h2
+                id="teacher-session-info-title"
+                className="font-heading text-base font-semibold"
+              >
+                {t("sessions.detail.infoTitle")}
+              </h2>
 
-              <div>
-                <p className="text-sm text-ink-soft">{t("common.group")}</p>
-                <p className="text-sm font-medium text-ink">
-                  {session.group.name}
+              {!isLocked && isChecked && editableUntil && !isEditWindowExpired && (
+                <p className="flex items-start gap-2 rounded-lg bg-info-soft px-3 py-2 text-xs text-foreground">
+                  <Clock className="mt-px size-3.5 shrink-0 text-info" aria-hidden />
+                  {t("sessions.teacherForm.editableUntil", {
+                    date: formatDate(editableUntil, "dd.MM.yyyy HH:mm"),
+                  })}
                 </p>
-              </div>
+              )}
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <FormField
                   control={form.control}
                   name="startTime"
@@ -219,7 +193,8 @@ export const TeacherSessionForm = ({ session }: Props) => {
               />
 
               {readOnly && (
-                <p className="text-xs text-ink-soft">
+                <p className="flex items-start gap-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
+                  <Lock className="mt-0.5 size-3.5 shrink-0" aria-hidden />
                   {isLocked
                     ? t("sessions.lockedFieldsHint")
                     : t("sessions.teacherForm.editWindowExpiredHint")}
@@ -235,7 +210,7 @@ export const TeacherSessionForm = ({ session }: Props) => {
                     <FormControl>
                       <Textarea
                         placeholder={t("sessions.topicPlaceholder")}
-                        className="resize-none h-20"
+                        className="h-20 resize-none"
                         {...field}
                         disabled={readOnly}
                       />
@@ -244,29 +219,26 @@ export const TeacherSessionForm = ({ session }: Props) => {
                   </FormItem>
                 )}
               />
-            </div>
-
-            <SessionEvaluationPanel
-              evaluation={evaluation}
-              disabled={readOnly}
-              tone="teacher"
-            />
+            </section>
           </div>
 
           {!readOnly && (
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                // Dars boshlanmagan — saqlab bo'lmaydi (backend SESSION_NOT_STARTED).
-                disabled={
-                  isSaving || evaluation.hasErrors || !evaluation.hasStarted
-                }
-                className="inline-flex items-center gap-2 rounded-lg bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
-              >
-                {isSaving
-                  ? t("common.saving")
-                  : t("sessions.teacherForm.saveAction")}
-              </button>
+            // Yopishqoq saqlash paneli: uzun ro'yxatda ham tugma doim ko'rinadi.
+            <div className="sticky bottom-20 z-10 lg:bottom-4">
+              <div className="flex items-center justify-end gap-3 rounded-2xl border bg-card/95 px-4 py-3 shadow-lg backdrop-blur">
+                <Button
+                  type="submit"
+                  // Dars boshlanmagan — saqlab bo'lmaydi (backend SESSION_NOT_STARTED).
+                  disabled={
+                    isSaving || evaluation.hasErrors || !evaluation.hasStarted
+                  }
+                  className="h-10 min-w-32 px-5"
+                >
+                  {isSaving
+                    ? t("common.saving")
+                    : t("sessions.teacherForm.saveAction")}
+                </Button>
+              </div>
             </div>
           )}
         </form>

@@ -15,19 +15,19 @@ const AttendanceRingTile = ({
   const percent = total ? Math.round((present / total) * 100) : 0;
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-5 flex items-center gap-4">
+    <div className="rounded-2xl border border-border bg-card p-5 flex items-center gap-4">
       <RadialProgress
         percent={percent}
         size={56}
         strokeWidth={5}
-        color="var(--color-forest)"
-        trackColor="var(--color-paper-soft)"
+        color="var(--success)"
+        trackColor="var(--muted)"
       />
       <div className="min-w-0">
-        <p className="font-display text-xl font-bold text-ink">
+        <p className="font-heading text-xl font-bold text-foreground">
           {present}/{total}
         </p>
-        <p className="text-xs text-ink-soft">
+        <p className="text-xs text-muted-foreground">
           {t("students.detail.attendance")}
         </p>
       </div>
@@ -48,52 +48,52 @@ export const ProfileStatsRow = ({
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      <div className="rounded-2xl border border-gold/30 bg-gold-soft/20 p-5 flex items-center gap-4">
-        <div className="w-11 h-11 rounded-xl bg-gold/20 flex items-center justify-center shrink-0">
-          <Coins size={20} className="text-gold" />
+      <div className="rounded-2xl border border-coin/30 bg-coin-soft/20 p-5 flex items-center gap-4">
+        <div className="w-11 h-11 rounded-xl bg-coin/20 flex items-center justify-center shrink-0">
+          <Coins size={20} className="text-coin" />
         </div>
         <div className="min-w-0">
-          <p className="font-display text-xl font-bold text-ink">
+          <p className="font-heading text-xl font-bold text-foreground">
             {student.wallet?.balance ?? 0}
           </p>
-          <p className="text-xs text-ink-soft">
+          <p className="text-xs text-muted-foreground">
             {t("students.detail.coinBalance")}
           </p>
           {lastCoinActivity && (
-            <p className="text-[11px] text-forest font-medium mt-0.5">
+            <p className="text-[11px] text-primary font-medium mt-0.5">
               {lastCoinActivity}
             </p>
           )}
         </div>
       </div>
 
-      <div className="rounded-2xl border border-ink/10 bg-white p-5 flex items-center gap-4">
-        <div className="w-11 h-11 rounded-xl bg-forest/8 flex items-center justify-center shrink-0">
-          <Users size={20} className="text-forest" />
+      <div className="rounded-2xl border border-border bg-card p-5 flex items-center gap-4">
+        <div className="w-11 h-11 rounded-xl bg-primary/8 flex items-center justify-center shrink-0">
+          <Users size={20} className="text-primary" />
         </div>
         <div className="min-w-0">
-          <p className="font-display text-xl font-bold text-ink">
+          <p className="font-heading text-xl font-bold text-foreground">
             {student.groupMemberships?.length ?? 0}
           </p>
-          <p className="text-xs text-ink-soft">
+          <p className="text-xs text-muted-foreground">
             {t("students.detail.groupsCount")}
           </p>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-ink/10 bg-white p-5 flex items-center gap-4">
-        <div className="w-11 h-11 rounded-xl bg-bloom/10 flex items-center justify-center shrink-0">
-          <Gift size={20} className="text-bloom" />
+      <div className="rounded-2xl border border-border bg-card p-5 flex items-center gap-4">
+        <div className="w-11 h-11 rounded-xl bg-destructive/10 flex items-center justify-center shrink-0">
+          <Gift size={20} className="text-destructive" />
         </div>
         <div className="min-w-0">
-          <p className="font-display text-xl font-bold text-ink">
+          <p className="font-heading text-xl font-bold text-foreground">
             {student.stats?.totalPurchases ?? 0}
           </p>
-          <p className="text-xs text-ink-soft">
+          <p className="text-xs text-muted-foreground">
             {t("students.detail.purchased")}
           </p>
           {!student.stats?.totalPurchases && (
-            <p className="text-[11px] text-ink-soft/70 mt-0.5">
+            <p className="text-[11px] text-muted-foreground/70 mt-0.5">
               {t("studentProfile.stats.noPurchases")}
             </p>
           )}

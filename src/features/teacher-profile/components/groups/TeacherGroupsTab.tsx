@@ -1,34 +1,27 @@
 import { useTranslation } from "react-i18next";
-import { Users } from "lucide-react";
-import { PageLoading } from "@/components/loading";
+import { UsersRound } from "lucide-react";
+import { CardGrid } from "@/components/shared/card-grid";
 import { useMyTaughtGroups } from "../../hooks";
 import { TeacherGroupCard } from "./TeacherGroupCard";
 
 export const TeacherGroupsTab = () => {
   const { t } = useTranslation();
-  const { data: groups, isLoading } = useMyTaughtGroups();
-
-  if (isLoading) return <PageLoading />;
-
-  if (!groups?.length) {
-    return (
-      <div className="flex flex-col items-center justify-center py-14 text-center rounded-2xl border border-ink/10 bg-white">
-        <Users size={22} className="text-ink-soft/50 mb-2" />
-        <p className="text-sm font-medium text-ink">
-          {t("teacherProfile.groups.emptyTitle")}
-        </p>
-        <p className="text-xs text-ink-soft mt-1 max-w-xs">
-          {t("teacherProfile.groups.emptyDescription")}
-        </p>
-      </div>
-    );
-  }
+  const { data: groups, isLoading, isError, refetch, isFetching } =
+    useMyTaughtGroups();
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-      {groups.map((group) => (
-        <TeacherGroupCard key={group.id} data={group} />
-      ))}
-    </div>
+    <CardGrid
+      items={groups}
+      getKey={(group) => group.id}
+      isLoading={isLoading}
+      isError={isError}
+      onRetry={() => refetch()}
+      isRetrying={isFetching}
+      skeletonClassName="h-40"
+      emptyIcon={UsersRound}
+      emptyTitle={t("teacherProfile.groups.emptyTitle")}
+      emptyHint={t("teacherProfile.groups.emptyDescription")}
+      renderItem={(group) => <TeacherGroupCard data={group} />}
+    />
   );
 };

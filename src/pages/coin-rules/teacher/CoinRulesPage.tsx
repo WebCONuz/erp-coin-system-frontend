@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Coins, Plus } from "lucide-react";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { Plus, Scale } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CardGrid } from "@/components/shared/card-grid";
+import { ListToolbar } from "@/components/shared/toolbar";
 import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 import { useCoinRules } from "@/features/coin-rules/hooks";
@@ -14,7 +15,8 @@ import {
 
 const CoinRulesPage = () => {
   const { t } = useTranslation();
-  const { data: rules, isLoading } = useCoinRules();
+  const { data: rules, isLoading, isError, refetch, isFetching } =
+    useCoinRules();
   const { data: groups } = useMyTaughtGroups();
   const pagination = usePagination({
     totalItems: rules?.meta?.total || 0,
@@ -25,65 +27,48 @@ const CoinRulesPage = () => {
   const groupNameById = new Map((groups ?? []).map((g) => [g.id, g.name]));
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-semibold text-ink">
-            {t("teacherProfile.coinRules.title")}
-          </h1>
-          <p className="text-sm text-ink-soft mt-1">
-            {t("teacherProfile.coinRules.subtitle")}
-          </p>
-        </div>
+    <div className="space-y-4 sm:space-y-5">
+      <ListToolbar
+        title={t("teacherProfile.coinRules.title")}
+        description={t("teacherProfile.coinRules.subtitle")}
+        addLabel={t("teacherProfile.coinRules.newRule")}
+        onAdd={() => setCreateOpen(true)}
+      />
 
-        <button
-          type="button"
-          onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors"
-        >
-          <Plus size={16} />
-          {t("teacherProfile.coinRules.newRule")}
-        </button>
-      </div>
+      <CardGrid
+        items={rules?.data}
+        getKey={(rule) => rule.id}
+        isLoading={isLoading}
+        isError={isError}
+        onRetry={() => refetch()}
+        isRetrying={isFetching}
+        emptyIcon={Scale}
+        emptyTitle={t("teacherProfile.coinRules.emptyTitle")}
+        emptyHint={t("teacherProfile.coinRules.emptyText")}
+        emptyAction={
+          <Button onClick={() => setCreateOpen(true)} className="gap-2">
+            <Plus className="size-4" aria-hidden />
+            {t("teacherProfile.coinRules.newRule")}
+          </Button>
+        }
+        renderItem={(rule) => (
+          <TeacherCoinRuleCard
+            data={rule}
+            groupName={
+              rule.groupId ? groupNameById.get(rule.groupId) : undefined
+            }
+          />
+        )}
+      />
 
-      {isLoading ? (
-        <PageLoading />
-      ) : !rules?.data ? (
-        <NoData text={t("common.noData")} />
-      ) : !rules.data.length ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-ink/10 bg-white">
-          <Coins size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">
-            {t("teacherProfile.coinRules.emptyTitle")}
-          </p>
-          <p className="text-xs text-ink-soft mt-1 max-w-xs">
-            {t("teacherProfile.coinRules.emptyText")}
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-            {rules.data.map((rule) => (
-              <TeacherCoinRuleCard
-                key={rule.id}
-                data={rule}
-                groupName={
-                  rule.groupId ? groupNameById.get(rule.groupId) : undefined
-                }
-              />
-            ))}
-          </div>
-
-          {rules.meta.totalPages > 1 && (
-            <TablePagination
-              totalItems={rules.meta.total}
-              currentPage={pagination.currentPage}
-              totalPages={rules.meta.totalPages}
-              pageSize={pagination.pageSize}
-              onPageChange={pagination.setPage}
-            />
-          )}
-        </>
+      {!!rules && rules.meta.totalPages > 1 && (
+        <TablePagination
+          totalItems={rules.meta.total}
+          currentPage={pagination.currentPage}
+          totalPages={rules.meta.totalPages}
+          pageSize={pagination.pageSize}
+          onPageChange={pagination.setPage}
+        />
       )}
 
       <CreateCoinRuleModal

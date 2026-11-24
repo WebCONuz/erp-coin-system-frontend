@@ -1,40 +1,22 @@
+import { parseISO } from "date-fns";
 import { CalendarDays } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { relativeUzDayLabel } from "@/ustils/uz-date";
+import { Badge } from "@/components/ui/badge";
+import { Panel } from "@/components/shared/panel";
+import { EmptyState } from "@/components/shared/states";
+import { subjectColor } from "@/lib/subject-color";
+import { formatLongDate, relativeDayLabel } from "@/ustils";
 import type { DashboardSession } from "../../types";
-
-const AVATAR_STYLES = [
-  "bg-forest text-paper",
-  "bg-gold/20 text-gold",
-  "bg-bloom/15 text-bloom",
-];
-
-function avatarStyle(seed: string) {
-  const sum = seed.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return AVATAR_STYLES[sum % AVATAR_STYLES.length];
-}
-
-function initials(name: string) {
-  return name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-}
 
 function groupByDate(sessions: DashboardSession[]) {
   const map = new Map<string, DashboardSession[]>();
   for (const session of sessions) {
-    const list = map.get(session.sessionDate) ?? [];
+    const key = session.sessionDate.slice(0, 10);
+    const list = map.get(key) ?? [];
     list.push(session);
-    map.set(session.sessionDate, list);
+    map.set(key, list);
   }
-  return Array.from(map.entries()).map(([sessionDate, sessions]) => ({
-    sessionDate,
-    label: relativeUzDayLabel(sessionDate),
-    sessions,
-  }));
+  return Array.from(map.entries());
 }
 
 interface Props {
@@ -42,69 +24,80 @@ interface Props {
   upcomingSessions: DashboardSession[];
 }
 
+/** Bugungi va ertangi darslar — kun bo'yicha, fan rangi chap chiziqda. */
 export const UpcomingLessonsCard = ({
   todaySessions,
   upcomingSessions,
 }: Props) => {
-  const { t } = useTranslation();
-  const groups = groupByDate([...todaySessions, ...upcomingSessions]);
+  const { t, i18n } = useTranslation();
+  const days = groupByDate([...todaySessions, ...upcomingSessions]);
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display text-sm font-semibold text-ink">
-          {t("studentProfile.dashboard.upcomingTitle")}
-        </h3>
-      </div>
-
-      {!groups.length ? (
-        <div className="flex flex-col items-center justify-center py-10 text-center">
-          <CalendarDays size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm text-ink-soft">
-            {t("studentProfile.dashboard.noUpcoming")}
-          </p>
-        </div>
+    <Panel title={t("studentProfile.dashboard.upcomingTitle")} className="h-full">
+      {!days.length ? (
+        <EmptyState
+          size="sm"
+          icon={CalendarDays}
+          title={t("studentProfile.dashboard.noUpcoming")}
+        />
       ) : (
         <div className="space-y-5">
-          {groups.map((group) => (
-            <div key={group.sessionDate}>
-              <p className="text-[11px] font-semibold tracking-wide text-ink-soft mb-2">
-                {group.label}
-              </p>
-              <div className="space-y-2">
-                {group.sessions.map((session) => (
-                  <div
-                    key={session.id}
-                    className="flex items-center gap-3 rounded-xl border border-ink/8 px-3 py-2.5"
-                  >
-                    <div
-                      className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold shrink-0 ${avatarStyle(session.group.id)}`}
-                    >
-                      {initials(session.subject?.name ?? session.group.name)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm text-ink truncate">
-                        <b>{session.subject?.name ?? session.group.name}</b>
-                        {session.subject ? ` · ${session.group.name}` : ""}
-                        {session.topic ? ` · ${session.topic}` : ""}
-                      </p>
-                      <p className="text-xs text-ink-soft">
-                        {session.startTime}–{session.endTime}
-                        {session.room ? ` · ${session.room.name}` : ""}
-                      </p>
-                    </div>
-                    <span className="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-paper-soft text-ink-soft border border-ink/10">
-                      {t(`sessions.type.${session.sessionType}`, {
-                        defaultValue: session.sessionType,
-                      })}
+          {days.map(([day, sessions]) => {
+            const date = parseISO(day);
+            const relative = relativeDayLabel(date, i18n.language);
+            return (
+              <section key={day}>
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-medium">
+                  {formatLongDate(date, i18n.language)}
+                  {relative && (
+                    <span className="rounded-full bg-primary-soft px-2 py-0.5 text-xs text-primary">
+                      {relative}
                     </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+                  )}
+                </h3>
+                <ul className="space-y-2">
+                  {sessions.map((session) => (
+                    <li
+                      key={session.id}
+                      style={{
+                        borderLeftColor: subjectColor(
+                          session.subject?.id ?? session.group.id,
+                        ),
+                      }}
+                      className="flex items-center gap-3 rounded-xl border border-l-[3px] px-3 py-2.5"
+                    >
+                      <span className="w-12 shrink-0 text-sm font-semibold tabular-nums">
+                        {session.startTime}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-medium">
+                          {session.subject?.name ?? session.group.name}
+                        </span>
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {[
+                            session.subject ? session.group.name : null,
+                            session.room?.name,
+                            session.topic,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
+                        </span>
+                      </span>
+                      {session.sessionType !== "lesson" && (
+                        <Badge variant="info" className="shrink-0">
+                          {t(`sessions.type.${session.sessionType}`, {
+                            defaultValue: session.sessionType,
+                          })}
+                        </Badge>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
         </div>
       )}
-    </div>
+    </Panel>
   );
 };

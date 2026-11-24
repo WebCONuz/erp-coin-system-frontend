@@ -86,9 +86,9 @@ export const ControlledInput = <T extends FieldValues = FieldValues>({
               className={cn(
                 "relative flex w-full items-center gap-1 rounded-lg border transition-colors",
                 fieldState.error
-                  ? "border-red-500 bg--red-500/10 focus-within:border-red-500"
-                  : "border-grey-100 dark:border-gray-700 bg-background focus-within:border-primary/80 dark:focus-within:border-primary/80",
-                rest.disabled && "bg-gray-smoke/20 opacity-50",
+                  ? "border-destructive bg-destructive-soft focus-within:border-destructive"
+                  : "border-input bg-card focus-within:border-primary/80 dark:focus-within:border-primary/80",
+                rest.disabled && "bg-muted opacity-50",
                 rest.readOnly && "bg-transparent",
                 inputClassName,
               )}

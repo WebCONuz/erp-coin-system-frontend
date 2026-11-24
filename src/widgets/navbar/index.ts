@@ -3,3 +3,4 @@ export * from "./StudentNavbar";
 export * from "./StudentBottomNav";
 export * from "./TeacherNavbar";
 export * from "./TeacherBottomNav";
+export * from "./AdminBottomNav";

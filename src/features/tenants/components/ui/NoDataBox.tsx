@@ -16,11 +16,7 @@ export const NoDataBox = ({
 }: Props) => {
   return (
     <NoData text={title}>
-      {hasAction && (
-        <Button onClick={btnFn} className="py-2 px-4 bg-primary text-white">
-          {btnText}
-        </Button>
-      )}
+      {hasAction && <Button onClick={btnFn}>{btnText}</Button>}
     </NoData>
   );
 };

@@ -165,9 +165,9 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-110 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-110">
         <DialogHeader>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="font-heading">
             {isEdit
               ? t("coinRules.adminForm.editTitle")
               : t("coinRules.adminForm.createTitle")}
@@ -269,7 +269,7 @@ export const CoinRuleFormModal = ({ open, onClose, mode, coinRule }: Props) => {
             </div>
 
             {isBuiltIn && (
-              <p className="rounded-lg bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-400">
+              <p className="rounded-lg bg-warning-soft px-3 py-2 text-xs text-foreground">
                 {t("coinRules.builtIn.editHint")}
               </p>
             )}

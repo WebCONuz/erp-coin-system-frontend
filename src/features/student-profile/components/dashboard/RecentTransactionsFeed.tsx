@@ -1,10 +1,14 @@
 import { Coins, Minus, Plus, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Panel } from "@/components/shared/panel";
+import { EmptyState } from "@/components/shared/states";
+import { CoinAmount } from "@/components/shared/coin";
 import { formatDate } from "@/ustils";
 import { cn } from "@/lib/utils";
 import { getCoinTxState } from "@/types";
 import type { DashboardTransaction } from "../../types";
 
+/** O'quvchining so'nggi tanga harakatlari. */
 export const RecentTransactionsFeed = ({
   transactions,
 }: {
@@ -13,87 +17,87 @@ export const RecentTransactionsFeed = ({
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-5">
-      <h3 className="font-display text-sm font-semibold text-ink mb-4">
-        {t("studentProfile.dashboard.recentActivity")}
-      </h3>
-
+    <Panel title={t("studentProfile.dashboard.recentActivity")} className="h-full">
       {!transactions.length ? (
-        <div className="flex flex-col items-center justify-center py-10 text-center">
-          <Coins size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm text-ink-soft">
-            {t("studentProfile.dashboard.noActivity")}
-          </p>
-        </div>
+        <EmptyState
+          size="sm"
+          icon={Coins}
+          title={t("studentProfile.dashboard.noActivity")}
+        />
       ) : (
-        <div className="space-y-1">
+        <ul className="divide-y">
           {transactions.map((tx) => {
             // Teskari yozuv — kulrang "↩"; bekor qilingan — summasi chizilgan.
             const state = getCoinTxState(tx);
+            const isEarn = tx.direction === "earn";
             return (
-              <div
+              <li
                 key={tx.id}
-                className="flex items-center justify-between gap-3 px-1 py-2"
+                className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0"
               >
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div
+                <div className="flex min-w-0 items-center gap-3">
+                  <span
+                    aria-hidden
                     className={cn(
-                      "w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-xs",
+                      "flex size-8 shrink-0 items-center justify-center rounded-full",
                       state === "reversal"
-                        ? "bg-ink/5 text-ink-soft"
-                        : tx.direction === "earn"
-                          ? "bg-forest/10 text-forest"
-                          : "bg-bloom/10 text-bloom",
+                        ? "bg-muted text-muted-foreground"
+                        : isEarn
+                          ? "bg-success-soft text-success"
+                          : "bg-destructive-soft text-destructive",
                     )}
                   >
                     {state === "reversal" ? (
-                      <Undo2 size={13} />
-                    ) : tx.direction === "earn" ? (
-                      <Plus size={13} />
+                      <Undo2 className="size-3.5" />
+                    ) : isEarn ? (
+                      <Plus className="size-3.5" />
                     ) : (
-                      <Minus size={13} />
+                      <Minus className="size-3.5" />
                     )}
-                  </div>
+                  </span>
                   <div className="min-w-0">
-                    <p className="text-sm text-ink truncate">
-                      <b>
+                    <p className="truncate text-sm">
+                      <span className="font-medium">
                         {t(`transactionSource.${tx.sourceType}`, {
                           defaultValue: t("transactionSource.other"),
                         })}
-                      </b>
-                      {tx.note ? ` — ${tx.note}` : ""}
+                      </span>
+                      {tx.note ? `: ${tx.note}` : ""}
                     </p>
-                    <p className="text-xs text-ink-soft">
-                      {formatDate(tx.createdAt, "dd.MM.yyyy")}
+                    <p className="text-xs text-muted-foreground">
+                      <span className="tabular-nums">
+                        {formatDate(tx.createdAt, "dd.MM.yyyy")}
+                      </span>
                       {state === "reversal" &&
-                        ` · ${t("coinHistory.reversalBadge")}`}
+                        ` (${t("coinHistory.reversalBadge")})`}
                       {state === "reversed" &&
                         tx.reversal &&
-                        ` · ${t("coinHistory.reversedBadge", {
+                        ` (${t("coinHistory.reversedBadge", {
                           date: formatDate(tx.reversal.createdAt, "dd.MM.yyyy"),
-                        })}`}
+                        })})`}
                     </p>
                   </div>
                 </div>
-                <span
-                  className={cn(
-                    "text-sm font-semibold shrink-0",
-                    state === "reversal"
-                      ? "text-ink-soft"
-                      : tx.direction === "earn"
-                        ? "text-forest"
-                        : "text-bloom",
-                    state === "reversed" && "line-through opacity-60",
-                  )}
-                >
-                  {tx.direction === "earn" ? "+" : "-"}
-                  {tx.amount}
-                </span>
-              </div>
+                {state === "reversal" ? (
+                  <span className="shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">
+                    {tx.amount}
+                  </span>
+                ) : (
+                  <CoinAmount
+                    value={isEarn ? tx.amount : -tx.amount}
+                    signed
+                    className={cn(
+                      "shrink-0",
+                      isEarn ? "text-success" : "text-destructive",
+                      state === "reversed" && "line-through opacity-60",
+                    )}
+                  />
+                )}
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
-    </div>
+    </Panel>
   );
 };

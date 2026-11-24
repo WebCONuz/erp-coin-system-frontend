@@ -21,7 +21,7 @@ export const TeacherSessionChip = ({
     return (
       <div
         title={`${t("calendarChip.cancelledTitle", { group: groupName })}${exception.note ? ` — ${exception.note}` : ""}`}
-        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-bloom bg-bloom/10"
+        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-destructive bg-destructive/10"
       >
         <span className="line-through">{subjectName ?? groupName}</span>
         <br />
@@ -46,10 +46,10 @@ export const TeacherSessionChip = ({
       title={`${groupName}: ${session?.sessionType ? t(`sessions.type.${session.sessionType}`, { defaultValue: "" }) : ""}${session?.topic ? ` — ${session.topic}` : ""}`}
       className={`w-full space-y-0.5 rounded px-1.5 py-1 text-left text-[11px] font-medium ${
         exception
-          ? "bg-gold/15 text-gold"
+          ? "bg-coin/15 text-coin"
           : isOwn
-            ? "bg-gold/25 text-forest-deep"
-            : "bg-paper-soft text-ink-soft"
+            ? "bg-coin/25 text-coin-ink"
+            : "bg-muted/55 text-muted-foreground"
       }`}
     >
       {exception && (

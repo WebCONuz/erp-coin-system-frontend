@@ -106,9 +106,9 @@ export const GroupFormModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-120 bg-card border border-border">
         <DialogHeader>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="text-foreground">
             {isEdit ? t("groups.form.edit_title") : t("groups.form.create_title")}
           </DialogTitle>
         </DialogHeader>
@@ -121,13 +121,13 @@ export const GroupFormModal = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-700 dark:text-zinc-300">
+                  <FormLabel className="text-foreground">
                     {t("groups.form.name_label")}
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t("groups.form.name_placeholder")}
-                      className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                      className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -142,7 +142,7 @@ export const GroupFormModal = ({
               name="maxStudents"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-700 dark:text-zinc-300">
+                  <FormLabel className="text-foreground">
                     {t("groups.form.max_students_label")}
                   </FormLabel>
                   <FormControl>
@@ -151,7 +151,7 @@ export const GroupFormModal = ({
                       min={1}
                       max={500}
                       placeholder="20"
-                      className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                      className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
@@ -205,14 +205,14 @@ export const GroupFormModal = ({
                 variant="outline"
                 onClick={onClose}
                 disabled={isPending}
-                className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                className="border-border text-foreground hover:bg-muted"
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={isPending}
-                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
+                className="bg-info hover:bg-info/90 text-white"
               >
                 {isPending
                   ? isEdit

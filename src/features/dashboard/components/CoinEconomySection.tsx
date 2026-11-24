@@ -1,12 +1,10 @@
-import { Coins, TrendingDown, TrendingUp } from "lucide-react";
+import { TrendingDown, TrendingUp, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { StatsCard, WeeklyTrendChart } from "./ui";
+import { Panel } from "@/components/shared/panel";
+import { CoinAmount } from "@/components/shared/coin";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
+import { WeeklyTrendChart } from "./ui";
 import type { AdminDashboardCoinEconomy } from "../types";
 
 interface Props {
@@ -14,49 +12,98 @@ interface Props {
   isLoading?: boolean;
 }
 
+/**
+ * Tanga iqtisodiyoti. Aylanmadagi tanga — sahifadagi yagona "katta" raqam
+ * va yagona animatsiya (bir marta sanab chiqadi).
+ */
 export const CoinEconomySection = ({ coinEconomy, isLoading }: Props) => {
   const { t } = useTranslation();
 
   return (
-    <Card className="h-full border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-      <CardHeader className="flex-row items-center gap-2.5 border-b border-zinc-100 dark:border-zinc-800">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Coins size={16} />
-        </div>
-        <CardTitle>{t("admin.dashboard.coinEconomy.title")}</CardTitle>
-      </CardHeader>
-
-      <CardContent className="space-y-5">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          <StatsCard
-            title={t("admin.dashboard.coinEconomy.inCirculation")}
-            value={isLoading ? undefined : coinEconomy?.totalInCirculation}
-            icon={<Coins size={18} />}
-            iconBg="bg-blue-50 dark:bg-blue-500/10"
-            iconColor="text-blue-600 dark:text-blue-400"
-          />
-          <StatsCard
-            title={t("admin.dashboard.coinEconomy.earnedThisMonth")}
-            value={isLoading ? undefined : coinEconomy?.earnedThisMonth}
-            icon={<TrendingUp size={18} />}
-            iconBg="bg-emerald-50 dark:bg-emerald-500/10"
-            iconColor="text-emerald-600 dark:text-emerald-400"
-          />
-          <StatsCard
-            title={t("admin.dashboard.coinEconomy.deductedThisMonth")}
-            value={isLoading ? undefined : coinEconomy?.deductedThisMonth}
-            icon={<TrendingDown size={18} />}
-            iconBg="bg-red-50 dark:bg-red-500/10"
-            iconColor="text-red-600 dark:text-red-400"
-          />
+    <Panel
+      title={t("admin.dashboard.coinEconomy.title")}
+      className="h-full"
+      aria-busy={isLoading || undefined}
+    >
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm text-muted-foreground">
+            {t("admin.dashboard.coinEconomy.inCirculation")}
+          </p>
+          {isLoading ? (
+            <Skeleton className="mt-2 h-10 w-40" />
+          ) : (
+            <CoinAmount
+              value={coinEconomy?.totalInCirculation ?? 0}
+              size="xl"
+              animate
+              className="mt-1"
+            />
+          )}
         </div>
 
+        <dl className="grid grid-cols-2 gap-3 sm:flex sm:gap-6">
+          <MonthFigure
+            label={t("admin.dashboard.coinEconomy.earnedThisMonth")}
+            value={coinEconomy?.earnedThisMonth}
+            sign={1}
+            icon={TrendingUp}
+            tone="text-success"
+            isLoading={isLoading}
+          />
+          <MonthFigure
+            label={t("admin.dashboard.coinEconomy.deductedThisMonth")}
+            value={coinEconomy?.deductedThisMonth}
+            sign={-1}
+            icon={TrendingDown}
+            tone="text-destructive"
+            isLoading={isLoading}
+          />
+        </dl>
+      </div>
+
+      <div className="mt-6 border-t pt-5">
         {isLoading ? (
-          <div className="h-48 animate-pulse rounded-xl bg-zinc-100 dark:bg-zinc-800" />
+          <Skeleton className="h-56 w-full rounded-xl" />
         ) : (
           <WeeklyTrendChart data={coinEconomy?.weeklyTrend ?? []} />
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </Panel>
   );
 };
+
+const MonthFigure = ({
+  label,
+  value,
+  sign,
+  icon: Icon,
+  tone,
+  isLoading,
+}: {
+  label: string;
+  value?: number;
+  sign: 1 | -1;
+  icon: LucideIcon;
+  tone: string;
+  isLoading?: boolean;
+}) => (
+  <div className="min-w-0 rounded-xl bg-muted/60 px-3.5 py-2.5 sm:bg-transparent sm:p-0">
+    <dt className="flex items-center gap-1.5 text-sm text-muted-foreground">
+      <Icon className={cn("size-4", tone)} aria-hidden />
+      {label}
+    </dt>
+    <dd className="mt-1">
+      {isLoading ? (
+        <Skeleton className="h-6 w-16" />
+      ) : (
+        <CoinAmount
+          value={(value ?? 0) * sign}
+          signed
+          size="md"
+          className={cn("text-base", tone)}
+        />
+      )}
+    </dd>
+  </div>
+);

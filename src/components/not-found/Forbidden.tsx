@@ -11,7 +11,7 @@ export const Forbidden = () => {
       <h2 className="text-3xl font-extrabold mb-2">
         {t("system.forbidden.title")}
       </h2>
-      <p className="text-gray-400 text-lg max-w-110 text-center leading-6 mb-3">
+      <p className="text-muted-foreground text-lg max-w-110 text-center leading-6 mb-3">
         {t("system.forbidden.description")}
       </p>
       <Button

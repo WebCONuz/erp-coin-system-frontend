@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
-import { SearchIcon } from "lucide-react";
+import { Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Input } from "@/components/ui/input";
 import { OptionSelect } from "@/components/ui/option-select";
 import { TEXT_LIMITS } from "@/ustils";
 import { useMyTaughtGroups } from "../../hooks";
@@ -30,7 +31,10 @@ export const TeacherStudentsFilterBar = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div
+      role="search"
+      className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2.5"
+    >
       <OptionSelect
         value={groupId}
         onValueChange={setGroupId}
@@ -39,21 +43,22 @@ export const TeacherStudentsFilterBar = () => {
           ...(groups ?? []).map((g) => ({ value: g.id, label: g.name })),
         ]}
         placeholder={t("sessions.form.groupPlaceholder")}
-        className="w-full sm:w-52 bg-white"
-        contentClassName="bg-white"
+        className="h-9 w-full sm:w-52"
       />
 
-      <div className="relative w-full sm:w-64">
-        <SearchIcon
-          size={15}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-soft/50"
+      <div className="relative w-full sm:w-72">
+        <Search
+          className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+          aria-hidden
         />
-        <input
+        <Input
+          type="search"
           defaultValue={search}
           maxLength={TEXT_LIMITS.SEARCH}
           onChange={(e) => setSearch(e.target.value)}
           placeholder={t("teacherProfile.students.searchPlaceholder")}
-          className="w-full rounded-xl border border-ink/10 bg-white pl-9 pr-3 py-2 text-sm text-ink placeholder:text-ink-soft/50 outline-none focus:border-gold/50"
+          aria-label={t("teacherProfile.students.searchPlaceholder")}
+          className="h-9 pl-9"
         />
       </div>
     </div>

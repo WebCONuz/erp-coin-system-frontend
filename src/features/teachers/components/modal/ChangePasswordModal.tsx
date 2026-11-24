@@ -62,7 +62,7 @@ export const ChangePasswordModal = ({ open, onClose, teacherId }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-100">
         <DialogHeader>
           <DialogTitle>{t("teachers.securityTab.changePasswordTitle")}</DialogTitle>
         </DialogHeader>

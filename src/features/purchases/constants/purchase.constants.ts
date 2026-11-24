@@ -44,13 +44,20 @@ export const getStudentPurchaseStatusLabels = (
   cancelled: t("purchases.studentStatus.cancelled"),
 });
 
+// Holat → semantik token (warning: admin harakati kerak; info: topshirish
+// kutilmoqda; success: yakunlangan; muted: bekor qilingan — yakuniy, xato emas).
 export const PURCHASE_STATUS_BADGE_CLASS: Record<PurchaseStatus, string> = {
-  pending:
-    "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-  approved: "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400",
-  delivered:
-    "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400",
-  cancelled: "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400",
+  pending: "bg-warning-soft text-warning",
+  approved: "bg-info-soft text-info",
+  delivered: "bg-success-soft text-success",
+  cancelled: "bg-muted text-muted-foreground",
+};
+
+export const PURCHASE_STATUS_DOT_CLASS: Record<PurchaseStatus, string> = {
+  pending: "bg-warning",
+  approved: "bg-info",
+  delivered: "bg-success",
+  cancelled: "bg-muted-foreground/60",
 };
 
 // Student ("bog'") palitrasi.
@@ -58,16 +65,16 @@ export const STUDENT_PURCHASE_STATUS_BADGE_CLASS: Record<
   PurchaseStatus,
   string
 > = {
-  pending: "bg-gold/15 text-gold",
-  approved: "bg-forest text-paper",
-  delivered: "bg-forest/10 text-forest",
-  cancelled: "bg-bloom/10 text-bloom",
+  pending: "bg-coin/15 text-coin",
+  approved: "bg-primary text-primary-foreground",
+  delivered: "bg-primary/10 text-primary",
+  cancelled: "bg-destructive/10 text-destructive",
 };
 
 export const STUDENT_PURCHASE_STATUS_DOT_CLASS: Record<PurchaseStatus, string> =
   {
-    pending: "bg-gold",
-    approved: "bg-forest",
-    delivered: "bg-forest/40",
-    cancelled: "bg-bloom",
+    pending: "bg-coin",
+    approved: "bg-primary",
+    delivered: "bg-primary/40",
+    cancelled: "bg-destructive",
   };

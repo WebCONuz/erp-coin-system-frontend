@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface PaginationProps {
   currentPage: number;
@@ -21,6 +22,7 @@ export const Pagination = ({
   showPrevNext = true,
   maxVisiblePages = 3,
 }: PaginationProps) => {
+  const { t } = useTranslation();
   const getVisiblePages = () => {
     const pages: number[] = [];
     const halfVisible = Math.floor(maxVisiblePages / 2);
@@ -67,6 +69,7 @@ export const Pagination = ({
           size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
+          aria-label={t("common.previous")}
           className="h-8 w-8 p-0"
         >
           <ChevronLeft className="h-4 w-4" />
@@ -85,7 +88,7 @@ export const Pagination = ({
             1
           </Button>
           <div className="flex items-center justify-center w-8 h-8">
-            <MoreHorizontal className="h-4 w-4 text-gray-400" />
+            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
           </div>
         </>
       )}
@@ -97,11 +100,8 @@ export const Pagination = ({
           variant={currentPage === page ? "default" : "outline"}
           size="sm"
           onClick={() => onPageChange(page)}
-          className={cn(
-            "h-8 w-8 p-0 border",
-            currentPage === page &&
-              "bg-[#EDF8E2] hover:bg-[#EDF8E2]/90 text-white border border-[#C6EAA0] dark:bg-[#1F2A1F] dark:hover:bg-[#1F2A1F]/80 dark:text-[#C6EAA0] dark:border-[#3A5F3A]",
-          )}
+          aria-current={currentPage === page ? "page" : undefined}
+          className="h-8 min-w-8 px-2 tabular-nums"
         >
           {page}
         </Button>
@@ -111,7 +111,7 @@ export const Pagination = ({
       {showEndDots && (
         <>
           <div className="flex items-center justify-center w-8 h-8">
-            <MoreHorizontal className="h-4 w-4 text-gray-400" />
+            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
           </div>
           <Button
             variant="outline"
@@ -131,6 +131,7 @@ export const Pagination = ({
           size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
+          aria-label={t("common.next")}
           className="h-8 w-8 p-0"
         >
           <ChevronRight className="h-4 w-4" />

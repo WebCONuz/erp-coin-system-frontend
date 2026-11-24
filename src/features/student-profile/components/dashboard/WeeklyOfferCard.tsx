@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { Gift } from "lucide-react";
 import { Trans, useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 import { useRewards } from "@/features/market/hooks";
 
+/** Eng arzon faol sovg'a — keyingi maqsad sifatida. */
 export const WeeklyOfferCard = () => {
   const { t } = useTranslation();
   const { data } = useRewards();
@@ -14,24 +16,21 @@ export const WeeklyOfferCard = () => {
   if (!featured) return null;
 
   return (
-    <div className="rounded-2xl border border-gold/30 bg-gold-soft/25 p-5 flex flex-col">
-      <p className="text-[11px] font-semibold uppercase tracking-wide text-gold">
+    <div className="flex h-full flex-col rounded-2xl border border-coin/40 bg-coin-soft/60 p-4 sm:p-5">
+      <p className="flex items-center gap-1.5 text-sm font-semibold text-coin-ink">
+        <Gift className="size-4" aria-hidden />
         {t("studentProfile.dashboard.weeklyOffer")}
       </p>
-      <p className="text-sm text-ink mt-2 flex-1">
+      <p className="mt-2 flex-1 text-sm">
         <Trans
           i18nKey="studentProfile.dashboard.weeklyOfferText"
           values={{ title: featured.title, price: featured.coinPrice }}
-          components={{ b: <b /> }}
+          components={{ b: <b className="font-semibold" /> }}
         />
       </p>
-      <Link
-        to="/student/market"
-        className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper text-sm font-medium px-4 py-2.5 hover:bg-forest-light transition-colors"
-      >
-        <Gift size={15} />
-        {t("purchases.student.goToShop")}
-      </Link>
+      <Button asChild className="mt-4 h-10 gap-2">
+        <Link to="/student/market">{t("purchases.student.goToShop")}</Link>
+      </Button>
     </div>
   );
 };

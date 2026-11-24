@@ -43,7 +43,7 @@ export const PurchasesDataFilter = ({ rewardTitle }: Props) => {
   };
 
   return (
-    <div className="w-full space-y-3 py-4">
+    <div className="w-full space-y-4">
       <DashboardTitle
         title={t("admin.header.purchases")}
         description={t("purchases.description")}
@@ -54,17 +54,18 @@ export const PurchasesDataFilter = ({ rewardTitle }: Props) => {
         onValueChange={(value) => form.setValue("status", value)}
         className="w-full"
       >
-        <div className="max-w-full overflow-x-auto">
-          <TabsList className="h-auto gap-1 rounded-lg border border-border bg-muted/50 p-1">
+        {/* Mobilda tablar sig'masa — gorizontal scroll (sahifa emas) */}
+        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
+          <TabsList className="h-auto gap-0.5 rounded-xl border bg-card p-1">
             {tabs.map((tab) => (
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                className="h-8 flex-none gap-1.5 rounded-lg px-3 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary-soft data-[state=active]:text-primary data-[state=active]:shadow-none dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary-soft"
               >
                 {tab.label}
                 {!!tab.count && (
-                  <span className="min-w-5 rounded-full bg-red-500 px-1.5 text-[11px] leading-5 text-white">
+                  <span className="min-w-5 rounded-full bg-warning px-1.5 text-center text-[11px] font-semibold leading-5 text-background tabular-nums">
                     {tab.count}
                   </span>
                 )}
@@ -75,8 +76,8 @@ export const PurchasesDataFilter = ({ rewardTitle }: Props) => {
       </Tabs>
 
       {rewardId && (
-        <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-border bg-muted/50 py-1 pl-3 pr-1 text-sm">
-          <Gift size={14} className="shrink-0 text-pink-600 dark:text-pink-400" />
+        <span className="inline-flex max-w-full items-center gap-1.5 rounded-full border bg-card py-1 pr-1 pl-3 text-sm">
+          <Gift size={14} className="shrink-0 text-muted-foreground" aria-hidden />
           <span className="truncate">
             {t("purchases.rewardFilter", {
               title: rewardTitle ?? t("purchases.rewardFilterFallback"),
@@ -86,7 +87,7 @@ export const PurchasesDataFilter = ({ rewardTitle }: Props) => {
             type="button"
             onClick={clearRewardFilter}
             aria-label={t("common.clear")}
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
+            className="flex size-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >
             <X size={14} />
           </button>

@@ -1,133 +1,108 @@
-import { BookOpen, User, Phone, Edit, Users, Eye } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { BookOpen, Calendar, GraduationCap, Pencil, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/ustils";
 import type { GroupDetail } from "../../types";
-import { DonutChart } from "../custom-charts";
-import { useNavigate } from "react-router-dom";
+import { GroupFillMeter } from "../ui";
 
 interface GroupInfoProps {
   group: GroupDetail;
   onEdit: () => void;
 }
 
+/** Guruh tafsiloti sarlavhasi: nom, kurs, o'qituvchi, to'lganlik. */
 export const GroupInfo = ({ group, onEdit }: GroupInfoProps) => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
-  const studentCount = group.students.length;
-  const isFull = studentCount >= group.maxStudents;
-  const fillPercent = Math.round((studentCount / group.maxStudents) * 100);
 
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6">
-      <div className="flex items-start justify-between gap-4">
-        {/* title */}
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
-              {t("groups.info.name_label")}{" "}
-              <span className="font-extrabold text-blue-400">{group.name}</span>
-            </h2>
-            {isFull && (
-              <Badge variant="destructive" className="">
-                {t("groups.info.full_badge")}
-              </Badge>
-            )}
+    <header className="rounded-2xl border bg-card p-4 sm:p-5">
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div className="min-w-0 space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="font-heading text-2xl font-semibold leading-tight tracking-tight">
+              {group.name}
+            </h1>
+            <Button
+              variant="outline"
+              onClick={onEdit}
+              className="h-9 shrink-0 gap-2 lg:hidden"
+            >
+              <Pencil className="size-4" aria-hidden />
+              {t("common.edit")}
+            </Button>
           </div>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            {t("groups.info.created_at")}{" "}
-            {new Date(group.createdAt).toLocaleDateString("uz-UZ")}
-          </p>
-        </div>
 
-        {/* edit-btn */}
-        <Button
-          variant="outline"
-          size="default"
-          onClick={onEdit}
-          className="gap-2 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 shrink-0"
-        >
-          <Edit className="w-4 h-4" />
-          {t("common.edit")}
-        </Button>
-      </div>
-
-      <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {/* Kurs */}
-        <div className="col-span-1 flex items-start gap-4 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-gray-300 dark:border-zinc-700">
-          <div className="flex items-center justify-center w-12 h-12 bg-linear-to-br from-blue-400 to-blue-700 rounded-lg">
-            <BookOpen className="w-5 h-5 text-white" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-zinc-500 dark:text-zinc-400 mb-2">
-              {t("groups.info.course")}
-            </p>
-            <p className="text-lg font-medium text-zinc-900 dark:text-zinc-50 truncate">
+          <dl className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            <Fact icon={BookOpen} label={t("groups.info.course")}>
               {group.course.title}
-            </p>
-            <p className="text-zinc-500 dark:text-zinc-400 truncate mt-1">
+            </Fact>
+            <Fact icon={GraduationCap} label={t("common.teacher")}>
+              {group.teacher ? (
+                <Link
+                  to={`/admin/teachers/${group.teacher.id}`}
+                  className="underline-offset-4 hover:text-primary hover:underline"
+                >
+                  {group.teacher.fullName}
+                </Link>
+              ) : (
+                "—"
+              )}
+            </Fact>
+            {group.teacher?.phone && (
+              <Fact icon={Phone} label={t("common.phone")}>
+                <span className="tabular-nums">{group.teacher.phone}</span>
+              </Fact>
+            )}
+            <Fact icon={Calendar} label={t("groups.info.created_at")}>
+              <span className="tabular-nums">
+                {formatDate(group.createdAt, "dd.MM.yyyy")}
+              </span>
+            </Fact>
+          </dl>
+
+          {group.course.description && (
+            <p className="max-w-prose text-sm text-muted-foreground">
               {group.course.description}
             </p>
-          </div>
+          )}
         </div>
 
-        {/* O'qituvchi */}
-        <div className="col-span-1 flex items-start gap-4 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-gray-300 dark:border-zinc-700 relative">
-          <div className="flex items-center justify-center w-12 h-12 bg-linear-to-br from-purple-400 to-purple-700 rounded-lg">
-            <User className="w-6 h-6 text-white" />
-          </div>
-          <div className="min-w-0">
-            <p className="text-zinc-500 dark:text-zinc-400 mb-2">
-              {t("common.teacher")}
-            </p>
-            <p className="text-lg font-medium text-zinc-900 dark:text-zinc-50 truncate">
-              {group?.teacher?.fullName}
-            </p>
-            <div className="flex items-center gap-2 mt-1">
-              <Phone className="w-3.5 h-3.5 text-zinc-400" />
-              <p className="text-zinc-500 dark:text-zinc-400">
-                {group?.teacher?.phone}
-              </p>
-            </div>
-          </div>
+        <div className="flex shrink-0 flex-col gap-3 lg:w-64 lg:items-end">
           <Button
-            variant="ghost"
-            className="bg-gray-200 text-gray-500 hover:text-blue-500 hover:bg-blue-100 absolute top-3 right-3 h-9"
-            onClick={() => navigate(`/admin/teachers/${group?.teacher?.id}`)}
+            variant="outline"
+            onClick={onEdit}
+            className="hidden h-9 gap-2 lg:inline-flex"
           >
-            <Eye size={18} />
+            <Pencil className="size-4" aria-hidden />
+            {t("common.edit")}
           </Button>
-        </div>
-
-        {/* O'quvchilar soni — donut chart */}
-        <div className="col-span-1 flex items-center gap-5 p-4 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-gray-300 dark:border-zinc-700 relative">
-          {/* Info */}
-          <div className="flex flex-col gap-0.5">
-            <div className="flex items-center justify-center w-12 h-12 bg-linear-to-br from-emerald-400 to-emerald-700 rounded-lg mb-2">
-              <Users className="w-5 h-5 text-white" />
-            </div>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              {t("groups.info.spots_left")}
-            </p>
-            <p className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-              {t("groups.info.spots_count", {
-                count: Math.max(0, group.maxStudents - studentCount),
-              })}
-            </p>
-          </div>
-
-          {/* Divider */}
-          <div className="w-px self-stretch bg-zinc-200 dark:bg-zinc-700" />
-
-          {/* Donut SVG */}
-          <DonutChart
-            value={studentCount}
+          <GroupFillMeter
+            count={group.students.length}
             max={group.maxStudents}
-            percent={fillPercent}
-            isFull={isFull}
+            size="lg"
+            className="w-full"
           />
         </div>
       </div>
-    </div>
+    </header>
   );
 };
+
+const Fact = ({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: typeof Phone;
+  label: string;
+  children: React.ReactNode;
+}) => (
+  <div className="flex min-w-0 items-center gap-1.5">
+    <dt>
+      <Icon className="size-4 text-muted-foreground" aria-hidden />
+      <span className="sr-only">{label}</span>
+    </dt>
+    <dd className="truncate font-medium">{children}</dd>
+  </div>
+);

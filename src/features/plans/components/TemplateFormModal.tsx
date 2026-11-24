@@ -190,9 +190,9 @@ export const TemplateFormModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-100 max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-100 max-h-[90vh] overflow-y-auto bg-card border border-border">
         <DialogHeader>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="text-foreground">
             {isEdit
               ? t("plans.templateForm.editTitle")
               : t("plans.templateForm.createTitle")}
@@ -204,7 +204,7 @@ export const TemplateFormModal = ({
             {isEdit || lockWeekday ? (
               <div>
                 <FormLabel>{t("plans.templateForm.weekdayLabel")}</FormLabel>
-                <div className="mt-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 bg-muted/50 px-3 py-2 text-sm">
+                <div className="mt-1.5 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm">
                   {WEEKDAY_LABELS[weekday]}
                 </div>
               </div>
@@ -224,7 +224,7 @@ export const TemplateFormModal = ({
             {isEdit || lockGroup ? (
               <div>
                 <FormLabel>{t("common.group")}</FormLabel>
-                <div className="mt-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
+                <div className="mt-1.5 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
                   {isEdit
                     ? (template?.group.name ?? "—")
                     : (groups?.data.find((g) => g.id === presetGroupId)?.name ??

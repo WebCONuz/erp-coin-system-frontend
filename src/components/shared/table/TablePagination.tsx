@@ -21,10 +21,13 @@ export const TablePagination = ({
 }: TablePaginationProps) => {
   return (
     <div
-      className={cn("flex items-center justify-between py-4 px-4", className)}
+      className={cn(
+        "flex flex-col-reverse items-center gap-3 px-1 py-4 sm:flex-row sm:justify-between",
+        className,
+      )}
     >
-      <div className="text-sm text-gray-600 dark:text-gray-300">
-        {totalItems && (
+      <div className="text-sm text-muted-foreground tabular-nums">
+        {!!totalItems && (
           <span>
             <Trans
               i18nKey="table.paginationSummary"
@@ -33,7 +36,7 @@ export const TablePagination = ({
                 from: (currentPage - 1) * (pageSize || 10) + 1,
                 to: Math.min(currentPage * (pageSize || 10), totalItems),
               }}
-              components={{ b: <b /> }}
+              components={{ b: <b className="font-medium text-foreground" /> }}
             />
           </span>
         )}
@@ -43,7 +46,6 @@ export const TablePagination = ({
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={onPageChange}
-        // className="mx-auto"
       />
     </div>
   );

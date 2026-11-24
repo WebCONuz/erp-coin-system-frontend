@@ -64,17 +64,17 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display text-ink">
+          <DialogTitle className="font-heading text-foreground">
             {t("profile.editTitle")}
           </DialogTitle>
-          <DialogDescription className="text-ink-soft">
+          <DialogDescription className="text-muted-foreground">
             {t("teacherProfile.profile.editDescription")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           <div>
-            <label className="text-xs font-medium text-ink-soft mb-1.5 block">
+            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
               {t("profile.form.email")}
             </label>
             <input
@@ -82,12 +82,12 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="email@example.com"
-              className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50"
+              className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none focus:border-coin/50"
             />
           </div>
 
           <div>
-            <label className="text-xs font-medium text-ink-soft mb-1.5 block">
+            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
               {t("profile.form.avatarUrl")}
             </label>
             <input
@@ -96,10 +96,10 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
               onChange={(e) => setAvatarUrl(e.target.value)}
               placeholder="https://..."
               aria-invalid={!!avatarUrlError}
-              className="w-full rounded-xl border border-ink/10 bg-white px-3 py-2.5 text-sm text-ink outline-none focus:border-gold/50 aria-invalid:border-bloom/60"
+              className="w-full rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none focus:border-coin/50 aria-invalid:border-destructive/60"
             />
             {avatarUrlError && (
-              <p className="mt-1 text-xs text-bloom">{avatarUrlError}</p>
+              <p className="mt-1 text-xs text-destructive">{avatarUrlError}</p>
             )}
           </div>
 
@@ -107,7 +107,7 @@ export const EditProfileModal = ({ open, onClose, profile }: Props) => {
             type="button"
             onClick={handleSubmit}
             disabled={updateProfile.isPending || !!avatarUrlError}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-forest text-paper px-4 py-2.5 text-sm font-medium hover:bg-forest-light transition-colors disabled:opacity-60"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2.5 text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-60"
           >
             {updateProfile.isPending ? t("common.saving") : t("common.save")}
           </button>

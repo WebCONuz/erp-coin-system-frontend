@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Gift, ChevronRight, Sparkles } from "lucide-react";
+import { ChevronRight, Clock, PartyPopper } from "lucide-react";
 import type { DashboardResponse } from "../../types";
 
+/** Tayyor sovg'alar (olib ketish kerak) va tasdiqlanishini kutayotgan xaridlar. */
 export const PendingPurchasesBanner = ({
   purchases,
 }: {
@@ -17,42 +18,48 @@ export const PendingPurchasesBanner = ({
   if (purchases.pendingCount < 1 && readyCount < 1) return null;
 
   return (
-    <div className="space-y-2">
+    <ul className="grid gap-2 md:grid-cols-2">
       {readyCount > 0 && (
-        <Link
-          to="/student/market?tab=purchases&purchaseStatus=approved"
-          className="flex items-center justify-between gap-3 rounded-2xl border border-gold/40 bg-gold/10 px-4 py-3 hover:bg-gold/15 transition-colors"
-        >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-lg bg-gold/20 flex items-center justify-center shrink-0">
-              <Sparkles size={16} className="text-gold" />
-            </div>
-            <p className="text-sm text-ink truncate">
+        <li>
+          <Link
+            to="/student/market?tab=purchases&purchaseStatus=approved"
+            className="group flex min-h-14 items-center gap-3 rounded-2xl border border-coin/40 bg-coin-soft px-4 py-3 transition-colors hover:border-coin focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-card text-coin-ink">
+              <PartyPopper className="size-4.5" aria-hidden />
+            </span>
+            <span className="min-w-0 flex-1 text-sm font-medium text-foreground">
               {t("purchases.student.readyBanner", { count: readyCount })}
-            </p>
-          </div>
-          <ChevronRight size={16} className="text-gold shrink-0" />
-        </Link>
+            </span>
+            <ChevronRight
+              className="size-4 shrink-0 text-coin-ink transition-transform group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </Link>
+        </li>
       )}
 
       {purchases.pendingCount > 0 && (
-        <Link
-          to="/student/market?tab=purchases&purchaseStatus=pending"
-          className="flex items-center justify-between gap-3 rounded-2xl border border-bloom/25 bg-bloom/8 px-4 py-3 hover:bg-bloom/12 transition-colors"
-        >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-9 h-9 rounded-lg bg-bloom/15 flex items-center justify-center shrink-0">
-              <Gift size={16} className="text-bloom" />
-            </div>
-            <p className="text-sm text-ink truncate">
+        <li>
+          <Link
+            to="/student/market?tab=purchases&purchaseStatus=pending"
+            className="group flex min-h-14 items-center gap-3 rounded-2xl border bg-card px-4 py-3 transition-colors hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+          >
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-info-soft text-info">
+              <Clock className="size-4.5" aria-hidden />
+            </span>
+            <span className="min-w-0 flex-1 text-sm">
               {t("purchases.student.pendingBanner", {
                 count: purchases.pendingCount,
               })}
-            </p>
-          </div>
-          <ChevronRight size={16} className="text-bloom shrink-0" />
-        </Link>
+            </span>
+            <ChevronRight
+              className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
+              aria-hidden
+            />
+          </Link>
+        </li>
       )}
-    </div>
+    </ul>
   );
 };

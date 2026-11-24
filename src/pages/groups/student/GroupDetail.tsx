@@ -1,88 +1,124 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { BookOpen, Phone, User, Users } from "lucide-react";
+import { BookOpen, GraduationCap, Phone, UsersRound } from "lucide-react";
 import { BackListButton } from "@/components/shared/back";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { EmptyState } from "@/components/shared/states";
+import { UserAvatar } from "@/components/shared/avatar";
+import { Panel } from "@/components/shared/panel";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/features/auth/hooks/useLogin";
 import { useGroup } from "@/features/groups/hooks";
 
 const GroupDetail = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const { data: group, isLoading, isError } = useGroup(id ?? "");
 
-  if (isLoading) return <PageLoading />;
+  if (isLoading) {
+    return (
+      <div aria-busy="true" className="space-y-4 sm:space-y-5">
+        <Skeleton className="h-9 w-32" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-72 rounded-2xl" />
+      </div>
+    );
+  }
+
   if (isError || !group) {
-    return <NoData text={t("groups.detail.notFound")} />;
+    return (
+      <div className="space-y-4">
+        <BackListButton title={t("studentProfile.groups.tabs.groups")} />
+        <div className="rounded-2xl border bg-card">
+          <EmptyState icon={UsersRound} title={t("groups.detail.notFound")} />
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       <BackListButton title={t("studentProfile.groups.tabs.groups")} />
 
-      <div className="p-6 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-purple-100 dark:bg-purple-900/40 flex items-center justify-center shrink-0">
-            <Users size={20} className="text-purple-600 dark:text-purple-400" />
+      <header className="space-y-3 rounded-2xl border bg-card p-4 sm:p-5">
+        <h1 className="font-heading text-2xl font-semibold leading-tight tracking-tight">
+          {group.name}
+        </h1>
+        <dl className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+          <div className="flex min-w-0 items-center gap-1.5">
+            <dt>
+              <BookOpen className="size-4 text-muted-foreground" aria-hidden />
+              <span className="sr-only">{t("groups.info.course")}</span>
+            </dt>
+            <dd className="truncate font-medium">{group.course.title}</dd>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">
-              {group.name}
-            </h1>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-              <BookOpen size={13} />
-              {group.course.title}
-            </p>
+          <div className="flex min-w-0 items-center gap-1.5">
+            <dt>
+              <GraduationCap className="size-4 text-muted-foreground" aria-hidden />
+              <span className="sr-only">{t("common.teacher")}</span>
+            </dt>
+            <dd className="truncate">{group.teacher.fullName}</dd>
           </div>
-        </div>
-
+          {group.teacher.phone && (
+            <div className="flex items-center gap-1.5">
+              <dt>
+                <Phone className="size-4 text-muted-foreground" aria-hidden />
+                <span className="sr-only">{t("common.phone")}</span>
+              </dt>
+              <dd>
+                <a
+                  href={`tel:${group.teacher.phone}`}
+                  className="tabular-nums underline-offset-4 hover:text-primary hover:underline"
+                >
+                  {group.teacher.phone}
+                </a>
+              </dd>
+            </div>
+          )}
+        </dl>
         {group.course.description && (
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="max-w-prose text-sm text-muted-foreground">
             {group.course.description}
           </p>
         )}
+      </header>
 
-        <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-zinc-600 dark:text-zinc-300 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-          <span className="flex items-center gap-1.5">
-            <User size={13} />
-            {t("studentProfile.groups.teacherLabel", {
-              name: group.teacher.fullName,
+      <Panel
+        title={t("studentProfile.groups.classmates", {
+          count: group.students.length,
+        })}
+        flush
+      >
+        {!group.students.length ? (
+          <EmptyState size="sm" icon={UsersRound} title={t("groups.table.empty")} />
+        ) : (
+          <ul className="grid border-t sm:grid-cols-2 xl:grid-cols-3">
+            {group.students.map((member) => {
+              const isMe = member.student.id === user?.id;
+              return (
+                <li
+                  key={member.id}
+                  className="flex items-center gap-3 border-b px-4 py-3 sm:px-5"
+                >
+                  <UserAvatar
+                    name={member.student.fullName}
+                    highlight={isMe}
+                    className="size-8"
+                  />
+                  <span className="min-w-0 truncate text-sm">
+                    {member.student.fullName}
+                    {isMe && (
+                      <span className="ml-1.5 text-xs font-medium text-primary">
+                        ({t("studentProfile.groups.you")})
+                      </span>
+                    )}
+                  </span>
+                </li>
+              );
             })}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <Phone size={13} />
-            {group.teacher.phone}
-          </span>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <h3 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">
-          {t("studentProfile.groups.classmates", {
-            count: group.students.length,
-          })}
-        </h3>
-
-        <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-          {group.students.map((member, idx) => (
-            <div
-              key={member.id}
-              className={`flex items-center gap-3 px-4 py-3 bg-white dark:bg-zinc-900 ${
-                idx !== group.students.length - 1
-                  ? "border-b border-zinc-100 dark:border-zinc-800"
-                  : ""
-              }`}
-            >
-              <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-xs font-bold text-white shrink-0">
-                {member.student.fullName.charAt(0).toUpperCase()}
-              </div>
-              <span className="text-sm text-zinc-700 dark:text-zinc-300">
-                {member.student.fullName}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+          </ul>
+        )}
+      </Panel>
     </div>
   );
 };

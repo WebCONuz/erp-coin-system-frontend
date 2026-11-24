@@ -17,8 +17,8 @@ export const RadialProgress = ({
   percent,
   size = 56,
   strokeWidth = 5,
-  color = "#10b981",
-  trackColor = "#e4e4e7",
+  color = "var(--success)",
+  trackColor = "var(--muted)",
   className,
   children,
 }: RadialProgressProps) => {

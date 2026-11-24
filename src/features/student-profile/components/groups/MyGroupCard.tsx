@@ -44,7 +44,7 @@ export const MyGroupCard = ({ data }: { data: GroupOverview }) => {
     <button
       type="button"
       onClick={() => navigate(`/student/groups/${data.id}`)}
-      className="text-left rounded-2xl border border-ink/10 bg-white overflow-hidden transition-shadow hover:shadow-md"
+      className="text-left rounded-2xl border border-border bg-card overflow-hidden transition-shadow hover:shadow-md"
     >
       <div className={`h-1.5 ${accent.bar}`} />
 
@@ -57,66 +57,66 @@ export const MyGroupCard = ({ data }: { data: GroupOverview }) => {
               {initials(data.name)}
             </div>
             <div className="min-w-0">
-              <h4 className="text-base font-semibold text-ink truncate">
+              <h4 className="text-base font-semibold text-foreground truncate">
                 {data.name}
               </h4>
-              <p className="text-xs text-ink-soft truncate">
+              <p className="text-xs text-muted-foreground truncate">
                 {data.course.title}
               </p>
             </div>
           </div>
           {!data.isActive && (
-            <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-bloom/10 text-bloom">
+            <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-destructive/10 text-destructive">
               {t("common.inactive")}
             </span>
           )}
         </div>
 
-        <p className="text-xs text-ink-soft mt-3">{data.teacher.fullName}</p>
+        <p className="text-xs text-muted-foreground mt-3">{data.teacher.fullName}</p>
 
-        <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-ink/8 text-center">
+        <div className="grid grid-cols-3 gap-2 mt-4 pt-3 border-t border-border text-center">
           <div>
-            <p className="font-display text-base font-bold text-gold">
+            <p className="font-heading text-base font-bold text-coin-ink">
               {data.coinThisMonth}
             </p>
-            <p className="text-[10px] text-ink-soft mt-0.5">
+            <p className="text-[10px] text-muted-foreground mt-0.5">
               {t("studentProfile.groups.coinThisMonth")}
             </p>
           </div>
           <div>
-            <p className="font-display text-base font-bold text-forest">
+            <p className="font-heading text-base font-bold text-primary">
               {data.homeworkTotal ? `${data.attendanceRate}%` : "—"}
             </p>
-            <p className="text-[10px] text-ink-soft mt-0.5">
+            <p className="text-[10px] text-muted-foreground mt-0.5">
               {t("students.detail.attendance")}
             </p>
           </div>
           <div>
-            <p className="font-display text-base font-bold text-ink">
+            <p className="font-heading text-base font-bold text-foreground">
               {data.homeworkDone}/{data.homeworkTotal}
             </p>
-            <p className="text-[10px] text-ink-soft mt-0.5">
+            <p className="text-[10px] text-muted-foreground mt-0.5">
               {t("studentProfile.groups.assignments")}
             </p>
           </div>
         </div>
 
         {nextLabel && (
-          <div className="flex items-center gap-1.5 text-xs text-ink-soft mt-3 bg-paper-soft rounded-lg px-2.5 py-2">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3 bg-muted/55 rounded-lg px-2.5 py-2">
             <CalendarClock size={13} className="shrink-0" />
             {t("studentProfile.groups.nextLesson")}{" "}
-            <b className="text-ink">{nextLabel}</b>
+            <b className="text-foreground">{nextLabel}</b>
           </div>
         )}
 
         <div className="flex items-center justify-between mt-3">
-          <span className="flex items-center gap-1 text-xs text-ink-soft">
+          <span className="flex items-center gap-1 text-xs text-muted-foreground">
             <Users size={12} />
             {t("studentProfile.groups.studentsCount", {
               count: data._count.students,
             })}
           </span>
-          <span className="flex items-center gap-0.5 text-xs font-medium text-forest">
+          <span className="flex items-center gap-0.5 text-xs font-medium text-primary">
             {t("studentProfile.groups.history")}
             <ChevronRight size={13} />
           </span>

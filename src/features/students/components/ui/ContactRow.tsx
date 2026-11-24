@@ -1,16 +1,14 @@
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
-import { Copy } from "lucide-react";
+import { Copy, type LucideIcon } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export const ContactRow = ({
-  icon,
-  iconBg,
+  icon: Icon,
   label,
   value,
 }: {
-  icon: React.ReactNode;
-  iconBg: string;
+  icon: LucideIcon;
   label: string;
   value: string;
 }) => {
@@ -26,28 +24,23 @@ export const ContactRow = ({
   };
 
   return (
-    <div className="flex items-center gap-3 p-2.5 rounded-lg">
-      <div
-        className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${iconBg}`}
-      >
-        {icon}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-[10px] font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">
-          {label}
-        </p>
-        <p className="text-sm text-zinc-800 dark:text-zinc-200 truncate">
-          {value}
-        </p>
+    <li className="flex items-center gap-3 rounded-xl px-2 py-2">
+      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+        <Icon className="size-4" aria-hidden />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="truncate text-sm font-medium tabular-nums">{value}</p>
       </div>
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 shrink-0 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200"
+        className="size-9 shrink-0 text-muted-foreground hover:text-foreground"
         onClick={handleCopy}
+        aria-label={t("students.contactRow.copy", { label })}
       >
-        <Copy size={13} />
+        <Copy className="size-4" aria-hidden />
       </Button>
-    </div>
+    </li>
   );
 };

@@ -18,24 +18,24 @@ export const GardenPath = ({ progress, tone = "dark" }: Props) => {
     return (
       <div
         className={`flex items-center gap-3 rounded-2xl border border-dashed px-4 py-3 ${
-          isDark ? "border-white/15 bg-white/5" : "border-ink/15 bg-paper-soft"
+          isDark ? "border-white/15 bg-white/5" : "border-foreground/15 bg-muted/55"
         }`}
       >
         <Sprout
           size={18}
-          className={isDark ? "text-paper/40" : "text-ink-soft/50"}
+          className={isDark ? "text-white/40" : "text-muted-foreground/50"}
         />
         <div className="min-w-0">
           <p
             className={`text-sm font-medium ${
-              isDark ? "text-paper/80" : "text-ink"
+              isDark ? "text-white/80" : "text-foreground"
             }`}
           >
             {t("garden.noRewards")}
           </p>
           <p
             className={`text-xs mt-0.5 ${
-              isDark ? "text-paper/50" : "text-ink-soft"
+              isDark ? "text-white/50" : "text-muted-foreground"
             }`}
           >
             {t("garden.noRewardsHint")}
@@ -51,11 +51,11 @@ export const GardenPath = ({ progress, tone = "dark" }: Props) => {
     <div className="relative">
       <div
         className={`absolute top-5 left-5 right-5 h-0.5 ${
-          isDark ? "bg-white/15" : "bg-ink/10"
+          isDark ? "bg-white/15" : "bg-foreground/10"
         }`}
       />
       <div
-        className="absolute top-5 left-5 h-0.5 bg-gold transition-all duration-700"
+        className="absolute top-5 left-5 h-0.5 bg-coin transition-all duration-700"
         style={{ width: `calc((100% - 2.5rem) * ${pathProgress / 100})` }}
       />
       <div className="relative flex justify-between">
@@ -74,7 +74,7 @@ export const GardenPath = ({ progress, tone = "dark" }: Props) => {
             >
               {isCurrent && (
                 <span
-                  className={`absolute -top-7 whitespace-nowrap rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold text-gold ${
+                  className={`absolute -top-7 whitespace-nowrap rounded-full bg-coin/15 px-2 py-0.5 text-[10px] font-semibold text-coin ${
                     isFirst
                       ? "left-0"
                       : isLast
@@ -88,12 +88,12 @@ export const GardenPath = ({ progress, tone = "dark" }: Props) => {
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
                   isCurrent
-                    ? "bg-gold border-gold text-forest-deep shadow-[0_0_0_4px_rgba(237,162,59,0.25)]"
+                    ? "bg-coin border-coin text-sidebar shadow-[0_0_0_4px_rgba(237,162,59,0.25)]"
                     : isDone
-                      ? "bg-gold border-gold text-forest-deep"
+                      ? "bg-coin border-coin text-sidebar"
                       : isDark
-                        ? "bg-[#213B35] border-white/15 border-dashed text-white/30"
-                        : "bg-paper-soft border-ink/15 border-dashed text-ink-soft/40"
+                        ? "bg-sidebar-accent border-white/15 border-dashed text-white/30"
+                        : "bg-muted/55 border-foreground/15 border-dashed text-muted-foreground/40"
                 }`}
               >
                 <Icon size={17} />
@@ -102,10 +102,10 @@ export const GardenPath = ({ progress, tone = "dark" }: Props) => {
                 <span
                   className={`text-[10px] sm:text-[11px] whitespace-nowrap ${
                     isCurrent
-                      ? `font-medium ${isDark ? "text-gold-soft" : "text-gold"}`
+                      ? `font-medium ${isDark ? "text-coin-soft" : "text-coin"}`
                       : isDark
-                        ? "text-paper/40"
-                        : "text-ink-soft"
+                        ? "text-white/40"
+                        : "text-muted-foreground"
                   }`}
                 >
                   {t("garden.levelLabel", { level: lvl.daraja })}
@@ -113,10 +113,10 @@ export const GardenPath = ({ progress, tone = "dark" }: Props) => {
                 <span
                   className={`inline-flex items-center gap-0.5 text-[10px] sm:text-[11px] font-semibold tabular-nums whitespace-nowrap ${
                     isCurrent || isDone
-                      ? "text-gold"
+                      ? "text-coin"
                       : isDark
-                        ? "text-gold"
-                        : "text-ink-soft/70"
+                        ? "text-coin"
+                        : "text-muted-foreground/70"
                   }`}
                 >
                   <Coins size={10} className="shrink-0" />

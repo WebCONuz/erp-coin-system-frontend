@@ -1,6 +1,8 @@
 import { format, parseISO } from "date-fns";
+import { BarChart3 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CoinFlowTrendChart } from "@/components/shared/charts";
+import { EmptyState } from "@/components/shared/states";
 import type { CoinEconomyTrendPoint } from "../../types";
 
 interface Props {
@@ -12,19 +14,22 @@ export const WeeklyTrendChart = ({ data }: Props) => {
 
   if (!data.length) {
     return (
-      <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
-        {t("admin.dashboard.coinEconomy.noTrendData")}
-      </div>
+      <EmptyState
+        size="sm"
+        icon={BarChart3}
+        title={t("admin.dashboard.coinEconomy.noTrendData")}
+      />
     );
   }
 
   return (
     <CoinFlowTrendChart
       data={data}
+      caption={t("admin.dashboard.last7Days")}
       earnedLabel={t("admin.dashboard.coinEconomy.earned")}
       deductedLabel={t("admin.dashboard.coinEconomy.deducted")}
       xTickFormatter={formatDayLabel}
-      height={200}
+      height={220}
     />
   );
 };

@@ -53,7 +53,12 @@
     "logoutAction": "Chiqish",
     "coinLabel": "coin",
     "next": "Keyingi",
-    "previous": "Oldingi"
+    "previous": "Oldingi",
+    "loadError": {
+      "title": "Ma'lumotni yuklab bo'lmadi",
+      "description": "Internet aloqasini tekshiring va qayta urinib ko'ring."
+    },
+    "changeFilters": "Qidiruv so'zini yoki filtrlarni o'zgartiring."
   },
   "sourceTypes": {
     "bonus": "Bonus",
@@ -188,8 +193,15 @@
     },
     "hero": {
       "title": "O'quv markazingizni bitta platformada boshqaring",
-      "description": "Guruhlar, talabalar, o'qituvchilar va tanga iqtisodiyotini yagona admin panelidan nazorat qiling."
-    }
+      "description": "Guruhlar, talabalar, o'qituvchilar va tanga iqtisodiyotini yagona admin panelidan nazorat qiling.",
+      "points": {
+        "attendance": "Yo'qlama va baholash bir necha bosishda",
+        "coins": "Faollik uchun tangalar — o'quvchilar uchun motivatsiya",
+        "market": "Tangalarni sovg'alarga almashtirish do'koni"
+      }
+    },
+    "showPassword": "Parolni ko'rsatish",
+    "hidePassword": "Parolni yashirish"
   },
   "profile": {
     "title": "Mening profilim",
@@ -325,7 +337,7 @@
     },
     "dashboard": {
       "title": "Salom, {{name}}",
-      "description": "EduCoin platformasiga xush kelibsiz!",
+      "description": "Edu-game platformasiga xush kelibsiz!",
       "defaultUser": "Hurmatli foydalanuvchi",
       "todaySessions": "Bugun {{count}} ta dars",
       "needsAttention": "E'tibor talab qiladi",
@@ -365,14 +377,21 @@
       "leaderboard": {
         "title": "Reyting",
         "empty": "Hali reyting mavjud emas"
-      }
+      },
+      "tasksTitle": "Bajarilishi kerak",
+      "allClear": "Kutilayotgan ish yo'q",
+      "allClearHint": "Yangi xarid yoki yo'qlama kiritilmagan dars paydo bo'lsa, shu yerda ko'rinadi.",
+      "overview": "Umumiy ko'rsatkichlar",
+      "last7Days": "So'nggi 7 kun",
+      "thisMonth": "Bu oy",
+      "leaderboardHint": "Balans bo'yicha top-5"
     },
     "tenants": {
-      "no_data": "Tizimda hali ijarachilar mavjud emas!",
-      "create": "Ijarachi yaratish"
+      "no_data": "Hali o'quv markazlar yo'q",
+      "create": "Markaz qo'shish"
     },
     "students": {
-      "no_data": "Hali o'quvchilar mavjud emas!",
+      "no_data": "Hali o'quvchilar yo'q",
       "create_btn": "Student yaratish"
     }
   },
@@ -410,7 +429,15 @@
     "activate": "Faollashtirish",
     "filter": {
       "add": "Markaz qo'shish",
-      "active": "Faol Markazlar"
+      "active": "Faol markazlar",
+      "inactive": "Nofaol",
+      "searchPlaceholder": "Markaz nomi yoki slug"
+    },
+    "usersCount": "Foydalanuvchilar",
+    "noAccess": "Bu bo'limni faqat tizim administratori ko'ra oladi",
+    "empty": {
+      "filteredTitle": "Mos markaz topilmadi",
+      "filteredHint": "Qidiruv so'zini yoki tabni o'zgartiring."
     }
   },
   "subjects": {
@@ -430,8 +457,14 @@
       "descriptionPlaceholder": "Masalan: Algebra va geometriya asoslari"
     },
     "inactive": "Nofaol",
-    "noData": "Hali fanlar mavjud emas!",
-    "deleteConfirm": "\"{{name}}\" fanini o'chirishni tasdiqlaysizmi?"
+    "noData": "Hali fanlar yo'q",
+    "deleteConfirm": "\"{{name}}\" fanini o'chirishni tasdiqlaysizmi?",
+    "noDescription": "Tavsif yo'q",
+    "empty": {
+      "hint": "Fan qo'shing — keyin uni dars jadvali va sessiyalarda tanlash mumkin.",
+      "filteredTitle": "Mos fan topilmadi",
+      "filteredHint": "Qidiruv so'zini yoki tabni o'zgartiring."
+    }
   },
   "rooms": {
     "title": "Xonalar",
@@ -454,8 +487,9 @@
     },
     "capacityUnit": "{{count}} kishilik",
     "inactive": "Nofaol",
-    "noData": "Hali xonalar mavjud emas!",
-    "deleteConfirm": "\"{{name}}\" xonasini o'chirishni tasdiqlaysizmi?"
+    "noData": "Hali xonalar yo'q",
+    "deleteConfirm": "\"{{name}}\" xonasini o'chirishni tasdiqlaysizmi?",
+    "emptyHint": "Xona qo'shing — keyin uni dars jadvali va sessiyalarda tanlash mumkin."
   },
   "roles": {
     "title": "Rollar",
@@ -467,12 +501,13 @@
       "active": "Faol",
       "inactive": "Faol emas",
       "createdAt": "Yaratilgan vaqti"
-    }
+    },
+    "readOnlyHint": "Rollar tizim tomonidan boshqariladi — bu ro'yxat faqat ko'rish uchun."
   },
   "employees": {
     "title": "Xodimlar",
     "addEmployee": "Xodim qo'shish",
-    "noData": "Hali xodimlar mavjud emas!",
+    "noData": "Hali xodimlar yo'q",
     "archiveConfirm": "\"{{name}}\" ni arxivlashni tasdiqlaysizmi?",
     "passwordChanged": "Parol muvaffaqiyatli o'zgartirildi",
     "changePasswordTitle": "Parolni o'zgartirish",
@@ -509,7 +544,8 @@
       "archive": "Arxiv",
       "rolePlaceholder": "Rol tanlang",
       "searchPlaceholder": "Ism yoki telefon bo'yicha qidirish"
-    }
+    },
+    "emptyHint": "Administrator yoki o'qituvchi qo'shing."
   },
   "reasons": {
     "title": "Mukofot va Jarimalar",
@@ -517,24 +553,27 @@
     "rewardsTab": "Mukofotlar",
     "penaltiesTab": "Jarimalar",
     "searchPlaceholder": "Sabab nomi bo'yicha qidirish",
-    "noData": "Hali sabablar mavjud emas!",
-    "deleteConfirm": "\"{{name}}\" sababini o'chirishni tasdiqlaysizmi?"
+    "noData": "Hali sabablar yo'q",
+    "deleteConfirm": "\"{{name}}\" sababini o'chirishni tasdiqlaysizmi?",
+    "emptyHint": "Sabab qo'shing — o'qituvchilar tanga berish va jarima uchun shu ro'yxatdan tanlaydi."
   },
   "controls": {
     "title": "Boshqaruv",
     "sendMessage": "Xabar yuborish",
     "messageTextLabel": "Xabar matni:",
-    "send": "Yuborish"
+    "send": "Yuborish",
+    "description": "Markaz ishini sozlang: tanga sabablari, xodimlar, xonalar va dam olish kunlari."
   },
   "teachers": {
     "table": {
       "full_name": "Ism-familiya",
       "phone": "Telefon",
       "email": "Elektron pochta",
-      "created_at": "Yaratilgan vaqti",
+      "created_at": "Qo'shilgan sana",
       "updated_at": "So'ngi yangilanish",
       "taught_groups": "Guruhlari",
-      "actions": "Harkatlar"
+      "actions": "Amallar",
+      "noGroups": "Guruh biriktirilmagan"
     },
     "schema": {
       "fullName_min": "F.I.Sh kamida 2 ta belgi bo'lishi kerak",
@@ -556,7 +595,8 @@
     },
     "filter": {
       "addTeacher": "O'qituvchi qo'shish",
-      "activeTeachers": "Faol o'qituvchilar"
+      "activeTeachers": "Faol o'qituvchilar",
+      "searchPlaceholder": "Ism yoki telefon raqami"
     },
     "header": {
       "password": "Parol",
@@ -571,7 +611,21 @@
       "title": "O'qituvchi sessiyalari"
     },
     "archiveConfirm": "\"{{name}}\" ni arxivlashni tasdiqlaysizmi?",
-    "notFound": "O'qituvchi topilmadi!"
+    "notFound": "O'qituvchi topilmadi!",
+    "actions": {
+      "view": "{{name}} profilini ko'rish",
+      "more": "{{name}}: boshqa amallar"
+    },
+    "list": {
+      "count_one": "{{count}} ta o'qituvchi",
+      "count_other": "{{count}} ta o'qituvchi"
+    },
+    "empty": {
+      "title": "Hali o'qituvchilar yo'q",
+      "hint": "O'qituvchi qo'shing, so'ng uni guruhlarga biriktiring.",
+      "filteredTitle": "Hech kim topilmadi",
+      "filteredHint": "Qidiruv so'zini o'zgartiring yoki boshqa tabni tanlang."
+    }
   },
   "students": {
     "header": {
@@ -582,7 +636,7 @@
       "phone": "Telefon",
       "email": "Email",
       "email_empty": "Mavjud emas",
-      "balance": "Balans (tangalar soni)",
+      "balance": "Balans",
       "created_at": "Yaratilgan sana",
       "actions": "Amallar"
     },
@@ -651,7 +705,9 @@
       "restoreLabel": "Ha, faollashtirish",
       "deleteTitle": "Talabani o'chirish",
       "deleteDescription": "\"{{name}}\" ni o'chirmoqchimisiz? Bu amal talabani tizimdan butunlay olib tashlaydi (soft delete). Qayta tiklash faqat administrator tomonidan amalga oshirilishi mumkin.",
-      "deleteLabel": "Ha, o'chirish"
+      "deleteLabel": "Ha, o'chirish",
+      "view": "{{name}} profilini ko'rish",
+      "edit": "{{name}} ma'lumotlarini tahrirlash"
     },
     "status": {
       "deleted": "O'chirilgan",
@@ -671,7 +727,13 @@
       "importExcel": "Exceldan ma'lumot qo'shish",
       "activeStudents": "Faol o'quvchilar",
       "allClasses": "Barcha sinflar",
-      "searchPlaceholder": "Ism yoki telefon raqami"
+      "searchPlaceholder": "Ism yoki telefon raqami",
+      "comingSoon": "Tez orada",
+      "moreActions": "Boshqa amallar",
+      "label": "O'quvchilarni filtrlash",
+      "sortLabel": "Saralash",
+      "sortAsc": "o'sish tartibida",
+      "sortDesc": "kamayish tartibida"
     },
     "giftTab": {
       "title": "Sotib olingan sovg'alar ({{count}})",
@@ -683,7 +745,8 @@
       "title": "Guruhlar ro'yxati ({{count}})",
       "emptyTitle": "Hech qanday guruhga a'zo emas",
       "emptyText": "{{name}}ni faol guruhlardan biriga qo'shib, darslarga jalb qiling.",
-      "joinedSince": "{{date}} dan"
+      "joinedSince": "{{date}} dan",
+      "removeFrom": "{{group}} guruhidan chiqarish"
     },
     "infoTab": {
       "personalInfo": "Shaxsiy ma'lumotlar",
@@ -727,11 +790,21 @@
     },
     "contactRow": {
       "copied": "Nusxalandi",
-      "copyFailed": "Nusxalab bo'lmadi"
+      "copyFailed": "Nusxalab bo'lmadi",
+      "copy": "Nusxa olish: {{label}}"
     },
     "historyTab": {
       "title": "Amallar tarixi",
       "empty": "Bu o'quvchi ustida hali hech qanday amal qayd etilmagan"
+    },
+    "list": {
+      "count_one": "{{count}} ta o'quvchi",
+      "count_other": "{{count}} ta o'quvchi"
+    },
+    "empty": {
+      "hint": "Birinchi o'quvchini qo'shing — keyin unga tanga berish va guruhga qo'shish mumkin.",
+      "filteredTitle": "Hech kim topilmadi",
+      "filteredHint": "Qidiruv so'zini yoki sinf filtrini o'zgartiring."
     }
   },
   "courses": {
@@ -756,7 +829,7 @@
     }
   },
   "groups": {
-    "no_data": "Hali guruhlar mavjud emas!",
+    "no_data": "Hali guruhlar yo'q",
     "btn": {
       "create": "Guruh yaratish",
       "add": "Guruh qo'shish"
@@ -779,7 +852,7 @@
     },
     "card": {
       "active": "Aktiv",
-      "inactive": "No aktiv"
+      "inactive": "Nofaol"
     },
     "schema": {
       "name_required": "Guruh nomi majburiy",
@@ -802,7 +875,7 @@
       "teacher_placeholder": "O'qituvchini tanlang"
     },
     "addStudent": {
-      "title": "Student qo'shish",
+      "title": "O'quvchi qo'shish",
       "subtitle": "{{name}} guruhiga o'quvchi qo'shish",
       "tabSingle": "Bitta",
       "tabBulk": "Ko'p",
@@ -845,12 +918,17 @@
     },
     "balance": {
       "title": "O'quvchilar statistikasi",
-      "avgTitle": "O'rtacha BB-coin balansi",
+      "avgTitle": "O'rtacha tanga balansi",
       "avgEmpty1": "Hali ma'lumot yo'q. Ma'lumot yig'ilgach, bu yerda guruhning",
       "avgEmpty2": "o'rtacha balansi grafigi paydo bo'ladi",
       "activityTitle": "Guruh haftalik faolligi",
       "activityEmpty1": "Faollik tahlili kutilmoqda.",
       "activityEmpty2": "Haftalik guruh faolligi bu yerda ko'rinadi"
+    },
+    "empty": {
+      "hint": "Guruh yarating, so'ng unga o'quvchilar va o'qituvchi biriktiring.",
+      "filteredTitle": "Mos guruh topilmadi",
+      "filteredHint": "Qidiruv so'zini, kursni yoki holat tabini o'zgartiring."
     }
   },
   "teacherProfile": {
@@ -904,7 +982,8 @@
       "upcomingTitle": "Bugun va yaqin darslaringiz",
       "noUpcoming": "Rejalashtirilgan dars yo'q",
       "pendingAttendance": "<b>{{count}}</b> ta darsingiz uchun yo'qlama kiritilmagan",
-      "viewAll": "Barchasini ko'rish ({{count}})"
+      "viewAll": "Barchasini ko'rish ({{count}})",
+      "todaySessions": "Bugungi darslar"
     },
     "profile": {
       "notFound": "Profil ma'lumotlari topilmadi",
@@ -1013,7 +1092,8 @@
       "isCheckedLabel": "Tekshiruv holati",
       "allCheckStatuses": "Barchasi",
       "checked": "Tekshirilgan",
-      "unchecked": "Tekshirilmagan"
+      "unchecked": "Tekshirilmagan",
+      "label": "Sessiyalarni filtrlash"
     },
     "attendance": {
       "title": "Yo'qlama",
@@ -1035,8 +1115,8 @@
       }
     },
     "deleteConfirm": "\"{{group}}\" guruhining {{time}} dagi darsini o'chirishni tasdiqlaysizmi?",
-    "noSessions": "Hali Sessiyalar mavjud emas!",
-    "backToList": "Sessiyalar qaytish",
+    "noSessions": "Hali sessiyalar yo'q",
+    "backToList": "Sessiyalarga qaytish",
     "notFound": "Dars topilmadi!",
     "statusPanel": {
       "lockConfirm": "Darsni qulflashni tasdiqlaysizmi? Qulflangach yo'qlama va ma'lumotlarni tahrirlash uchun avval qulfni ochish kerak bo'ladi.",
@@ -1064,7 +1144,16 @@
       "maxScoreLabel": "Maksimal ball (ixtiyoriy)",
       "maxScorePlaceholder": "Masalan: 100"
     },
-    "openExisting": "Mavjud darsni ochish"
+    "openExisting": "Mavjud darsni ochish",
+    "noSessionsHint": "Sessiyani qo'lda qo'shing yoki dars jadvalidan darslarni yarating.",
+    "emptyFiltered": {
+      "title": "Bu filtrlarga mos sessiya topilmadi",
+      "description": "Filtrlarni o'zgartirib ko'ring yoki boshqa sanani tanlang."
+    },
+    "detail": {
+      "infoTitle": "Dars ma'lumotlari",
+      "time": "Vaqt"
+    }
   },
   "plans": {
     "weekday": {
@@ -1098,7 +1187,7 @@
       "rangeTooLong": "Oraliq 92 kundan oshmasligi kerak"
     },
     "deleteTemplateConfirm": "Bu shablonni o'chirsangiz, kelajakdagi sessiyalar yaratilmaydi. Mavjud sessiyalarga ta'sir etmaydi. Davom etasizmi?",
-    "weeklyTemplate": "Haftalik Shablon",
+    "weeklyTemplate": "Haftalik shablon",
     "selectGroup": "Guruh tanlang",
     "addTemplate": "Shablon qo'shish",
     "generateSessions": "Darslar yaratish",
@@ -1145,9 +1234,10 @@
     },
     "legend": {
       "normal": "Oddiy sessiya",
-      "rescheduled": "Vaqt o'zgargan",
+      "rescheduled": "O'zgartirilgan",
       "cancelled": "Bekor qilingan",
-      "locked": "Qulflangan (yo'qlama kiritilgan)"
+      "locked": "Qulflangan (yo'qlama kiritilgan)",
+      "subjectColor": "Rang — fan"
     },
     "chip": {
       "cancelled": "Bekor qilindi",
@@ -1160,14 +1250,20 @@
       "substitute": "O'rinbosar"
     },
     "tabs": {
-      "kanban": "Haftalik Shablon (Kanban)",
-      "calendar": "Oylik Kalendar"
+      "kanban": "Haftalik shablon",
+      "calendar": "Oylik kalendar"
     },
     "sync": {
       "summary": "Kelajakdagi darslar moslashtirildi: {{updated}} ta yangilandi, {{removed}} ta o'chirildi, {{created}} ta yaratildi",
       "conflictsTitle": "{{count}} ta dars yangi jadvalga ko'chirilmadi (to'qnashuv)",
       "andMore": "…va yana {{count}} ta"
-    }
+    },
+    "today": "Bugun",
+    "prevMonth": "Oldingi oy",
+    "nextMonth": "Keyingi oy",
+    "dayEmpty": "Bu kunda dars yo'q",
+    "moreCount_one": "yana {{count}} ta",
+    "moreCount_other": "yana {{count}} ta"
   },
   "reward_categories": {
     "title": "Kategoriyalar",
@@ -1177,7 +1273,7 @@
       "create": "Kategoriya yaratish",
       "add": "Kategoriya qo'shish"
     },
-    "no_data": "Hali kategoriyalar mavjud emas!",
+    "no_data": "Hali kategoriyalar yo'q",
     "delete_confirm": "Kategoriyani o'chirishni tasdiqlaysizmi?"
   },
   "market": {
@@ -1228,11 +1324,12 @@
     },
     "filter": {
       "addGift": "Sovg'a qo'shish",
-      "activeGifts": "Faol sovg'alar"
+      "activeGifts": "Faol sovg'alar",
+      "searchPlaceholder": "Sovg'a nomi"
     },
     "buyConfirm": "\"{{title}}\" ni sotib olishni tasdiqlaysizmi?",
     "deleteConfirm": "\"{{title}}\" ni o'chirishni tasdiqlaysizmi?",
-    "noGifts": "Hali sovg'alar mavjud emas!",
+    "noGifts": "Hali sovg'alar yo'q",
     "createGift": "Sovg'a yaratish",
     "stockCount": "{{count}} dona",
     "outOfStock": "Tugagan",
@@ -1297,6 +1394,11 @@
       "reserved": "Band: {{count}}",
       "warehouse": "Omborda: {{count}}",
       "reservedLinkHint": "Hali topshirilmagan xaridlarni ko'rish"
+    },
+    "empty": {
+      "hint": "Sovg'a qo'shing — o'quvchilar tangalarini unga almashtira oladi.",
+      "filteredTitle": "Mos sovg'a topilmadi",
+      "filteredHint": "Qidiruv so'zini, kategoriyani yoki tabni o'zgartiring."
     }
   },
   "purchases": {
@@ -1382,7 +1484,13 @@
     "stockRestored": "Sovg'a zaxiraga qaytarildi",
     "stockNotRestored": "Zaxira o'zgarmadi",
     "rewardFilter": "Sovg'a: {{title}}",
-    "rewardFilterFallback": "tanlangan sovg'a"
+    "rewardFilterFallback": "tanlangan sovg'a",
+    "empty": {
+      "title": "Hali buyurtmalar yo'q",
+      "hint": "O'quvchilar sovg'a sotib olganda buyurtmalar shu yerda paydo bo'ladi.",
+      "filteredTitle": "Bu holatda buyurtma yo'q",
+      "filteredHint": "Boshqa tabni tanlang yoki sovg'a filtrini olib tashlang."
+    }
   },
   "system": {
     "goBack": "Ortga qaytish",
@@ -1422,26 +1530,6 @@
       "students": "O'quvchilar",
       "coinRules": "Tanga",
       "profile": "Profil"
-    }
-  },
-  "dates": {
-    "today": "Bugun",
-    "yesterday": "Kecha",
-    "todayWithDate": "BUGUN · {{date}}",
-    "tomorrowWithDate": "ERTAGA · {{date}}",
-    "months": {
-      "january": "yanvar",
-      "february": "fevral",
-      "march": "mart",
-      "april": "aprel",
-      "may": "may",
-      "june": "iyun",
-      "july": "iyul",
-      "august": "avgust",
-      "september": "sentabr",
-      "october": "oktabr",
-      "november": "noyabr",
-      "december": "dekabr"
     }
   },
   "dashboard": {
@@ -1504,7 +1592,8 @@
       "assignments": "Topshiriq",
       "nextLesson": "Keyingi dars:",
       "studentsCount": "{{count}} o'quvchi",
-      "history": "Guruh tarixi"
+      "history": "Guruh tarixi",
+      "you": "siz"
     },
     "dashboard": {
       "upcomingTitle": "Bugun va ertaga darslaringiz",
@@ -1588,7 +1677,8 @@
     "schema": {
       "limit_invalid": "Limit {{min}} … {{max}} oralig'ida butun son bo'lishi kerak",
       "timezone_required": "Vaqt mintaqasini tanlang"
-    }
+    },
+    "description": "Butun markazga ta'sir qiladigan umumiy sozlamalar."
   },
   "logoutAll": {
     "action": "Barcha qurilmalardan chiqish",
@@ -1690,5 +1780,16 @@
       "bulk_manual": "Ommaviy qo'lda",
       "apply_rule": "Qoida qo'llash"
     }
+  },
+  "shell": {
+    "mainNav": "Asosiy navigatsiya",
+    "collapseSidebar": "Menyuni yig'ish",
+    "expandSidebar": "Menyuni yoyish",
+    "more": "Yana",
+    "allSections": "Barcha bo'limlar",
+    "language": "Til",
+    "notifications": "Bildirishnomalar",
+    "lightMode": "Yorug' rejim",
+    "darkMode": "Qorong'i rejim"
   }
 }

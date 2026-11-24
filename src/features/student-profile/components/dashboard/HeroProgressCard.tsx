@@ -1,5 +1,6 @@
-import { Coins, Flame } from "lucide-react";
+import { Flame } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { CoinAmount } from "@/components/shared/coin";
 import type { LevelProgress } from "../../lib/level";
 import { GardenPath } from "../GardenPath";
 
@@ -11,6 +12,10 @@ interface Props {
   progress: LevelProgress | null;
 }
 
+/**
+ * O'quvchi "bog'"i — panelning markaziy elementi. Fon har ikki rejimda ham
+ * to'q (`sidebar` tokeni): bog' yo'li va oltin tanga shu fonda ajralib turadi.
+ */
 export const HeroProgressCard = ({
   fullName,
   balance,
@@ -20,41 +25,40 @@ export const HeroProgressCard = ({
   const { t } = useTranslation();
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-forest text-paper p-6 sm:p-8">
-      <div className="pointer-events-none absolute -top-20 -right-16 h-56 w-56 rounded-full bg-gold/10 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-24 -left-10 h-56 w-56 rounded-full bg-forest-light/60 blur-3xl" />
-
-      <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
+    <section className="relative overflow-hidden rounded-3xl bg-sidebar p-5 text-white sm:p-8">
+      <div className="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h1 className="font-display text-2xl sm:text-3xl font-semibold">
+          <h1 className="font-heading text-2xl font-semibold sm:text-3xl">
             {t("garden.hero.greeting", { name: fullName.split(" ")[0] })}
           </h1>
-          <p className="text-paper/60 text-sm mt-2 max-w-md">
+          <p className="mt-2 max-w-md text-sm text-white/65">
             {t("garden.hero.subtitle")}
           </p>
         </div>
 
-        <div className="flex flex-col items-start sm:items-end gap-3 shrink-0">
+        <div className="flex shrink-0 flex-col items-start gap-3 sm:items-end">
           {streak > 0 && (
-            <div className="flex items-center gap-1.5 rounded-full bg-bloom/15 border border-bloom/30 px-3 py-1 text-xs font-medium text-bloom">
-              <Flame size={13} className="fill-bloom text-bloom" />
+            <p className="flex items-center gap-1.5 rounded-full bg-coin/15 px-3 py-1 text-xs font-medium text-coin">
+              <Flame className="size-3.5" aria-hidden />
               {t("garden.hero.streak", { days: streak })}
-            </div>
-          )}
-          <div className="text-left sm:text-right">
-            <p className="text-xs text-paper/50">{t("garden.hero.balance")}</p>
-            <p className="font-display text-3xl font-bold text-gold flex items-center gap-1.5">
-              <Coins size={22} />
-              {balance}
             </p>
+          )}
+          <div className="sm:text-right">
+            <p className="text-xs text-white/55">{t("garden.hero.balance")}</p>
+            <CoinAmount
+              value={balance}
+              size="xl"
+              animate
+              className="mt-0.5 text-coin"
+            />
           </div>
         </div>
       </div>
 
-      <div className="relative mt-10">
+      <div className="relative mt-8 sm:mt-10">
         {progress ? (
           <>
-            <p className="text-xs uppercase tracking-wide text-paper/50 mb-8">
+            <p className="mb-8 text-sm font-medium text-white/70">
               {t("garden.levelWithName", {
                 level: progress.level.daraja,
                 name: t(`garden.levels.${progress.level.nameKey}`),
@@ -63,7 +67,7 @@ export const HeroProgressCard = ({
 
             <GardenPath progress={progress} tone="dark" />
 
-            <p className="text-right text-xs text-paper/50 mt-4">
+            <p className="mt-4 text-right text-xs text-white/55">
               {progress.nextLevel
                 ? t("garden.coinsToNext", { amount: progress.coinsToNext })
                 : t("garden.maxLevel")}
@@ -73,6 +77,6 @@ export const HeroProgressCard = ({
           <GardenPath progress={null} tone="dark" />
         )}
       </div>
-    </div>
+    </section>
   );
 };

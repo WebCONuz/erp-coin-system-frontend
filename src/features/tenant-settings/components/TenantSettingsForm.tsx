@@ -7,8 +7,9 @@ import { Clock, Coins } from "lucide-react";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { ControlledInput, ControlledSelect } from "@/components/controls";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DashboardTitle } from "@/components/shared/title";
+import { ErrorState } from "@/components/shared/states";
 import { translateApiError } from "@/ustils";
 import { COIN_AMOUNT_MAX, DEFAULT_TIMEZONE } from "../constants";
 import { useTenantSettings, useUpdateTenantSettings } from "../hooks";
@@ -31,7 +32,8 @@ const getTimezoneOptions = (current?: string) => {
 
 export const TenantSettingsForm = () => {
   const { t } = useTranslation();
-  const { data: settings, isLoading, isError } = useTenantSettings();
+  const { data: settings, isLoading, isError, refetch, isFetching } =
+    useTenantSettings();
   const updateSettings = useUpdateTenantSettings();
 
   const schema = useMemo(() => createTenantSettingsSchema(t), [t]);
@@ -80,22 +82,46 @@ export const TenantSettingsForm = () => {
     });
   };
 
-  if (isLoading) return <PageLoading />;
-  if (isError || !settings) return <NoData text={t("common.noData")} />;
+  const title = (
+    <DashboardTitle
+      title={t("tenantSettings.title")}
+      description={t("tenantSettings.description")}
+      as="h2"
+    />
+  );
+
+  if (isLoading) {
+    return (
+      <div aria-busy="true" className="max-w-2xl space-y-4">
+        {title}
+        <Skeleton className="h-44 rounded-2xl" />
+        <Skeleton className="h-36 rounded-2xl" />
+      </div>
+    );
+  }
+  if (isError || !settings) {
+    return (
+      <div className="max-w-2xl space-y-4">
+        {title}
+        <ErrorState onRetry={() => refetch()} isRetrying={isFetching} />
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
+      <div className="mb-4 sm:mb-5">{title}</div>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-xl space-y-6"
+        className="max-w-2xl space-y-4"
       >
-        <section className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 sm:p-5 space-y-3 min-w-0">
+        <section className="min-w-0 space-y-3 rounded-2xl border bg-card p-4 sm:p-5">
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 shrink-0 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
-              <Coins size={18} />
-            </div>
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-coin-soft text-coin-ink">
+              <Coins className="size-[18px]" aria-hidden />
+            </span>
             <div className="min-w-0">
-              <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">
+              <h3 className="font-heading text-base font-semibold">
                 {t("tenantSettings.coinLimit.title")}
               </h3>
               <p className="text-sm text-muted-foreground">
@@ -116,13 +142,13 @@ export const TenantSettingsForm = () => {
           </p>
         </section>
 
-        <section className="rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 sm:p-5 space-y-3 min-w-0">
+        <section className="min-w-0 space-y-3 rounded-2xl border bg-card p-4 sm:p-5">
           <div className="flex items-start gap-3">
-            <div className="w-9 h-9 shrink-0 rounded-lg bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-              <Clock size={18} />
-            </div>
+            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+              <Clock className="size-[18px]" aria-hidden />
+            </span>
             <div className="min-w-0">
-              <h3 className="font-semibold text-zinc-900 dark:text-zinc-50">
+              <h3 className="font-heading text-base font-semibold">
                 {t("tenantSettings.timezone.title")}
               </h3>
               <p className="text-sm text-muted-foreground">
@@ -140,7 +166,11 @@ export const TenantSettingsForm = () => {
         </section>
 
         <div className="flex justify-end">
-          <Button type="submit" disabled={updateSettings.isPending}>
+          <Button
+            type="submit"
+            disabled={updateSettings.isPending}
+            className="h-10 min-w-32"
+          >
             {updateSettings.isPending ? t("common.saving") : t("common.save")}
           </Button>
         </div>

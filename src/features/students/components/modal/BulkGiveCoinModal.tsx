@@ -98,13 +98,13 @@ export const BulkGiveCoinModal = ({
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
       <SheetContent
         side="right"
-        className="w-full sm:w-140 p-0 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 flex flex-col"
+        className="w-full sm:w-140 p-0 bg-card border-border flex flex-col"
       >
-        <SheetHeader className="p-4 border-b border-zinc-200 dark:border-zinc-800">
-          <SheetTitle className="text-zinc-900 dark:text-zinc-50">
+        <SheetHeader className="p-4 border-b border-border">
+          <SheetTitle className="text-foreground">
             {title ?? t("bulkCoin.defaultTitle")}
           </SheetTitle>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             {subtitle ?? t("bulkCoin.defaultSubtitle")}
           </p>
         </SheetHeader>
@@ -121,17 +121,17 @@ export const BulkGiveCoinModal = ({
             {/* Search */}
             <div className="px-4 pt-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder={t("bulkCoin.searchPlaceholder")}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400"
+                  className="pl-9 bg-card border-border text-foreground placeholder:text-muted-foreground"
                 />
                 {search && (
                   <button
                     onClick={() => setSearch("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -141,7 +141,7 @@ export const BulkGiveCoinModal = ({
 
             {/* Select all */}
             <div className="px-4 py-3 flex items-center justify-between">
-              <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 cursor-pointer select-none">
+              <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer select-none">
                 <Checkbox
                   checked={
                     filteredStudents.length > 0 &&
@@ -150,20 +150,20 @@ export const BulkGiveCoinModal = ({
                   onCheckedChange={() =>
                     toggleSelectAll(filteredStudents.map((s) => s.id))
                   }
-                  className="border-zinc-300 dark:border-zinc-600"
+                  className="border-border"
                 />
                 {t("bulkCoin.selectAll")}
               </label>
               <Badge
                 variant="secondary"
-                className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
+                className="bg-info-soft text-info"
               >
                 {t("bulkCoin.selectedCount", { count: selectedIds.length })}
               </Badge>
             </div>
 
             {/* Student list */}
-            <ScrollArea className="px-4 h-[calc(100vh-540px)] shrink-0 border-b border-zinc-200 dark:border-zinc-800 pb-3">
+            <ScrollArea className="px-4 h-[calc(100vh-540px)] shrink-0 border-b border-border pb-3">
               {filteredStudents.length === 0 ? (
                 <EmptyState search={search} />
               ) : (
@@ -171,23 +171,23 @@ export const BulkGiveCoinModal = ({
                   {filteredStudents.map((student) => (
                     <label
                       key={student.id}
-                      className="flex items-center gap-3 p-2.5 rounded-lg border border-zinc-200 dark:border-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 cursor-pointer transition-colors"
+                      className="flex items-center gap-3 p-2.5 rounded-lg border border-border hover:bg-muted cursor-pointer transition-colors"
                     >
                       <Checkbox
                         checked={selectedIds.includes(student.id)}
                         onCheckedChange={() => toggleSelect(student.id)}
-                        className="border-zinc-300 dark:border-zinc-600"
+                        className="border-border"
                       />
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
+                        <p className="text-sm font-medium text-foreground truncate">
                           {student.fullName}
                         </p>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                        <p className="text-xs text-muted-foreground">
                           {student.phone}
                         </p>
                       </div>
                       {typeof student.balance === "number" && (
-                        <span className="flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400 shrink-0">
+                        <span className="flex items-center gap-1 text-xs font-medium text-warning shrink-0">
                           <Coins size={12} />
                           {student.balance}
                         </span>
@@ -213,16 +213,16 @@ export const BulkGiveCoinModal = ({
                       })
                     }
                   >
-                    <TabsList className="w-full bg-zinc-100 dark:bg-zinc-800">
+                    <TabsList className="w-full bg-muted">
                       <TabsTrigger
                         value="rule"
-                        className="flex-1 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 text-zinc-600 dark:text-zinc-400 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50"
+                        className="flex-1 data-[state=active]:bg-white dark:data-[state=active]:bg-muted-foreground/30 text-muted-foreground data-[state=active]:text-foreground dark:data-[state=active]:text-muted-foreground"
                       >
                         {t("bulkCoin.tabs.rule")}
                       </TabsTrigger>
                       <TabsTrigger
                         value="custom"
-                        className="flex-1 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 text-zinc-600 dark:text-zinc-400 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50"
+                        className="flex-1 data-[state=active]:bg-white dark:data-[state=active]:bg-muted-foreground/30 text-muted-foreground data-[state=active]:text-foreground dark:data-[state=active]:text-muted-foreground"
                       >
                         {t("bulkCoin.tabs.custom")}
                       </TabsTrigger>
@@ -246,9 +246,9 @@ export const BulkGiveCoinModal = ({
                           }))}
                         />
                         {selectedRule && (
-                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1.5">
+                          <p className="text-xs text-muted-foreground mt-1.5">
                             {t("bulkCoin.rule.hintPrefix")}{" "}
-                            <b className="text-zinc-700 dark:text-zinc-300">
+                            <b className="text-foreground">
                               {selectedRule.direction === "earn" ? "+" : "-"}
                               {selectedRule.coinAmount} {t("common.coinLabel")}
                             </b>{" "}
@@ -314,21 +314,21 @@ export const BulkGiveCoinModal = ({
                 </ScrollArea>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+                <div className="p-4 border-t border-border bg-card">
                   <div className="flex gap-2">
                     <Button
                       type="button"
                       variant="outline"
                       onClick={handleClose}
                       disabled={isPending}
-                      className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                      className="flex-1 border-border text-foreground"
                     >
                       {t("common.cancel")}
                     </Button>
                     <Button
                       type="submit"
                       disabled={selectedIds.length === 0 || isPending}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
+                      className="flex-1 bg-info hover:bg-info/90 text-white"
                     >
                       {isPending
                         ? t("common.sending")
@@ -370,13 +370,13 @@ const ResultsView = ({
 
   return (
     <div className="flex-1 overflow-hidden flex flex-col">
-      <div className="px-4 py-4 flex items-center gap-4 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400">
+      <div className="px-4 py-4 flex items-center gap-4 border-b border-border">
+        <div className="flex items-center gap-1.5 text-sm text-success">
           <CheckCircle2 size={15} />
           {t("bulkCoin.results.success", { count: result.successCount })}
         </div>
         {result.failedCount > 0 && (
-          <div className="flex items-center gap-1.5 text-sm text-red-600 dark:text-red-400">
+          <div className="flex items-center gap-1.5 text-sm text-destructive">
             <XCircle size={15} />
             {t("bulkCoin.results.failed", { count: result.failedCount })}
           </div>
@@ -392,35 +392,35 @@ const ResultsView = ({
                 key={r.studentId}
                 className={`flex items-start gap-3 p-3 rounded-lg border ${
                   r.success
-                    ? "border-green-100 dark:border-green-900/40 bg-green-50/50 dark:bg-green-950/20"
-                    : "border-red-100 dark:border-red-900/40 bg-red-50/50 dark:bg-red-950/20"
+                    ? "border-success/30 bg-success-soft"
+                    : "border-destructive/30 bg-destructive-soft"
                 }`}
               >
                 {r.success ? (
                   <CheckCircle2
                     size={16}
-                    className="text-green-600 dark:text-green-400 shrink-0 mt-0.5"
+                    className="text-success shrink-0 mt-0.5"
                   />
                 ) : (
                   <XCircle
                     size={16}
-                    className="text-red-600 dark:text-red-400 shrink-0 mt-0.5"
+                    className="text-destructive shrink-0 mt-0.5"
                   />
                 )}
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
+                  <p className="text-sm font-medium text-foreground truncate">
                     {student?.fullName ?? r.studentId}
                   </p>
                   {r.success ? (
                     typeof r.newBalance === "number" && (
-                      <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {t("bulkCoin.results.newBalance", {
                           balance: r.newBalance,
                         })}
                       </p>
                     )
                   ) : (
-                    <p className="text-xs text-red-600 dark:text-red-400 mt-0.5">
+                    <p className="text-xs text-destructive mt-0.5">
                       {r.error}
                     </p>
                   )}
@@ -431,17 +431,17 @@ const ResultsView = ({
         </div>
       </ScrollArea>
 
-      <div className="px-4 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 flex gap-2">
+      <div className="px-4 py-4 border-t border-border bg-card flex gap-2">
         <Button
           variant="outline"
           onClick={onGiveMore}
-          className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+          className="flex-1 border-border text-foreground"
         >
           {t("bulkCoin.giveMore")}
         </Button>
         <Button
           onClick={onClose}
-          className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
+          className="flex-1 bg-info hover:bg-info/90 text-white"
         >
           {t("common.close")}
         </Button>
@@ -454,8 +454,8 @@ const EmptyState = ({ search }: { search: string }) => {
   const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center py-10 text-center">
-      <Users className="w-9 h-9 text-zinc-300 dark:text-zinc-600 mb-2" />
-      <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+      <Users className="w-9 h-9 text-muted-foreground mb-2" />
+      <p className="text-sm font-medium text-muted-foreground">
         {search
           ? t("bulkCoin.emptyNoResults")
           : t("bulkCoin.emptyNoStudents")}

@@ -1,20 +1,16 @@
+import { Skeleton } from "@/components/ui/skeleton";
+
 export const StudentDetailSkeleton = () => (
-  <div className="space-y-6 animate-pulse">
-    <div className="h-5 w-24 rounded bg-zinc-200 dark:bg-zinc-800" />
-    <div className="h-36 rounded-2xl bg-zinc-100 dark:bg-zinc-800" />
-    <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 space-y-6">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-24 rounded-xl bg-zinc-100 dark:bg-zinc-800"
-            />
-          ))}
-        </div>
-        <div className="h-80 rounded-xl bg-zinc-100 dark:bg-zinc-800" />
+  <div aria-busy="true" className="space-y-4 sm:space-y-5">
+    <Skeleton className="h-9 w-32" />
+    <Skeleton className="h-28 rounded-2xl" />
+    <Skeleton className="h-24 rounded-2xl" />
+    <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div className="space-y-4 lg:col-span-2">
+        <Skeleton className="h-10 w-full max-w-md rounded-xl" />
+        <Skeleton className="h-72 rounded-2xl" />
       </div>
-      <div className="h-96 rounded-xl bg-zinc-100 dark:bg-zinc-800" />
+      <Skeleton className="h-72 rounded-2xl" />
     </div>
   </div>
 );

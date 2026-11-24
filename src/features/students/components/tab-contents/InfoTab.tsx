@@ -1,99 +1,84 @@
 import { useTranslation } from "react-i18next";
-import { Card, CardContent } from "@/components/ui/card";
 import { TabsContent } from "@/components/ui/tabs";
+import { Panel } from "@/components/shared/panel";
 import { InfoField } from "../ui";
 import {
+  AtSign,
   Calendar,
   Mail,
-  Pencil,
   Phone,
   PhoneCall,
   ShieldCheck,
-  Users,
+  UserRound,
 } from "lucide-react";
 import type { StudentDetailFull } from "../../types";
 import { formatDate } from "@/ustils";
-import { Button } from "@/components/ui/button";
 
-export const InfoTab = ({
-  student,
-  isDeleted,
-  setIsEditOpen,
-}: {
-  student?: StudentDetailFull;
-  isDeleted: boolean;
-  setIsEditOpen: (a: boolean) => void;
-}) => {
+/**
+ * Shaxsiy va tizim ma'lumotlari. Tahrirlash tugmasi sahifa sarlavhasida —
+ * bu yerda takrorlanmaydi.
+ */
+export const InfoTab = ({ student }: { student?: StudentDetailFull }) => {
   const { t } = useTranslation();
 
   return (
     <TabsContent value="info" className="mt-4">
-      <Card className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
-        <CardContent className="space-y-6 pt-6">
-          <div className="space-y-3">
-            <p className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">
+      <Panel>
+        <div className="space-y-6">
+          <section className="space-y-4">
+            <h3 className="font-heading text-sm font-semibold">
               {t("students.infoTab.personalInfo")}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            </h3>
+            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <InfoField
-                icon={<Users size={15} />}
+                icon={<UserRound size={16} />}
                 label={t("students.infoTab.fullNameLabel")}
-                value={student?.fullName ?? "-"}
+                value={student?.fullName ?? "—"}
               />
               <InfoField
-                icon={<Phone size={15} />}
+                icon={<Phone size={16} />}
                 label={t("common.phone")}
-                value={student?.phone ?? "-"}
+                value={student?.phone ?? "—"}
               />
               <InfoField
-                icon={<Mail size={15} />}
+                icon={<Mail size={16} />}
                 label={t("common.email")}
                 value={student?.email ?? "—"}
               />
               {student?.parentPhone && (
                 <InfoField
-                  icon={<PhoneCall size={15} />}
+                  icon={<PhoneCall size={16} />}
                   label={t("students.infoTab.parentPhoneLabel")}
-                  value={student?.parentPhone}
+                  value={student.parentPhone}
                 />
               )}
-            </div>
-          </div>
+            </dl>
+          </section>
 
-          <div className="h-px bg-zinc-100 dark:bg-zinc-800" />
-
-          <div className="space-y-3">
-            <p className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wide">
+          <section className="space-y-4 border-t pt-6">
+            <h3 className="font-heading text-sm font-semibold">
               {t("students.infoTab.systemInfo")}
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            </h3>
+            <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <InfoField
-                icon={<ShieldCheck size={15} />}
-                label={t("students.infoTab.roleLabel")}
-                value={student?.role?.displayName ?? "-"}
+                icon={<AtSign size={16} />}
+                label={t("username.label")}
+                value={student?.username ?? "—"}
               />
               <InfoField
-                icon={<Calendar size={15} />}
+                icon={<ShieldCheck size={16} />}
+                label={t("students.infoTab.roleLabel")}
+                value={student?.role?.displayName ?? "—"}
+              />
+              <InfoField
+                icon={<Calendar size={16} />}
                 label={t("students.infoTab.registeredLabel")}
                 value={formatDate(student?.createdAt, "dd.MM.yyyy, HH:mm")}
               />
-            </div>
-          </div>
-
-          {!isDeleted && (
-            <div className="pt-2 flex justify-end">
-              <Button
-                size="sm"
-                className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 h-10 px-4 text-white"
-                onClick={() => setIsEditOpen(true)}
-              >
-                <Pencil size={14} />
-                {t("students.infoTab.editButton")}
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+            </dl>
+          </section>
+        </div>
+      </Panel>
     </TabsContent>
   );
 };

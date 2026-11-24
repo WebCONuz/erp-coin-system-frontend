@@ -4,6 +4,7 @@ import { AuditLogsDataFilter } from "@/features/audit-logs/components";
 import { useAuditLogs, useTable } from "@/features/audit-logs/hooks";
 import { AUDIT_LOGS_PAGE_SIZE } from "@/features/audit-logs/constants";
 import { usePagination } from "@/hooks";
+import { ErrorState } from "@/components/shared/states";
 import { isForbiddenError, translateApiError } from "@/ustils";
 
 const AuditLogsPage = () => {
@@ -24,20 +25,24 @@ const AuditLogsPage = () => {
   });
 
   return (
-    <>
+    <div className="space-y-4 sm:space-y-5">
       <AuditLogsDataFilter
         onRefresh={() => refetch()}
         isRefreshing={isFetching}
       />
 
       {isError ? (
-        <p className="rounded-lg border border-gray-200 dark:border-gray-900 p-8 text-center text-sm text-muted-foreground">
-          {isForbiddenError(error)
-            ? t("auditLogs.forbidden")
-            : translateApiError(error, t)}
-        </p>
+        <ErrorState
+          description={
+            isForbiddenError(error)
+              ? t("auditLogs.forbidden")
+              : translateApiError(error, t)
+          }
+          onRetry={isForbiddenError(error) ? undefined : () => refetch()}
+          isRetrying={isFetching}
+        />
       ) : (
-        <div className="w-full overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-900">
+        <div className="w-full overflow-x-auto rounded-2xl border bg-card">
           <CustomTable
             data={logs?.data ?? []}
             columns={columns}
@@ -57,7 +62,7 @@ const AuditLogsPage = () => {
           onPageChange={pagination.setPage}
         />
       )}
-    </>
+    </div>
   );
 };
 

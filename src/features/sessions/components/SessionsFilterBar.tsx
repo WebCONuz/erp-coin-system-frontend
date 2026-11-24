@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { DashboardTitle } from "@/components/shared/title";
+import { cn } from "@/lib/utils";
 import {
   ControlledDatePicker,
   ControlledSelect,
@@ -59,15 +60,16 @@ export const SessionsFilterBar = ({
 
   return (
     <Form {...form}>
-      <div className={`${hasAction && "w-full"} space-y-3`}>
+      <div className={cn("min-w-0 space-y-4", hasAction && "w-full")}>
         {hasAction && (
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <DashboardTitle title={t("admin.header.sessions")} />
             <Button
               onClick={onAdd}
-              className="bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white rounded-lg px-4 h-9 gap-2 shadow-sm duration-200"
+              className="h-9 gap-2 px-3.5"
+              aria-label={t("sessions.filter.addSession")}
             >
-              <Plus size={18} />
+              <Plus className="size-4" aria-hidden />
               <span className="hidden sm:inline">
                 {t("sessions.filter.addSession")}
               </span>
@@ -75,9 +77,13 @@ export const SessionsFilterBar = ({
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div
+          role="search"
+          aria-label={t("sessions.filter.label")}
+          className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-2.5"
+        >
           {pageName !== "group" && (
-            <div className="w-44">
+            <div className="min-w-0 sm:w-44">
               <ControlledSelect
                 control={form.control}
                 name="groupId"
@@ -87,7 +93,7 @@ export const SessionsFilterBar = ({
             </div>
           )}
           {pageName !== "teacher" && (
-            <div className="w-44">
+            <div className="min-w-0 sm:w-44">
               <ControlledSelect
                 control={form.control}
                 name="teacherId"
@@ -96,7 +102,7 @@ export const SessionsFilterBar = ({
               />
             </div>
           )}
-          <div className="w-36">
+          <div className="min-w-0 sm:w-40">
             <ControlledSelect
               control={form.control}
               name="sessionType"
@@ -108,11 +114,11 @@ export const SessionsFilterBar = ({
             control={form.control}
             name="date"
             placeholder={t("common.date")}
-            className="min-w-42"
+            className="min-w-0 sm:min-w-42"
             buttonClassName="h-8"
           />
           {sessionType === "lesson" && (
-            <div className="w-44">
+            <div className="min-w-0 sm:w-44">
               <ControlledSelect
                 control={form.control}
                 name="isChecked"

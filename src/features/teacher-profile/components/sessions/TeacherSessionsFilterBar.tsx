@@ -31,8 +31,11 @@ export const TeacherSessionsFilterBar = () => {
 
   return (
     <Form {...form}>
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="w-full sm:w-48">
+      <div
+        role="search"
+        className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-2.5"
+      >
+        <div className="min-w-0 sm:w-48">
           <ControlledSelect
             control={form.control}
             name="groupId"
@@ -40,7 +43,7 @@ export const TeacherSessionsFilterBar = () => {
             placeholder={t("common.group")}
           />
         </div>
-        <div className="w-full sm:w-40">
+        <div className="min-w-0 sm:w-40">
           <ControlledSelect
             control={form.control}
             name="sessionType"
@@ -52,10 +55,11 @@ export const TeacherSessionsFilterBar = () => {
           control={form.control}
           name="date"
           placeholder={t("common.date")}
-          className="w-full sm:w-auto sm:min-w-42"
+          className="min-w-0 sm:min-w-42"
+          buttonClassName="h-8"
         />
         {sessionType === "lesson" && (
-          <div className="w-full sm:w-44">
+          <div className="min-w-0 sm:w-44">
             <ControlledSelect
               control={form.control}
               name="isChecked"

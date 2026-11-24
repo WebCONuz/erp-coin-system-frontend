@@ -136,13 +136,13 @@ export const AddStudentDrawer = ({
     <Sheet open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
       <SheetContent
         side="right"
-        className="w-full sm:w-110 p-0 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 flex flex-col"
+        className="w-full sm:w-110 p-0 bg-card border-border flex flex-col"
       >
-        <SheetHeader className="px-6 pt-6 pb-4 border-b border-zinc-200 dark:border-zinc-800">
-          <SheetTitle className="text-zinc-900 dark:text-zinc-50">
+        <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
+          <SheetTitle className="text-foreground">
             {t("groups.addStudent.title")}
           </SheetTitle>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          <p className="text-sm text-muted-foreground">
             {t("groups.addStudent.subtitle", { name: group.name })}
           </p>
         </SheetHeader>
@@ -157,17 +157,17 @@ export const AddStudentDrawer = ({
           className="flex flex-col flex-1 overflow-hidden"
         >
           <div className="px-6 pt-4">
-            <TabsList className="w-full bg-zinc-100 dark:bg-zinc-800">
+            <TabsList className="w-full bg-muted">
               <TabsTrigger
                 value="single"
-                className="flex-1 gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 text-zinc-600 dark:text-zinc-400 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50"
+                className="flex-1 gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-muted-foreground/30 text-muted-foreground data-[state=active]:text-foreground dark:data-[state=active]:text-muted-foreground"
               >
                 <User className="w-4 h-4" />
                 {t("groups.addStudent.tabSingle")}
               </TabsTrigger>
               <TabsTrigger
                 value="bulk"
-                className="flex-1 gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-700 text-zinc-600 dark:text-zinc-400 data-[state=active]:text-zinc-900 dark:data-[state=active]:text-zinc-50"
+                className="flex-1 gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-muted-foreground/30 text-muted-foreground data-[state=active]:text-foreground dark:data-[state=active]:text-muted-foreground"
               >
                 <Users className="w-4 h-4" />
                 {t("groups.addStudent.tabBulk")}
@@ -178,17 +178,17 @@ export const AddStudentDrawer = ({
           {/* Qidiruv */}
           <div className="px-6 py-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder={t("groups.addStudent.searchPlaceholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
+                className="pl-9 bg-card border-border text-foreground placeholder:text-muted-foreground"
               />
               {search && (
                 <button
                   onClick={() => setSearch("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-muted-foreground"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -208,17 +208,17 @@ export const AddStudentDrawer = ({
                   {filteredStudents.map((student) => (
                     <div
                       key={student.id}
-                      className="flex items-center justify-between p-3 rounded-lg border border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors"
+                      className="flex items-center justify-between p-3 rounded-lg border border-border hover:bg-muted transition-colors"
                     >
                       <div className="min-w-0">
-                        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
+                        <p className="text-sm font-medium text-foreground truncate">
                           {student.fullName}
                         </p>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {student.phone}
                         </p>
                         {student.email && (
-                          <p className="text-xs text-zinc-400 dark:text-zinc-500 truncate">
+                          <p className="text-xs text-muted-foreground truncate">
                             {student.email}
                           </p>
                         )}
@@ -227,7 +227,7 @@ export const AddStudentDrawer = ({
                         size="sm"
                         onClick={() => handleSingleAdd(student.id)}
                         disabled={isPending}
-                        className="ml-3 shrink-0 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white text-xs"
+                        className="ml-3 shrink-0 bg-info hover:bg-info/90 text-white text-xs"
                       >
                         {t("common.add")}
                       </Button>
@@ -258,27 +258,27 @@ export const AddStudentDrawer = ({
                         className={cn(
                           "flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors",
                           isInvalid
-                            ? "border-red-300 bg-red-50 dark:border-red-900/60 dark:bg-red-950/30"
-                            : "border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/60",
+                            ? "border-destructive/30 bg-destructive-soft"
+                            : "border-border hover:bg-muted",
                         )}
                       >
                         <Checkbox
                           checked={selectedIds.includes(student.id)}
                           onCheckedChange={() => toggleSelect(student.id)}
-                          className="border-zinc-300 dark:border-zinc-600"
+                          className="border-border"
                         />
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
+                          <p className="text-sm font-medium text-foreground truncate">
                             {student.fullName}
                           </p>
-                          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                          <p className="text-xs text-muted-foreground mt-0.5">
                             {student.phone}
                           </p>
                         </div>
                         {isInvalid && (
                           <Badge
                             variant="secondary"
-                            className="shrink-0 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300"
+                            className="shrink-0 bg-destructive-soft text-destructive"
                           >
                             {t("groups.addStudent.notAvailable")}
                           </Badge>
@@ -291,28 +291,28 @@ export const AddStudentDrawer = ({
             </ScrollArea>
 
             {/* Bulk footer */}
-            <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900">
+            <div className="px-6 py-4 border-t border-border bg-card">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm text-zinc-500 dark:text-zinc-400">
+                <span className="text-sm text-muted-foreground">
                   {t("groups.addStudent.selected")}
                 </span>
                 <Badge
                   variant="secondary"
-                  className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300"
+                  className="bg-info-soft text-info"
                 >
                   {t("groups.addStudent.countUnit", { count: selectedIds.length })}
                 </Badge>
               </div>
               {isOverBulkLimit && (
-                <p className="mb-3 text-xs text-red-600 dark:text-red-400">
+                <p className="mb-3 text-xs text-destructive">
                   {t("groups.addStudent.bulkLimit", {
                     max: BULK_ADD_STUDENTS_MAX,
                   })}
                 </p>
               )}
               {invalidIds.size > 0 && (
-                <div className="mb-3 flex items-center justify-between gap-2 rounded-lg border border-red-200 dark:border-red-900/60 bg-red-50 dark:bg-red-950/30 px-3 py-2">
-                  <p className="min-w-0 text-xs text-red-700 dark:text-red-300">
+                <div className="mb-3 flex items-center justify-between gap-2 rounded-lg border border-destructive/30 bg-destructive-soft px-3 py-2">
+                  <p className="min-w-0 text-xs text-destructive">
                     {t("groups.addStudent.invalidSelected", {
                       count: invalidIds.size,
                     })}
@@ -322,7 +322,7 @@ export const AddStudentDrawer = ({
                     size="sm"
                     variant="outline"
                     onClick={removeInvalidFromSelection}
-                    className="h-7 shrink-0 text-xs border-red-300 dark:border-red-800 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/40"
+                    className="h-7 shrink-0 text-xs border-destructive/30 text-destructive hover:bg-destructive-soft"
                   >
                     {t("groups.addStudent.removeInvalid")}
                   </Button>
@@ -333,7 +333,7 @@ export const AddStudentDrawer = ({
                   variant="outline"
                   onClick={handleClose}
                   disabled={isPending}
-                  className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  className="flex-1 border-border text-foreground hover:bg-muted"
                 >
                   {t("common.cancel")}
                 </Button>
@@ -342,7 +342,7 @@ export const AddStudentDrawer = ({
                   disabled={
                     selectedIds.length === 0 || isOverBulkLimit || isPending
                   }
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
+                  className="flex-1 bg-info hover:bg-info/90 text-white"
                 >
                   {isPending
                     ? t("common.adding")
@@ -364,7 +364,7 @@ const StudentListSkeleton = () => (
     {Array.from({ length: 5 }).map((_, i) => (
       <div
         key={i}
-        className="h-16 rounded-lg bg-zinc-100 dark:bg-zinc-800 animate-pulse"
+        className="h-16 rounded-lg bg-muted animate-pulse"
       />
     ))}
   </div>
@@ -374,14 +374,14 @@ const EmptyState = ({ search }: { search: string }) => {
   const { t } = useTranslation();
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      <Users className="w-10 h-10 text-zinc-300 dark:text-zinc-600 mb-3" />
-      <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+      <Users className="w-10 h-10 text-muted-foreground mb-3" />
+      <p className="text-sm font-medium text-muted-foreground">
         {search
           ? t("groups.addStudent.noResults")
           : t("groups.addStudent.noStudents")}
       </p>
       {search && (
-        <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
+        <p className="text-xs text-muted-foreground mt-1">
           {t("groups.addStudent.noResultsFor", { search })}
         </p>
       )}

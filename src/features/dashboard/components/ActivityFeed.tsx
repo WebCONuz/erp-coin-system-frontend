@@ -1,10 +1,15 @@
 import { formatDistanceToNow, parseISO } from "date-fns";
-import { ru, uz } from "date-fns/locale";
-import { Minus, Plus, Undo2 } from "lucide-react";
+import { ru, uz, uzCyrl } from "date-fns/locale";
+import { History, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { cn, getFileUrl } from "@/lib/utils";
+import { Panel } from "@/components/shared/panel";
+import { CoinAmount } from "@/components/shared/coin";
+import { EmptyState } from "@/components/shared/states";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/ustils";
 import { getCoinTxState } from "@/types";
+import { UserAvatar } from "@/components/shared/avatar";
 import type {
   AdminDashboardActivity,
   DashboardActivitySourceType,
@@ -14,6 +19,8 @@ interface Props {
   activity?: AdminDashboardActivity[];
   isLoading?: boolean;
 }
+
+const DATE_LOCALES = { ru, uz, uz_cr: uzCyrl } as const;
 
 export const ActivityFeed = ({ activity, isLoading }: Props) => {
   const { t, i18n } = useTranslation();
@@ -32,7 +39,8 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
     try {
       return formatDistanceToNow(parseISO(date), {
         addSuffix: true,
-        locale: i18n.language === "ru" ? ru : uz,
+        locale:
+          DATE_LOCALES[i18n.language as keyof typeof DATE_LOCALES] ?? uz,
       });
     } catch {
       return "";
@@ -40,102 +48,85 @@ export const ActivityFeed = ({ activity, isLoading }: Props) => {
   };
 
   return (
-    <div className="rounded-2xl bg-white dark:bg-zinc-900 p-5 shadow-sm">
-      <h3 className="mb-4 text-base font-semibold">
-        {t("admin.dashboard.activity.title")}
-      </h3>
-
+    <Panel title={t("admin.dashboard.activity.title")} flush>
       {isLoading ? (
-        <div className="space-y-3">
+        <div
+          aria-busy="true"
+          className="grid gap-2 px-4 pb-4 sm:px-5 sm:pb-5 md:grid-cols-2"
+        >
           {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-14 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800"
-            />
+            <Skeleton key={i} className="h-16 rounded-xl" />
           ))}
         </div>
       ) : !activity?.length ? (
-        <p className="py-8 text-center text-sm text-muted-foreground">
-          {t("admin.dashboard.activity.empty")}
-        </p>
+        <EmptyState
+          size="sm"
+          icon={History}
+          title={t("admin.dashboard.activity.empty")}
+        />
       ) : (
-        <div className="space-y-1">
-          {activity.map((item, idx) => {
+        <ul className="grid px-4 pb-2 sm:px-5 md:grid-cols-2 md:gap-x-8">
+          {activity.map((item) => {
             const isEarn = item.direction === "earn";
             // Teskari yozuv — kulrang "↩"; bekor qilingan — summasi chizilgan.
             const state = getCoinTxState(item);
-            const avatarUrl = getFileUrl(item.student.avatarUrl);
 
             return (
-              <div
+              <li
                 key={item.id}
-                className={`flex items-start gap-3 py-2.5 ${
-                  idx !== activity.length - 1
-                    ? "border-b border-zinc-100 dark:border-zinc-800"
-                    : ""
-                }`}
+                className="flex items-start gap-3 border-b py-3 last:border-0 md:[&:nth-last-child(2):nth-child(odd)]:border-0"
               >
-                {avatarUrl ? (
-                  <img
-                    src={avatarUrl}
-                    alt={item.student.fullName}
-                    className="h-8 w-8 shrink-0 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-purple-500 to-purple-700 text-xs font-semibold text-white">
-                    {item.student.fullName.charAt(0).toUpperCase()}
-                  </div>
-                )}
+                <UserAvatar
+                  name={item.student.fullName}
+                  url={item.student.avatarUrl}
+                  className="size-8"
+                />
 
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
+                    <p className="truncate text-sm font-medium">
                       {item.student.fullName}
                     </p>
-                    <span
-                      className={cn(
-                        "flex shrink-0 items-center gap-0.5 text-sm font-semibold",
-                        state === "reversal"
-                          ? "text-zinc-500 dark:text-zinc-400"
-                          : isEarn
-                            ? "text-emerald-600 dark:text-emerald-400"
-                            : "text-red-600 dark:text-red-400",
-                        state === "reversed" && "line-through opacity-60",
-                      )}
-                    >
-                      {state === "reversal" ? (
-                        <Undo2 size={12} />
-                      ) : isEarn ? (
-                        <Plus size={12} />
-                      ) : (
-                        <Minus size={12} />
-                      )}
-                      {item.amount}
-                    </span>
+                    {state === "reversal" ? (
+                      <span className="flex shrink-0 items-center gap-1 text-sm font-semibold tabular-nums text-muted-foreground">
+                        <Undo2 className="size-3.5" aria-hidden />
+                        {item.amount}
+                      </span>
+                    ) : (
+                      <CoinAmount
+                        value={isEarn ? item.amount : -item.amount}
+                        signed
+                        size="md"
+                        className={cn(
+                          isEarn ? "text-success" : "text-destructive",
+                          state === "reversed" && "line-through opacity-60",
+                        )}
+                      />
+                    )}
                   </div>
-                  <p className="mt-0.5 truncate text-xs text-muted-foreground">
-                    <b className="font-medium">
+                  <p className="mt-0.5 truncate text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground/80">
                       {sourceLabels[item.sourceType] ?? item.sourceType}
-                    </b>
+                    </span>
                     {item.note ? `: ${item.note}` : ""}
                   </p>
-                  <p className="mt-0.5 text-[11px] text-zinc-400 dark:text-zinc-500">
-                    {item.teacher ? `${item.teacher.fullName} · ` : ""}
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {item.teacher ? `${item.teacher.fullName}, ` : ""}
                     {formatRelative(item.createdAt)}
                     {state === "reversal" &&
-                      ` · ${t("coinHistory.reversalBadge")}`}
+                      ` (${t("coinHistory.reversalBadge")})`}
                     {state === "reversed" &&
                       item.reversal &&
-                      ` · ${t("coinHistory.reversedBadge", {
+                      ` (${t("coinHistory.reversedBadge", {
                         date: formatDate(item.reversal.createdAt, "dd.MM.yyyy"),
-                      })}`}
+                      })})`}
                   </p>
                 </div>
-              </div>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
-    </div>
+    </Panel>
   );
 };

@@ -2,6 +2,7 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { formatDate } from "@/ustils";
+import { Badge } from "@/components/ui/badge";
 import type { Role } from "../types";
 
 export const useRoleTable = () => {
@@ -10,8 +11,22 @@ export const useRoleTable = () => {
   const columns = useMemo<ColumnDef<Role>[]>(
     () => [
       { accessorKey: "displayName", header: t("roles.table.displayName") },
-      { accessorKey: "name", header: t("roles.table.code") },
-      { accessorKey: "level", header: t("roles.table.level") },
+      {
+        accessorKey: "name",
+        header: t("roles.table.code"),
+        cell: ({ getValue }) => (
+          <code className="rounded bg-muted px-1.5 py-0.5 text-xs">
+            {getValue<string>()}
+          </code>
+        ),
+      },
+      {
+        accessorKey: "level",
+        header: t("roles.table.level"),
+        cell: ({ getValue }) => (
+          <span className="tabular-nums">{getValue<number>()}</span>
+        ),
+      },
       { accessorKey: "scope", header: t("roles.table.scope") },
       {
         accessorKey: "isActive",
@@ -19,15 +34,9 @@ export const useRoleTable = () => {
         cell: ({ getValue }) => {
           const value = getValue<boolean>();
           return (
-            <span
-              className={`${
-                value
-                  ? "bg-linear-to-br from-emerald-600 to-emerald-800"
-                  : "bg-linear-to-br from-red-600 to-red-800"
-              } py-1 px-3 rounded-xl text-sm text-white`}
-            >
+            <Badge variant={value ? "success" : "secondary"}>
               {value ? t("roles.table.active") : t("roles.table.inactive")}
-            </span>
+            </Badge>
           );
         },
       },

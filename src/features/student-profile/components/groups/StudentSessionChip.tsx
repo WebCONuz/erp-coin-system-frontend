@@ -18,7 +18,7 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
     return (
       <div
         title={`${t("calendarChip.cancelledTitle", { group: group.name })}${exception.note ? ` — ${exception.note}` : ""}`}
-        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-bloom bg-bloom/10"
+        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-destructive bg-destructive/10"
       >
         <span className="line-through">{subjectName ?? group.name}</span>
         <br />
@@ -34,7 +34,7 @@ export const StudentSessionChip = ({ entry, colorClass }: Props) => {
     return (
       <div
         title={`${t("calendarChip.rescheduledTitle", { group: group.name, start, end })}${exception.note ? ` (${exception.note})` : ""}`}
-        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-gold bg-gold/15"
+        className="w-full truncate rounded px-1.5 py-0.5 text-left text-[11px] font-medium text-warning bg-warning-soft"
       >
         {subjectName ?? group.name}
         <br />

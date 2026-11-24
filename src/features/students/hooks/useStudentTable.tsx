@@ -1,9 +1,11 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Eye, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/shared/avatar";
+import { CoinAmount } from "@/components/shared/coin";
 import { formatDate } from "@/ustils";
 import type { StudentDetail } from "../types";
 
@@ -13,93 +15,96 @@ interface Props {
 
 export const useStudentTable = ({ handleEdit }: Props) => {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-  const currentPage = Number(searchParams.get("page")) || 1;
 
   const columns = useMemo<ColumnDef<StudentDetail>[]>(
     () => [
       {
-        accessorKey: "id",
-        header: "№",
-        cell: ({ row }) => ((currentPage - 1) * 10 + row.index + 1).toString(),
-      },
-      {
         accessorKey: "fullName",
         header: t("students.table.full_name"),
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            {row?.original?.avatarUrl ? (
-              <img
-                src={row?.original?.avatarUrl}
-                className="object-cover w-8 h-8 rounded-full"
-              />
-            ) : (
-              <div className="w-8 h-8 rounded-full bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-xs font-bold text-white shrink-0">
-                {row?.original?.fullName?.charAt(0)?.toUpperCase() ?? "A"}
-                {row?.original?.fullName
-                  ?.split(" ")?.[1]
-                  ?.charAt(0)
-                  ?.toUpperCase() ?? "A"}
+        cell: ({ row }) => {
+          const s = row.original;
+          return (
+            <div className="flex min-w-52 items-center gap-3">
+              <UserAvatar name={s.fullName} url={s.avatarUrl} />
+              <div className="min-w-0">
+                <Link
+                  to={`/admin/students/${s.id}`}
+                  className="block truncate font-medium hover:text-primary hover:underline focus-visible:underline"
+                >
+                  {s.fullName}
+                </Link>
+                <p className="truncate text-xs text-muted-foreground">
+                  @{s.username}
+                  {s.email ? `, ${s.email}` : ""}
+                </p>
               </div>
-            )}
-            <span>{row.original.fullName}</span>
-          </div>
-        ),
+            </div>
+          );
+        },
       },
       {
         accessorKey: "phone",
         header: t("students.table.phone"),
-      },
-      {
-        accessorKey: "email",
-        header: t("students.table.email"),
         cell: ({ getValue }) => (
-          <span className="text-muted-foreground">
-            {getValue<string | null>() ?? t("students.table.email_empty")}
-          </span>
+          <span className="tabular-nums">{getValue<string>()}</span>
         ),
       },
       {
         accessorKey: "wallet",
         header: t("students.table.balance"),
         cell: ({ row }) => (
-          <div className="font-medium text-purple-600 dark:text-purple-400">
-            {row.original.wallet?.balance ?? 0}
-          </div>
+          <CoinAmount
+            value={row.original.wallet?.balance ?? 0}
+            variant="pill"
+            size="sm"
+          />
         ),
       },
       {
         accessorKey: "createdAt",
         header: t("students.table.created_at"),
-        cell: ({ getValue }) => formatDate(getValue<string>(), "dd.MM.yyyy"),
+        cell: ({ getValue }) => (
+          <span className="tabular-nums text-muted-foreground">
+            {formatDate(getValue<string>(), "dd.MM.yyyy")}
+          </span>
+        ),
       },
       {
         accessorKey: "actions",
-        header: t("students.table.actions"),
+        header: () => <span className="sr-only">{t("students.table.actions")}</span>,
         cell: ({ row }) => (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-end gap-1">
             <Button
+              asChild
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-950"
-              onClick={() => navigate(`/admin/students/${row.original.id}`)}
+              className="size-8 text-muted-foreground hover:text-foreground"
             >
-              <Eye size={18} />
+              <Link
+                to={`/admin/students/${row.original.id}`}
+                aria-label={t("students.actions.view", {
+                  name: row.original.fullName,
+                })}
+              >
+                <Eye className="size-4" aria-hidden />
+              </Link>
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-purple-500 hover:text-purple-600 hover:bg-purple-100 dark:hover:bg-purple-950"
+              className="size-8 text-muted-foreground hover:text-foreground"
               onClick={() => handleEdit(row.original)}
+              aria-label={t("students.actions.edit", {
+                name: row.original.fullName,
+              })}
             >
-              <Pencil size={18} />
+              <Pencil className="size-4" aria-hidden />
             </Button>
           </div>
         ),
       },
     ],
-    [currentPage, handleEdit, navigate, t],
+    [handleEdit, t],
   );
 
   return { columns };

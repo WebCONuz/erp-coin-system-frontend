@@ -5,3 +5,5 @@ export * from "./SessionForm";
 export * from "./SessionStatusPanel";
 export * from "./SessionDeleteModal";
 export * from "./evaluation";
+export * from "./SessionsGrid";
+export * from "./SessionHeader";

@@ -1,8 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { GraduationCap } from "lucide-react";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { DashboardTitle } from "@/components/shared/title";
+import { CardGrid } from "@/components/shared/card-grid";
 import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 import { useStudents } from "@/features/students/hooks";
@@ -15,60 +15,48 @@ const Students = () => {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const groupId = searchParams.get("groupId") || undefined;
+  const isFiltered = !!groupId || !!searchParams.get("search");
 
-  const { data, isLoading } = useStudents(30);
+  const { data, isLoading, isError, refetch, isFetching } = useStudents(30);
   const pagination = usePagination({
     totalItems: data?.meta?.total || 0,
     initialPageSize: 30,
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-semibold text-ink">
-            {t("teacherProfile.students.backToList")}
-          </h1>
-          <p className="text-sm text-ink-soft mt-1">
-            {t("teacherProfile.students.subtitle")}
-          </p>
-        </div>
+    <div className="space-y-4 sm:space-y-5">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+        <DashboardTitle
+          title={t("teacherProfile.students.backToList")}
+          description={t("teacherProfile.students.subtitle")}
+        />
         <TeacherStudentsFilterBar />
       </div>
 
-      {isLoading ? (
-        <PageLoading />
-      ) : !data?.data ? (
-        <NoData text={t("common.noData")} />
-      ) : !data.data.length ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center rounded-2xl border border-ink/10 bg-white">
-          <GraduationCap size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">
-            {t("teacherProfile.students.empty")}
-          </p>
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {data.data.map((student) => (
-              <TeacherStudentCard
-                key={student.id}
-                student={student}
-                groupId={groupId}
-              />
-            ))}
-          </div>
+      <CardGrid
+        items={data?.data}
+        getKey={(student) => student.id}
+        isLoading={isLoading}
+        isError={isError}
+        onRetry={() => refetch()}
+        isRetrying={isFetching}
+        isFiltered={isFiltered}
+        skeletonClassName="h-32"
+        emptyIcon={GraduationCap}
+        emptyTitle={t("teacherProfile.students.empty")}
+        renderItem={(student) => (
+          <TeacherStudentCard student={student} groupId={groupId} />
+        )}
+      />
 
-          {data.meta.totalPages > 1 && (
-            <TablePagination
-              totalItems={data.meta.total}
-              currentPage={pagination.currentPage}
-              totalPages={data.meta.totalPages}
-              pageSize={pagination.pageSize}
-              onPageChange={pagination.setPage}
-            />
-          )}
-        </>
+      {!!data && data.meta.totalPages > 1 && (
+        <TablePagination
+          totalItems={data.meta.total}
+          currentPage={pagination.currentPage}
+          totalPages={data.meta.totalPages}
+          pageSize={pagination.pageSize}
+          onPageChange={pagination.setPage}
+        />
       )}
     </div>
   );

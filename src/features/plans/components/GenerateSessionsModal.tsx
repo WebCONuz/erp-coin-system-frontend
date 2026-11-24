@@ -84,7 +84,7 @@ export const GenerateSessionsModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-100 bg-card border border-border">
         <DialogHeader>
           <DialogTitle>{t("plans.generate.title")}</DialogTitle>
         </DialogHeader>
@@ -93,7 +93,7 @@ export const GenerateSessionsModal = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <FormLabel>{t("common.group")}</FormLabel>
-              <div className="mt-1.5 rounded-md border border-zinc-200 dark:border-zinc-700 bg-muted/50 px-3 py-2 text-sm">
+              <div className="mt-1.5 rounded-md border border-border bg-muted/50 px-3 py-2 text-sm">
                 {groupName}
               </div>
             </div>
@@ -123,8 +123,8 @@ export const GenerateSessionsModal = ({
                 }
               />
             </div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              <span className="text-yellow-600">
+            <p className="text-sm text-muted-foreground">
+              <span className="text-warning">
                 {t("plans.generate.warningLabel")}
               </span>{" "}
               {t("plans.generate.warningText")}

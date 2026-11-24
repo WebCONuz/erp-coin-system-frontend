@@ -18,18 +18,18 @@ export const ActionPopver = ({ isOpen }: PopoverProps) => {
   //         </PopoverTrigger>
   //         <PopoverContent
   //           align="end"
-  //           className="w-64 p-4 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-lg"
+  //           className="w-64 p-4 bg-card border-border shadow-lg"
   //         >
   //           <div className="flex items-start gap-3 mb-3">
-  //             <div className="p-1.5 rounded-full bg-red-100 dark:bg-red-950/50 shrink-0">
-  //               <UserMinus className="w-4 h-4 text-red-500" />
+  //             <div className="p-1.5 rounded-full bg-destructive-soft shrink-0">
+  //               <UserMinus className="w-4 h-4 text-destructive" />
   //             </div>
   //             <div>
-  //               <p className="font-medium text-zinc-900 dark:text-zinc-50">
+  //               <p className="font-medium text-foreground">
   //                 Guruhdan chiqarish
   //               </p>
-  //               <p className="text-zinc-500 dark:text-zinc-400 mt-0.5">
-  //                 <span className="font-medium text-zinc-700 dark:text-zinc-300">
+  //               <p className="text-muted-foreground mt-0.5">
+  //                 <span className="font-medium text-foreground">
   //                   {student.fullName}
   //                 </span>{" "}
   //                 ni guruhdan chiqarasizmi?
@@ -42,7 +42,7 @@ export const ActionPopver = ({ isOpen }: PopoverProps) => {
   //               size="sm"
   //               onClick={() => onOpenChange(false)}
   //               disabled={isRemoving}
-  //               className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs"
+  //               className="flex-1 border-border text-foreground hover:bg-muted text-xs"
   //             >
   //               Yo'q
   //             </Button>
@@ -50,7 +50,7 @@ export const ActionPopver = ({ isOpen }: PopoverProps) => {
   //               size="sm"
   //               onClick={onRemove}
   //               disabled={isRemoving}
-  //               className="flex-1 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white text-xs"
+  //               className="flex-1 bg-destructive hover:bg-destructive text-white text-xs"
   //             >
   //               {isRemoving ? "..." : "Ha, chiqarish"}
   //             </Button>

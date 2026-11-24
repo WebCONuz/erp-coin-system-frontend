@@ -1,55 +1,68 @@
 import { Check, PackageCheck, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { PURCHASE_NEXT_STATUSES } from "../constants";
 import type { Purchase, PurchaseActionStatus } from "../types";
 
 interface Props {
   purchase: Purchase;
   onAction: (purchase: Purchase, status: PurchaseActionStatus) => void;
+  /** `stretch` — mobil kartada tugmalar butun kenglikda. */
+  layout?: "inline" | "stretch";
 }
 
 // Faqat backend ruxsat bergan o'tishlar uchun tugma chiqadi.
-export const PurchaseActions = ({ purchase, onAction }: Props) => {
+// Ierarxiya: keyingi qadam — asosiy tugma, bekor qilish — ikkinchi darajali.
+export const PurchaseActions = ({
+  purchase,
+  onAction,
+  layout = "inline",
+}: Props) => {
   const { t } = useTranslation();
   const next = PURCHASE_NEXT_STATUSES[purchase.status];
 
   if (!next.length) {
-    return <span className="text-xs text-muted-foreground">—</span>;
+    return layout === "inline" ? (
+      <span className="text-xs text-muted-foreground">—</span>
+    ) : null;
   }
 
+  const stretch = layout === "stretch";
+
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className={cn("flex gap-1.5", stretch ? "w-full" : "flex-wrap")}>
       {next.includes("approved") && (
         <Button
-          size="sm"
-          variant="outline"
+          size={stretch ? "default" : "sm"}
           onClick={() => onAction(purchase, "approved")}
-          className="border-blue-300 text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:border-blue-900 dark:text-blue-400 dark:hover:bg-blue-950/50"
+          className={cn(stretch && "h-10 flex-1")}
         >
-          <Check />
+          <Check aria-hidden />
           {t("purchases.actions.approve")}
         </Button>
       )}
       {next.includes("delivered") && (
         <Button
-          size="sm"
-          variant="outline"
+          size={stretch ? "default" : "sm"}
           onClick={() => onAction(purchase, "delivered")}
-          className="border-emerald-300 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700 dark:border-emerald-900 dark:text-emerald-400 dark:hover:bg-emerald-950/50"
+          className={cn(stretch && "h-10 flex-1")}
         >
-          <PackageCheck />
+          <PackageCheck aria-hidden />
           {t("purchases.actions.deliver")}
         </Button>
       )}
       {next.includes("cancelled") && (
         <Button
-          size="sm"
-          variant="outline"
+          size={stretch ? "default" : "sm"}
+          variant="ghost"
           onClick={() => onAction(purchase, "cancelled")}
-          className="border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950/50"
+          className={cn(
+            "text-destructive hover:bg-destructive-soft hover:text-destructive",
+            stretch && "h-10",
+          )}
         >
-          <X />
+          <X aria-hidden />
           {t("purchases.actions.cancel")}
         </Button>
       )}

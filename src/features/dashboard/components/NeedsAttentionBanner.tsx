@@ -1,82 +1,126 @@
 import { Link } from "react-router-dom";
 import {
-  AlertTriangle,
-  ArrowRight,
   CalendarClock,
+  CheckCircle2,
+  ChevronRight,
   Gift,
   PackageCheck,
+  type LucideIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { AdminDashboardNeedsAttention } from "../types";
 
 interface Props {
   needsAttention?: AdminDashboardNeedsAttention;
+  isLoading?: boolean;
 }
 
-export const NeedsAttentionBanner = ({ needsAttention }: Props) => {
+interface Task {
+  key: string;
+  to: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+/** "Bajarilishi kerak" — adminning bugungi ishlari, dashboarddagi eng muhim blok. */
+export const NeedsAttentionBanner = ({ needsAttention, isLoading }: Props) => {
   const { t } = useTranslation();
+
+  if (isLoading) {
+    return (
+      <div
+        aria-busy="true"
+        className="grid gap-2 rounded-2xl border bg-card p-4 sm:p-5 md:grid-cols-3"
+      >
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton key={i} className="h-14 rounded-xl" />
+        ))}
+      </div>
+    );
+  }
 
   if (!needsAttention) return null;
 
   const { pendingPurchases, approvedPurchases, pendingAttendanceSessions } =
     needsAttention;
-  if (!pendingPurchases && !approvedPurchases && !pendingAttendanceSessions)
-    return null;
 
-  return (
-    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/30">
-      <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/40">
-          <AlertTriangle
-            size={18}
-            className="text-amber-600 dark:text-amber-400"
-          />
-        </div>
-        <div className="flex-1 space-y-2 pt-1">
-          <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
-            {t("admin.dashboard.needsAttention")}
+  const tasks: Task[] = [
+    !!pendingPurchases && {
+      key: "pending",
+      to: "/admin/purchases?status=pending",
+      label: t("admin.dashboard.pendingPurchases", { count: pendingPurchases }),
+      icon: Gift,
+    },
+    !!approvedPurchases && {
+      key: "approved",
+      to: "/admin/purchases?status=approved",
+      label: t("admin.dashboard.approvedPurchases", {
+        count: approvedPurchases,
+      }),
+      icon: PackageCheck,
+    },
+    !!pendingAttendanceSessions && {
+      key: "attendance",
+      to: "/admin/sessions",
+      label: t("admin.dashboard.pendingAttendance", {
+        count: pendingAttendanceSessions,
+      }),
+      icon: CalendarClock,
+    },
+  ].filter((x): x is Task => !!x);
+
+  if (!tasks.length) {
+    return (
+      <div className="flex items-start gap-3 rounded-2xl border bg-card px-4 py-3.5 sm:px-5">
+        <CheckCircle2
+          className="mt-0.5 size-5 shrink-0 text-success"
+          aria-hidden
+        />
+        <div className="min-w-0">
+          <p className="text-sm font-medium">{t("admin.dashboard.allClear")}</p>
+          <p className="text-sm text-muted-foreground">
+            {t("admin.dashboard.allClearHint")}
           </p>
-
-          <div className="flex flex-wrap gap-2">
-            {!!pendingPurchases && (
-              <Link
-                to="/admin/purchases?status=pending"
-                className="flex items-center gap-1.5 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
-              >
-                <Gift size={13} />
-                {t("admin.dashboard.pendingPurchases", {
-                  count: pendingPurchases,
-                })}
-                <ArrowRight size={12} />
-              </Link>
-            )}
-            {!!approvedPurchases && (
-              <Link
-                to="/admin/purchases?status=approved"
-                className="flex items-center gap-1.5 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
-              >
-                <PackageCheck size={13} />
-                {t("admin.dashboard.approvedPurchases", {
-                  count: approvedPurchases,
-                })}
-                <ArrowRight size={12} />
-              </Link>
-            )}
-            {!!pendingAttendanceSessions && (
-              <Link
-                to="/admin/sessions"
-                className="flex items-center gap-1.5 rounded-full border border-amber-300 bg-white px-3 py-1.5 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100 dark:border-amber-800 dark:bg-zinc-900 dark:text-amber-300 dark:hover:bg-amber-950/50"
-              >
-                <CalendarClock size={13} />
-                {t("admin.dashboard.pendingAttendance", {
-                  count: pendingAttendanceSessions,
-                })}
-                <ArrowRight size={12} />
-              </Link>
-            )}
-          </div>
         </div>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <section
+      aria-labelledby="dashboard-tasks"
+      className="rounded-2xl border border-warning/30 bg-card p-4 sm:p-5"
+    >
+      <h2
+        id="dashboard-tasks"
+        className="mb-3 flex items-center gap-2 font-heading text-base font-semibold"
+      >
+        <span className="size-2 rounded-full bg-warning" aria-hidden />
+        {t("admin.dashboard.tasksTitle")}
+      </h2>
+
+      <ul className="grid gap-2 md:grid-cols-2 xl:grid-cols-3">
+        {tasks.map(({ key, to, label, icon: Icon }) => (
+          <li key={key}>
+            <Link
+              to={to}
+              className="group flex min-h-14 items-center gap-3 rounded-xl bg-warning-soft px-3.5 py-2.5 transition-colors hover:bg-warning/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-card text-warning">
+                <Icon className="size-4.5" aria-hidden />
+              </span>
+              <span className="min-w-0 flex-1 text-sm font-medium text-foreground">
+                {label}
+              </span>
+              <ChevronRight
+                className="size-4 shrink-0 text-warning transition-transform group-hover:translate-x-0.5"
+                aria-hidden
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 };

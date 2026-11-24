@@ -19,25 +19,24 @@ export const EVALUATION_TONES: Record<
   }
 > = {
   admin: {
-    panel: "rounded-2xl bg-background p-6 shadow-sm space-y-4 min-w-0",
-    title: "text-lg font-semibold",
+    panel: "min-w-0 space-y-4 rounded-2xl border bg-card p-4 sm:p-5",
+    title: "font-heading text-base font-semibold",
     // `relative` — Checkbox'ning yashirin inputi jadval ichida qolishi uchun.
-    table:
-      "relative w-full overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10",
-    thead: "bg-muted/50",
+    table: "relative w-full overflow-x-auto rounded-xl border",
+    thead: "bg-muted/60 text-[13px] text-muted-foreground",
     th: "px-4 py-2.5 font-medium",
-    row: "border-t border-gray-200 dark:border-white/10",
+    row: "border-t",
     text: "",
     muted: "text-muted-foreground",
   },
   teacher: {
-    panel: "rounded-2xl border border-ink/10 bg-white p-5 space-y-4 min-w-0",
-    title: "font-display text-sm font-semibold text-ink",
-    table: "relative w-full overflow-x-auto rounded-xl border border-ink/10",
-    thead: "bg-paper-soft",
-    th: "px-4 py-2.5 font-medium text-ink",
-    row: "border-t border-ink/8",
-    text: "text-ink",
-    muted: "text-ink-soft",
+    panel: "rounded-2xl border border-border bg-card p-5 space-y-4 min-w-0",
+    title: "font-heading text-sm font-semibold text-foreground",
+    table: "relative w-full overflow-x-auto rounded-xl border border-border",
+    thead: "bg-muted/55",
+    th: "px-4 py-2.5 font-medium text-foreground",
+    row: "border-t border-border",
+    text: "text-foreground",
+    muted: "text-muted-foreground",
   },
 };

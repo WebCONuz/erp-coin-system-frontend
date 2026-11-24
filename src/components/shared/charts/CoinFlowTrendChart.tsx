@@ -12,6 +12,8 @@ interface CoinFlowTrendChartProps {
   deductedLabel: string;
   xTickFormatter?: (value: string) => string;
   height?: number;
+  /** Legenda chap tomonida ko'rsatiladigan sarlavha (masalan, "So'nggi 7 kun"). */
+  caption?: string;
 }
 
 export const CoinFlowTrendChart = ({
@@ -20,14 +22,22 @@ export const CoinFlowTrendChart = ({
   deductedLabel,
   xTickFormatter,
   height = 160,
+  caption,
 }: CoinFlowTrendChartProps) => (
   <div>
-    <div className="mb-3 flex items-center gap-4 text-xs text-muted-foreground">
+    <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      {caption && (
+        <span className="mr-auto text-sm font-medium text-foreground">
+          {caption}
+        </span>
+      )}
       <span className="flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded-full bg-emerald-500" /> {earnedLabel}
+        <span className="size-2.5 rounded-sm bg-chart-1" aria-hidden />
+        {earnedLabel}
       </span>
       <span className="flex items-center gap-1.5">
-        <span className="h-2 w-2 rounded-full bg-red-500" /> {deductedLabel}
+        <span className="size-2.5 rounded-sm bg-chart-2" aria-hidden />
+        {deductedLabel}
       </span>
     </div>
 
@@ -37,8 +47,8 @@ export const CoinFlowTrendChart = ({
       xTickFormatter={xTickFormatter}
       height={height}
       series={[
-        { key: "earned", label: earnedLabel, color: "#10b981" },
-        { key: "deducted", label: deductedLabel, color: "#ef4444" },
+        { key: "earned", label: earnedLabel, color: "var(--chart-1)" },
+        { key: "deducted", label: deductedLabel, color: "var(--chart-2)" },
       ]}
     />
   </div>

@@ -43,9 +43,9 @@ export const MyProfileModal = ({ open, onClose }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto bg-card border border-border">
         <DialogHeader>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="text-foreground">
             {t("profile.title")}
           </DialogTitle>
         </DialogHeader>
@@ -58,10 +58,10 @@ export const MyProfileModal = ({ open, onClose }: Props) => {
           <NoData text={t("common.noData")} />
         ) : (
           <div className="space-y-4 min-w-0">
-            <div className="flex items-center gap-3 rounded-xl border border-zinc-200 dark:border-zinc-800 p-3">
+            <div className="flex items-center gap-3 rounded-xl border border-border p-3">
               <Avatar className="h-12 w-12 shrink-0">
                 {profile.avatarUrl && <AvatarImage src={profile.avatarUrl} />}
-                <AvatarFallback className="bg-linear-to-br from-purple-500 to-purple-700 text-white text-sm font-medium">
+                <AvatarFallback className="bg-primary-soft text-primary text-sm font-medium">
                   {initials}
                 </AvatarFallback>
               </Avatar>
@@ -70,7 +70,7 @@ export const MyProfileModal = ({ open, onClose }: Props) => {
                 <p className="text-sm text-muted-foreground truncate">
                   @{profile.username}
                 </p>
-                <p className="mt-0.5 flex items-center gap-1 text-xs text-purple-600 dark:text-yellow-500 truncate">
+                <p className="mt-0.5 flex items-center gap-1 text-xs text-primary truncate">
                   {profile.tenant?.name && (
                     <>
                       <Building2 size={12} className="shrink-0" />

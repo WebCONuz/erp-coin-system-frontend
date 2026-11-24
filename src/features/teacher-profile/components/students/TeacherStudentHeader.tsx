@@ -1,5 +1,8 @@
-import { Coins, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/shared/avatar";
+import { CoinAmount, CoinIcon } from "@/components/shared/coin";
 import type { StudentDetailFull } from "@/features/students/types";
 
 interface Props {
@@ -8,6 +11,7 @@ interface Props {
   onGiveCoin: () => void;
 }
 
+/** O'qituvchi ko'radigan o'quvchi sarlavhasi: kim, qaysi guruhim, balans. */
 export const TeacherStudentHeader = ({
   student,
   myGroupIds,
@@ -19,57 +23,52 @@ export const TeacherStudentHeader = ({
   );
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-forest text-paper p-6 sm:p-8">
-      <div className="pointer-events-none absolute -top-20 -right-16 h-56 w-56 rounded-full bg-gold/10 blur-3xl" />
-
-      <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
-        <div className="flex items-center gap-4 min-w-0">
-          <div className="w-16 h-16 rounded-2xl bg-forest-light flex items-center justify-center text-2xl font-display font-bold text-gold ring-2 ring-gold/40 shrink-0">
-            {student.fullName.charAt(0).toUpperCase()}
-          </div>
-          <div className="min-w-0">
-            <h1 className="font-display text-xl font-semibold truncate">
-              {student.fullName}
-            </h1>
-            <p className="text-sm text-paper/60 flex items-center gap-1.5 mt-1">
-              <Phone size={13} />
-              {student.phone}
-            </p>
-            {myMemberships.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {myMemberships.map((gm) => (
-                  <span
-                    key={gm.id}
-                    className="text-[11px] px-2.5 py-1 rounded-full bg-white/8 text-paper/80"
-                  >
-                    {gm.group.name}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-col items-start sm:items-end gap-3 shrink-0">
-          <div className="text-left sm:text-right">
-            <p className="text-xs text-paper/50">
-              {t("students.detail.coinBalance")}
-            </p>
-            <p className="font-display text-2xl font-bold text-gold flex items-center gap-1.5 sm:justify-end">
-              <Coins size={18} />
-              {student.wallet?.balance ?? 0}
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onGiveCoin}
-            className="inline-flex items-center gap-2 rounded-xl bg-gold/15 border border-gold/30 text-gold px-4 py-2.5 text-sm font-medium hover:bg-gold/20 transition-colors"
-          >
-            <Coins size={15} />
-            {t("teacherProfile.students.coinAdjustButton")}
-          </button>
+    <header className="flex flex-col gap-4 rounded-2xl border bg-card p-4 sm:flex-row sm:items-center sm:p-5">
+      <div className="flex min-w-0 flex-1 items-center gap-4">
+        <UserAvatar
+          name={student.fullName}
+          url={student.avatarUrl}
+          className="size-14 rounded-2xl text-lg sm:size-16"
+        />
+        <div className="min-w-0">
+          <h1 className="truncate font-heading text-xl font-semibold leading-tight tracking-tight sm:text-2xl">
+            {student.fullName}
+          </h1>
+          <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
+            <Phone className="size-3.5" aria-hidden />
+            <span className="tabular-nums">{student.phone}</span>
+          </p>
+          {myMemberships.length > 0 && (
+            <ul className="mt-2 flex flex-wrap gap-1.5">
+              {myMemberships.map((gm) => (
+                <li
+                  key={gm.id}
+                  className="rounded-md bg-muted px-2 py-0.5 text-xs text-foreground/80"
+                >
+                  {gm.group.name}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
-    </div>
+
+      <div className="flex shrink-0 items-center justify-between gap-4 border-t pt-4 sm:flex-col sm:items-end sm:border-0 sm:pt-0">
+        <div className="sm:text-right">
+          <p className="text-xs text-muted-foreground">
+            {t("students.detail.coinBalance")}
+          </p>
+          <CoinAmount
+            value={student.wallet?.balance ?? 0}
+            size="lg"
+            className="mt-0.5"
+          />
+        </div>
+        <Button onClick={onGiveCoin} className="h-9 gap-2">
+          <CoinIcon className="size-4" />
+          {t("teacherProfile.students.coinAdjustButton")}
+        </Button>
+      </div>
+    </header>
   );
 };

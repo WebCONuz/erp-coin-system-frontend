@@ -12,20 +12,23 @@ const RolesPage = () => {
   const { columns } = useRoleTable();
 
   return (
-    <div className="flex flex-col gap-4">
-      <DashboardTitle title={t("roles.title")} />
+    <div className="flex flex-col gap-4 sm:gap-5">
+      <DashboardTitle
+        title={t("roles.title")}
+        description={t("roles.readOnlyHint")}
+        as="h2"
+      />
 
-      <div className="w-full overflow-x-auto rounded-xl border border-gray-200 dark:border-white/10">
+      <div className="w-full overflow-x-auto rounded-2xl border bg-card">
         <CustomTable
           data={roles?.data ?? []}
           columns={columns}
-          bodyClass="px-4 py-6"
-          className="border-0 bg-background"
+          className="border-0"
           loading={isLoading}
         />
       </div>
 
-      {roles?.meta?.total && roles.meta.total > 0 && (
+      {!!roles?.meta?.total && (
         <TablePagination
           totalItems={roles.meta.total}
           currentPage={pagination.currentPage}

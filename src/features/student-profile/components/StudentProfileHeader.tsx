@@ -14,8 +14,8 @@ export const StudentProfileHeader = ({ student, onEdit }: Props) => {
     student.groupMemberships?.filter((g) => g.isActive) ?? [];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-forest text-paper p-6 sm:p-8">
-      <div className="pointer-events-none absolute -top-20 -right-16 h-56 w-56 rounded-full bg-gold/10 blur-3xl" />
+    <div className="relative overflow-hidden rounded-3xl bg-sidebar text-white p-6 sm:p-8">
+      <div className="pointer-events-none absolute -top-20 -right-16 h-56 w-56 rounded-full bg-coin/10 blur-3xl" />
 
       <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 min-w-0">
@@ -25,20 +25,20 @@ export const StudentProfileHeader = ({ student, onEdit }: Props) => {
                 // src={getFileUrl(student.avatarUrl)}
                 src={student.avatarUrl}
                 alt="avatar"
-                className="w-16 h-16 rounded-2xl object-cover ring-2 ring-gold/40"
+                className="w-16 h-16 rounded-2xl object-cover ring-2 ring-coin/40"
               />
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-forest-light flex items-center justify-center text-2xl font-display font-bold text-gold ring-2 ring-gold/40">
+              <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-2xl font-heading font-bold text-coin ring-2 ring-coin/40">
                 {avatarLetter}
               </div>
             )}
           </div>
 
           <div className="min-w-0">
-            <h1 className="font-display text-xl font-semibold truncate">
+            <h1 className="font-heading text-xl font-semibold truncate">
               {student.fullName}
             </h1>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-paper/60 mt-1.5">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-white/60 mt-1.5">
               {student.username && (
                 <span className="flex items-center gap-1.5 min-w-0">
                   <AtSign size={13} className="shrink-0" />
@@ -61,14 +61,14 @@ export const StudentProfileHeader = ({ student, onEdit }: Props) => {
                 {activeGroups.map((g) => (
                   <span
                     key={g.id}
-                    className="text-[11px] px-2.5 py-1 rounded-full bg-white/8 text-paper/80"
+                    className="text-[11px] px-2.5 py-1 rounded-full bg-white/8 text-white/80"
                   >
                     {g.group.name} · {g.group.teacher.fullName}
                   </span>
                 ))}
               </div>
             )}
-            <p className="text-xs text-paper/40 mt-3 max-w-md">
+            <p className="text-xs text-white/40 mt-3 max-w-md">
               {t("profile.passwordByAdmin")}
             </p>
           </div>
@@ -78,16 +78,16 @@ export const StudentProfileHeader = ({ student, onEdit }: Props) => {
           <button
             type="button"
             onClick={onEdit}
-            className="order-last sm:order-first inline-flex items-center gap-1.5 rounded-xl border border-gold/30 bg-gold/10 px-3 py-2 text-xs font-medium text-gold-soft transition-colors hover:bg-gold/20"
+            className="order-last sm:order-first inline-flex items-center gap-1.5 rounded-xl border border-coin/30 bg-coin/10 px-3 py-2 text-xs font-medium text-coin-soft transition-colors hover:bg-coin/20"
           >
             <Pencil size={13} />
             {t("profile.editButton")}
           </button>
           <div className="text-left sm:text-right">
-            <p className="text-xs text-paper/50">
+            <p className="text-xs text-white/50">
               {t("garden.hero.balance")}
             </p>
-            <p className="font-display text-3xl font-bold text-gold flex items-center gap-1.5 sm:justify-end">
+            <p className="font-heading text-3xl font-bold text-coin flex items-center gap-1.5 sm:justify-end">
               <Coins size={22} />
               {student.wallet?.balance ?? 0}
             </p>

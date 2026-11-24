@@ -41,17 +41,17 @@ export const StudentPurchaseHistory = () => {
       {isLoading ? (
         <PageLoading />
       ) : !purchases.length ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-ink/10 bg-white py-16 text-center">
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-paper-soft">
-            <Gift size={20} className="text-ink-soft/60" />
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card py-16 text-center">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted/55">
+            <Gift size={20} className="text-muted-foreground/60" />
           </div>
-          <p className="text-sm font-medium text-ink">
+          <p className="text-sm font-medium text-foreground">
             {status
               ? t("purchases.student.emptyFiltered")
               : t("purchases.student.empty")}
           </p>
           {!status && nearestGoal && coinsToGoal !== null && (
-            <p className="mt-1 max-w-sm text-xs text-ink-soft">
+            <p className="mt-1 max-w-sm text-xs text-muted-foreground">
               {t("purchases.student.emptyGoal", {
                 title: nearestGoal.title,
                 coins: coinsToGoal,
@@ -61,7 +61,7 @@ export const StudentPurchaseHistory = () => {
           {!status && (
             <Link
               to="/student/market"
-              className="mt-4 inline-flex items-center justify-center rounded-xl bg-forest px-4 py-2.5 text-sm font-medium text-paper transition-colors hover:bg-forest-light"
+              className="mt-4 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               {t("purchases.student.goToShop")}
             </Link>

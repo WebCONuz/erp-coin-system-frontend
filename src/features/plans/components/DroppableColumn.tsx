@@ -6,20 +6,22 @@ import type { Weekday } from "../types";
 interface Props {
   weekday: Weekday;
   children: ReactNode;
+  className?: string;
 }
 
-export const DroppableColumn = ({ weekday, children }: Props) => {
+export const DroppableColumn = ({ weekday, children, className }: Props) => {
   const { setNodeRef, isOver } = useDroppable({ id: weekday });
 
   return (
-    <div
+    <section
       ref={setNodeRef}
       className={cn(
-        "flex flex-col gap-2 rounded-lg p-1 transition-colors",
-        isOver && "bg-primary/5 ring-2 ring-primary/40",
+        "flex flex-col gap-2 rounded-xl bg-muted/50 p-2 transition-colors",
+        isOver && "bg-primary-soft ring-2 ring-primary/40",
+        className,
       )}
     >
       {children}
-    </div>
+    </section>
   );
 };

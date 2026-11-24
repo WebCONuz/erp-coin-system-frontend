@@ -154,9 +154,9 @@ export const RewardFormModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-120">
         <DialogHeader>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="font-heading">
             {isEdit
               ? t("market.rewardForm.editTitle")
               : t("market.rewardForm.createTitle")}

@@ -34,25 +34,25 @@ export const ConfirmModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="sm:max-w-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-sm bg-card border border-border">
         <DialogHeader>
           <div
-            className={`w-11 h-11 rounded-xl flex items-center justify-center mb-1 ${variant === "danger" ? "bg-red-100 dark:bg-red-950/50" : "bg-amber-100 dark:bg-amber-950/50"}`}
+            className={`w-11 h-11 rounded-xl flex items-center justify-center mb-1 ${variant === "danger" ? "bg-destructive-soft" : "bg-warning-soft"}`}
           >
             <AlertTriangle
               size={22}
               className={
                 variant === "danger"
-                  ? "text-red-600 dark:text-red-400"
-                  : "text-amber-600 dark:text-amber-400"
+                  ? "text-destructive"
+                  : "text-warning"
               }
             />
           </div>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="text-foreground">
             {title}
           </DialogTitle>
         </DialogHeader>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 -mt-2">
+        <p className="text-sm text-muted-foreground -mt-2">
           {description}
         </p>
         <DialogFooter className="gap-2 mt-2">
@@ -60,7 +60,7 @@ export const ConfirmModal = ({
             variant="outline"
             onClick={onClose}
             disabled={isPending}
-            className="border-zinc-300 dark:border-zinc-700"
+            className="border-border"
           >
             {t("common.cancel")}
           </Button>
@@ -69,8 +69,8 @@ export const ConfirmModal = ({
             onClick={onConfirm}
             className={
               variant === "danger"
-                ? "bg-red-600 hover:bg-red-700 text-white"
-                : "bg-amber-500 hover:bg-amber-600 text-white"
+                ? "bg-destructive hover:bg-destructive/90 text-white"
+                : "bg-warning hover:bg-warning/90 text-white"
             }
           >
             {isPending ? "..." : (confirmLabel ?? t("common.confirm"))}

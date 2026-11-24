@@ -1,8 +1,12 @@
 import { Hand, Lock, Users, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Badge } from "@/components/ui/badge";
+import { CoinAmount } from "@/components/shared/coin";
+import { cn } from "@/lib/utils";
 import { getSourceTypeLabels } from "@/features/coin-rules/constants";
 import type { CoinRule } from "@/features/coin-rules/types";
 
+/** Tanga qoidasi (o'qituvchi ko'rinishi, faqat o'qish) — admin kartasi bilan bir xil uslub. */
 export const TeacherCoinRuleCard = ({
   data,
   groupName,
@@ -15,70 +19,65 @@ export const TeacherCoinRuleCard = ({
   const isPlus = data.direction === "earn";
 
   return (
-    <div
-      className={`rounded-2xl border p-4 ${
-        isPlus ? "border-forest/20 bg-forest/8" : "border-bloom/20 bg-bloom/8"
-      }`}
+    <article
+      className={cn(
+        "flex h-full flex-col gap-2.5 rounded-2xl border border-l-4 bg-card p-4",
+        isPlus ? "border-l-success" : "border-l-destructive",
+        !data.isActive && "opacity-75",
+      )}
     >
-      <div className="flex items-start justify-between gap-2">
-        <h4 className="text-sm font-semibold text-ink pr-2">{data.name}</h4>
-        {!data.isActive && (
-          <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded-full bg-paper-soft text-ink-soft">
-            {t("coinRules.card.inactive")}
-          </span>
-        )}
+      <div>
+        <h3 className="font-heading text-base font-semibold leading-snug">
+          {data.name}
+        </h3>
+        <CoinAmount
+          value={isPlus ? data.coinAmount : -data.coinAmount}
+          signed
+          className={cn(
+            "mt-1 text-base",
+            isPlus ? "text-success" : "text-destructive",
+          )}
+        />
       </div>
 
-      <p
-        className={`mt-1.5 font-display text-lg font-bold ${
-          isPlus ? "text-forest" : "text-bloom"
-        }`}
-      >
-        {isPlus ? "+" : "-"}
-        {data.coinAmount}{" "}
-        <span className="text-xs font-normal text-ink-soft">
-          {t("common.coinLabel")}
-        </span>
-      </p>
-
       {data.description && (
-        <p className="text-xs text-ink-soft mt-1.5 line-clamp-2">
+        <p className="line-clamp-2 text-sm text-muted-foreground">
           {data.description}
         </p>
       )}
 
-      <div className="flex flex-wrap items-center gap-1.5 mt-3">
+      <div className="mt-auto flex flex-wrap items-center gap-1.5">
         {data.isBuiltIn && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-white text-ink-soft border border-ink/10">
-            <Lock size={11} className="text-gold" />
+          <Badge variant="soft">
+            <Lock aria-hidden />
             {t("coinRules.builtIn.badge")}
-          </span>
+          </Badge>
         )}
-
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-white text-ink-soft border border-ink/10">
+        <Badge variant="secondary">
           {data.triggerType === "auto" ? (
-            <Zap size={11} className="text-gold" />
+            <Zap aria-hidden />
           ) : (
-            <Hand size={11} className="text-forest" />
+            <Hand aria-hidden />
           )}
           {data.triggerType === "auto"
             ? t("coinRules.triggerType.auto")
             : t("coinRules.triggerType.manual")}
-        </span>
-
+        </Badge>
         {data.triggerType === "auto" && data.sourceType && (
-          <span className="inline-block px-2 py-0.5 rounded-full text-[11px] bg-white text-ink-soft border border-ink/10">
+          <Badge variant="secondary">
             {sourceTypeLabels[data.sourceType] ?? data.sourceType}
-          </span>
+          </Badge>
         )}
-
         {groupName && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-white text-ink-soft border border-ink/10">
-            <Users size={11} />
+          <Badge variant="secondary">
+            <Users aria-hidden />
             {groupName}
-          </span>
+          </Badge>
+        )}
+        {!data.isActive && (
+          <Badge variant="danger">{t("coinRules.card.inactive")}</Badge>
         )}
       </div>
-    </div>
+    </article>
   );
 };

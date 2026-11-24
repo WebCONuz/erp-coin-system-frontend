@@ -1,4 +1,4 @@
-import { BookOpen, MoreVertical, Pencil, Trash } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
   DropdownMenu,
@@ -6,6 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { subjectColor } from "@/lib/subject-color";
 import type { Subject } from "../types";
 
 interface Props {
@@ -14,51 +16,63 @@ interface Props {
   onDelete: (subject: Subject) => void;
 }
 
+/**
+ * Fan kartasi. Chap chiziq rangi dars jadvalidagi rang bilan bir xil
+ * (fan `id`si bo'yicha) — fan qaysi rangda ko'rinishini shu yerda ko'rish mumkin.
+ */
 export const SubjectCard = ({ data, onEdit, onDelete }: Props) => {
   const { t } = useTranslation();
+
   return (
-    <div className="border rounded-xl p-3 relative bg-white dark:bg-card shadow-sm">
-      <div className="absolute top-3 right-2">
+    <article
+      style={{ borderLeftColor: subjectColor(data.id) }}
+      className="relative flex h-full flex-col gap-1.5 rounded-2xl border border-l-4 bg-card p-4"
+    >
+      <div className="absolute top-2.5 right-2.5">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="rounded p-1 text-muted-foreground hover:bg-accent">
-              <MoreVertical size={18} />
+            <button
+              type="button"
+              aria-label={`${t("common.actions")}: ${data.name}`}
+              className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            >
+              <MoreHorizontal className="size-4" aria-hidden />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => onEdit(data)}>
-              <Pencil className="text-blue-500" />
+              <Pencil className="size-4" aria-hidden />
               {t("common.edit")}
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
               onClick={() => onDelete(data)}
             >
-              <Trash />
+              <Trash2 className="size-4" aria-hidden />
               {t("common.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
 
-      <div className="space-y-1 pr-8">
-        <h4 className="text-lg font-semibold leading-5 truncate flex items-center gap-x-2 pb-2">
-          <BookOpen size={24} className="text-purple-600" />
-          <span>{data.name}</span>
-        </h4>
-
-        {data.description && (
-          <p className="text-sm text-muted-foreground line-clamp-2 pl-8">
-            {data.description}
-          </p>
-        )}
-
+      <div className="flex flex-wrap items-center gap-2 pr-9">
+        <h3 className="truncate font-heading text-base font-semibold">
+          {data.name}
+        </h3>
         {!data.isActive && (
-          <span className="inline-block px-2 py-0.5 rounded-4xl text-xs bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
-            {t("subjects.inactive")}
-          </span>
+          <Badge variant="secondary">{t("subjects.inactive")}</Badge>
         )}
       </div>
-    </div>
+
+      {data.description ? (
+        <p className="line-clamp-2 text-sm text-muted-foreground">
+          {data.description}
+        </p>
+      ) : (
+        <p className="text-sm text-muted-foreground/60">
+          {t("subjects.noDescription")}
+        </p>
+      )}
+    </article>
   );
 };

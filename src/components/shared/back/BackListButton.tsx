@@ -8,12 +8,11 @@ export const BackListButton = ({ title }: { title: string }) => {
   return (
     <div className="w-full">
       <Button
-        variant="outline"
-        // size="sm"
+        variant="ghost"
         onClick={() => navigate(-1)}
-        className="gap-2 px-4 h-10 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50"
+        className="-ml-2 h-9 gap-2 px-2 text-muted-foreground hover:text-foreground"
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="size-4" aria-hidden />
         {title}
       </Button>
     </div>

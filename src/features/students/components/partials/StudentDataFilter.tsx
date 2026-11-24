@@ -6,14 +6,23 @@ import {
   ArrowUpDown,
   Plus,
   FileSpreadsheet,
-  Coins,
+  MoreHorizontal,
 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DashboardTitle } from "@/components/shared/title";
+import { CoinIcon } from "@/components/shared/coin";
 import { Form } from "@/components/ui/form";
 import { ControlledInput, ControlledSelect } from "@/components/controls";
+import { cn } from "@/lib/utils";
 import { useStudentFilter, useStudentGroupOptions } from "../../hooks";
 import type { StudentSortField } from "../../hooks/useFilter";
 import { TEXT_LIMITS } from "@/ustils/api-limits";
@@ -22,14 +31,18 @@ interface StudentFilterProps {
   onAddStudent: () => void;
   onImportExcel?: () => void;
   onBulkGiveCoin?: () => void;
+  /** Jami o'quvchilar soni (sarlavha ostida). */
+  total?: number;
 }
 
 export const StudentDataFilter = ({
   onAddStudent,
   onImportExcel,
   onBulkGiveCoin,
+  total,
 }: StudentFilterProps) => {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
   const { form, clearFilters, sortBy, sortOrder, toggleSort } =
     useStudentFilter();
   const { data: groups } = useStudentGroupOptions();
@@ -40,99 +53,159 @@ export const StudentDataFilter = ({
     { field: "coin", label: t("sessions.results.coin") },
   ];
 
+  const hasFilters =
+    !!searchParams.get("search") ||
+    !!searchParams.get("groupId") ||
+    !!sortBy;
+
+  const sortLabel = (dir: "asc" | "desc") =>
+    dir === "asc" ? t("students.filter.sortAsc") : t("students.filter.sortDesc");
+
   return (
     <Form {...form}>
-      <div className="w-full space-y-3 py-4">
-        {/* 1-QATOR: Sarlavha va Harakat tugmalari */}
-        <div className="flex items-center justify-between">
-          <DashboardTitle title={t("admin.header.students")} />
-          <div className="flex items-center gap-2">
+      <div className="w-full space-y-4">
+        {/* Sarlavha va amallar */}
+        <div className="flex items-start justify-between gap-3">
+          <DashboardTitle
+            title={t("admin.header.students")}
+            description={
+              total !== undefined
+                ? t("students.list.count", { count: total })
+                : undefined
+            }
+          />
+          <div className="flex shrink-0 items-center gap-2">
+            {onBulkGiveCoin && (
+              <Button
+                variant="outline"
+                onClick={onBulkGiveCoin}
+                className="hidden h-9 gap-2 px-3.5 md:inline-flex"
+              >
+                <CoinIcon className="size-4" />
+                {t("students.filter.bulkGiveCoin")}
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={onImportExcel}
+              disabled={!onImportExcel}
+              title={!onImportExcel ? t("students.filter.comingSoon") : undefined}
+              className="hidden h-9 gap-2 px-3.5 lg:inline-flex"
+            >
+              <FileSpreadsheet className="size-4" aria-hidden />
+              {t("students.filter.importExcel")}
+            </Button>
             <Button
               onClick={onAddStudent}
-              className="bg-linear-to-br from-purple-500 to-purple-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
+              className="h-9 gap-2 px-3.5"
+              aria-label={t("students.filter.addStudent")}
             >
-              <Plus size={18} />
+              <Plus className="size-4" aria-hidden />
               <span className="hidden sm:inline">
                 {t("students.filter.addStudent")}
               </span>
             </Button>
-            {onBulkGiveCoin && (
-              <Button
-                onClick={onBulkGiveCoin}
-                className="bg-linear-to-br from-amber-500 to-amber-600 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
-              >
-                <Coins size={18} />
-                <span className="hidden sm:inline">
-                  {t("students.filter.bulkGiveCoin")}
-                </span>
-              </Button>
-            )}
-            <Button
-              onClick={onImportExcel}
-              disabled
-              className="bg-linear-to-br from-emerald-500 to-emerald-700 text-white rounded-lg px-4 h-9 gap-2 transition-all shadow-sm"
-            >
-              <FileSpreadsheet size={18} />
-              <span className="hidden sm:inline">
-                {t("students.filter.importExcel")}
-              </span>
-            </Button>
+
+            {/* Kichik ekranlarda ikkinchi darajali amallar menyuda */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-9 lg:hidden"
+                  aria-label={t("students.filter.moreActions")}
+                >
+                  <MoreHorizontal className="size-4" aria-hidden />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-60">
+                {onBulkGiveCoin && (
+                  <DropdownMenuItem
+                    className="gap-2.5 md:hidden"
+                    onClick={onBulkGiveCoin}
+                  >
+                    <CoinIcon className="size-4" />
+                    {t("students.filter.bulkGiveCoin")}
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem
+                  className="gap-2.5"
+                  disabled={!onImportExcel}
+                  onClick={onImportExcel}
+                >
+                  <FileSpreadsheet className="size-4" aria-hidden />
+                  <span className="flex-1">{t("students.filter.importExcel")}</span>
+                  {!onImportExcel && (
+                    <span className="text-xs text-muted-foreground">
+                      {t("students.filter.comingSoon")}
+                    </span>
+                  )}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
-        {/* 2-QATOR: Filtrlash paneli */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        {/* Filtrlar */}
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           {/* Tablar — status URL param ni boshqaradi */}
           <Tabs
             value={form.watch("status") || "active"}
             onValueChange={(val) => form.setValue("status", val)}
-            className="bg-muted/50 p-1 rounded-lg border border-border"
           >
-            <TabsList className="bg-transparent border-none gap-1 h-8">
-              <TabsTrigger
-                value="active"
-                className="rounded-md px-3 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
-              >
-                {t("students.filter.activeStudents")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="archive"
-                className="rounded-md px-4 py-1 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm text-sm font-medium text-muted-foreground transition-all"
-              >
-                {t("groups.tabs.archive")}
-              </TabsTrigger>
+            <TabsList className="h-auto gap-0.5 rounded-xl border bg-card p-1">
+              {[
+                { value: "active", label: t("students.filter.activeStudents") },
+                { value: "archive", label: t("groups.tabs.archive") },
+              ].map((tab) => (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="h-8 flex-none rounded-lg px-3 text-sm font-medium text-muted-foreground data-[state=active]:bg-primary-soft data-[state=active]:text-primary data-[state=active]:shadow-none dark:data-[state=active]:border-transparent dark:data-[state=active]:bg-primary-soft"
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </Tabs>
 
-          {/* O'ng tomondagi filtrlar guruhi */}
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Qidiruv (ism yoki telefon) + URL param integratsiyasi */}
-            <div className="flex items-center bg-background border border-border rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-purple-500/20 transition-all shadow-sm">
-              <div className="pl-3 text-muted-foreground/60">
-                <Search size={18} />
-              </div>
+          <div
+            role="search"
+            aria-label={t("students.filter.label")}
+            className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center"
+          >
+            {/* Qidiruv (ism yoki telefon) */}
+            <div className="relative col-span-2 sm:w-64">
+              <Search
+                className="pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden
+              />
               <ControlledInput
                 control={form.control}
                 name="search"
                 maxLength={TEXT_LIMITS.SEARCH}
                 placeholder={t("students.filter.searchPlaceholder")}
-                inputClassName="border-none focus-within:ring-0 w-64 h-9 bg-transparent"
+                inputClassName="h-9 pl-9"
               />
             </div>
 
-            {/* Guruh (Sinf) tanlash */}
-            <div className="shadow-sm rounded-lg">
+            {/* Guruh (sinf) */}
+            <div className="min-w-0 sm:w-44">
               <ControlledSelect
                 control={form.control}
                 name="groupId"
                 options={groupOptions}
                 placeholder={t("students.filter.allClasses")}
-                className="w-40 py-4.5 rounded-lg bg-background border-border text-foreground hover:bg-accent/50 transition-colors"
+                className="w-full py-4.5"
               />
             </div>
 
-            {/* Saralash (Sort) tugmalari */}
-            <div className="flex items-center border border-border rounded-lg bg-background p-1 gap-1 shadow-sm">
+            {/* Saralash */}
+            <div
+              role="group"
+              aria-label={t("students.filter.sortLabel")}
+              className="flex h-9 items-center gap-0.5 rounded-lg border bg-card p-0.5"
+            >
               {sortOptions.map(({ field, label }) => {
                 const isActive = sortBy === field;
                 return (
@@ -142,36 +215,43 @@ export const StudentDataFilter = ({
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleSort(field)}
-                    className={`h-7 px-2 gap-1.5 text-xs transition-colors ${
+                    aria-pressed={isActive}
+                    aria-label={
+                      isActive ? `${label}, ${sortLabel(sortOrder)}` : label
+                    }
+                    className={cn(
+                      "h-7 flex-1 gap-1.5 px-2.5 text-xs",
                       isActive
-                        ? "bg-accent text-foreground"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                    }`}
+                        ? "bg-primary-soft text-primary hover:bg-primary-soft hover:text-primary"
+                        : "text-muted-foreground",
+                    )}
                   >
                     {label}
                     {isActive ? (
                       sortOrder === "asc" ? (
-                        <ArrowUp size={12} />
+                        <ArrowUp className="size-3" aria-hidden />
                       ) : (
-                        <ArrowDown size={12} />
+                        <ArrowDown className="size-3" aria-hidden />
                       )
                     ) : (
-                      <ArrowUpDown size={12} className="opacity-50" />
+                      <ArrowUpDown className="size-3 opacity-50" aria-hidden />
                     )}
                   </Button>
                 );
               })}
             </div>
 
-            {/* Tozalash */}
-            <Button
-              variant="outline"
-              onClick={clearFilters}
-              className="h-9 px-3 rounded-lg border-border bg-background text-muted-foreground hover:text-foreground hover:bg-accent transition-all gap-2"
-            >
-              <X size={16} />
-              <span className="hidden md:inline">{t("common.clear")}</span>
-            </Button>
+            {hasFilters && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={clearFilters}
+                className="col-span-2 h-9 gap-2 px-3 text-muted-foreground hover:text-foreground sm:col-span-1"
+              >
+                <X className="size-4" aria-hidden />
+                {t("common.clear")}
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -206,7 +206,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-100 bg-card border border-border">
         <DialogHeader>
           <DialogTitle>{dateKey}</DialogTitle>
         </DialogHeader>
@@ -218,7 +218,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
               className="justify-start gap-2"
               onClick={() => setView("cancel")}
             >
-              <Ban size={16} className="text-red-500" />
+              <Ban size={16} className="text-destructive" />
               {t("plans.exception.cancelSession")}
             </Button>
             <Button
@@ -226,7 +226,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
               className="justify-start gap-2"
               onClick={() => setView("reschedule")}
             >
-              <Clock size={16} className="text-amber-500" />
+              <Clock size={16} className="text-warning" />
               {t("plans.exception.modifySession")}
             </Button>
             <Button
@@ -237,7 +237,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
               }
               disabled={!entry?.session?.id}
             >
-              <Link size={16} className="text-blue-500" />
+              <Link size={16} className="text-info" />
               {!!entry?.session?.id
                 ? t("plans.exception.goToSessionDetails")
                 : t("plans.exception.noSessionYet")}
@@ -292,7 +292,7 @@ export const ExceptionModal = ({ open, onClose, dateKey, entry }: Props) => {
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="bg-red-600 hover:bg-red-700 text-white"
+                  className="bg-destructive hover:bg-destructive/90 text-white"
                 >
                   {isPending ? t("common.saving") : t("common.confirm")}
                 </Button>

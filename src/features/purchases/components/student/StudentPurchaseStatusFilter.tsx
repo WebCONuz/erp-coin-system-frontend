@@ -47,10 +47,10 @@ export const StudentPurchaseStatusFilter = () => {
         <button
           type="button"
           className={cn(
-            "flex h-8 min-w-0 items-center gap-2 rounded-full border bg-white px-4 text-sm font-medium outline-none transition-colors hover:bg-paper-soft focus-visible:ring-2 focus-visible:ring-forest/20",
+            "flex h-8 min-w-0 items-center gap-2 rounded-full border bg-card px-4 text-sm font-medium outline-none transition-colors hover:bg-muted/55 focus-visible:ring-2 focus-visible:ring-primary/20",
             status
-              ? "border-forest/40 text-ink"
-              : "border-ink/10 text-ink-soft",
+              ? "border-primary/40 text-foreground"
+              : "border-border text-muted-foreground",
           )}
         >
           {status ? (
@@ -64,7 +64,7 @@ export const StudentPurchaseStatusFilter = () => {
             <ListFilter size={15} className="shrink-0" />
           )}
           <span className="truncate">{current.label}</span>
-          <ChevronDown size={14} className="shrink-0 text-ink-soft/70" />
+          <ChevronDown size={14} className="shrink-0 text-muted-foreground/70" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-48">
@@ -74,7 +74,7 @@ export const StudentPurchaseStatusFilter = () => {
             onClick={() => select(option.value)}
             className={cn(
               "cursor-pointer gap-2 text-sm",
-              status === option.value && "font-medium text-forest",
+              status === option.value && "font-medium text-primary",
             )}
           >
             <span
@@ -82,12 +82,12 @@ export const StudentPurchaseStatusFilter = () => {
                 "h-2 w-2 shrink-0 rounded-full",
                 option.value
                   ? STUDENT_PURCHASE_STATUS_DOT_CLASS[option.value]
-                  : "bg-ink-soft/30",
+                  : "bg-muted-foreground/30",
               )}
             />
             <span className="flex-1">{option.label}</span>
             {status === option.value && (
-              <span className="h-1.5 w-1.5 rounded-full bg-forest" />
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
             )}
           </DropdownMenuItem>
         ))}

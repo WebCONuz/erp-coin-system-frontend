@@ -92,9 +92,9 @@ export const CourseFormModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-120 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-120 bg-card border border-border">
         <DialogHeader>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="text-foreground">
             {isEdit ? t("courses.form.edit_title") : t("courses.form.create_title")}
           </DialogTitle>
         </DialogHeader>
@@ -107,13 +107,13 @@ export const CourseFormModal = ({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-700 dark:text-zinc-300">
+                  <FormLabel className="text-foreground">
                     {t("courses.form.title_label")}
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t("courses.form.title_placeholder")}
-                      className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50"
+                      className="bg-card border-border text-foreground"
                       {...field}
                     />
                   </FormControl>
@@ -128,13 +128,13 @@ export const CourseFormModal = ({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-700 dark:text-zinc-300">
+                  <FormLabel className="text-foreground">
                     {t("courses.form.description_label")}
                   </FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder={t("courses.form.description_placeholder")}
-                      className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 resize-none h-24"
+                      className="bg-card border-border text-foreground resize-none h-24"
                       {...field}
                     />
                   </FormControl>
@@ -149,14 +149,14 @@ export const CourseFormModal = ({
                 variant="outline"
                 onClick={onClose}
                 disabled={isPending}
-                className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
+                className="border-border text-foreground"
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={isPending}
-                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
+                className="bg-info hover:bg-info/90 text-white"
               >
                 {isPending
                   ? isEdit

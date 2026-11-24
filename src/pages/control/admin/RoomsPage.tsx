@@ -8,15 +8,19 @@ import {
 } from "@/features/rooms/components";
 import { useRooms, useDeleteRoom } from "@/features/rooms/hooks";
 import type { Room } from "@/features/rooms/types";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
-import { NoDataBox } from "@/features/tenants/components/ui";
+import { useSearchParams } from "react-router-dom";
+import { DoorOpen, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CardGrid } from "@/components/shared/card-grid";
 import { TablePagination } from "@/components/shared/table";
 import { usePagination } from "@/hooks";
 
 const RoomsPage = () => {
   const { t } = useTranslation();
-  const { data: rooms, isLoading } = useRooms();
+  const [searchParams] = useSearchParams();
+  const { data: rooms, isLoading, isError, refetch, isFetching } = useRooms();
+  const isFiltered =
+    !!searchParams.get("search") || searchParams.get("status") === "archive";
   const pagination = usePagination({ totalItems: rooms?.meta?.total || 0 });
 
   const deleteRoom = useDeleteRoom();
@@ -50,45 +54,40 @@ const RoomsPage = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-5">
       <RoomDataFilter onAdd={handleCreate} />
 
-      {isLoading ? (
-        <PageLoading />
-      ) : rooms?.data ? (
-        <>
-          {rooms.data.length === 0 ? (
-            <NoDataBox
-              title={t("rooms.noData")}
-              btnText={t("rooms.addRoom")}
-              btnFn={handleCreate}
-              hasAction={false}
-            />
-          ) : (
-            <div className="grid grid-cols-4 gap-4">
-              {rooms.data.map((item) => (
-                <RoomCard
-                  data={item}
-                  key={item.id}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              ))}
-            </div>
-          )}
+      <CardGrid
+        items={rooms?.data}
+        getKey={(item) => item.id}
+        isLoading={isLoading}
+        isError={isError}
+        onRetry={() => refetch()}
+        isRetrying={isFetching}
+        isFiltered={isFiltered}
+        skeletonClassName="h-28"
+        emptyIcon={DoorOpen}
+        emptyTitle={t("rooms.noData")}
+        emptyHint={t("rooms.emptyHint")}
+        emptyAction={
+          <Button onClick={handleCreate} className="gap-2">
+            <Plus className="size-4" aria-hidden />
+            {t("rooms.addRoom")}
+          </Button>
+        }
+        renderItem={(item) => (
+          <RoomCard data={item} onEdit={handleEdit} onDelete={handleDelete} />
+        )}
+      />
 
-          {rooms.meta.total > 0 && (
-            <TablePagination
-              totalItems={rooms.meta.total}
-              currentPage={pagination.currentPage}
-              totalPages={pagination.totalPages}
-              pageSize={pagination.pageSize}
-              onPageChange={pagination.setPage}
-            />
-          )}
-        </>
-      ) : (
-        <NoData text={t("common.noData")} />
+      {!!rooms?.meta.total && (
+        <TablePagination
+          totalItems={rooms.meta.total}
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          pageSize={pagination.pageSize}
+          onPageChange={pagination.setPage}
+        />
       )}
 
       <RoomFormModal

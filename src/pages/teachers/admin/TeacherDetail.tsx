@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { UserX } from "lucide-react";
 import { BackListButton } from "@/components/shared/back";
+import { EmptyState } from "@/components/shared/states";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   TeacherDetailHeader,
   TeacherGroupsSection,
@@ -23,6 +25,7 @@ import {
 const TeacherDetail = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { data: teacher, isLoading } = useTeacherById(id ?? "");
 
   const archiveTeacher = useArchiveTeacher();
@@ -50,11 +53,37 @@ const TeacherDetail = () => {
     restoreTeacher.mutate(id, { onError });
   };
 
-  if (isLoading) return <PageLoading />;
-  if (!teacher) return <NoData text={t("teachers.notFound")} />;
+  if (isLoading) {
+    return (
+      <div aria-busy="true" className="space-y-4 sm:space-y-5">
+        <Skeleton className="h-9 w-32" />
+        <Skeleton className="h-28 rounded-2xl" />
+        <Skeleton className="h-40 rounded-2xl" />
+        <Skeleton className="h-64 rounded-2xl" />
+      </div>
+    );
+  }
+  if (!teacher) {
+    return (
+      <div className="space-y-4">
+        <BackListButton title={t("admin.header.teachers")} />
+        <div className="rounded-2xl border bg-card">
+          <EmptyState
+            icon={UserX}
+            title={t("teachers.notFound")}
+            action={
+              <Button variant="outline" onClick={() => navigate("/admin/teachers")}>
+                {t("admin.header.teachers")}
+              </Button>
+            }
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       <BackListButton title={t("admin.header.teachers")} />
 
       <TeacherDetailHeader

@@ -4,17 +4,21 @@ import { useTranslation } from "react-i18next";
 import {
   BookOpen,
   CalendarClock,
-  Coins,
-  Phone,
+  ChevronRight,
+  ShieldAlert,
   UserRound,
-  Users,
+  UsersRound,
 } from "lucide-react";
 import { BackListButton } from "@/components/shared/back";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { EmptyState } from "@/components/shared/states";
+import { UserAvatar } from "@/components/shared/avatar";
+import { CoinAmount, CoinIcon } from "@/components/shared/coin";
+import { Panel } from "@/components/shared/panel";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { isForbiddenError } from "@/ustils";
 import { useGroup } from "@/features/groups/hooks";
-import { getGroupAccent } from "@/lib/group-accent";
+import { GroupFillMeter } from "@/features/groups/components/ui";
 import { useIsAssignedGroup } from "@/features/teacher-profile/hooks";
 import { BulkGiveCoinModal } from "@/features/teacher-profile/components/students";
 import { AssignedGroupBadge } from "@/features/teacher-profile/components/groups";
@@ -36,130 +40,157 @@ const GroupDetail = () => {
     [group],
   );
 
-  if (isLoading) return <PageLoading />;
-  if (isError || !group) {
+  if (isLoading) {
     return (
-      <NoData
-        text={
-          isForbiddenError(error)
-            ? t("teacherProfile.groups.detail.forbidden")
-            : t("teacherProfile.groups.detail.notFound")
-        }
-      />
+      <div aria-busy="true" className="space-y-4 sm:space-y-5">
+        <Skeleton className="h-9 w-32" />
+        <Skeleton className="h-32 rounded-2xl" />
+        <Skeleton className="h-80 rounded-2xl" />
+      </div>
     );
   }
 
-  const accent = getGroupAccent(group.id);
+  if (isError || !group) {
+    const forbidden = isForbiddenError(error);
+    return (
+      <div className="space-y-4">
+        <BackListButton title={t("teacherProfile.groups.title")} />
+        <div className="rounded-2xl border bg-card">
+          <EmptyState
+            icon={forbidden ? ShieldAlert : UsersRound}
+            title={
+              forbidden
+                ? t("teacherProfile.groups.detail.forbidden")
+                : t("teacherProfile.groups.detail.notFound")
+            }
+          />
+        </div>
+      </div>
+    );
+  }
+
   const isAssigned = isAssignedGroup(group.teacher?.id);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-5">
       <BackListButton title={t("teacherProfile.groups.title")} />
 
-      <div className="relative overflow-hidden rounded-3xl bg-forest text-paper p-6 sm:p-8">
-        <div className="pointer-events-none absolute -top-20 -right-16 h-56 w-56 rounded-full bg-gold/10 blur-3xl" />
-
-        <div className="relative flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
-          <div className="flex items-center gap-3 min-w-0">
-            <div
-              className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-sm font-semibold ${accent.bg} ${accent.text}`}
-            >
-              {group.name.slice(0, 2).toUpperCase()}
+      {/* Sarlavha */}
+      <header className="rounded-2xl border bg-card p-4 sm:p-5">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0 space-y-3">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="font-heading text-2xl font-semibold leading-tight tracking-tight">
+                {group.name}
+              </h1>
+              {isAssigned && <AssignedGroupBadge />}
             </div>
-            <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2">
-                <h1 className="font-display text-xl font-semibold truncate">
-                  {group.name}
-                </h1>
-                {isAssigned && <AssignedGroupBadge />}
+            <dl className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+              <div className="flex min-w-0 items-center gap-1.5">
+                <dt>
+                  <BookOpen className="size-4 text-muted-foreground" aria-hidden />
+                  <span className="sr-only">{t("groups.info.course")}</span>
+                </dt>
+                <dd className="truncate font-medium">{group.course.title}</dd>
               </div>
-              <p className="text-sm text-paper/60 flex items-center gap-1.5 mt-1">
-                <BookOpen size={13} />
-                {group.course.title}
-              </p>
-            </div>
-          </div>
-
-          <Link
-            to={`/teacher/sessions?groupId=${group.id}`}
-            className="shrink-0 inline-flex items-center gap-2 rounded-xl bg-gold/15 border border-gold/30 text-gold px-4 py-2.5 text-sm font-medium hover:bg-gold/20 transition-colors"
-          >
-            <CalendarClock size={15} />
-            {t("teacherProfile.groups.detail.groupSessions")}
-          </Link>
-        </div>
-
-        {group.course.description && (
-          <p className="relative text-sm text-paper/60 mt-4 max-w-2xl">
-            {group.course.description}
-          </p>
-        )}
-
-        <div className="relative flex flex-wrap gap-x-6 gap-y-1 text-sm text-paper/70 mt-4 pt-4 border-t border-white/10">
-          <span className="flex items-center gap-1.5">
-            <Users size={13} />
-            {t("teacherProfile.groups.studentsCount", {
-              total: group.students.length,
-              max: group.maxStudents,
-            })}
-          </span>
-          {/* Biriktirilgan guruhda asosiy o'qituvchi boshqa odam — kimligini ko'rsatamiz. */}
-          {isAssigned && group.teacher?.fullName && (
-            <span className="flex items-center gap-1.5">
-              <UserRound size={13} />
-              {t("teacherProfile.groups.detail.mainTeacher", {
-                name: group.teacher.fullName,
-              })}
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="rounded-2xl border border-ink/10 bg-white p-5">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display text-sm font-semibold text-ink">
-            {t("teacherProfile.groups.detail.studentsTitle", {
-              total: group.students.length,
-            })}
-          </h3>
-          {!!group.students.length && (
-            <button
-              type="button"
-              onClick={() => setBulkCoinOpen(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-forest text-paper px-3.5 py-2 text-xs font-medium hover:bg-forest-light transition-colors"
-            >
-              <Coins size={14} />
-              {t("teacherProfile.groups.detail.giveCoins")}
-            </button>
-          )}
-        </div>
-
-        {!group.students.length ? (
-          <p className="text-sm text-ink-soft py-6 text-center">
-            {t("teacherProfile.groups.detail.noStudents")}
-          </p>
-        ) : (
-          <div className="space-y-1">
-            {group.students.map((member) => (
-              <div
-                key={member.id}
-                className="flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-paper-soft transition-colors"
-              >
-                <div className="w-8 h-8 rounded-full bg-forest text-gold-soft flex items-center justify-center text-xs font-semibold shrink-0">
-                  {member.student.fullName.charAt(0).toUpperCase()}
+              {/* Biriktirilgan guruhda asosiy o'qituvchi boshqa odam — kimligini ko'rsatamiz. */}
+              {isAssigned && group.teacher?.fullName && (
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <dt>
+                    <UserRound className="size-4 text-muted-foreground" aria-hidden />
+                    <span className="sr-only">{t("common.teacher")}</span>
+                  </dt>
+                  <dd className="truncate">
+                    {t("teacherProfile.groups.detail.mainTeacher", {
+                      name: group.teacher.fullName,
+                    })}
+                  </dd>
                 </div>
-                <span className="text-sm text-ink flex-1 min-w-24">
-                  {member.student.fullName}
-                </span>
-                <span className="flex items-center gap-1.5 text-xs text-ink-soft shrink-0">
-                  <Phone size={12} />
-                  {member.student.phone}
-                </span>
-              </div>
-            ))}
+              )}
+            </dl>
+            {group.course.description && (
+              <p className="max-w-prose text-sm text-muted-foreground">
+                {group.course.description}
+              </p>
+            )}
           </div>
+
+          <div className="flex shrink-0 flex-col gap-3 lg:w-64">
+            <Button asChild variant="outline" className="h-9 gap-2">
+              <Link to={`/teacher/sessions?groupId=${group.id}`}>
+                <CalendarClock className="size-4" aria-hidden />
+                {t("teacherProfile.groups.detail.groupSessions")}
+              </Link>
+            </Button>
+            <GroupFillMeter
+              count={group.students.length}
+              max={group.maxStudents}
+              size="lg"
+            />
+          </div>
+        </div>
+      </header>
+
+      {/* O'quvchilar */}
+      <Panel
+        title={t("teacherProfile.groups.detail.studentsTitle", {
+          total: group.students.length,
+        })}
+        action={
+          !!group.students.length && (
+            <Button
+              onClick={() => setBulkCoinOpen(true)}
+              className="h-9 gap-2"
+            >
+              <CoinIcon className="size-4" />
+              {t("teacherProfile.groups.detail.giveCoins")}
+            </Button>
+          )
+        }
+        flush
+      >
+        {!group.students.length ? (
+          <EmptyState
+            size="sm"
+            icon={UsersRound}
+            title={t("teacherProfile.groups.detail.noStudents")}
+          />
+        ) : (
+          <ul className="divide-y border-t">
+            {group.students.map((member) => (
+              <li key={member.id}>
+                <Link
+                  to={`/teacher/students/${member.student.id}`}
+                  className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/50 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring sm:px-5"
+                >
+                  <UserAvatar name={member.student.fullName} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium">
+                      {member.student.fullName}
+                    </span>
+                    {member.student.phone && (
+                      <span className="block text-xs tabular-nums text-muted-foreground">
+                        {member.student.phone}
+                      </span>
+                    )}
+                  </span>
+                  {member.student.wallet && (
+                    <CoinAmount
+                      value={member.student.wallet.balance}
+                      variant="pill"
+                      size="sm"
+                    />
+                  )}
+                  <ChevronRight
+                    className="size-4 shrink-0 text-muted-foreground"
+                    aria-hidden
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
         )}
-      </div>
+      </Panel>
 
       <BulkGiveCoinModal
         open={bulkCoinOpen}

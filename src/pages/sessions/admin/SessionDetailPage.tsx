@@ -1,11 +1,12 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { CalendarX2 } from "lucide-react";
+import { BackListButton } from "@/components/shared/back";
+import { EmptyState, ErrorState } from "@/components/shared/states";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   SessionForm,
+  SessionHeader,
   SessionStatusPanel,
 } from "@/features/sessions/components";
 import { useSession } from "@/features/sessions/hooks";
@@ -13,28 +14,39 @@ import { useSession } from "@/features/sessions/hooks";
 const SessionDetailPage = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
-  const { data: session, isLoading } = useSession(id ?? "");
+  const {
+    data: session,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useSession(id ?? "");
 
   return (
-    <div className="space-y-4">
-      <Button
-        variant="outline"
-        onClick={() => navigate(-1)}
-        className="gap-2 -ml-2"
-      >
-        <ArrowLeft size={16} />
-        {t("sessions.backToList")}
-      </Button>
+    <div className="space-y-4 sm:space-y-5">
+      <BackListButton title={t("sessions.backToList")} />
 
       {isLoading ? (
-        <PageLoading />
+        <div aria-busy="true" className="space-y-4">
+          <Skeleton className="h-40 rounded-2xl" />
+          <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
+            <Skeleton className="h-96 rounded-2xl" />
+            <Skeleton className="h-96 rounded-2xl" />
+          </div>
+        </div>
+      ) : isError && !session ? (
+        <ErrorState onRetry={() => refetch()} isRetrying={isFetching} />
       ) : !session ? (
-        <NoData text={t("sessions.notFound")} />
+        <div className="rounded-2xl border bg-card">
+          <EmptyState icon={CalendarX2} title={t("sessions.notFound")} />
+        </div>
       ) : (
         <>
+          <SessionHeader
+            session={session}
+            actions={<SessionStatusPanel session={session} />}
+          />
           <SessionForm session={session} />
-          <SessionStatusPanel session={session} />
         </>
       )}
     </div>

@@ -57,8 +57,8 @@ export const ControlledTextarea = <TFieldValues extends FieldValues>({
                 "relative",
                 className,
                 fieldState.error
-                  ? "border-red-500 bg-red-500/10 focus-within:border-red-500"
-                  : "border-grey-100 bg-white focus-within:border-purple-600",
+                  ? "border-destructive bg-destructive-soft focus-within:border-destructive"
+                  : "border-input bg-card focus-within:border-ring",
               )}
             />
           </FormControl>

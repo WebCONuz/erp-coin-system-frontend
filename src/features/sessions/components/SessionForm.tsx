@@ -16,8 +16,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { ControlledInput, ControlledSelect } from "@/components/controls";
-import { formatDate, translateApiError } from "@/ustils";
+import { translateApiError } from "@/ustils";
 import { cn } from "@/lib/utils";
 import {
   createSessionInfoFormSchema,
@@ -33,7 +34,6 @@ import {
 } from "../hooks";
 import {
   getEvaluationModeOptions,
-  getSessionTypeLabel,
 } from "../constants";
 import type { SessionItem, UpdateSessionDto } from "../types";
 import { SessionEvaluationPanel } from "./evaluation";
@@ -155,63 +155,47 @@ export const SessionForm = ({ session }: Props) => {
   const isSaving = updateSession.isPending || evaluation.isSaving;
 
   const checkedBadge = session?.isChecked ? (
-    <span className="inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-green-100 text-green-600 dark:bg-green-950/50 dark:text-green-400">
-      {t("sessions.form.is_checked_session")}
-    </span>
+    <Badge variant="success">{t("sessions.form.is_checked_session")}</Badge>
   ) : (
-    <span className="inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-red-100 text-red-600 dark:bg-red-950/50 dark:text-red-400">
-      {t("sessions.form.is_not_checked_session")}
-    </span>
+    <Badge variant="warning">{t("sessions.form.is_not_checked_session")}</Badge>
   );
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        {/* Scored jadvalda ustunlar ko'p — u ma'lumotlar ostida to'liq kenglikda chiqadi. */}
+        {/* Yo'qlama — asosiy ish, shuning uchun birinchi (mobilda ham tepada).
+            Scored jadvalda ustunlar ko'p — u to'liq kenglikda chiqadi. */}
         <div
           className={cn(
-            "grid gap-6",
-            evaluation.isScored ? "grid-cols-1" : "grid-cols-2",
+            "grid grid-cols-1 items-start gap-4 sm:gap-5",
+            !evaluation.isScored &&
+              "lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]",
           )}
         >
+          <SessionEvaluationPanel
+            evaluation={evaluation}
+            disabled={isLocked}
+            headerExtra={checkedBadge}
+          />
+
           {/* Session info panel */}
-          <div className="rounded-2xl bg-background p-6 shadow-sm space-y-4 min-w-0">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400">
-                  {getSessionTypeLabel(t, session.sessionType)}
-                </span>
-                <span className="inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400">
-                  {t(`sessions.evaluationMode.${session.evaluationMode}`, {
-                    defaultValue: session.evaluationMode,
-                  })}
-                </span>
-                {session?.subject && (
-                  <span className="inline-block px-2.5 py-1 rounded-4xl text-xs font-medium bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-400">
-                    {session.subject.name}
-                  </span>
-                )}
-                {checkedBadge}
-                {isLocked && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-4xl text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
-                    <Lock size={12} />
-                    {t("sessions.locked")}
-                  </span>
-                )}
-              </div>
-              <span className="text-sm text-muted-foreground">
-                {formatDate(session.sessionDate)}
-              </span>
-            </div>
+          <section
+            aria-labelledby="session-info-title"
+            className="min-w-0 space-y-4 rounded-2xl border bg-card p-4 sm:p-5"
+          >
+            <h2
+              id="session-info-title"
+              className="font-heading text-base font-semibold"
+            >
+              {t("sessions.detail.infoTitle")}
+            </h2>
 
-            <div>
-              <p className="text-sm text-muted-foreground">
-                {t("common.group")}
-              </p>
-              <p className="text-sm font-medium">{session.group.name}</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+            <div
+              className={cn(
+                "grid grid-cols-1 gap-3 sm:grid-cols-2",
+                evaluation.isScored && "lg:grid-cols-4",
+              )}
+            >
               <FormField
                 control={form.control}
                 name="startTime"
@@ -238,9 +222,6 @@ export const SessionForm = ({ session }: Props) => {
                   </FormItem>
                 )}
               />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
               <ControlledSelect
                 control={form.control}
                 name="roomId"
@@ -255,38 +236,35 @@ export const SessionForm = ({ session }: Props) => {
                 options={teacherOptions}
                 disabled={isLocked}
               />
+
+              {canChooseMode && (
+                <ControlledSelect
+                  control={form.control}
+                  name="evaluationMode"
+                  label={t("sessions.form.evaluationModeLabel")}
+                  options={getEvaluationModeOptions(
+                    t,
+                    typeConfig?.allowedModes ?? [],
+                  )}
+                />
+              )}
+              {formMode === "scored" && (
+                <ControlledInput
+                  control={form.control}
+                  name="maxScore"
+                  label={t("sessions.form.maxScoreLabel")}
+                  placeholder={t("sessions.form.maxScorePlaceholder")}
+                  inputClassName="h-9"
+                  disabled={isLocked}
+                  isNumber
+                  maxLength={6}
+                />
+              )}
             </div>
 
-            {(canChooseMode || formMode === "scored") && (
-              <div className="grid grid-cols-2 gap-3">
-                {canChooseMode && (
-                  <ControlledSelect
-                    control={form.control}
-                    name="evaluationMode"
-                    label={t("sessions.form.evaluationModeLabel")}
-                    options={getEvaluationModeOptions(
-                      t,
-                      typeConfig?.allowedModes ?? [],
-                    )}
-                  />
-                )}
-                {formMode === "scored" && (
-                  <ControlledInput
-                    control={form.control}
-                    name="maxScore"
-                    label={t("sessions.form.maxScoreLabel")}
-                    placeholder={t("sessions.form.maxScorePlaceholder")}
-                    inputClassName="h-9"
-                    disabled={isLocked}
-                    isNumber
-                    maxLength={6}
-                  />
-                )}
-              </div>
-            )}
-
             {isLocked && (
-              <p className="text-xs text-muted-foreground">
+              <p className="flex items-start gap-2 rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
+                <Lock className="mt-0.5 size-3.5 shrink-0" aria-hidden />
                 {t("sessions.lockedFieldsHint")}
               </p>
             )}
@@ -308,7 +286,7 @@ export const SessionForm = ({ session }: Props) => {
                   <FormControl>
                     <Textarea
                       placeholder={t("sessions.topicPlaceholder")}
-                      className="resize-none h-20"
+                      className="h-20 resize-none"
                       {...field}
                       disabled={isLocked}
                     />
@@ -317,52 +295,51 @@ export const SessionForm = ({ session }: Props) => {
                 </FormItem>
               )}
             />
-          </div>
-
-          <SessionEvaluationPanel
-            evaluation={evaluation}
-            disabled={isLocked}
-            headerExtra={checkedBadge}
-          />
+          </section>
         </div>
 
         {!isLocked && (
-          <div className="flex flex-wrap items-center justify-end gap-4">
-            {session.isChecked && (
-              <label
-                htmlFor="confirm-resave"
-                title={t("sessions.confirmResaveHint")}
-                className="flex cursor-pointer items-center gap-2 select-none text-sm font-medium text-orange-600 dark:text-orange-400"
-              >
-                <Checkbox
-                  id="confirm-resave"
-                  checked={confirmResave}
-                  disabled={isSaving}
-                  onCheckedChange={(v) => setConfirmResave(v === true)}
-                />
-                {t("sessions.confirmResave")}
-              </label>
-            )}
-            <Button
-              type="submit"
-              disabled={
-                isSaving ||
-                evaluation.hasErrors ||
-                (session.isChecked && !confirmResave)
-              }
-              className={cn(
-                "h-10 px-5",
-                session.isChecked &&
-                  "from-orange-400 to-orange-600 sm:from-orange-400 sm:to-orange-600",
+          // Yopishqoq saqlash paneli: uzun ro'yxatda ham tugma doim ko'rinadi.
+          // Mobilda pastki navigatsiya ustida turadi.
+          <div className="sticky bottom-20 z-10 lg:bottom-4">
+            <div className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 rounded-2xl border bg-card/95 px-4 py-3 shadow-lg backdrop-blur">
+              {session.isChecked && (
+                <label
+                  htmlFor="confirm-resave"
+                  className="mr-auto flex cursor-pointer select-none items-center gap-2 text-sm"
+                >
+                  <Checkbox
+                    id="confirm-resave"
+                    checked={confirmResave}
+                    disabled={isSaving}
+                    onCheckedChange={(v) => setConfirmResave(v === true)}
+                  />
+                  <span>
+                    <span className="font-medium text-warning">
+                      {t("sessions.confirmResave")}
+                    </span>
+                    <span className="block text-xs text-muted-foreground">
+                      {t("sessions.confirmResaveHint")}
+                    </span>
+                  </span>
+                </label>
               )}
-              variant="default"
-            >
-              {isSaving
-                ? t("common.saving")
-                : session?.isChecked
-                  ? t("common.resave")
-                  : t("common.save")}
-            </Button>
+              <Button
+                type="submit"
+                disabled={
+                  isSaving ||
+                  evaluation.hasErrors ||
+                  (session.isChecked && !confirmResave)
+                }
+                className="h-10 min-w-32 px-5"
+              >
+                {isSaving
+                  ? t("common.saving")
+                  : session?.isChecked
+                    ? t("common.resave")
+                    : t("common.save")}
+              </Button>
+            </div>
           </div>
         )}
       </form>

@@ -1,21 +1,23 @@
 import { Link } from "react-router-dom";
-import { CalendarDays, CheckCircle2, Timer } from "lucide-react";
+import { parseISO } from "date-fns";
+import { CalendarDays, CheckCircle2, Clock } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { relativeUzDayLabel } from "@/ustils";
+import { Badge } from "@/components/ui/badge";
+import { Panel } from "@/components/shared/panel";
+import { EmptyState } from "@/components/shared/states";
+import { subjectColor } from "@/lib/subject-color";
+import { formatLongDate, relativeDayLabel } from "@/ustils";
 import type { TeacherDashboardSession } from "../../types";
 
 function groupByDate(sessions: TeacherDashboardSession[]) {
   const map = new Map<string, TeacherDashboardSession[]>();
   for (const session of sessions) {
-    const list = map.get(session.sessionDate) ?? [];
+    const key = session.sessionDate.slice(0, 10);
+    const list = map.get(key) ?? [];
     list.push(session);
-    map.set(session.sessionDate, list);
+    map.set(key, list);
   }
-  return Array.from(map.entries()).map(([sessionDate, sessions]) => ({
-    sessionDate,
-    label: relativeUzDayLabel(sessionDate),
-    sessions,
-  }));
+  return Array.from(map.entries());
 }
 
 interface Props {
@@ -23,81 +25,90 @@ interface Props {
   upcomingSessions: TeacherDashboardSession[];
 }
 
+/** Bugungi va yaqin darslar — kun bo'yicha guruhlangan. */
 export const TeacherSessionsCard = ({
   todaySessions,
   upcomingSessions,
 }: Props) => {
-  const { t } = useTranslation();
-  const groups = groupByDate([...todaySessions, ...upcomingSessions]);
+  const { t, i18n } = useTranslation();
+  const days = groupByDate([...todaySessions, ...upcomingSessions]);
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-5">
-      <h3 className="font-display text-sm font-semibold text-ink mb-4">
-        {t("teacherProfile.dashboard.upcomingTitle")}
-      </h3>
-
-      {!groups.length ? (
-        <div className="flex flex-col items-center justify-center py-10 text-center">
-          <CalendarDays size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm text-ink-soft">
-            {t("teacherProfile.dashboard.noUpcoming")}
-          </p>
-        </div>
+    <Panel title={t("teacherProfile.dashboard.upcomingTitle")} className="h-full">
+      {!days.length ? (
+        <EmptyState
+          size="sm"
+          icon={CalendarDays}
+          title={t("teacherProfile.dashboard.noUpcoming")}
+        />
       ) : (
         <div className="space-y-5">
-          {groups.map((group) => (
-            <div key={group.sessionDate}>
-              <p className="text-[11px] font-semibold tracking-wide text-ink-soft mb-2">
-                {group.label}
-              </p>
-              <div className="space-y-2">
-                {group.sessions.map((session) => (
-                  <Link
-                    key={session.id}
-                    to={`/teacher/sessions/${session.id}`}
-                    className="flex flex-wrap items-center gap-3 rounded-xl border border-ink/8 px-3 py-2.5 hover:border-gold/40 transition-colors"
-                  >
-                    <div className="min-w-40 flex-1">
-                      <p className="text-sm text-ink">
-                        <b>
-                          {session.subject?.name ?? session.group.name}
-                        </b>
-                        {session.subject ? ` · ${session.group.name}` : ""}
-                        {session.topic ? ` · ${session.topic}` : ""}
-                      </p>
-                      <p className="text-xs text-ink-soft">
-                        {session.startTime}–{session.endTime}
-                        {session.room ? ` · ${session.room.name}` : ""}
-                      </p>
-                    </div>
-                    <span
-                      className={`shrink-0 flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full ${
-                        session.isChecked
-                          ? "bg-forest/10 text-forest"
-                          : "bg-gold/15 text-gold"
-                      }`}
-                    >
-                      {session.isChecked ? (
-                        <CheckCircle2 size={10} />
-                      ) : (
-                        <Timer size={10} />
-                      )}
-                      {session.isChecked
-                        ? t("sessions.attendanceTaken")
-                        : t("sessions.pending")}
+          {days.map(([day, sessions]) => {
+            const date = parseISO(day);
+            const relative = relativeDayLabel(date, i18n.language);
+            return (
+              <section key={day}>
+                <h3 className="mb-2 flex items-center gap-2 text-sm font-medium">
+                  {formatLongDate(date, i18n.language)}
+                  {relative && (
+                    <span className="rounded-full bg-primary-soft px-2 py-0.5 text-xs text-primary">
+                      {relative}
                     </span>
-                    <span className="shrink-0 text-[11px] px-2 py-0.5 rounded-full bg-paper-soft text-ink-soft border border-ink/10">
-                      {t(`sessions.type.${session.sessionType}`, {
-                        defaultValue: session.sessionType,
-                      })}
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
+                  )}
+                </h3>
+                <ul className="space-y-2">
+                  {sessions.map((session) => (
+                    <li key={session.id}>
+                      <Link
+                        to={`/teacher/sessions/${session.id}`}
+                        style={{
+                          borderLeftColor: subjectColor(
+                            session.subject?.id ?? session.group.id,
+                          ),
+                        }}
+                        className="flex items-center gap-3 rounded-xl border border-l-[3px] px-3 py-2.5 transition-colors hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring"
+                      >
+                        <span className="w-12 shrink-0 text-sm font-semibold tabular-nums">
+                          {session.startTime}
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-medium">
+                            {session.subject?.name ?? session.group.name}
+                          </span>
+                          <span className="block truncate text-xs text-muted-foreground">
+                            {[
+                              session.subject ? session.group.name : null,
+                              session.room?.name,
+                              session.topic,
+                            ]
+                              .filter(Boolean)
+                              .join(", ")}
+                          </span>
+                        </span>
+                        {session.isChecked ? (
+                          <Badge variant="success" className="shrink-0">
+                            <CheckCircle2 aria-hidden />
+                            <span className="hidden sm:inline">
+                              {t("sessions.attendanceTaken")}
+                            </span>
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="shrink-0">
+                            <Clock aria-hidden />
+                            <span className="hidden sm:inline">
+                              {t("sessions.pending")}
+                            </span>
+                          </Badge>
+                        )}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
         </div>
       )}
-    </div>
+    </Panel>
   );
 };

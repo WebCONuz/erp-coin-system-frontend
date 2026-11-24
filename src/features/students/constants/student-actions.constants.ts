@@ -49,20 +49,12 @@ export const StudentStatusBadge = (
   isDeleted: boolean,
   t: TFn,
 ) => {
+  // `variant` — Badge komponentining semantik varianti.
   return isDeleted
-    ? {
-        label: t("students.status.deleted"),
-        cls: "bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-400",
-      }
+    ? { label: t("students.status.deleted"), variant: "danger" as const }
     : isActive
-      ? {
-          label: t("common.active"),
-          cls: "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400",
-        }
-      : {
-          label: t("students.status.archived"),
-          cls: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400",
-        };
+      ? { label: t("common.active"), variant: "success" as const }
+      : { label: t("students.status.archived"), variant: "secondary" as const };
 };
 
 // "Tarix" (audit log) — faqat super_admin / creator (`canViewAuditLogs`).

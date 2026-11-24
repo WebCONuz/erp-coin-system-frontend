@@ -16,7 +16,7 @@ function Checkbox({
       data-slot="checkbox"
       onClick={(e) => e.stopPropagation()}
       className={cn(
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive shadow-xs peer size-4 shrink-0 rounded-[6px] border border-gray-300 outline-none transition-shadow focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-black data-[state=checked]:bg-black data-[state=checked]:text-primary-foreground dark:bg-input/30 dark:data-[state=checked]:bg-primary",
+        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive shadow-xs peer size-4 shrink-0 rounded-[5px] border border-input bg-card outline-none transition-shadow focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-primary data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:bg-input/30 dark:data-[state=checked]:bg-primary",
         className
       )}
       {...props}
@@ -26,9 +26,9 @@ function Checkbox({
         className="flex items-center justify-center text-current transition-none"
       >
         {isMinusIcon ? (
-          <Minus className="size-3.5 text-white" />
+          <Minus className="size-3.5" />
         ) : (
-          <CheckIcon className="size-3.5 text-white" />
+          <CheckIcon className="size-3.5" />
         )}
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>

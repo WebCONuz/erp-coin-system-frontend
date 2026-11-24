@@ -12,12 +12,12 @@ export const MyGroupsTab = () => {
 
   if (!groups.length) {
     return (
-      <div className="flex flex-col items-center justify-center py-14 text-center rounded-2xl border border-ink/10 bg-white">
-        <Users size={22} className="text-ink-soft/50 mb-2" />
-        <p className="text-sm font-medium text-ink">
+      <div className="flex flex-col items-center justify-center py-14 text-center rounded-2xl border border-border bg-card">
+        <Users size={22} className="text-muted-foreground/50 mb-2" />
+        <p className="text-sm font-medium text-foreground">
           {t("studentProfile.groups.emptyTitle")}
         </p>
-        <p className="text-xs text-ink-soft mt-1 max-w-xs">
+        <p className="text-xs text-muted-foreground mt-1 max-w-xs">
           {t("studentProfile.groups.emptyText")}
         </p>
       </div>

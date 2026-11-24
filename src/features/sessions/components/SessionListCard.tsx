@@ -1,14 +1,13 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   AlertCircle,
   CalendarDays,
-  Clock,
   DoorOpen,
+  GraduationCap,
   Lock,
   MoreVertical,
   Trash,
-  UsersRound,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -16,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/ustils";
 import { getSessionTypeLabel } from "../constants";
@@ -26,58 +26,132 @@ interface Props {
   data: SessionItem;
   onDelete?: (session: SessionItem) => void;
   hasAction?: boolean;
+  /** O'qituvchi sahifasida o'qituvchi nomi takrorlanmasin. */
+  hideTeacher?: boolean;
+  /** Guruh sahifasida guruh nomi takrorlanmasin. */
+  hideGroup?: boolean;
+  /** Sana kun sarlavhasida ko'rsatilmagan bo'lsa. */
+  showDate?: boolean;
+  /** Tafsilot sahifasi yo'li (teacher: `/teacher/sessions`). */
+  basePath?: string;
 }
-
-const TYPE_BADGE_CLASS: Record<string, string> = {
-  lesson: "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400",
-  exam: "bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-400",
-  competition:
-    "bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-400",
-  extra: "bg-cyan-100 text-cyan-700 dark:bg-cyan-950/50 dark:text-cyan-400",
-};
 
 export const SessionListCard = ({
   data,
   onDelete,
   hasAction = true,
+  hideTeacher,
+  hideGroup,
+  showDate,
+  basePath = "/admin/sessions",
 }: Props) => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const isPastDue = isSessionPastDue(data);
   const isUnchecked = isPastDue && !data.isChecked;
-  const isCheckedPast = isPastDue && data.isChecked;
+  const typeLabel = getSessionTypeLabel(t, data.sessionType);
+  const title = data.subject?.name ?? typeLabel;
 
   return (
-    <div
-      onClick={() => navigate(`/admin/sessions/${data.id}`)}
+    <article
       className={cn(
-        "border rounded-xl p-3 relative cursor-pointer hover:shadow-sm transition-shadow",
+        "group relative flex h-full flex-col rounded-2xl border bg-card transition-colors hover:border-primary/40",
         isUnchecked &&
-          "border-red-200 bg-red-50 dark:border-red-900/50 dark:bg-red-950/20",
-        isCheckedPast &&
-          "border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900/40",
-        !isUnchecked && !isCheckedPast && "bg-white dark:bg-card",
+          "border-destructive/30 before:absolute before:inset-y-3 before:left-0 before:w-0.75 before:rounded-r-full before:bg-destructive",
       )}
     >
+      <Link
+        to={`${basePath}/${data.id}`}
+        className="flex flex-1 flex-col gap-3 rounded-2xl p-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      >
+        <div className="flex items-start justify-between gap-2 pr-7">
+          <p className="font-heading text-[15px] font-semibold tabular-nums text-foreground">
+            {data.startTime}
+            <span className="text-muted-foreground"> – {data.endTime}</span>
+          </p>
+        </div>
+
+        <div className="min-w-0">
+          <h3 className="truncate font-heading text-base font-semibold leading-snug">
+            {title}
+          </h3>
+          {!hideGroup && (
+            <p className="mt-0.5 truncate text-sm text-muted-foreground">
+              {data.group.name}
+            </p>
+          )}
+        </div>
+
+        {(isUnchecked ||
+          data.isLocked ||
+          data.sessionType !== "lesson" ||
+          data.evaluationMode === "scored") && (
+          <div className="flex flex-wrap gap-1.5">
+            {isUnchecked && (
+              <Badge variant="danger">
+                <AlertCircle aria-hidden />
+                {t("sessions.notChecked")}
+              </Badge>
+            )}
+            {data.isLocked && (
+              <Badge variant="secondary">
+                <Lock aria-hidden />
+                {t("sessions.locked")}
+              </Badge>
+            )}
+            {data.sessionType !== "lesson" && (
+              <Badge variant="info">{typeLabel}</Badge>
+            )}
+            {data.evaluationMode === "scored" && (
+              <Badge variant="soft">
+                {t("sessions.evaluationMode.scored")}
+              </Badge>
+            )}
+          </div>
+        )}
+
+        <dl className="mt-auto space-y-1 border-t pt-3 text-sm text-muted-foreground">
+          {showDate && (
+            <Meta icon={CalendarDays} label={t("common.date")}>
+              {formatDate(data.sessionDate)}
+            </Meta>
+          )}
+          <Meta icon={DoorOpen} label={t("common.room")}>
+            {data.room.name}
+          </Meta>
+          {!hideTeacher && (
+            <Meta icon={GraduationCap} label={t("common.teacher")}>
+              {data.teacher.fullName}
+            </Meta>
+          )}
+        </dl>
+
+        {data.topic && (
+          <p className="line-clamp-2 text-sm text-foreground/80">
+            <span className="text-muted-foreground">
+              {t("sessions.topicLabel")}:
+            </span>{" "}
+            {data.topic}
+          </p>
+        )}
+      </Link>
+
       {hasAction && (
-        <div className="absolute top-3 right-2">
+        <div className="absolute top-3 right-3">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                onClick={(e) => e.stopPropagation()}
-                className="rounded p-1 text-muted-foreground hover:bg-accent"
+                type="button"
+                aria-label={t("common.actions")}
+                className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
               >
-                <MoreVertical size={18} />
+                <MoreVertical className="size-4" aria-hidden />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 variant="destructive"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete?.(data);
-                }}
+                onClick={() => onDelete?.(data)}
               >
                 <Trash />
                 {t("common.delete")}
@@ -86,72 +160,24 @@ export const SessionListCard = ({
           </DropdownMenu>
         </div>
       )}
-
-      <div className="flex flex-wrap items-center gap-2 pr-8 mb-2">
-        <span
-          className={`inline-block px-2 py-0.5 rounded-4xl text-xs font-medium ${
-            TYPE_BADGE_CLASS[data.sessionType] ?? TYPE_BADGE_CLASS.lesson
-          }`}
-        >
-          {getSessionTypeLabel(t, data.sessionType)}
-        </span>
-        {data.evaluationMode === "scored" && (
-          <span className="inline-block px-2 py-0.5 rounded-4xl text-xs font-medium bg-orange-100 text-orange-700 dark:bg-orange-950/50 dark:text-orange-400">
-            {t("sessions.evaluationMode.scored")}
-          </span>
-        )}
-        {data.subject && (
-          <span className="inline-block px-2 py-0.5 rounded-4xl text-xs font-medium bg-violet-100 text-violet-700 dark:bg-violet-950/50 dark:text-violet-400">
-            {data.subject.name}
-          </span>
-        )}
-        {data.isLocked && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-4xl text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">
-            <Lock size={11} />
-            {t("sessions.locked")}
-          </span>
-        )}
-        {isUnchecked && (
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-4xl text-xs bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-400">
-            <AlertCircle size={11} />
-            {t("sessions.notChecked")}
-          </span>
-        )}
-      </div>
-
-      <h4 className="text-base font-semibold leading-5 mb-2 truncate">
-        {data.group.name}
-      </h4>
-
-      <div className="space-y-1 text-sm text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <CalendarDays size={14} />
-          <span>{formatDate(data.sessionDate)}</span>
-          <Clock size={14} className="ml-2" />
-          <span>
-            {data.startTime} - {data.endTime}
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <DoorOpen size={14} />
-          <span>
-            <b>{t("common.room")}:</b> "{data.room.name}"
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <UsersRound size={14} />
-          <span>
-            <b>{t("common.teacher")}: </b>
-            {data.teacher.fullName}
-          </span>
-        </div>
-      </div>
-
-      {data.topic && (
-        <p className="text-sm mt-2 line-clamp-2 border-t pt-2">
-          {t("sessions.topicLabel")}: {data.topic}
-        </p>
-      )}
-    </div>
+    </article>
   );
 };
+
+const Meta = ({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: typeof DoorOpen;
+  label: string;
+  children: React.ReactNode;
+}) => (
+  <div className="flex min-w-0 items-center gap-2">
+    <dt className="shrink-0">
+      <Icon className="size-4" aria-hidden />
+      <span className="sr-only">{label}</span>
+    </dt>
+    <dd className="truncate">{children}</dd>
+  </div>
+);

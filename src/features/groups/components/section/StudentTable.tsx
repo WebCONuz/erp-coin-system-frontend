@@ -1,24 +1,19 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import {
-  Trash2,
-  ChevronUp,
-  ChevronDown,
-  UserMinus,
-  Eye,
-  Coins,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, UserMinus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { UserAvatar } from "@/components/shared/avatar";
+import { CoinAmount } from "@/components/shared/coin";
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/ustils";
 import type { GroupDetail, GroupStudent } from "../../types";
 import { useRemoveStudent } from "../../hooks";
-import { formatDate } from "@/ustils";
-import { Avatar } from "../ui";
-import { useNavigate } from "react-router-dom";
 
 interface StudentTableProps {
   group: GroupDetail;
@@ -73,67 +68,48 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
     });
   };
 
-  const SortIcon = ({ col }: { col: SortKey }) => {
-    if (sortKey !== col)
-      return (
-        <ChevronUp className="w-3.5 h-3.5 text-zinc-300 dark:text-zinc-600" />
-      );
-    return sortDir === "asc" ? (
-      <ChevronUp className="w-3.5 h-3.5 text-blue-500" />
-    ) : (
-      <ChevronDown className="w-3.5 h-3.5 text-blue-500" />
-    );
-  };
+  const sortProps = { sortKey, sortDir, onSort: handleSort };
 
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
-      {/* Table header */}
+    <div className="overflow-hidden rounded-2xl border bg-card">
       <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/60">
-              <th className="text-left px-4 py-3 w-10 text-zinc-500 dark:text-zinc-400 font-medium">
-                #
-              </th>
-              <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium">
-                <button
-                  onClick={() => handleSort("name")}
-                  className="flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
-                >
-                  {t("groups.table.name")}
-                  <SortIcon col="name" />
-                </button>
-              </th>
-              <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hidden sm:table-cell">
+        <table className="w-full text-sm">
+          <thead className="bg-muted/50 text-[13px] text-muted-foreground">
+            <tr>
+              <SortHeader
+                {...sortProps}
+                col="name"
+                label={t("groups.table.name")}
+              />
+              <th
+                scope="col"
+                className="hidden px-4 py-2.5 text-left font-medium md:table-cell"
+              >
                 {t("common.phone")}
               </th>
-              <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hidden sm:table-cell">
-                <button
-                  onClick={() => handleSort("coin")}
-                  className="flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
-                >
-                  {t("groups.table.coin")}
-                  <SortIcon col="coin" />
-                </button>
+              <SortHeader
+                {...sortProps}
+                col="coin"
+                label={t("groups.table.coin")}
+                className="hidden sm:table-cell"
+              />
+              <SortHeader
+                {...sortProps}
+                col="joinedAt"
+                label={t("groups.table.joinedAt")}
+                className="hidden lg:table-cell"
+              />
+              <th scope="col" className="w-12 px-2">
+                <span className="sr-only">{t("common.actions")}</span>
               </th>
-              <th className="text-left px-4 py-3 text-zinc-500 dark:text-zinc-400 font-medium hidden md:table-cell">
-                <button
-                  onClick={() => handleSort("joinedAt")}
-                  className="flex items-center gap-1 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
-                >
-                  {t("groups.table.joinedAt")}
-                  <SortIcon col="joinedAt" />
-                </button>
-              </th>
-              <th className="px-4 py-3 w-12" />
             </tr>
           </thead>
           <tbody>
             {sorted.length === 0 ? (
               <tr>
                 <td
-                  colSpan={6}
-                  className="text-center py-12 text-zinc-400 dark:text-zinc-500"
+                  colSpan={5}
+                  className="py-12 text-center text-sm text-muted-foreground"
                 >
                   {query
                     ? t("groups.addStudent.noResultsFor", { search })
@@ -141,11 +117,10 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
                 </td>
               </tr>
             ) : (
-              sorted.map((gs, idx) => (
+              sorted.map((gs) => (
                 <StudentRow
                   key={gs.id}
                   groupStudent={gs}
-                  index={idx + 1}
                   isOpen={openPopoverId === gs.student.id}
                   onOpenChange={(open) =>
                     setOpenPopoverId(open ? gs.student.id : null)
@@ -162,11 +137,58 @@ export const StudentTable = ({ group, search = "" }: StudentTableProps) => {
   );
 };
 
+/** Saralanadigan ustun sarlavhasi (`aria-sort` bilan). */
+const SortHeader = ({
+  col,
+  label,
+  className,
+  sortKey,
+  sortDir,
+  onSort,
+}: {
+  col: SortKey;
+  label: string;
+  className?: string;
+  sortKey: SortKey;
+  sortDir: SortDir;
+  onSort: (key: SortKey) => void;
+}) => {
+  const active = sortKey === col;
+  return (
+    <th
+      scope="col"
+      aria-sort={
+        active ? (sortDir === "asc" ? "ascending" : "descending") : "none"
+      }
+      className={cn("px-4 py-2.5 text-left font-medium", className)}
+    >
+      <button
+        type="button"
+        onClick={() => onSort(col)}
+        className={cn(
+          "-mx-1 inline-flex items-center gap-1 rounded px-1 transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring",
+          active && "text-foreground",
+        )}
+      >
+        {label}
+        {active ? (
+          sortDir === "asc" ? (
+            <ArrowUp className="size-3.5 text-primary" aria-hidden />
+          ) : (
+            <ArrowDown className="size-3.5 text-primary" aria-hidden />
+          )
+        ) : (
+          <ArrowUpDown className="size-3.5 opacity-40" aria-hidden />
+        )}
+      </button>
+    </th>
+  );
+};
+
 // --- Alohida Row komponenti (Popover state izolyatsiyasi uchun) ---
 
 interface StudentRowProps {
   groupStudent: GroupStudent;
-  index: number;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onRemove: () => void;
@@ -175,78 +197,67 @@ interface StudentRowProps {
 
 const StudentRow = ({
   groupStudent,
-  index,
   isOpen,
   onOpenChange,
   onRemove,
   isRemoving,
 }: StudentRowProps) => {
   const { student, joinedAt } = groupStudent;
-  const navigate = useNavigate();
   const { t } = useTranslation();
+  const balance = student.wallet?.balance ?? 0;
 
   return (
-    <tr className="border-b border-zinc-100 dark:border-zinc-800/60 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 transition-colors">
-      <td className="px-4 py-3 text-zinc-400 dark:text-zinc-500 text-xs">
-        {index}
+    <tr className="border-t transition-colors hover:bg-muted/40">
+      <td className="px-4 py-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <UserAvatar name={student.fullName} />
+          <div className="min-w-0">
+            <Link
+              to={`/admin/students/${student.id}`}
+              className="block truncate font-medium hover:text-primary hover:underline focus-visible:underline"
+            >
+              {student.fullName}
+            </Link>
+            {/* Kichik ekranlarda yashirin ustunlar ma'lumoti shu yerda */}
+            <div className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground md:hidden">
+              {student.phone && (
+                <span className="tabular-nums">{student.phone}</span>
+              )}
+              <CoinAmount value={balance} size="sm" className="sm:hidden" />
+            </div>
+          </div>
+        </div>
       </td>
-      <td className="px-4 py-3 flex items-center gap-x-2">
-        <Avatar fullName={student.fullName} />
-        <p className="font-medium text-zinc-900 dark:text-zinc-50">
-          {student.fullName}
-        </p>
-        <p className="text-zinc-500 dark:text-zinc-400 sm:hidden mt-0.5">
-          {student.phone}
-        </p>
-        <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium sm:hidden">
-          <Coins size={13} />
-          {student.wallet?.balance ?? 0}
-        </span>
+      <td className="hidden px-4 py-3 tabular-nums text-muted-foreground md:table-cell">
+        {student.phone ?? "—"}
       </td>
-      <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400 hidden sm:table-cell">
-        {student.phone}
+      <td className="hidden px-4 py-3 sm:table-cell">
+        <CoinAmount value={balance} variant="pill" size="sm" />
       </td>
-      <td className="px-4 py-3 hidden sm:table-cell">
-        <span className="inline-flex items-center gap-1.5">
-          <Coins size={16} className="text-amber-600 dark:text-amber-400" />
-          {student.wallet?.balance ?? 0}
-        </span>
+      <td className="hidden px-4 py-3 tabular-nums text-muted-foreground lg:table-cell">
+        {formatDate(joinedAt, "dd.MM.yyyy")}
       </td>
-      <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400 hidden md:table-cell">
-        {formatDate(joinedAt, "dd.MM.yyyy, hh:mm")}
-      </td>
-      <td className="px-4 py-3 flex">
-        <Button
-          variant="ghost"
-          className="hover:bg-blue-50"
-          onClick={() => navigate(`/admin/students/${student?.id}`)}
-        >
-          <Eye size={17} className="text-blue-500" />
-        </Button>
+      <td className="px-2 py-3 text-right">
         <Popover open={isOpen} onOpenChange={onOpenChange}>
           <PopoverTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="w-8 h-8 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
+              className="size-9 text-muted-foreground hover:bg-destructive-soft hover:text-destructive"
+              aria-label={`${t("groups.table.removeTitle")}: ${student.fullName}`}
             >
-              <Trash2 className="w-4 h-4" />
+              <UserMinus className="size-4" aria-hidden />
             </Button>
           </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            className="w-64 p-4 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-lg"
-          >
-            <div className="flex items-start gap-3 mb-3">
-              <div className="p-1.5 rounded-full bg-red-100 dark:bg-red-950/50 shrink-0">
-                <UserMinus className="w-4 h-4 text-red-500" />
-              </div>
-              <div>
-                <p className="font-medium text-zinc-900 dark:text-zinc-50">
-                  {t("groups.table.removeTitle")}
-                </p>
-                <p className="text-zinc-500 dark:text-zinc-400 mt-0.5">
-                  <span className="font-medium text-zinc-700 dark:text-zinc-300">
+          <PopoverContent align="end" className="w-72 p-4">
+            <div className="mb-3 flex items-start gap-3">
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-destructive-soft text-destructive">
+                <UserMinus className="size-4" aria-hidden />
+              </span>
+              <div className="text-sm">
+                <p className="font-medium">{t("groups.table.removeTitle")}</p>
+                <p className="mt-0.5 text-muted-foreground">
+                  <span className="font-medium text-foreground">
                     {student.fullName}
                   </span>{" "}
                   {t("groups.table.removeConfirmSuffix")}
@@ -259,7 +270,7 @@ const StudentRow = ({
                 size="sm"
                 onClick={() => onOpenChange(false)}
                 disabled={isRemoving}
-                className="flex-1 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs"
+                className="flex-1"
               >
                 {t("common.no")}
               </Button>
@@ -267,9 +278,11 @@ const StudentRow = ({
                 size="sm"
                 onClick={onRemove}
                 disabled={isRemoving}
-                className="flex-1 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 text-white text-xs"
+                className="flex-1 bg-destructive text-white hover:bg-destructive/90 dark:text-background"
               >
-                {isRemoving ? "..." : t("groups.table.removeConfirmBtn")}
+                {isRemoving
+                  ? t("common.deleting")
+                  : t("groups.table.removeConfirmBtn")}
               </Button>
             </div>
           </PopoverContent>

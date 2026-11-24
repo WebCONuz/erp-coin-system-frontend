@@ -5,6 +5,7 @@ interface Props {
   sublabel: string;
   value: string;
   percent: number;
+  /** Halqa rangi: davomat — success, uy vazifa — coin. */
   accent?: "forest" | "gold";
 }
 
@@ -15,27 +16,25 @@ export const RingStatCard = ({
   percent,
   accent = "forest",
 }: Props) => {
-  const stroke = accent === "gold" ? "var(--color-gold)" : "var(--color-forest)";
+  const stroke = accent === "gold" ? "var(--coin)" : "var(--success)";
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-5 flex items-center gap-4">
+    <div className="flex h-full items-center gap-4 rounded-2xl border bg-card p-4 sm:p-5">
       <RadialProgress
         percent={percent}
         size={56}
         strokeWidth={5}
         color={stroke}
-        trackColor="var(--color-paper-soft)"
+        trackColor="var(--muted)"
       >
-        <span className="text-xs font-display font-semibold text-ink">
+        <span className="text-xs font-semibold tabular-nums">
           {Math.round(percent)}%
         </span>
       </RadialProgress>
       <div className="min-w-0">
-        <p className="text-sm font-medium text-ink">{label}</p>
-        <p className="text-xs text-ink-soft mt-0.5">{sublabel}</p>
-        <p className="text-xs font-semibold mt-1" style={{ color: stroke }}>
-          {value}
-        </p>
+        <p className="text-sm font-medium">{label}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{sublabel}</p>
+        <p className="mt-1 text-sm font-semibold tabular-nums">{value}</p>
       </div>
     </div>
   );

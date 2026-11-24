@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { MoreVertical, Pencil, Trash } from "lucide-react";
+import { Gift, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import type { Reward } from "@/features/market/types";
 import { isInStock, isUnlimitedStock } from "@/features/market/lib/stock";
 import { Button } from "@/components/ui/button";
@@ -10,7 +10,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getFileUrl } from "@/lib/utils";
+import { CoinAmount } from "@/components/shared/coin";
+import { cn, getFileUrl } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Reward;
@@ -32,30 +33,57 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { t } = useTranslation();
   const inStock = isInStock(product);
+  const isArchived = product.isActive === false;
+
   return (
-    <div className="group w-full bg-card text-card-foreground rounded-xl shadow-sm border border-border/50 overflow-hidden transition-all hover:shadow-xl">
-      {/* Rasm qismi */}
-      <div className="relative aspect-3/3 w-full bg-muted">
-        {product.imageUrl && (
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border bg-card text-card-foreground">
+      {/* Rasm */}
+      <div className="relative aspect-4/3 w-full bg-muted">
+        {product.imageUrl ? (
           <img
             src={getFileUrl(product.imageUrl)}
-            alt={product.title}
-            className="w-full h-full object-cover"
+            alt=""
+            loading="lazy"
+            className={cn(
+              "w-full h-full sm:h-87.5 object-cover",
+              (!inStock || isArchived) && "opacity-60 grayscale-40",
+            )}
           />
+        ) : (
+          <div className="flex size-full items-center justify-center">
+            <Gift className="size-10 text-muted-foreground/50" aria-hidden />
+          </div>
         )}
 
-        {/* O'ng yuqoridagi 3-nuqta tugmasi */}
+        {/* Holat belgilari */}
+        <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1">
+          {isArchived && (
+            <span className="rounded-full bg-card/95 px-2 py-0.5 text-[11px] font-medium text-muted-foreground shadow-sm">
+              {t("students.status.archived")}
+            </span>
+          )}
+          {!inStock && (
+            <span className="rounded-full bg-destructive px-2 py-0.5 text-[11px] font-medium text-white shadow-sm dark:text-background">
+              {t("market.outOfStock")}
+            </span>
+          )}
+        </div>
+
         {(onEdit || onDelete) && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="absolute top-3 right-3 p-2 bg-gray-100 dark:bg-black/60 backdrop-blur-sm rounded-full text-slate-700 dark:text-slate-200 shadow-md hover:bg-black/10 dark:hover:bg-black/80 transition-colors">
-                <MoreVertical size={20} />
+              <button
+                type="button"
+                aria-label={`${t("common.actions")}: ${product.title}`}
+                className="absolute top-2 right-2 flex size-9 items-center justify-center rounded-full bg-card/95 text-foreground shadow-sm transition-colors hover:bg-card focus-visible:outline-2 focus-visible:outline-ring"
+              >
+                <MoreHorizontal className="size-4" aria-hidden />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {onEdit && (
                 <DropdownMenuItem onClick={() => onEdit(product)}>
-                  <Pencil className="text-blue-500" />
+                  <Pencil className="size-4" aria-hidden />
                   {t("common.edit")}
                 </DropdownMenuItem>
               )}
@@ -64,7 +92,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   variant="destructive"
                   onClick={() => onDelete(product)}
                 >
-                  <Trash />
+                  <Trash2 className="size-4" aria-hidden />
                   {t("common.delete")}
                 </DropdownMenuItem>
               )}
@@ -73,48 +101,41 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         )}
       </div>
 
-      {/* Kontent qismi */}
-      <div className="p-4 space-y-4">
-        {/* Sarlavha va Tavsif */}
-        <div className="space-y-1">
-          <h3 className="text-lg font-semibold leading-tight text-slate-900 dark:text-slate-50 h-[22.5px] overflow-hidden">
+      {/* Kontent */}
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        <div className="min-w-0 space-y-1">
+          <h3 className="line-clamp-1 font-heading text-base font-semibold leading-snug">
             {product.title}
           </h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-normal h-10.75 overflow-hidden">
-            {product.description}
-          </p>
+          {product.description && (
+            <p className="line-clamp-2 text-sm text-muted-foreground">
+              {product.description}
+            </p>
+          )}
         </div>
 
-        {/* Narx va Dona soni */}
-        <div className="flex items-center justify-between pt-1">
-          {/* Narx: Coin belgisi bilan */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-5 h-5 bg-orange-400 rounded-full flex items-center justify-center font-black text-xs text-white shadow-inner">
-              E
-            </div>
-            <span className="text-lg font-semibold text-slate-950 dark:text-slate-50 leading-none">
-              {product.coinPrice.toLocaleString("uz-UZ")}
+        <div className="mt-auto flex items-center justify-between gap-2">
+          <CoinAmount
+            value={product.coinPrice}
+            size="md"
+            className="text-base"
+          />
+          {!footer && (
+            <span className="text-sm tabular-nums text-muted-foreground">
+              {isUnlimitedStock(product)
+                ? t("market.unlimited")
+                : inStock
+                  ? t("market.stockCount", { count: product.stock })
+                  : t("market.outOfStock")}
             </span>
-            <span className="text-lg text-slate-500 dark:text-slate-400 font-normal">
-              {t("common.coinLabel")}
-            </span>
-          </div>
-
-          {/* Dona soni */}
-          <span className="text-lg text-slate-500 dark:text-slate-400 font-normal">
-            {isUnlimitedStock(product)
-              ? t("market.unlimited")
-              : inStock
-                ? t("market.stockCount", { count: product.stock })
-                : t("market.outOfStock")}
-          </span>
+          )}
         </div>
 
-        {footer}
+        {footer && <div className="border-t pt-3">{footer}</div>}
 
         {onBuy && (
           <Button
-            className="w-full bg-linear-to-br from-purple-500 to-purple-700 text-white"
+            className="h-10 w-full"
             disabled={!inStock || isBuying}
             onClick={() => onBuy(product)}
           >
@@ -126,6 +147,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </Button>
         )}
       </div>
-    </div>
+    </article>
   );
 };

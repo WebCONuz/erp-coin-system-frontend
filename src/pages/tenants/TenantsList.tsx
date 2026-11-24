@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { ShieldAlert } from "lucide-react";
 import { ROLES } from "@/assets/constants";
 import { useAuth } from "@/features/auth/hooks/useLogin";
-import { TenantDataFilter } from "@/features/tenants/components/TenantsFilter";
+import {
+  TenantDataFilter,
+  type TenantStatusFilter,
+} from "@/features/tenants/components/TenantsFilter";
 import { TenantsGrid } from "@/features/tenants/components/TenantsGrid";
 import { TenantFormModal } from "@/features/tenants/components/TenantFormModal";
-import { NoDataBox } from "@/features/tenants/components/ui";
+import { EmptyState } from "@/components/shared/states";
 import type { TenentType } from "@/features/tenants/types";
-import { reloadPage } from "@/ustils";
-import { useTranslation } from "react-i18next";
 
 const TenantsList = () => {
   const { user } = useAuth();
@@ -15,6 +18,8 @@ const TenantsList = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTenant, setEditingTenant] = useState<TenentType | null>(null);
+  const [status, setStatus] = useState<TenantStatusFilter>("active");
+  const [search, setSearch] = useState("");
 
   const handleCreate = () => {
     setEditingTenant(null);
@@ -31,31 +36,40 @@ const TenantsList = () => {
     setEditingTenant(null);
   };
 
-  return (
-    <div className="space-y-6">
-      {user?.role?.name === ROLES.SUPER_ADMIN ||
-      user?.role?.name === ROLES.CREATOR ? (
-        <>
-          <TenantDataFilter
-            addTenant={handleCreate}
-            onSearch={(a) => console.log("search", a)}
-          />
-          <TenantsGrid onEdit={handleEdit} onAdd={handleCreate} />
+  const canManageTenants =
+    user?.role?.name === ROLES.SUPER_ADMIN ||
+    user?.role?.name === ROLES.CREATOR;
 
-          <TenantFormModal
-            open={isModalOpen}
-            onClose={handleClose}
-            mode={editingTenant ? "edit" : "create"}
-            tenant={editingTenant ?? undefined}
-          />
-        </>
-      ) : (
-        <NoDataBox
-          title={t("no_loading")}
-          btnText={t("re_try")}
-          btnFn={reloadPage}
-        />
-      )}
+  if (!canManageTenants) {
+    return (
+      <div className="rounded-2xl border bg-card">
+        <EmptyState icon={ShieldAlert} title={t("tenants.noAccess")} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4 sm:space-y-5">
+      <TenantDataFilter
+        status={status}
+        onStatusChange={setStatus}
+        search={search}
+        onSearch={setSearch}
+        addTenant={handleCreate}
+      />
+      <TenantsGrid
+        onEdit={handleEdit}
+        onAdd={handleCreate}
+        status={status}
+        search={search}
+      />
+
+      <TenantFormModal
+        open={isModalOpen}
+        onClose={handleClose}
+        mode={editingTenant ? "edit" : "create"}
+        tenant={editingTenant ?? undefined}
+      />
     </div>
   );
 };

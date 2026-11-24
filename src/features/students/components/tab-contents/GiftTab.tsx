@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Coins, Gift, MessageSquareText } from "lucide-react";
+import { Gift, MessageSquareText } from "lucide-react";
 import { TabsContent } from "@/components/ui/tabs";
-import { PageLoading } from "@/components/loading";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TablePagination } from "@/components/shared/table";
-import { getFileUrl } from "@/lib/utils";
+import { CoinAmount } from "@/components/shared/coin";
 import { formatDate } from "@/ustils";
 import {
   PurchaseActions,
   PurchaseStatusBadge,
   PurchaseStatusModal,
+  RewardThumb,
 } from "@/features/purchases/components";
 import { usePurchases } from "@/features/purchases/hooks";
 import type {
@@ -42,12 +43,19 @@ export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
   return (
     <TabsContent value="gifts" className="mt-4">
       <div className="space-y-3">
-        <h3 className="text-base font-semibold text-zinc-800 dark:text-zinc-200">
+        <h3 className="font-heading text-base font-semibold">
           {t("students.giftTab.title", { count: data?.total ?? 0 })}
         </h3>
 
         {isLoading ? (
-          <PageLoading />
+          <div
+            aria-busy="true"
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3"
+          >
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-32 rounded-2xl" />
+            ))}
+          </div>
         ) : !purchases.length ? (
           <EmptyState
             icon={<Gift size={20} />}
@@ -57,51 +65,39 @@ export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
             })}
           />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {purchases.map((purchase) => (
-              <div
+              <li
                 key={purchase.id}
-                className="flex flex-col gap-3 p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
+                className="flex flex-col gap-3 rounded-2xl border bg-card p-4"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-pink-100 dark:bg-pink-900/40 flex items-center justify-center shrink-0 overflow-hidden">
-                    {purchase.reward.imageUrl ? (
-                      <img
-                        src={getFileUrl(purchase.reward.imageUrl)}
-                        alt={purchase.reward.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <Gift
-                        size={18}
-                        className="text-pink-600 dark:text-pink-400"
-                      />
-                    )}
-                  </div>
+                <div className="flex items-start gap-3">
+                  <RewardThumb imageUrl={purchase.reward.imageUrl} />
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50 truncate">
+                    <p className="truncate text-sm font-medium">
                       {purchase.reward.title}
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
-                      <span className="flex items-center gap-1">
-                        <Coins size={11} />
-                        {purchase.coinSpent} {t("common.coinLabel")}
-                      </span>
-                      <span>·</span>
-                      <span>
-                        {formatDate(purchase.purchasedAt, "dd.MM.yyyy")}
-                      </span>
-                    </div>
+                    <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
+                      {formatDate(purchase.purchasedAt, "dd.MM.yyyy")}
+                    </p>
                   </div>
-                  <PurchaseStatusBadge
-                    status={purchase.status}
-                    className="shrink-0 text-[10px]"
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <CoinAmount
+                    value={purchase.coinSpent}
+                    variant="pill"
+                    size="sm"
                   />
+                  <PurchaseStatusBadge status={purchase.status} />
                 </div>
 
                 {purchase.deliveryNote && (
-                  <p className="flex gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
-                    <MessageSquareText size={13} className="mt-0.5 shrink-0" />
+                  <p className="flex gap-1.5 text-sm text-muted-foreground">
+                    <MessageSquareText
+                      className="mt-0.5 size-4 shrink-0"
+                      aria-hidden
+                    />
                     <span className="min-w-0 wrap-break-word">
                       {purchase.deliveryNote}
                     </span>
@@ -109,7 +105,7 @@ export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
                 )}
 
                 {purchase.deliveredAt && (
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <p className="text-xs text-muted-foreground">
                     {t("students.giftTab.deliveredAt", {
                       date: formatDate(purchase.deliveredAt, "dd.MM.yyyy"),
                       name: purchase.deliveredBy?.fullName ?? "",
@@ -117,13 +113,15 @@ export const GiftTab = ({ student }: { student?: StudentDetailFull }) => {
                   </p>
                 )}
 
-                <PurchaseActions
-                  purchase={purchase}
-                  onAction={(p, status) => setAction({ purchase: p, status })}
-                />
-              </div>
+                <div className="mt-auto">
+                  <PurchaseActions
+                    purchase={purchase}
+                    onAction={(p, status) => setAction({ purchase: p, status })}
+                  />
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
         )}
 
         {data && data.totalPages > 1 && (

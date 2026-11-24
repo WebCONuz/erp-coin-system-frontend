@@ -39,9 +39,9 @@ export const RewardStockFields = ({ form, reward }: Props) => {
   const showExactFields = !isEdit || stockMode === "exact";
 
   return (
-    <div className="space-y-3 rounded-xl border border-zinc-200 p-3 dark:border-zinc-800">
+    <div className="space-y-3 rounded-xl border p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
+        <p className="text-sm font-medium">
           {t("market.rewardForm.stockLabel")}
         </p>
         {reward && <RewardInventory reward={reward} />}
@@ -101,7 +101,7 @@ export const RewardStockFields = ({ form, reward }: Props) => {
                 </Button>
               </div>
               {stockDelta !== 0 && (
-                <p className="text-xs font-medium text-zinc-700 dark:text-zinc-300">
+                <p className="text-xs font-medium">
                   {t("market.rewardForm.deltaPreview", {
                     from: reward.stock,
                     to: reward.stock + stockDelta,
@@ -168,7 +168,7 @@ export const RewardStockFields = ({ form, reward }: Props) => {
           />
 
           {isEdit && !isUnlimited && (
-            <p className="flex gap-2 rounded-lg bg-amber-50 p-2.5 text-xs text-amber-800 dark:bg-amber-950/40 dark:text-amber-300">
+            <p className="flex gap-2 rounded-lg bg-warning-soft p-2.5 text-xs text-foreground">
               <AlertTriangle size={14} className="mt-0.5 shrink-0" />
               <span>
                 {t("market.rewardForm.exactWarning", {

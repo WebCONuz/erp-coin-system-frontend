@@ -90,7 +90,7 @@ export function ControlledDatePicker<TFieldValues extends FieldValues>({
             {label && (
               <FormLabel className={labelClass}>
                 {label}
-                {required && <span className="text-red-500"> *</span>}
+                {required && <span className="text-destructive"> *</span>}
               </FormLabel>
             )}
 
@@ -102,10 +102,10 @@ export function ControlledDatePicker<TFieldValues extends FieldValues>({
                     variant="ghost"
                     disabled={disabled}
                     className={cn(
-                      "flex h-10 w-full relative items-center justify-between rounded-lg border border-grey-100 dark:border-gray-700 bg-background px-3 py-1 text-sm outline-none hover:bg-background disabled:bg-gray-smoke/20 [&>span]:line-clamp-1  placeholder:text-muted-foreground pr-10",
+                      "flex h-10 w-full relative items-center justify-between rounded-lg border border-input bg-card px-3 py-1 text-sm outline-none hover:bg-card disabled:bg-muted [&>span]:line-clamp-1  placeholder:text-muted-foreground pr-10",
                       fieldState.error
-                        ? "border-red-500 bg-red-500/10 focus-within:border-red-500"
-                        : "border-grey-100 dark:border-gray-700 bg-background focus-within:border-purple-600",
+                        ? "border-destructive bg-destructive-soft focus-within:border-destructive"
+                        : "border-input bg-card focus-within:border-ring",
                       buttonClassName,
                     )}
                   >
@@ -145,7 +145,7 @@ export function ControlledDatePicker<TFieldValues extends FieldValues>({
               {field.value && !disabled && (
                 <button
                   type="button"
-                  className="absolute right-10 top-1/2 z-10 flex size-5 -translate-y-1/2 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+                  className="absolute right-10 top-1/2 z-10 flex size-5 -translate-y-1/2 items-center justify-center rounded-full hover:bg-muted"
                   onMouseDown={(e) => {
                     e.preventDefault();
                     e.stopPropagation();

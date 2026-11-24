@@ -1,7 +1,18 @@
 import { useTranslation } from "react-i18next";
-import { StudentStatusBadge } from "../../constants";
-import type { ConfirmAction, StudentDetailFull } from "../../types";
+import {
+  Archive,
+  AtSign,
+  Calendar,
+  MessageSquare,
+  MoreHorizontal,
+  Pencil,
+  Phone,
+  Power,
+  ShieldCheck,
+  Trash2,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,20 +20,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Phone,
-  Mail,
-  Calendar,
-  Pencil,
-  Power,
-  Trash2,
-  MessageSquare,
-  Archive,
-  PhoneCall,
-  MoreVertical,
-} from "lucide-react";
+import { UserAvatar } from "@/components/shared/avatar";
+import { cn } from "@/lib/utils";
 import { formatDate } from "@/ustils";
-import { Button } from "@/components/ui/button";
+import { StudentStatusBadge } from "../../constants";
+import type { ConfirmAction, StudentDetailFull } from "../../types";
 
 interface Props {
   isActive: boolean;
@@ -44,105 +46,79 @@ export const StudentDetailHeader = ({
   setConfirmAction,
 }: Props) => {
   const { t } = useTranslation();
-  const statusBadge = StudentStatusBadge(isActive, isDeleted, t);
-  const avatarLetter = student?.fullName?.charAt(0)?.toUpperCase() ?? "A";
+  const status = StudentStatusBadge(isActive, isDeleted, t);
 
   return (
     <header
-      className={`flex flex-col sm:flex-row items-start sm:items-center gap-5 p-6 rounded-xl border bg-white dark:bg-zinc-900 ${isDeleted ? "border-red-200 dark:border-red-900/60" : "border-zinc-200 dark:border-zinc-800"}`}
+      className={cn(
+        "flex flex-col gap-4 rounded-2xl border bg-card p-4 sm:flex-row sm:items-center sm:p-5",
+        isDeleted && "border-destructive/40",
+      )}
     >
-      <div className="relative shrink-0">
-        {student?.avatarUrl ? (
-          <img
-            // src={getFileUrl(student.avatarUrl)}
-            src={student.avatarUrl}
-            alt="avatar"
-            className="w-16 h-16 rounded-2xl object-cover ring-2 ring-green-600/30"
-          />
-        ) : (
-          <div className="w-16 h-16 rounded-xl bg-linear-to-br from-purple-500 to-purple-700 flex items-center justify-center text-2xl font-bold text-white shadow-md">
-            {avatarLetter}
+      <div className="flex min-w-0 flex-1 items-center gap-4">
+        <UserAvatar
+          name={student?.fullName ?? ""}
+          url={student?.avatarUrl}
+          className="size-14 rounded-2xl text-lg sm:size-16"
+        />
+
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="truncate font-heading text-xl font-semibold leading-tight tracking-tight sm:text-2xl">
+              {student?.fullName}
+            </h1>
+            <Badge variant={status.variant}>{status.label}</Badge>
           </div>
-        )}
-        {isActive && !isDeleted && (
-          <span className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-green-500 border-2 border-white dark:border-zinc-900" />
-        )}
-      </div>
 
-      <div className="flex-1 min-w-0">
-        <div className="flex flex-wrap items-center gap-2 mb-1">
-          <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-50 truncate">
-            {student?.fullName}
-          </h1>
-          <Badge className={`border-0 ${statusBadge.cls}`}>
-            {statusBadge.label}
-          </Badge>
-          <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-400 border-0 capitalize">
-            {student?.role?.displayName}
-          </Badge>
-        </div>
-        <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
-          <span className="flex items-center gap-1.5">
-            <Phone size={13} />
-            {student?.phone}
-          </span>
-          {student?.email && (
-            <span className="flex items-center gap-1.5">
-              <Mail size={13} />
-              {student?.email}
-            </span>
-          )}
-          {student?.parentPhone && (
-            <span className="flex items-center gap-1.5 text-blue-500 dark:text-blue-400">
-              <PhoneCall size={13} />
-              {t("students.detail.parentPhonePrefix")} {student?.parentPhone}
-            </span>
-          )}
-          <span className="flex items-center gap-1.5">
-            <Calendar size={13} />
-            {t("students.detail.memberSince", {
-              date: formatDate(student?.createdAt, "dd.MM.yyyy"),
-            })}
-          </span>
+          <dl className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+            {student?.username && (
+              <Meta icon={AtSign} label={t("username.label")}>
+                {student.username}
+              </Meta>
+            )}
+            <Meta icon={Phone} label={t("common.phone")}>
+              <span className="tabular-nums">{student?.phone}</span>
+            </Meta>
+            <Meta icon={Calendar} label={t("students.infoTab.registeredLabel")}>
+              {t("students.detail.memberSince", {
+                date: formatDate(student?.createdAt, "dd.MM.yyyy"),
+              })}
+            </Meta>
+          </dl>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-2 shrink-0">
-        {!isDeleted && (
+      {!isDeleted && (
+        <div className="flex shrink-0 items-center gap-2">
           <Button
             variant="outline"
-            size="sm"
-            className="gap-2 border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-800 dark:text-blue-400 dark:hover:bg-blue-950/30"
+            className="h-9 flex-1 gap-2 sm:flex-none"
             onClick={() => setIsMsgOpen(true)}
           >
-            <MessageSquare size={14} />
+            <MessageSquare className="size-4" aria-hidden />
             {t("students.detail.message")}
           </Button>
-        )}
-        {!isDeleted && (
           <Button
-            size="sm"
-            className="gap-2 bg-purple-600 hover:bg-purple-700 text-white"
+            className="h-9 flex-1 gap-2 sm:flex-none"
             onClick={() => setIsEditOpen(true)}
           >
-            <Pencil size={14} />
+            <Pencil className="size-4" aria-hidden />
             {t("common.edit")}
           </Button>
-        )}
-        {!isDeleted && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="icon"
-                className="border-zinc-300 dark:border-zinc-700"
+                className="size-9 shrink-0"
+                aria-label={t("students.filter.moreActions")}
               >
-                <MoreVertical size={16} />
+                <MoreHorizontal className="size-4" aria-hidden />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuItem onClick={() => setActiveTab("security")}>
-                <Pencil size={14} />
+                <ShieldCheck className="size-4" aria-hidden />
                 {t("students.detail.securitySettings")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -151,7 +127,11 @@ export const StudentDetailHeader = ({
                   setConfirmAction(isActive ? "archive" : "restore")
                 }
               >
-                {isActive ? <Archive size={14} /> : <Power size={14} />}
+                {isActive ? (
+                  <Archive className="size-4" aria-hidden />
+                ) : (
+                  <Power className="size-4" aria-hidden />
+                )}
                 {isActive
                   ? t("students.detail.archive")
                   : t("students.detail.activate")}
@@ -160,13 +140,31 @@ export const StudentDetailHeader = ({
                 variant="destructive"
                 onClick={() => setConfirmAction("delete")}
               >
-                <Trash2 size={14} />
+                <Trash2 className="size-4" aria-hidden />
                 {t("common.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 };
+
+const Meta = ({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: typeof Phone;
+  label: string;
+  children: React.ReactNode;
+}) => (
+  <div className="flex items-center gap-1.5">
+    <dt>
+      <Icon className="size-3.5" aria-hidden />
+      <span className="sr-only">{label}</span>
+    </dt>
+    <dd>{children}</dd>
+  </div>
+);

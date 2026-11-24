@@ -1,2 +1,2 @@
 export * from "./GroupCard";
-export * from "./Avatar";
+export * from "./GroupFillMeter";

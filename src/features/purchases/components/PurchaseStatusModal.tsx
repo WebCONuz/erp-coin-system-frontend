@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { Coins, Gift } from "lucide-react";
 
 import {
   Dialog,
@@ -26,7 +25,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal } from "@/components/shared/modal";
-import { getFileUrl } from "@/lib/utils";
+import { CoinAmount } from "@/components/shared/coin";
+import { RewardThumb } from "./RewardThumb";
 import {
   createPurchaseStatusSchema,
   type PurchaseStatusFormValues,
@@ -160,39 +160,31 @@ const NoteFormModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>{t(`purchases.${mode}.title`)}</DialogTitle>
+          <DialogTitle className="font-heading">
+            {t(`purchases.${mode}.title`)}
+          </DialogTitle>
           <DialogDescription>
             {t(`purchases.${mode}.description`)}
           </DialogDescription>
         </DialogHeader>
 
         {purchase && (
-          <div className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-800/50">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-pink-100 dark:bg-pink-900/40">
-              {purchase.reward.imageUrl ? (
-                <img
-                  src={getFileUrl(purchase.reward.imageUrl)}
-                  alt={purchase.reward.title}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <Gift size={18} className="text-pink-600 dark:text-pink-400" />
-              )}
-            </div>
+          <div className="flex items-center gap-3 rounded-xl border bg-muted/50 p-3">
+            <RewardThumb
+              imageUrl={purchase.reward.imageUrl}
+              className="size-11 bg-card"
+            />
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-zinc-900 dark:text-zinc-50">
+              <p className="truncate text-sm font-medium">
                 {purchase.reward.title}
               </p>
-              <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">
+              <p className="truncate text-xs text-muted-foreground">
                 {purchase.student?.fullName}
               </p>
             </div>
-            <span className="flex shrink-0 items-center gap-1 text-sm font-semibold text-amber-600 dark:text-amber-400">
-              <Coins size={14} />
-              {purchase.coinSpent}
-            </span>
+            <CoinAmount value={purchase.coinSpent} variant="pill" size="sm" />
           </div>
         )}
 
@@ -208,7 +200,11 @@ const NoteFormModal = ({
                 <FormItem>
                   <FormLabel>
                     {t(`purchases.${mode}.noteLabel`)}
-                    {isCancel && <span className="text-red-500">*</span>}
+                    {isCancel && (
+                      <span className="text-destructive" aria-hidden>
+                        *
+                      </span>
+                    )}
                   </FormLabel>
                   <FormControl>
                     <Textarea
@@ -227,7 +223,7 @@ const NoteFormModal = ({
                 control={form.control}
                 name="restock"
                 render={({ field }) => (
-                  <FormItem className="flex gap-2.5 rounded-xl border border-zinc-200 p-3 dark:border-zinc-800">
+                  <FormItem className="flex gap-2.5 rounded-xl border p-3">
                     <FormControl>
                       <Checkbox
                         checked={field.value}
@@ -272,7 +268,7 @@ const NoteFormModal = ({
                 disabled={isPending}
                 className={
                   isCancel
-                    ? "bg-none bg-red-600 hover:bg-red-700 text-white"
+                    ? "bg-destructive text-white hover:bg-destructive/90 dark:text-background"
                     : undefined
                 }
               >

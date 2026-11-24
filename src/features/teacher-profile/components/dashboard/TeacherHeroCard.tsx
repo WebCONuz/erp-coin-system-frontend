@@ -1,58 +1,73 @@
-import { GraduationCap, UsersRound } from "lucide-react";
+import { CalendarClock, GraduationCap, UsersRound } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { DashboardTitle } from "@/components/shared/title";
+import { formatLongDate } from "@/ustils";
 
 interface Props {
   fullName: string;
   totalActiveGroups: number;
   totalStudents: number;
+  todaySessionsCount: number;
 }
 
+/** Salomlashish + ko'rsatkichlar qatori (admin dashboard bilan bir xil naqsh). */
 export const TeacherHeroCard = ({
   fullName,
   totalActiveGroups,
   totalStudents,
+  todaySessionsCount,
 }: Props) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const stats = [
+    {
+      label: t("teacherProfile.dashboard.activeGroups"),
+      value: totalActiveGroups,
+      icon: UsersRound,
+      to: "/teacher/groups",
+    },
+    {
+      label: t("teacherProfile.dashboard.totalStudents"),
+      value: totalStudents,
+      icon: GraduationCap,
+      to: "/teacher/students",
+    },
+    {
+      label: t("teacherProfile.dashboard.todaySessions"),
+      value: todaySessionsCount,
+      icon: CalendarClock,
+      to: "/teacher/sessions",
+    },
+  ];
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-forest text-paper p-6 sm:p-8">
-      <div className="pointer-events-none absolute -top-20 -right-16 h-56 w-56 rounded-full bg-gold/10 blur-3xl" />
+    <div className="space-y-4 sm:space-y-5">
+      <DashboardTitle
+        title={t("teacherProfile.dashboard.greeting", {
+          name: fullName.split(" ")[0],
+        })}
+        description={formatLongDate(new Date(), i18n.language)}
+      />
 
-      <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div className="min-w-0">
-          <h1 className="font-display text-2xl sm:text-3xl font-semibold">
-            {t("teacherProfile.dashboard.greeting", { name: fullName.split(" ")[0] })}
-          </h1>
-          <p className="text-paper/60 text-sm mt-2 max-w-md">
-            {t("teacherProfile.dashboard.heroSubtitle")}
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="rounded-2xl bg-white/8 border border-white/10 px-4 py-3 min-w-32">
-            <div className="flex items-center gap-1.5 text-gold">
-              <UsersRound size={15} />
-              <span className="font-display text-xl font-bold">
-                {totalActiveGroups}
+      <ul className="grid grid-cols-3 gap-px overflow-hidden rounded-2xl border bg-border">
+        {stats.map(({ label, value, icon: Icon, to }) => (
+          <li key={to} className="bg-card">
+            <Link
+              to={to}
+              className="block h-full px-3 py-3.5 transition-colors hover:bg-muted/60 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring sm:px-5 sm:py-4"
+            >
+              <span className="flex items-center gap-2 text-xs text-muted-foreground sm:text-sm">
+                <Icon className="hidden size-4 shrink-0 sm:block" aria-hidden />
+                <span className="line-clamp-2">{label}</span>
               </span>
-            </div>
-            <p className="text-[11px] text-paper/50 mt-0.5">
-              {t("teacherProfile.dashboard.activeGroups")}
-            </p>
-          </div>
-          <div className="rounded-2xl bg-white/8 border border-white/10 px-4 py-3 min-w-32">
-            <div className="flex items-center gap-1.5 text-gold">
-              <GraduationCap size={15} />
-              <span className="font-display text-xl font-bold">
-                {totalStudents}
+              <span className="mt-1 block font-heading text-2xl font-semibold leading-tight tabular-nums sm:text-[28px]">
+                {value}
               </span>
-            </div>
-            <p className="text-[11px] text-paper/50 mt-0.5">
-              {t("teacherProfile.dashboard.totalStudents")}
-            </p>
-          </div>
-        </div>
-      </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

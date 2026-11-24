@@ -1,14 +1,17 @@
 import {
   Bar,
   BarChart,
+  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   XAxis,
+  YAxis,
 } from "recharts";
 
 export interface TrendBarSeries {
   key: string;
   label: string;
+  /** Rang — iloji boricha token: `var(--chart-1)`. */
   color: string;
 }
 
@@ -22,6 +25,8 @@ interface TrendBarChartProps<T extends object> {
   height?: number;
 }
 
+const AXIS_TICK = { fontSize: 11, fill: "var(--muted-foreground)" };
+
 export const TrendBarChart = <T extends object>({
   data,
   series,
@@ -34,17 +39,45 @@ export const TrendBarChart = <T extends object>({
 
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={chartData} barGap={4} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
+      <BarChart
+        data={chartData}
+        barGap={3}
+        margin={{ top: 4, right: 4, left: -8, bottom: 0 }}
+      >
+        <CartesianGrid
+          vertical={false}
+          stroke="var(--border)"
+          strokeDasharray="3 3"
+        />
         <XAxis
           dataKey={xDataKey}
           tickFormatter={xTickFormatter}
-          tick={{ fontSize: 10 }}
+          tick={AXIS_TICK}
           axisLine={false}
           tickLine={false}
+          tickMargin={8}
+        />
+        <YAxis
+          allowDecimals={false}
+          tick={AXIS_TICK}
+          axisLine={false}
+          tickLine={false}
+          width={40}
         />
         <Tooltip
-          cursor={{ fill: "transparent" }}
-          contentStyle={{ fontSize: 12, borderRadius: 8 }}
+          cursor={{ fill: "var(--muted)", opacity: 0.6 }}
+          labelFormatter={(label) =>
+            xTickFormatter ? xTickFormatter(String(label)) : String(label)
+          }
+          contentStyle={{
+            fontSize: 12,
+            borderRadius: 10,
+            border: "1px solid var(--border)",
+            background: "var(--popover)",
+            color: "var(--popover-foreground)",
+            boxShadow: "0 4px 16px rgb(0 0 0 / 0.08)",
+          }}
+          labelStyle={{ color: "var(--muted-foreground)", marginBottom: 4 }}
         />
         {series.map((s) => (
           <Bar
@@ -52,8 +85,8 @@ export const TrendBarChart = <T extends object>({
             dataKey={s.key as keyof ChartRow}
             name={s.label}
             fill={s.color}
-            radius={[6, 6, 0, 0]}
-            maxBarSize={28}
+            radius={[4, 4, 0, 0]}
+            maxBarSize={22}
           />
         ))}
       </BarChart>

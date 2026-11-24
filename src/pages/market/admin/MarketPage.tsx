@@ -28,13 +28,14 @@ const AdminMarketPage = () => {
 
   return (
     <>
-      <ProductDataFilter onAddGift={handleCreate} />
+      <div className="space-y-4 sm:space-y-5">
+        <ProductDataFilter onAddGift={handleCreate} />
 
-      <div className="grid grid-cols-5 gap-6">
-        <div className="col-span-1">
-          <GiftCategory />
-        </div>
-        <div className="col-span-4">
+        {/* lg+: chapda kategoriyalar; kichik ekranlarda kategoriya chip'lari tepada */}
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-5">
+          <div className="min-w-0 lg:sticky lg:top-0">
+            <GiftCategory />
+          </div>
           <ProductGrid onAddGift={handleCreate} onEdit={handleEdit} />
         </div>
       </div>

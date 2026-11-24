@@ -1,14 +1,17 @@
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Tags } from "lucide-react";
+import { FilterNav } from "@/components/shared/filter-nav";
 import { useRewardCategories } from "../../hooks";
 
+/** O'quvchi do'koni kategoriyalari (faqat tanlash, boshqaruvsiz). */
 export const StudentCategorySidebar = ({
   totalCount,
 }: {
   totalCount: number;
 }) => {
   const { t } = useTranslation();
-  const { data: categories } = useRewardCategories();
+  const { data: categories, isLoading } = useRewardCategories();
   const [searchParams, setSearchParams] = useSearchParams();
   const active = searchParams.get("category") ?? "all";
 
@@ -20,49 +23,21 @@ export const StudentCategorySidebar = ({
   };
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-3">
-      <h3 className="font-display text-sm font-semibold text-ink px-2 pt-1 pb-2">
-        {t("market.student.categories")}
-      </h3>
-
-      <button
-        type="button"
-        onClick={() => select("all")}
-        className={`w-full flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-          active === "all"
-            ? "bg-forest text-paper"
-            : "text-ink-soft hover:bg-paper-soft"
-        }`}
-      >
-        {t("market.student.allCategories")}
-        <span
-          className={active === "all" ? "text-paper/70" : "text-ink-soft/60"}
-        >
-          {totalCount}
-        </span>
-      </button>
-
-      {(categories ?? []).map((cat) => (
-        <button
-          key={cat.id}
-          type="button"
-          onClick={() => select(cat.id)}
-          className={`w-full flex items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
-            active === cat.id
-              ? "bg-forest text-paper"
-              : "text-ink-soft hover:bg-paper-soft"
-          }`}
-        >
-          <span className="truncate">{cat.name}</span>
-          <span
-            className={`shrink-0 ${
-              active === cat.id ? "text-paper/70" : "text-ink-soft/60"
-            }`}
-          >
-            {cat._count?.rewards ?? 0}
-          </span>
-        </button>
-      ))}
-    </div>
+    <FilterNav
+      title={t("market.student.categories")}
+      items={[
+        { id: "all", title: t("market.student.allCategories"), count: totalCount },
+        ...(categories ?? []).map((cat) => ({
+          id: cat.id,
+          title: cat.name,
+          count: cat._count?.rewards ?? 0,
+        })),
+      ]}
+      selectedId={active}
+      onSelect={select}
+      emptyTitle={t("reward_categories.no_data")}
+      emptyIcon={Tags}
+      isLoading={isLoading}
+    />
   );
 };

@@ -13,8 +13,9 @@ import {
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { ControlledDatePicker, ControlledInput } from "@/components/controls";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { Skeleton } from "@/components/ui/skeleton";
+import { DashboardTitle } from "@/components/shared/title";
+import { EmptyState, ErrorState } from "@/components/shared/states";
 import { formatDate, translateApiError } from "@/ustils";
 import { notifySessionSync } from "@/features/plans/lib/session-sync";
 import { useCreateHoliday, useDeleteHoliday, useHolidays } from "../hooks";
@@ -89,20 +90,17 @@ export const HolidaysManager = () => {
   };
 
   return (
-    <div className="space-y-6 min-w-0">
-      <div className="space-y-1">
-        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
-          {t("holidays.title")}
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          {t("holidays.description")}
-        </p>
-      </div>
+    <div className="min-w-0 space-y-4 sm:space-y-5">
+      <DashboardTitle
+        title={t("holidays.title")}
+        description={t("holidays.description")}
+        as="h2"
+      />
 
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid grid-cols-1 sm:grid-cols-[15rem_minmax(0,1fr)_auto] gap-3 items-start rounded-xl border border-zinc-200 dark:border-zinc-800 p-4"
+          className="grid grid-cols-1 items-start gap-3 rounded-2xl border bg-card p-4 sm:grid-cols-[15rem_minmax(0,1fr)_auto] sm:p-5"
         >
           <ControlledDatePicker
             control={form.control}
@@ -121,83 +119,90 @@ export const HolidaysManager = () => {
           <Button
             type="submit"
             disabled={createHoliday.isPending}
-            className="sm:mt-6 gap-2"
+            className="h-10 gap-2 sm:mt-6"
           >
-            <Plus size={16} />
+            <Plus className="size-4" aria-hidden />
             {createHoliday.isPending ? t("common.adding") : t("common.add")}
           </Button>
         </form>
       </Form>
 
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="font-medium text-zinc-900 dark:text-zinc-50">
-          {t("holidays.listTitle", { year })}
-        </h3>
-        <div className="flex items-center gap-1">
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => setYear((y) => y - 1)}
-            aria-label={t("holidays.prevYear")}
+      <section aria-labelledby="holidays-list-title" className="space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <h3
+            id="holidays-list-title"
+            className="font-heading text-base font-semibold"
           >
-            <ChevronLeft size={16} />
-          </Button>
-          <span className="w-14 text-center text-sm font-medium tabular-nums">
-            {year}
-          </span>
-          <Button
-            variant="outline"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => setYear((y) => y + 1)}
-            aria-label={t("holidays.nextYear")}
-          >
-            <ChevronRight size={16} />
-          </Button>
-        </div>
-      </div>
-
-      {isLoading ? (
-        <PageLoading />
-      ) : isError ? (
-        <NoData text={translateApiError(error, t)} />
-      ) : !holidays.length ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800">
-          <CalendarOff size={22} className="text-muted-foreground mb-2" />
-          <p className="text-sm text-muted-foreground">
-            {t("holidays.empty")}
-          </p>
-        </div>
-      ) : (
-        <ul className="rounded-xl border border-zinc-200 dark:border-zinc-800 divide-y divide-zinc-200 dark:divide-zinc-800 overflow-hidden">
-          {holidays.map((holiday) => (
-            <li
-              key={holiday.id}
-              className="flex items-center justify-between gap-3 px-4 py-3 bg-white dark:bg-zinc-900"
+            {t("holidays.listTitle", { year })}
+          </h3>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-8"
+              onClick={() => setYear((y) => y - 1)}
+              aria-label={t("holidays.prevYear")}
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <span className="shrink-0 rounded-lg bg-rose-100 text-rose-700 dark:bg-rose-950/50 dark:text-rose-400 px-2 py-1 text-xs font-medium tabular-nums">
-                  {formatDate(holiday.date, "dd.MM.yyyy")}
-                </span>
-                <span className="text-sm text-zinc-800 dark:text-zinc-200 truncate">
-                  {holiday.name}
-                </span>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 shrink-0 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40"
-                disabled={deleteHoliday.isPending}
-                onClick={() => handleDelete(holiday)}
-                aria-label={t("common.delete")}
+              <ChevronLeft className="size-4" aria-hidden />
+            </Button>
+            <span
+              aria-live="polite"
+              className="w-14 text-center text-sm font-medium tabular-nums"
+            >
+              {year}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-8"
+              onClick={() => setYear((y) => y + 1)}
+              aria-label={t("holidays.nextYear")}
+            >
+              <ChevronRight className="size-4" aria-hidden />
+            </Button>
+          </div>
+        </div>
+
+        {isLoading ? (
+          <div aria-busy="true" className="space-y-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-14 rounded-xl" />
+            ))}
+          </div>
+        ) : isError ? (
+          <ErrorState description={translateApiError(error, t)} />
+        ) : !holidays.length ? (
+          <div className="rounded-2xl border bg-card">
+            <EmptyState icon={CalendarOff} title={t("holidays.empty")} />
+          </div>
+        ) : (
+          <ul className="divide-y overflow-hidden rounded-2xl border bg-card">
+            {holidays.map((holiday) => (
+              <li
+                key={holiday.id}
+                className="flex items-center justify-between gap-3 px-4 py-3"
               >
-                <Trash2 size={16} />
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
+                <div className="flex min-w-0 items-center gap-3">
+                  <span className="shrink-0 rounded-lg bg-destructive-soft px-2 py-1 text-xs font-medium tabular-nums text-destructive">
+                    {formatDate(holiday.date, "dd.MM.yyyy")}
+                  </span>
+                  <span className="truncate text-sm">{holiday.name}</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-9 shrink-0 text-muted-foreground hover:bg-destructive-soft hover:text-destructive"
+                  disabled={deleteHoliday.isPending}
+                  onClick={() => handleDelete(holiday)}
+                  aria-label={`${t("common.delete")}: ${holiday.name}`}
+                >
+                  <Trash2 className="size-4" aria-hidden />
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 };

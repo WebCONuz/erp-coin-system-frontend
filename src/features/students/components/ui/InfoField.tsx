@@ -1,3 +1,4 @@
+/** Ma'lumot maydoni (`<dl>` ichida): belgi, yorliq, qiymat. */
 export const InfoField = ({
   icon,
   label,
@@ -8,14 +9,15 @@ export const InfoField = ({
   value: string;
 }) => (
   <div className="flex items-start gap-3">
-    <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center shrink-0 text-zinc-500 dark:text-zinc-400 mt-0.5">
+    <span
+      className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground"
+      aria-hidden
+    >
       {icon}
-    </div>
+    </span>
     <div className="min-w-0">
-      <p className="text-xs text-zinc-400 dark:text-zinc-500">{label}</p>
-      <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200 wrap-break-word">
-        {value}
-      </p>
+      <dt className="text-xs text-muted-foreground">{label}</dt>
+      <dd className="text-sm font-medium wrap-break-word">{value}</dd>
     </div>
   </div>
 );

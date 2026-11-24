@@ -42,7 +42,7 @@ const SendMessagePage = () => {
         <p className="mb-1 font-semibold text-lg">{t("controls.messageTextLabel")}</p>
         <Textarea className="h-80" />
         <div className="flex justify-end mt-4">
-          <Button className="bg-linear-to-br from-purple-500 to-purple-700 h-10 px-4 text-white">
+          <Button className="h-10 px-4">
             {t("controls.send")}
           </Button>
         </div>

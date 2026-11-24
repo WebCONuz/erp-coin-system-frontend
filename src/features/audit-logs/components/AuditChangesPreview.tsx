@@ -63,16 +63,16 @@ export const AuditChangesPreview = ({ log }: Props) => {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="font-medium text-purple-600 hover:underline dark:text-purple-400"
+          className="font-medium text-primary underline-offset-2 hover:underline focus-visible:underline"
         >
           {t("auditLogs.details")}
         </button>
       )}
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="flex flex-wrap items-center gap-2 text-zinc-900 dark:text-zinc-50">
+            <DialogTitle className="flex flex-wrap items-center gap-2 font-heading">
               <AuditActionBadge action={log.actionType} />
               <span className="text-base">
                 {getAuditEntityLabel(t, log.entityType)}
@@ -98,10 +98,10 @@ export const AuditChangesPreview = ({ log }: Props) => {
           </dl>
 
           <div className="space-y-1.5">
-            <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+            <p className="text-sm font-medium">
               {t("auditLogs.table.changes")}
             </p>
-            <pre className="max-h-80 overflow-auto rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-xs text-zinc-800 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-200">
+            <pre className="max-h-80 overflow-auto rounded-lg border bg-muted/50 p-3 text-xs">
               {JSON.stringify(log.changes, null, 2)}
             </pre>
           </div>

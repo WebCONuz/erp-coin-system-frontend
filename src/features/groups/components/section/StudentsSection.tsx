@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Coins, UserPlus } from "lucide-react";
+import { CoinIcon } from "@/components/shared/coin";
+import { BulkGiveCoinModal } from "@/features/students/components/modal";
 import { StudentTable } from "./StudentTable";
 import type { GroupDetail } from "../../types";
-import { BulkGiveCoinModal } from "@/features/students/components/modal";
 
 interface Props {
   group: GroupDetail;
@@ -33,43 +34,36 @@ export const StudentsSection = ({
   );
 
   return (
-    <div>
-      {/* header */}
-      <div className="flex items-center justify-between mb-4">
-        {/* title */}
+    <section aria-labelledby="group-students-title" className="min-w-0 space-y-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h3 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
+          <h2
+            id="group-students-title"
+            className="font-heading text-lg font-semibold"
+          >
             {t("groups.students.title")}
-          </h3>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+          </h2>
+          <p className="text-sm text-muted-foreground">
             {t("groups.students.count", { count: group.students.length })}
           </p>
         </div>
 
-        {/* actions */}
-        <div className="flex gap-x-2">
-          <Input
-            className="h-10 bg-white w-65 px-4"
-            placeholder={t("common.search")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="flex gap-2">
           <Button
+            variant="outline"
             onClick={() => setBulkCoinOpen(true)}
             disabled={!group.students.length}
-            size="default"
-            className="h-10 gap-2 bg-linear-to-br from-amber-500 to-amber-600 text-white disabled:opacity-50"
+            className="h-9 flex-1 gap-2 sm:flex-none"
           >
-            <Coins className="w-4 h-4" />
+            <CoinIcon className="size-4" />
             {t("groups.students.giveCoin")}
           </Button>
           <Button
             onClick={() => setIsAddStudentOpen(true)}
             disabled={isFull}
-            size="default"
-            className="h-10 gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white disabled:opacity-50"
+            className="h-9 flex-1 gap-2 sm:flex-none"
           >
-            <UserPlus className="w-4 h-4" />
+            <UserPlus className="size-4" aria-hidden />
             {isFull
               ? t("groups.students.groupFull")
               : t("groups.addStudent.title")}
@@ -77,7 +71,23 @@ export const StudentsSection = ({
         </div>
       </div>
 
-      {/* students list */}
+      {group.students.length > 0 && (
+        <div role="search" className="relative">
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
+          <Input
+            type="search"
+            className="h-9 pl-9"
+            placeholder={t("common.search")}
+            aria-label={t("common.search")}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+      )}
+
       <StudentTable group={group} search={search} />
 
       <BulkGiveCoinModal
@@ -88,6 +98,6 @@ export const StudentsSection = ({
         title={t("groups.students.bulkCoinTitle")}
         subtitle={t("groups.students.bulkCoinSubtitle", { name: group.name })}
       />
-    </div>
+    </section>
   );
 };

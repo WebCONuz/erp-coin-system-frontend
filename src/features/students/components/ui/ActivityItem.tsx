@@ -1,5 +1,6 @@
-import { Clock } from "lucide-react";
+import { cn } from "@/lib/utils";
 
+/** Vaqt chizig'idagi bitta yozuv (`<ol>` ichida). */
 export const ActivityItem = ({
   active,
   last,
@@ -11,21 +12,22 @@ export const ActivityItem = ({
   label: string;
   time: string;
 }) => (
-  <div className="flex gap-3">
-    <div className="flex flex-col items-center pt-0.5">
+  <li className="flex gap-3">
+    <div className="flex flex-col items-center pt-1.5">
       <span
-        className={`w-2 h-2 rounded-full shrink-0 ${active ? "bg-purple-600" : "bg-zinc-300 dark:bg-zinc-600"}`}
+        className={cn(
+          "size-2 shrink-0 rounded-full",
+          active ? "bg-primary" : "bg-border",
+        )}
+        aria-hidden
       />
-      {!last && (
-        <span className="w-px flex-1 bg-zinc-200 dark:bg-zinc-700 my-1" />
-      )}
+      {!last && <span className="my-1 w-px flex-1 bg-border" aria-hidden />}
     </div>
     <div className={last ? "pb-0" : "pb-4"}>
-      <p className="text-sm text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-        <Clock size={11} className="text-zinc-400" />
-        {label}
+      <p className="text-sm">{label}</p>
+      <p className="mt-0.5 text-xs tabular-nums text-muted-foreground">
+        {time}
       </p>
-      <p className="text-xs text-zinc-400 mt-0.5">{time}</p>
     </div>
-  </div>
+  </li>
 );

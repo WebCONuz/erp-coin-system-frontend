@@ -1,50 +1,33 @@
-import { Pencil, Plus, Trash } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useCourses, useDeleteCourse } from "../../hooks";
-import { NoData } from "@/components/partials/no-data";
-import { useTranslation } from "react-i18next";
-import { NoDataBox } from "@/features/tenants/components/ui";
-import { PageLoading } from "@/components/loading";
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { BookOpen } from "lucide-react";
+import { FilterNav } from "@/components/shared/filter-nav";
+import { useCourses, useDeleteCourse } from "../../hooks";
 import { CourseFormModal } from "../modals";
+import type { CourseItem } from "../../types";
 
+/** Kurslar filtri (`?course=`). */
 export const GroupCategory = () => {
-  const { data: courses, isLoading } = useCourses();
+  const { data: courses, isLoading, isError, refetch, isFetching } =
+    useCourses();
   const deleteCourse = useDeleteCourse();
   const { t } = useTranslation();
-  const [selectedCourse, setSelectedCourse] = useState<string>("all");
   const [searchParams, setSearchParams] = useSearchParams();
+  // Tanlangan kurs — URL'dan hisoblanadi (alohida state kerak emas).
+  const selectedCourse = searchParams.get("course") || "all";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
-  const [activeCourseData, setActiveCourseData] = useState<any>(undefined);
+  const [activeCourseData, setActiveCourseData] = useState<
+    CourseItem | undefined
+  >(undefined);
 
-  const selectCourse = (key: string, value: string | undefined | null) => {
+  const selectCourse = (value: string) => {
     const newParams = new URLSearchParams(searchParams);
-    if (value === "all") {
-      newParams.set(key, value);
-      setSearchParams(newParams, { replace: true });
-      setSelectedCourse("all");
-    } else {
-      if (value) {
-        newParams.set(key, value);
-      } else {
-        newParams.delete(key);
-      }
-      setSearchParams(newParams, { replace: true });
-      setSelectedCourse(value || "");
-    }
+    newParams.set("course", value);
+    setSearchParams(newParams, { replace: true });
   };
-
-  const courseQuery = searchParams.get("course");
-  useEffect(() => {
-    if (courseQuery) {
-      setSelectedCourse(courseQuery);
-    } else {
-      setSelectedCourse("all");
-    }
-  }, [courseQuery]);
 
   const handleOpenCreate = () => {
     setModalMode("create");
@@ -52,8 +35,7 @@ export const GroupCategory = () => {
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (e: React.MouseEvent, courseItem: any) => {
-    e.stopPropagation();
+  const handleOpenEdit = (courseItem: CourseItem) => {
     setModalMode("edit");
     setActiveCourseData(courseItem);
     setIsModalOpen(true);
@@ -64,71 +46,39 @@ export const GroupCategory = () => {
     setActiveCourseData(undefined);
   };
 
-  const handleDelete = (e: React.MouseEvent, courseId: string) => {
-    e.stopPropagation();
+  const handleDelete = (courseId: string) => {
     if (window.confirm(t("courses.delete_confirm"))) {
       deleteCourse.mutate(courseId);
     }
   };
 
+  const items = [
+    { id: "all", title: t("courses.all") },
+    ...(courses?.data ?? []).map((c) => ({
+      id: c.id,
+      title: c.title,
+      onEdit: () => handleOpenEdit(c),
+      onDelete: () => handleDelete(c.id),
+    })),
+  ];
+
   return (
     <>
-      <aside className="flex flex-col gap-y-2.5 rounded-2xl bg-background p-6 shadow-sm min-h-[calc(100vh-105px)]">
-        <h3 className="text-lg font-semibold pb-3">{t("courses.title")}</h3>
-
-        {isLoading ? (
-          <PageLoading />
-        ) : courses?.data ? (
-          <>
-            {courses.data.length === 0 ? (
-              <NoDataBox
-                title={t("courses.no_data")}
-                btnText={t("courses.btn.create")}
-                btnFn={handleOpenCreate}
-              />
-            ) : (
-              <>
-                <div
-                  onClick={() => selectCourse("course", "all")}
-                  className={`py-2 px-3 cursor-pointer text-lg font-medium rounded-md hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/20 ${selectedCourse === "all" ? "bg-primary/10 dark:bg-primary/20 text-primary" : "bg-bg-primary dark:bg-black"}`}
-                >
-                  {t("courses.all")}
-                </div>
-                {courses.data.map((item) => (
-                  <div
-                    key={item.id}
-                    onClick={() => selectCourse("course", item.id)}
-                    className={`flex items-center justify-between py-2 px-3 cursor-pointer text-lg font-medium rounded-md hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/20 ${selectedCourse === item.id ? "bg-primary/10 dark:bg-primary/20 text-primary" : "bg-bg-primary dark:bg-black"}`}
-                  >
-                    <span>{item.title}</span>
-                    <div className="flex gap-x-2.5">
-                      <Pencil
-                        size="15"
-                        className="text-gray-500 hover:text-green-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
-                        onClick={(e) => handleOpenEdit(e, item)}
-                      />
-                      <Trash
-                        size="15"
-                        className="text-gray-500 hover:text-red-600 cursor-pointer opacity-50 hover:opacity-100 duration-150"
-                        onClick={(e) => handleDelete(e, item.id)}
-                      />
-                    </div>
-                  </div>
-                ))}
-                <Button
-                  onClick={handleOpenCreate}
-                  className="mt-2 h-12 flex items-center gap-x-2 justify-center text-lg font-medium rounded-md bg-linear-to-br from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white"
-                >
-                  <Plus />
-                  <span>{t("courses.btn.add")}</span>
-                </Button>
-              </>
-            )}
-          </>
-        ) : (
-          <NoData text={t("no_loading")} />
-        )}
-      </aside>
+      <FilterNav
+        title={t("courses.title")}
+        items={items}
+        selectedId={selectedCourse}
+        onSelect={selectCourse}
+        onAdd={handleOpenCreate}
+        addLabel={t("courses.btn.add")}
+        createLabel={t("courses.btn.create")}
+        emptyTitle={t("courses.no_data")}
+        emptyIcon={BookOpen}
+        isLoading={isLoading}
+        isError={isError && !courses}
+        onRetry={() => refetch()}
+        isRetrying={isFetching}
+      />
 
       <CourseFormModal
         open={isModalOpen}

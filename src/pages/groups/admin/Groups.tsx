@@ -28,12 +28,14 @@ const Groups = () => {
 
   return (
     <>
-      <div className="grid grid-cols-5 gap-6">
-        <div className="col-span-1">
-          <GroupCategory />
-        </div>
-        <div className="col-span-4 space-y-6">
-          <HeaderFilter handleCreate={handleCreate} />
+      <div className="space-y-4 sm:space-y-5">
+        <HeaderFilter handleCreate={handleCreate} />
+
+        {/* lg+: chapda kurslar paneli; kichik ekranlarda kurs chip'lari tepada */}
+        <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-5">
+          <div className="min-w-0 lg:sticky lg:top-0">
+            <GroupCategory />
+          </div>
           <GroupGrid handleEdit={handleEdit} handleCreate={handleCreate} />
         </div>
       </div>

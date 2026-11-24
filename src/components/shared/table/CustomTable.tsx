@@ -107,15 +107,15 @@ export const CustomTable = <T,>({
             </TableCell>
           </TableRow>
           {Array.from({ length: 5 }).map((_, index) => (
-            <TableRow key={index} className="bg-white">
+            <TableRow key={index} className="bg-card" aria-hidden>
               {isCheckable && (
                 <TableCell className="px-4 py-3">
-                  <div className="h-4 w-4 rounded bg-gray-200 animate-pulse" />
+                  <div className="size-4 animate-pulse rounded bg-muted" />
                 </TableCell>
               )}
               {columns.map((_, colIndex) => (
                 <TableCell key={colIndex} className="px-4 py-3">
-                  <div className="h-4 rounded bg-gray-200 animate-pulse" />
+                  <div className="h-4 animate-pulse rounded bg-muted" />
                 </TableCell>
               ))}
             </TableRow>
@@ -131,7 +131,7 @@ export const CustomTable = <T,>({
         <TableRow>
           <TableCell
             colSpan={columnCount}
-            className="px-4 py-3 text-center text-gray-500"
+            className="px-4 py-12 text-center text-sm text-muted-foreground"
           >
             {t("table.empty")}
           </TableCell>
@@ -144,8 +144,8 @@ export const CustomTable = <T,>({
         key={row.id}
         onClick={() => onRowClick?.(row.original)}
         className={cn(
-          "bg-background",
-          onRowClick && "cursor-pointer hover:bg-[#2ED0FF1A]",
+          "bg-card",
+          onRowClick && "cursor-pointer hover:bg-muted/50",
           rowsClassName,
         )}
       >
@@ -169,7 +169,7 @@ export const CustomTable = <T,>({
 
   return (
     <Table className={cn("rounded-xl overflow-hidden", className)}>
-      <TableHeader className={cn("bg-bg-primary dark:bg-black", headerClass)}>
+      <TableHeader className={cn("bg-muted/50", headerClass)}>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {isCheckable && (
@@ -178,12 +178,11 @@ export const CustomTable = <T,>({
                   isMinusIcon
                   checked={isHeaderChecked}
                   onCheckedChange={handleHeaderCheckboxChange}
-                  className="border-gray-300 bg-white"
                 />
               </TableHead>
             )}
             {headerGroup.headers.map((header) => (
-              <TableHead key={header.id} className="px-4 py-4 font-semibold">
+              <TableHead key={header.id} className="h-11 px-4 py-3 font-medium">
                 {!header.isPlaceholder &&
                   flexRender(
                     header.column.columnDef.header,
@@ -204,14 +203,14 @@ export const CustomTable = <T,>({
             (header) => !header.isPlaceholder && header.column.columnDef.footer,
           ),
         ) && (
-        <tfoot className="border-t border-gray-100 bg-gray-50/50">
+        <tfoot className="border-t bg-muted/40">
           {table.getFooterGroups().map((footerGroup) => (
             <TableRow key={footerGroup.id}>
               {isCheckable && <TableCell />}
               {footerGroup.headers.map((header) => (
                 <TableCell
                   key={header.id}
-                  className="px-4 py-4 font-semibold text-gray-900"
+                  className="px-4 py-4 font-semibold text-foreground"
                 >
                   {header.isPlaceholder
                     ? null

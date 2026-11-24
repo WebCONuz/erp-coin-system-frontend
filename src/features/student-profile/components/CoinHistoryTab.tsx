@@ -42,10 +42,10 @@ export const CoinHistoryTab = ({ transactions, isLoading }: Props) => {
   return (
     <TabsContent value="coins" className="mt-4 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="font-display text-sm font-semibold text-ink">
+        <h3 className="font-heading text-sm font-semibold text-foreground">
           {t("studentProfile.tabs.coins")}
         </h3>
-        <span className="text-xs text-ink-soft">
+        <span className="text-xs text-muted-foreground">
           {t("students.coinTab.last20")}
         </span>
       </div>
@@ -53,17 +53,17 @@ export const CoinHistoryTab = ({ transactions, isLoading }: Props) => {
       {isLoading ? (
         <PageLoading />
       ) : !transactions.length ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-ink/10 bg-white">
-          <Coins size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">
+        <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-border bg-card">
+          <Coins size={22} className="text-muted-foreground/50 mb-2" />
+          <p className="text-sm font-medium text-foreground">
             {t("students.coinTab.noTransactions")}
           </p>
-          <p className="text-xs text-ink-soft mt-1 max-w-xs">
+          <p className="text-xs text-muted-foreground mt-1 max-w-xs">
             {t("students.coinTab.noTransactionsText")}
           </p>
         </div>
       ) : (
-        <div className="rounded-2xl border border-ink/10 bg-white overflow-hidden divide-y divide-ink/8">
+        <div className="rounded-2xl border border-border bg-card overflow-hidden divide-y divide-border">
           {transactions.map((tx) => {
             const state = getCoinTxState(tx);
             const isEarn = tx.direction === "earn";
@@ -76,9 +76,9 @@ export const CoinHistoryTab = ({ transactions, isLoading }: Props) => {
                 className={cn(
                   "flex items-center justify-between gap-3 px-4 py-3 transition-colors",
                   isLinked && "cursor-pointer",
-                  state === "reversal" && "bg-paper-soft",
+                  state === "reversal" && "bg-muted/55",
                   highlightedPair.includes(tx.id) &&
-                    "bg-gold/10 ring-1 ring-inset ring-gold/40",
+                    "bg-coin/10 ring-1 ring-inset ring-coin/40",
                 )}
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -86,10 +86,10 @@ export const CoinHistoryTab = ({ transactions, isLoading }: Props) => {
                     className={cn(
                       "w-8 h-8 shrink-0 rounded-full flex items-center justify-center text-xs",
                       state === "reversal"
-                        ? "bg-ink/5 text-ink-soft"
+                        ? "bg-foreground/5 text-muted-foreground"
                         : isEarn
-                          ? "bg-forest/10 text-forest"
-                          : "bg-bloom/10 text-bloom",
+                          ? "bg-primary/10 text-primary"
+                          : "bg-destructive/10 text-destructive",
                     )}
                   >
                     {state === "reversal" ? (
@@ -104,7 +104,7 @@ export const CoinHistoryTab = ({ transactions, isLoading }: Props) => {
                     <p
                       className={cn(
                         "text-sm",
-                        state === "reversal" ? "text-ink-soft" : "text-ink",
+                        state === "reversal" ? "text-muted-foreground" : "text-foreground",
                       )}
                     >
                       {/* Bekor qilingan xarid uchun qaytarilgan coin ham `purchase` (earn) bilan keladi. */}
@@ -115,19 +115,19 @@ export const CoinHistoryTab = ({ transactions, isLoading }: Props) => {
                       </b>
                       {tx.note ? ` — ${tx.note}` : ""}
                     </p>
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-ink-soft">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
                       <span>
                         {formatDate(tx.createdAt, "dd.MM.yyyy")}
                         {tx.teacher ? ` · ${tx.teacher.fullName}` : ""}
                       </span>
                       {state === "reversal" && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-ink/5 px-1.5 py-0.5">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-foreground/5 px-1.5 py-0.5">
                           <Undo2 size={10} />
                           {t("coinHistory.reversalBadge")}
                         </span>
                       )}
                       {state === "reversed" && tx.reversal && (
-                        <span className="rounded-full bg-bloom/10 px-1.5 py-0.5 text-bloom">
+                        <span className="rounded-full bg-destructive/10 px-1.5 py-0.5 text-destructive">
                           {t("coinHistory.reversedBadge", {
                             date: formatDate(tx.reversal.createdAt, "dd.MM.yyyy"),
                           })}
@@ -140,10 +140,10 @@ export const CoinHistoryTab = ({ transactions, isLoading }: Props) => {
                   className={cn(
                     "text-sm font-semibold shrink-0 tabular-nums",
                     state === "reversal"
-                      ? "text-ink-soft"
+                      ? "text-muted-foreground"
                       : isEarn
-                        ? "text-forest"
-                        : "text-bloom",
+                        ? "text-primary"
+                        : "text-destructive",
                     state === "reversed" && "line-through opacity-60",
                   )}
                 >

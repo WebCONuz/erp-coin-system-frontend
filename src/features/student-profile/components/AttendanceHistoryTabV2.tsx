@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
+import i18next, { type TFunction } from "i18next";
+import { parseISO } from "date-fns";
 import { TabsContent } from "@/components/ui/tabs";
 import { Award, BookOpenCheck, CalendarCheck, Check } from "lucide-react";
 import type {
@@ -8,13 +9,13 @@ import type {
 } from "@/features/students/types";
 import { getSessionTypeLabel } from "@/features/sessions/constants";
 import { formatSessionScore } from "@/features/sessions/utils";
-import { formatDate } from "@/ustils";
+import { formatLongDate, relativeDayLabel } from "@/ustils";
 import { AttendanceStatusBadge } from "./AttendanceStatusBadge";
 
 const AVATAR_STYLES = [
-  "bg-forest/10 text-forest",
-  "bg-gold/15 text-gold",
-  "bg-bloom/10 text-bloom",
+  "bg-primary/10 text-primary",
+  "bg-coin-soft text-coin-ink",
+  "bg-destructive/10 text-destructive",
 ];
 
 function avatarStyle(seed: string) {
@@ -32,16 +33,13 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-function dateLabel(t: TFunction, sessionDate: string) {
-  const d = new Date(sessionDate);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  if (d.toDateString() === today.toDateString()) return t("dates.today");
-  if (d.toDateString() === yesterday.toDateString())
-    return t("dates.yesterday");
-  return formatDate(sessionDate, "dd.MM.yyyy");
+/** "Bugun, payshanba, 27-noyabr" / "Seshanba, 25-noyabr" — Intl orqali, joriy tilda. */
+function dateLabel(_t: TFunction, sessionDate: string) {
+  const lang = i18next.language;
+  const d = parseISO(sessionDate.slice(0, 10));
+  const full = formatLongDate(d, lang);
+  const relative = relativeDayLabel(d, lang);
+  return relative ? `${relative}, ${full.charAt(0).toLowerCase()}${full.slice(1)}` : full;
 }
 
 function groupByDate(t: TFunction, records: AttendanceRecord[]) {
@@ -85,10 +83,10 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
     <TabsContent value="attendance" className="mt-4 space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h3 className="font-display text-sm font-semibold text-ink">
+          <h3 className="font-heading text-sm font-semibold text-foreground">
             {t("studentProfile.attendance.title")}
           </h3>
-          <p className="text-xs text-ink-soft mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {t("studentProfile.attendance.lastRecords", {
               count: records.length,
             })}
@@ -97,13 +95,13 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
 
         {records.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-forest/10 text-forest">
+            <span className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-primary/10 text-primary">
               <Check size={12} />
               {t("studentProfile.attendance.attendanceRate", {
                 rate: attendanceRate,
               })}
             </span>
-            <span className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-gold/15 text-gold">
+            <span className="flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-info-soft text-info">
               <BookOpenCheck size={12} />
               {t("studentProfile.attendance.homeworkRate", {
                 rate: homeworkRate,
@@ -114,12 +112,12 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
       </div>
 
       {!records.length ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-ink/10 bg-white">
-          <CalendarCheck size={22} className="text-ink-soft/50 mb-2" />
-          <p className="text-sm font-medium text-ink">
+        <div className="flex flex-col items-center justify-center py-12 text-center rounded-2xl border border-border bg-card">
+          <CalendarCheck size={22} className="text-muted-foreground/50 mb-2" />
+          <p className="text-sm font-medium text-foreground">
             {t("studentProfile.attendance.emptyTitle")}
           </p>
-          <p className="text-xs text-ink-soft mt-1 max-w-xs">
+          <p className="text-xs text-muted-foreground mt-1 max-w-xs">
             {t("studentProfile.attendance.emptyText")}
           </p>
         </div>
@@ -127,10 +125,10 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
         <div className="space-y-5">
           {groups.map((group) => (
             <div key={group.sessionDate}>
-              <p className="text-[11px] font-semibold tracking-wide text-ink-soft/70 uppercase mb-2 px-1">
+              <h3 className="mb-2 px-1 text-sm font-medium">
                 {group.label}
-              </p>
-              <div className="rounded-2xl border border-ink/10 bg-white overflow-hidden divide-y divide-ink/8">
+              </h3>
+              <div className="rounded-2xl border border-border bg-card overflow-hidden divide-y divide-border">
                 {group.records.map((record) => {
                   const title =
                     record.session.subject?.name ?? record.session.group.name;
@@ -138,7 +136,7 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                   return (
                     <div
                       key={record.id}
-                      className="flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:gap-y-0 px-4 py-3 transition-colors hover:bg-paper-soft/60"
+                      className="flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:gap-y-0 px-4 py-3 transition-colors hover:bg-muted/35"
                     >
                       <div
                         className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold shrink-0 ${avatarStyle(
@@ -149,20 +147,20 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                       </div>
 
                       <div className="min-w-40 flex-1">
-                        <p className="text-sm text-ink">
+                        <p className="text-sm text-foreground">
                           <b>{title}</b>
                           {record.session.subject
                             ? ` · ${record.session.group.name}`
                             : ""}
                         </p>
-                        <p className="text-xs text-ink-soft">
+                        <p className="text-xs text-muted-foreground">
                           {record.session.startTime}–{record.session.endTime}
                           {" · "}
                           {record.session.topic ??
                             getSessionTypeLabel(t, record.session.sessionType)}
                         </p>
                         {record.note && (
-                          <p className="text-xs text-ink-soft italic">
+                          <p className="text-xs text-muted-foreground italic">
                             {record.note}
                           </p>
                         )}
@@ -175,7 +173,7 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                         />
                         {record.session.evaluationMode === "scored" ? (
                           record.isPresent && (
-                            <span className="flex items-center justify-center gap-1 px-2 py-1 rounded-full shrink-0 bg-gold/15 text-gold">
+                            <span className="flex items-center justify-center gap-1 px-2 py-1 rounded-full shrink-0 bg-info-soft text-info">
                               <Award size={13} />
                               <span className="text-xs">
                                 {t("sessions.results.score")}:{" "}
@@ -190,8 +188,8 @@ export const AttendanceHistoryTabV2 = ({ student }: Props) => {
                           <span
                             className={`flex items-center justify-center gap-1 px-2 py-1 rounded-full shrink-0 ${
                               record.homeworkDone
-                                ? "bg-green-100 text-green-600 "
-                                : "bg-gold/15 text-gold"
+                                ? "bg-success-soft text-success"
+                                : "bg-muted text-muted-foreground"
                             }`}
                           >
                             <BookOpenCheck size={13} />

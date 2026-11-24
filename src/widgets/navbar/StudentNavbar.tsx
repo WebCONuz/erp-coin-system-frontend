@@ -1,16 +1,8 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import {
-  Bell,
-  ChevronDown,
-  Coins,
-  Languages,
-  LogOut,
-  MonitorSmartphone,
-  User,
-} from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import { LogOut, MonitorSmartphone, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/components/ui/button";
+import { APP_LOGO, APP_NAME } from "@/assets/constants";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,145 +10,71 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/shared/avatar";
+import { CoinAmount } from "@/components/shared/coin";
 import { useAuth } from "@/features/auth/hooks/useLogin";
 import { LogoutAllModal } from "@/features/auth/components";
-import { getFileUrl } from "@/lib/utils";
-import { cn } from "@/lib/utils";
-
-const LOGO = "/logo.png";
-
-const LANGUAGES = [
-  { code: "uz", label: "O'zbekcha" },
-  { code: "uz_cr", label: "Кирилча" },
-  { code: "ru", label: "Русский" },
-];
+import { LanguageMenu, ThemeToggle } from "./NavbarControls";
 
 export function StudentNavbar() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const [isLogoutAllOpen, setIsLogoutAllOpen] = useState(false);
-  const currentLang =
-    LANGUAGES.find((l) => l.code === i18n.language) ?? LANGUAGES[0];
-
-  const initials = user?.fullName
-    ? user.fullName
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "O";
 
   return (
-    <header className="w-full border-b border-ink/10 bg-paper">
-      <div className="flex h-16 items-center gap-3 px-3 sm:px-8">
-        {/* logo */}
-        <div className="flex gap-x-2 items-center lg:hidden">
-          <img
-            src={LOGO}
-            alt="bb-coin"
-            className="transition-all duration-300 w-7 h-7 rounded-lg"
-          />
-
-          <div className="leading-tight overflow-hidden">
-            <p className="font-display text-forest font-semibold text-lg truncate">
-              BB-Coin
-            </p>
-            <p className="text-[11px] text-forest/50 truncate">
-              {t("brand.tagline")}
-            </p>
-          </div>
+    <header className="sticky top-0 z-20 w-full shrink-0 border-b bg-card">
+      <div className="flex h-14 items-center gap-2 px-3 sm:gap-3 sm:px-6">
+        {/* Mobilda sidebar yo'q — logo shu yerda */}
+        <div className="flex items-center gap-2 lg:hidden">
+          <img src={APP_LOGO} alt="" className="size-7" />
+          <span className="hidden font-heading text-base font-semibold tracking-tight min-[380px]:inline">
+            {APP_NAME}
+          </span>
         </div>
 
-        {/* details */}
-        <div className="ml-auto flex items-center gap-2 sm:gap-3">
-          <div className="flex items-center gap-1.5 rounded-full bg-gold/15 border border-gold/30 pl-2 pr-2.5 sm:pr-3 py-1.5">
-            <span className="w-5 h-5 rounded-full bg-gold flex items-center justify-center shrink-0">
-              <Coins size={12} className="text-forest-deep" />
-            </span>
-            <span className="font-display text-sm font-semibold text-forest">
-              {user?.wallet?.balance ?? 0}
-            </span>
-            <span className="hidden sm:inline text-xs text-ink-soft">
-              {t("common.coinLabel")}
-            </span>
-          </div>
-
-          {/* Language selector */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="h-9 gap-1.5 px-2.5 sm:px-3 text-sm font-medium border-ink/15 text-ink-soft hover:text-ink hover:bg-paper-soft focus-visible:ring-0"
-              >
-                <Languages size={16} className="sm:hidden" />
-                <span className="hidden sm:inline">{currentLang.label}</span>
-                <ChevronDown
-                  size={13}
-                  className="hidden sm:inline text-muted-foreground"
-                />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-36">
-              {LANGUAGES.map((lang) => (
-                <DropdownMenuItem
-                  key={lang.code}
-                  className={cn(
-                    "text-sm cursor-pointer justify-between",
-                    i18n.language === lang.code &&
-                      "text-purple-600 font-medium",
-                  )}
-                  onClick={() => i18n.changeLanguage(lang.code)}
-                >
-                  {lang.label}
-                  {i18n.language === lang.code && (
-                    <span className="h-1.5 w-1.5 rounded-full bg-purple-600" />
-                  )}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button
-            variant="outline"
-            size="icon"
-            className="relative h-9 w-9 border-ink/15 text-ink-soft hover:text-ink hover:bg-paper-soft"
+        <div className="ml-auto flex items-center gap-1 sm:gap-2">
+          {/* Tanga balansi — o'quvchi uchun eng muhim raqam; do'konga olib boradi */}
+          <Link
+            to="/student/market"
+            aria-label={`${t("students.detail.coinBalance")}: ${user?.wallet?.balance ?? 0}`}
+            className="mr-1 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
           >
-            <Bell size={17} />
-          </Button>
+            <CoinAmount
+              value={user?.wallet?.balance ?? 0}
+              variant="pill"
+              className="px-2.5 py-1 text-sm"
+            />
+          </Link>
+
+          <LanguageMenu />
+          <ThemeToggle />
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center gap-x-2 cursor-pointer">
-                <Avatar className="h-9 w-9 select-none ring-2 ring-gold/30">
-                  {user?.avatarUrl && (
-                    <AvatarImage
-                      src={getFileUrl(user.avatarUrl)}
-                      alt="avatar"
-                    />
-                  )}
-                  <AvatarFallback className="bg-forest text-gold-soft text-xs font-semibold">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-medium leading-none text-ink">
-                    {user?.fullName ?? "- -"}
-                  </p>
-                  <p className="text-xs text-ink-soft mt-1">
-                    {user?.role?.displayName ?? t("common.student")}
-                  </p>
-                </div>
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuItem
-                asChild
-                className="gap-2.5 mt-1 text-sm cursor-pointer"
+              <button
+                type="button"
+                aria-label={t("common.profile")}
+                className="ml-1 flex items-center gap-2 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:rounded-lg sm:pr-1"
               >
+                <UserAvatar
+                  name={user?.fullName ?? "O"}
+                  url={user?.avatarUrl}
+                  className="size-8"
+                />
+                <span className="hidden text-left md:block">
+                  <span className="block max-w-40 truncate text-sm font-medium leading-none">
+                    {user?.fullName ?? "—"}
+                  </span>
+                  <span className="mt-1 block text-xs text-muted-foreground">
+                    {user?.role?.displayName ?? t("common.student")}
+                  </span>
+                </span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuItem asChild className="mt-1 cursor-pointer gap-2.5 text-sm">
                 <NavLink to="/student/profile">
-                  <User size={14} className="text-muted-foreground" />
+                  <User size={15} className="text-muted-foreground" aria-hidden />
                   {t("common.profile")}
                 </NavLink>
               </DropdownMenuItem>
@@ -164,17 +82,17 @@ export function StudentNavbar() {
               <DropdownMenuSeparator />
 
               <DropdownMenuItem
-                className="gap-2.5 text-sm cursor-pointer text-destructive focus:text-destructive"
+                className="cursor-pointer gap-2.5 text-sm text-destructive focus:text-destructive"
                 onClick={() => logout()}
               >
-                <LogOut size={14} />
+                <LogOut size={15} aria-hidden />
                 {t("common.logoutAction")}
               </DropdownMenuItem>
               <DropdownMenuItem
-                className="gap-2.5 text-sm cursor-pointer text-destructive focus:text-destructive"
+                className="cursor-pointer gap-2.5 text-sm text-destructive focus:text-destructive"
                 onClick={() => setIsLogoutAllOpen(true)}
               >
-                <MonitorSmartphone size={14} />
+                <MonitorSmartphone size={15} aria-hidden />
                 {t("logoutAll.action")}
               </DropdownMenuItem>
             </DropdownMenuContent>

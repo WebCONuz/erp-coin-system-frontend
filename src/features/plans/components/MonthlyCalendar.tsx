@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   addMonths,
   eachDayOfInterval,
@@ -11,29 +11,27 @@ import {
   isToday,
   isValid,
   parse,
+  parseISO,
   startOfMonth,
   startOfWeek,
   subMonths,
 } from "date-fns";
-import { uz, ru } from "date-fns/locale";
+import { uz, ru, uzCyrl } from "date-fns/locale";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, ChevronLeft, ChevronRight, Zap } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { PageLoading } from "@/components/loading";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/states";
+import { cn } from "@/lib/utils";
+import { subjectColor } from "@/lib/subject-color";
+import { formatLongDate } from "@/ustils";
 import { useGroups } from "@/features/groups/hooks";
 import { useScheduleCalendar } from "../hooks";
-import { TEMPLATE_CHIP_COLORS } from "../constants";
 import type { CalendarDayEntry } from "../types";
 import { HolidayChip, SessionChip } from "./SessionChip";
 import { ExceptionModal } from "./ExceptionModal";
 import { GenerateSessionsModal } from "./GenerateSessionsModal";
+import { GroupPicker } from "./GroupPicker";
 
 interface Props {
   hasAction?: boolean;
@@ -41,7 +39,26 @@ interface Props {
   onGroupIdChange?: (groupId: string) => void;
   month?: string; // "yyyy-MM"
   onMonthChange?: (month: string) => void;
+  /** Ko'rinish almashtirgichi (haftalik/oylik) — guruh tanlash yonida chiqadi. */
+  viewSwitcher?: ReactNode;
 }
+
+const DATE_LOCALES = { ru, uz, uz_cr: uzCyrl } as const;
+/** Katakda ko'rinadigan yozuvlar soni; qolgani "+N" — to'liq ro'yxat kun panelida. */
+const MAX_CHIPS = 3;
+
+/** Dam olish kunida faqat sessiyasi bor yozuvlar qoladi (backend ularni o'chirmaydi). */
+const splitDay = (entries: CalendarDayEntry[]) => {
+  const holiday = entries.find((e) => e.holiday)?.holiday ?? null;
+  const visible = (holiday ? entries.filter((e) => !!e.session) : entries)
+    .slice()
+    .sort((a, b) =>
+      (a.exception?.startTime ?? a.template.startTime).localeCompare(
+        b.exception?.startTime ?? b.template.startTime,
+      ),
+    );
+  return { holiday, visible };
+};
 
 export const MonthlyCalendar = ({
   hasAction = true,
@@ -49,17 +66,19 @@ export const MonthlyCalendar = ({
   onGroupIdChange,
   month: controlledMonth,
   onMonthChange,
+  viewSwitcher,
 }: Props) => {
   const { t, i18n } = useTranslation();
-  const dateLocale = i18n.language === "ru" ? ru : uz;
+  const dateLocale =
+    DATE_LOCALES[i18n.language as keyof typeof DATE_LOCALES] ?? uz;
   const WEEK_HEADER = [
-    { label: t("plans.weekdayShort.monday"), className: "" },
-    { label: t("plans.weekdayShort.tuesday"), className: "" },
-    { label: t("plans.weekdayShort.wednesday"), className: "" },
-    { label: t("plans.weekdayShort.thursday"), className: "" },
-    { label: t("plans.weekdayShort.friday"), className: "" },
-    { label: t("plans.weekdayShort.saturday"), className: "text-amber-500" },
-    { label: t("plans.weekdayShort.sunday"), className: "text-red-500" },
+    t("plans.weekdayShort.monday"),
+    t("plans.weekdayShort.tuesday"),
+    t("plans.weekdayShort.wednesday"),
+    t("plans.weekdayShort.thursday"),
+    t("plans.weekdayShort.friday"),
+    t("plans.weekdayShort.saturday"),
+    t("plans.weekdayShort.sunday"),
   ];
   const { data: groups } = useGroups();
   const [internalGroupId, setInternalGroupId] = useState<string>("");
@@ -85,6 +104,7 @@ export const MonthlyCalendar = ({
     dateKey: string;
     entry: CalendarDayEntry | null;
   }>({ open: false, dateKey: "", entry: null });
+  const [pickedDay, setPickedDay] = useState<string | null>(null);
 
   useEffect(() => {
     if (!groupId && groups?.data.length) {
@@ -107,178 +127,288 @@ export const MonthlyCalendar = ({
   const gridEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
   const days = eachDayOfInterval({ start: gridStart, end: gridEnd });
 
+  // Tanlangan kun: foydalanuvchi tanlagani (shu oyda bo'lsa), aks holda
+  // bugun (shu oy bo'lsa) yoki oyning 1-kuni.
+  const now = new Date();
+  const selectedKey =
+    pickedDay && isSameMonth(parseISO(pickedDay), monthStart)
+      ? pickedDay
+      : format(isSameMonth(now, monthStart) ? now : monthStart, "yyyy-MM-dd");
+
   const selectedGroupName =
     groups?.data.find((g) => g.id === groupId)?.name ?? "";
-
-  const templateColors = useMemo(() => {
-    const colors: Record<string, string> = {};
-    let nextIndex = 0;
-
-    Object.keys(calendarData ?? {})
-      .sort()
-      .forEach((dateKey) => {
-        calendarData![dateKey].forEach((entry) => {
-          if (!colors[entry.template.id]) {
-            colors[entry.template.id] =
-              TEMPLATE_CHIP_COLORS[nextIndex % TEMPLATE_CHIP_COLORS.length];
-            nextIndex += 1;
-          }
-        });
-      });
-
-    return colors;
-  }, [calendarData]);
 
   const openException = (dateKey: string, entry: CalendarDayEntry) =>
     setExceptionState({ open: true, dateKey, entry });
   const closeException = () =>
     setExceptionState((s) => ({ ...s, open: false }));
 
+  const selectedDay = splitDay(calendarData?.[selectedKey] ?? []);
+  const monthTitle = format(viewDate, "LLLL yyyy", { locale: dateLocale });
+
   return (
-    <div className="rounded-2xl bg-background p-4 shadow-sm">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+    <section
+      aria-label={t("plans.tabs.calendar")}
+      className="rounded-2xl border bg-card p-4 sm:p-5"
+    >
+      {/* Boshqaruv qatori */}
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-1">
           <Button
             variant="ghost"
             size="icon"
+            className="size-9"
             onClick={() => goToMonth(subMonths(viewDate, 1))}
+            aria-label={t("plans.prevMonth")}
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft className="size-4" aria-hidden />
           </Button>
-          <h3 className="w-40 text-center text-lg font-semibold capitalize">
-            {format(viewDate, "LLLL yyyy", { locale: dateLocale })}
-          </h3>
+          <h2
+            aria-live="polite"
+            className="min-w-36 text-center font-heading text-base font-semibold capitalize sm:text-lg"
+          >
+            {monthTitle}
+          </h2>
           <Button
             variant="ghost"
             size="icon"
+            className="size-9"
             onClick={() => goToMonth(addMonths(viewDate, 1))}
+            aria-label={t("plans.nextMonth")}
           >
-            <ChevronRight size={18} />
+            <ChevronRight className="size-4" aria-hidden />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-1 h-8"
+            onClick={() => {
+              goToMonth(new Date());
+              setPickedDay(format(new Date(), "yyyy-MM-dd"));
+            }}
+          >
+            {t("plans.today")}
           </Button>
         </div>
 
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="max-w-100 min-w-48 justify-between font-normal"
-              >
-                <span className="truncate">
-                  {selectedGroupName || t("plans.selectGroup")}
-                </span>
-                <ChevronDown size={16} className="shrink-0 opacity-50" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-60">
-              <DropdownMenuRadioGroup
-                value={groupId}
-                onValueChange={setGroupId}
-              >
-                {groups?.data.map((group) => (
-                  <DropdownMenuRadioItem key={group.id} value={group.id}>
-                    {group.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          {viewSwitcher}
+          <GroupPicker
+            groups={groups?.data ?? []}
+            value={groupId}
+            onChange={setGroupId}
+            label={selectedGroupName || t("plans.selectGroup")}
+          />
           {hasAction && (
             <Button
               disabled={!groupId}
               onClick={() => setGenerateOpen(true)}
-              className="gap-2 bg-linear-to-br from-purple-500 to-purple-700 text-white"
+              className="h-9 shrink-0 gap-2"
             >
-              <Zap size={16} />
-              {t("plans.generateSessions")}
+              <Zap className="size-4" aria-hidden />
+              <span className="hidden sm:inline">
+                {t("plans.generateSessions")}
+              </span>
+              <span className="sr-only sm:hidden">
+                {t("plans.generateSessions")}
+              </span>
             </Button>
           )}
         </div>
       </div>
 
       {!groupId ? (
-        <p className="py-10 text-center text-muted-foreground">
-          {t("plans.selectGroupToView")}
-        </p>
+        <EmptyState icon={CalendarDays} title={t("plans.selectGroupToView")} />
       ) : isLoading ? (
-        <PageLoading />
+        <div
+          aria-busy="true"
+          className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]"
+        >
+          <Skeleton className="h-112 rounded-xl" />
+          <Skeleton className="hidden h-[112 rounded-xl xl:block" />
+        </div>
       ) : (
-        <>
-          <div className="grid grid-cols-7 gap-px overflow-hidden rounded-lg border border-border bg-border">
-            {WEEK_HEADER.map((day) => (
-              <div
-                key={day.label}
-                className={`bg-muted px-2 py-1.5 text-center text-xs font-semibold ${day.className}`}
-              >
-                {day.label}
-              </div>
-            ))}
-
-            {days.map((day) => {
-              const dateKey = format(day, "yyyy-MM-dd");
-              const entries = calendarData?.[dateKey] ?? [];
-              const inMonth = isSameMonth(day, monthStart);
-              // `holiday` kun bo'yicha (hamma elementda bir xil). Dam olish kunida
-              // faqat `session` bor elementlar qoladi — tekshirilgan/qulflangan
-              // yoki qo'lda yaratilgan dars (backend ularni o'chirmaydi).
-              const holiday = entries.find((e) => e.holiday)?.holiday;
-              const visibleEntries = holiday
-                ? entries.filter((e) => !!e.session)
-                : entries;
-
-              return (
+        <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_20rem]">
+          {/* Oy to'ri */}
+          <div>
+            <div className="grid grid-cols-7 gap-px overflow-hidden rounded-xl border bg-border">
+              {WEEK_HEADER.map((label, i) => (
                 <div
-                  key={dateKey}
-                  className={`min-h-24 space-y-1 bg-background p-1.5 ${
-                    inMonth ? "" : "opacity-40"
-                  }`}
+                  key={label}
+                  aria-hidden
+                  className={cn(
+                    "bg-muted/60 px-1 py-2 text-center text-xs font-medium",
+                    i >= 5
+                      ? "text-muted-foreground/70"
+                      : "text-muted-foreground",
+                  )}
                 >
-                  <span
-                    className={`text-xs font-medium ${
-                      isToday(day)
-                        ? "flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground"
-                        : "text-muted-foreground"
-                    }`}
-                  >
-                    {format(day, "d")}
-                  </span>
-                  {holiday && <HolidayChip holiday={holiday} />}
-                  {visibleEntries.map((entry, idx) => (
-                    <SessionChip
-                      key={`${entry.template.id}-${idx}`}
-                      entry={entry}
-                      onClick={() => openException(dateKey, entry)}
-                      hasAction={hasAction}
-                      colorClass={
-                        templateColors[entry.template.id] ??
-                        TEMPLATE_CHIP_COLORS[0]
-                      }
-                    />
-                  ))}
+                  {label}
                 </div>
-              );
-            })}
+              ))}
+
+              {days.map((day) => {
+                const dateKey = format(day, "yyyy-MM-dd");
+                const { holiday, visible } = splitDay(
+                  calendarData?.[dateKey] ?? [],
+                );
+                const inMonth = isSameMonth(day, monthStart);
+                const isSelected = dateKey === selectedKey;
+                const today = isToday(day);
+                const extra = visible.length - MAX_CHIPS;
+
+                return (
+                  <div
+                    key={dateKey}
+                    className={cn(
+                      "relative min-h-16 p-1 sm:min-h-20 md:min-h-28 md:p-1.5",
+                      inMonth ? "bg-card" : "bg-muted/30",
+                      holiday && inMonth && "bg-destructive-soft/40",
+                      isSelected && "ring-2 ring-inset ring-primary",
+                    )}
+                  >
+                    {/* Butun katak — kunni tanlash (yozuvlar ustida z-10) */}
+                    <button
+                      type="button"
+                      onClick={() => setPickedDay(dateKey)}
+                      aria-pressed={isSelected}
+                      aria-label={`${formatLongDate(day, i18n.language)}${
+                        visible.length ? `, ${visible.length}` : ""
+                      }`}
+                      className="absolute inset-0 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
+                    />
+                    <span
+                      className={cn(
+                        "pointer-events-none relative flex size-6 items-center justify-center rounded-full text-xs font-medium tabular-nums",
+                        today
+                          ? "bg-primary text-primary-foreground"
+                          : inMonth
+                            ? "text-foreground"
+                            : "text-muted-foreground/60",
+                      )}
+                    >
+                      {format(day, "d")}
+                    </span>
+
+                    {/* Telefon/planshet: faqat nuqtalar */}
+                    {(visible.length > 0 || holiday) && (
+                      <div className="pointer-events-none relative mt-1 flex flex-wrap gap-0.5 md:hidden">
+                        {holiday && (
+                          <span className="size-1.5 rounded-full bg-destructive" />
+                        )}
+                        {visible.slice(0, 6).map((entry, idx) => (
+                          <span
+                            key={`${entry.template.id}-${idx}`}
+                            className="size-1.5 rounded-full"
+                            style={{
+                              backgroundColor: entry.exception?.isCancelled
+                                ? "var(--destructive)"
+                                : entry.exception
+                                  ? "var(--warning)"
+                                  : subjectColor(
+                                      entry.session?.subject?.id ??
+                                        entry.template.subject?.id ??
+                                        entry.template.id,
+                                    ),
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Desktop: ixcham yozuvlar */}
+                    <div
+                      className={cn(
+                        "mt-1 hidden space-y-0.5 md:block",
+                        !inMonth && "opacity-60",
+                      )}
+                    >
+                      {holiday && (
+                        <div className="pointer-events-none relative">
+                          <HolidayChip holiday={holiday} />
+                        </div>
+                      )}
+                      {visible.slice(0, MAX_CHIPS).map((entry, idx) => (
+                        <SessionChip
+                          key={`${entry.template.id}-${idx}`}
+                          entry={entry}
+                          variant="compact"
+                        />
+                      ))}
+                      {extra > 0 && (
+                        <p className="pointer-events-none relative px-1 text-[11px] font-medium text-muted-foreground">
+                          {t("plans.moreCount", { count: extra })}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Legenda */}
+            <ul className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+              <li className="flex items-center gap-1.5">
+                <span className="flex gap-0.5" aria-hidden>
+                  <span className="size-2 rounded-full bg-(--subject-1)" />
+                  <span className="size-2 rounded-full bg-(--subject-2)" />
+                  <span className="size-2 rounded-full bg-(--subject-3)" />
+                </span>
+                {t("plans.legend.subjectColor")}
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="size-2 rounded-full bg-warning" aria-hidden />
+                {t("plans.legend.rescheduled")}
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span
+                  className="size-2 rounded-full bg-destructive"
+                  aria-hidden
+                />
+                {t("plans.legend.cancelled")}
+              </li>
+              <li className="flex items-center gap-1.5">
+                <span className="size-2 rounded-full bg-success" aria-hidden />
+                {t("plans.legend.locked")}
+              </li>
+            </ul>
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-500" />{" "}
-              {t("plans.legend.normal")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-500" />{" "}
-              {t("plans.legend.rescheduled")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-red-500" />{" "}
-              {t("plans.legend.cancelled")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />{" "}
-              {t("plans.legend.locked")}
-            </span>
-          </div>
-        </>
+          {/* Tanlangan kun paneli */}
+          <aside
+            aria-labelledby="calendar-day-title"
+            className="rounded-xl border bg-muted/30 p-3 xl:sticky xl:top-0"
+          >
+            <h3
+              id="calendar-day-title"
+              aria-live="polite"
+              className="mb-3 px-1 font-heading text-sm font-semibold"
+            >
+              {formatLongDate(parseISO(selectedKey), i18n.language)}
+            </h3>
+            <div className="space-y-2">
+              {selectedDay.holiday && (
+                <HolidayChip holiday={selectedDay.holiday} />
+              )}
+              {selectedDay.visible.length ? (
+                selectedDay.visible.map((entry, idx) => (
+                  <SessionChip
+                    key={`${entry.template.id}-${idx}`}
+                    entry={entry}
+                    hasAction={hasAction}
+                    onClick={() => openException(selectedKey, entry)}
+                  />
+                ))
+              ) : (
+                <EmptyState
+                  size="sm"
+                  icon={CalendarDays}
+                  title={t("plans.dayEmpty")}
+                />
+              )}
+            </div>
+          </aside>
+        </div>
       )}
 
       <ExceptionModal
@@ -294,6 +424,6 @@ export const MonthlyCalendar = ({
         groupId={groupId}
         groupName={selectedGroupName}
       />
-    </div>
+    </section>
   );
 };

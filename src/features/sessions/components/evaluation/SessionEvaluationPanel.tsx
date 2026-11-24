@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { PageLoading } from "@/components/loading";
+import { Clock, ShieldAlert, UsersRound, CloudOff } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/shared/states";
 import { cn } from "@/lib/utils";
 import type { SessionEvaluation } from "../../hooks";
 import { SessionAttendanceTable } from "./SessionAttendanceTable";
@@ -37,38 +39,57 @@ export const SessionEvaluationPanel = ({
   // Dars boshlanmagan bo'lsa yo'qlama qo'yib bo'lmaydi (backend SESSION_NOT_STARTED).
   const isDisabled = disabled || !hasStarted;
 
-  const emptyText = cn("py-6 text-center text-sm", styles.muted);
-
   return (
-    <div className={cn(styles.panel, className)}>
-      <div className="flex items-center flex-wrap gap-2">
-        <h3 className={styles.title}>
+    <section
+      aria-labelledby="session-evaluation-title"
+      className={cn(styles.panel, className)}
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <h2 id="session-evaluation-title" className={styles.title}>
           {isScored
             ? t("sessions.results.title")
             : t("sessions.attendance.title")}
-        </h3>
+        </h2>
         {headerExtra}
       </div>
 
       {hasGroup && !hasStarted && (
-        <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
+        <p className="flex items-start gap-2 rounded-lg bg-warning-soft px-3 py-2.5 text-sm text-foreground">
+          <Clock className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden />
           {t("sessions.evaluation.notStartedHint")}
         </p>
       )}
 
       {!hasGroup ? (
-        <p className={emptyText}>{t("sessions.attendance.groupNotSet")}</p>
+        <EmptyState
+          size="sm"
+          icon={UsersRound}
+          title={t("sessions.attendance.groupNotSet")}
+        />
       ) : isLoading ? (
-        <PageLoading />
+        <div aria-busy="true" className="space-y-2">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="h-11 rounded-lg" />
+          ))}
+        </div>
       ) : isRosterError ? (
         // Ruxsat yo'qligi va bo'sh guruh foydalanuvchiga turlicha ko'rinishi kerak.
-        <p className={cn(emptyText, "text-red-600 dark:text-red-400")}>
-          {isRosterForbidden
-            ? t("sessions.attendance.groupForbidden")
-            : t("sessions.attendance.groupLoadError")}
-        </p>
+        <EmptyState
+          size="sm"
+          icon={isRosterForbidden ? ShieldAlert : CloudOff}
+          title={
+            isRosterForbidden
+              ? t("sessions.attendance.groupForbidden")
+              : t("sessions.attendance.groupLoadError")
+          }
+          className="text-destructive"
+        />
       ) : !students.length ? (
-        <p className={emptyText}>{t("sessions.attendance.noStudents")}</p>
+        <EmptyState
+          size="sm"
+          icon={UsersRound}
+          title={t("sessions.attendance.noStudents")}
+        />
       ) : isScored ? (
         <SessionResultsTable
           evaluation={evaluation}
@@ -82,6 +103,6 @@ export const SessionEvaluationPanel = ({
           tone={tone}
         />
       )}
-    </div>
+    </section>
   );
 };

@@ -1,26 +1,47 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { PageLoading } from "@/components/loading";
-import { NoData } from "@/components/partials/no-data";
+import { CalendarX2 } from "lucide-react";
 import { BackListButton } from "@/components/shared/back";
+import { EmptyState, ErrorState } from "@/components/shared/states";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/features/sessions/hooks";
+import { SessionHeader } from "@/features/sessions/components";
 import { TeacherSessionForm } from "@/features/teacher-profile/components/sessions";
 
 const SessionDetailPage = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const { data: session, isLoading } = useSession(id ?? "");
+  const {
+    data: session,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+  } = useSession(id ?? "");
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-5">
       <BackListButton title={t("teacherNav.sessions")} />
 
       {isLoading ? (
-        <PageLoading />
+        <div aria-busy="true" className="space-y-4">
+          <Skeleton className="h-36 rounded-2xl" />
+          <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
+            <Skeleton className="h-96 rounded-2xl" />
+            <Skeleton className="h-72 rounded-2xl" />
+          </div>
+        </div>
+      ) : isError && !session ? (
+        <ErrorState onRetry={() => refetch()} isRetrying={isFetching} />
       ) : !session ? (
-        <NoData text={t("sessions.notFound")} />
+        <div className="rounded-2xl border bg-card">
+          <EmptyState icon={CalendarX2} title={t("sessions.notFound")} />
+        </div>
       ) : (
-        <TeacherSessionForm session={session} />
+        <>
+          <SessionHeader session={session} />
+          <TeacherSessionForm session={session} />
+        </>
       )}
     </div>
   );

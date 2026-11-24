@@ -85,9 +85,9 @@ export const CategoryFormModal = ({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-100 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+      <DialogContent className="sm:max-w-100">
         <DialogHeader>
-          <DialogTitle className="text-zinc-900 dark:text-zinc-50">
+          <DialogTitle className="font-heading">
             {isEdit
               ? t("market.categoryForm.editTitle")
               : t("market.categoryForm.createTitle")}
@@ -101,13 +101,12 @@ export const CategoryFormModal = ({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-zinc-700 dark:text-zinc-300">
+                  <FormLabel>
                     {t("market.categoryForm.nameLabel")}
                   </FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t("market.categoryForm.namePlaceholder")}
-                      className="bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50"
                       {...field}
                     />
                   </FormControl>
@@ -122,14 +121,12 @@ export const CategoryFormModal = ({
                 variant="outline"
                 onClick={onClose}
                 disabled={isPending}
-                className="border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300"
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={isPending}
-                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white"
               >
                 {isPending
                   ? isEdit

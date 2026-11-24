@@ -1,19 +1,10 @@
 import { Link } from "react-router-dom";
-import { Users } from "lucide-react";
+import { ChevronRight, UsersRound } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Panel } from "@/components/shared/panel";
 import type { TeacherDashboardGroup } from "../../types";
 
-const ACCENTS = [
-  "bg-forest/8 text-forest",
-  "bg-gold/12 text-gold",
-  "bg-bloom/8 text-bloom",
-];
-
-function accentFor(seed: string) {
-  const sum = seed.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return ACCENTS[sum % ACCENTS.length];
-}
-
+/** O'qituvchi guruhlari — qisqa ko'rinish. */
 export const TeacherGroupsPreview = ({
   groups,
 }: {
@@ -24,46 +15,41 @@ export const TeacherGroupsPreview = ({
   if (!groups.length) return null;
 
   return (
-    <div className="rounded-2xl border border-ink/10 bg-white p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display text-sm font-semibold text-ink">
-          {t("teacherProfile.groups.title")}
-        </h3>
+    <Panel
+      title={t("teacherProfile.groups.title")}
+      action={
         <Link
           to="/teacher/groups"
-          className="text-xs font-medium text-forest hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline"
         >
           {t("common.all")}
+          <ChevronRight className="size-4" aria-hidden />
         </Link>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3">
-        {groups.map((group, index) => (
-          <Link
-            key={group.id}
-            to={`/teacher/groups/${group.id}`}
-            className="flex items-center gap-3 rounded-xl bg-paper border border-ink/8 px-3 py-2.5 hover:border-gold/40 transition-colors"
-          >
-            <div
-              className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 text-xs font-semibold ${accentFor(group.id)}`}
+      }
+    >
+      <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+        {groups.map((group) => (
+          <li key={group.id}>
+            <Link
+              to={`/teacher/groups/${group.id}`}
+              className="flex items-center gap-3 rounded-xl border px-3 py-2.5 transition-colors hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring"
             >
-              No{index + 1}
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-ink truncate">
-                {group.name}
-              </p>
-              <p className="text-xs text-ink-soft truncate">
-                {group.course.title}
-              </p>
-            </div>
-            <span className="ml-auto flex items-center gap-1.5 text-ink-soft shrink-0">
-              <Users size={14} />
-              <b>{group._count.students}</b>
-            </span>
-          </Link>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-medium">
+                  {group.name}
+                </span>
+                <span className="block truncate text-xs text-muted-foreground">
+                  {group.course.title}
+                </span>
+              </span>
+              <span className="flex shrink-0 items-center gap-1.5 text-sm tabular-nums text-muted-foreground">
+                <UsersRound className="size-4" aria-hidden />
+                {group._count.students}
+              </span>
+            </Link>
+          </li>
         ))}
-      </div>
-    </div>
+      </ul>
+    </Panel>
   );
 };
